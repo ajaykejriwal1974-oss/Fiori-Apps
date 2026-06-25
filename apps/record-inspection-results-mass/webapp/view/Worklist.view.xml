@@ -1,0 +1,81 @@
+<mvc:View
+    controllerName="kejriwal.qm.inspectionresultmass.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>worklistTitle}" showHeader="true">
+        <subHeader>
+            <OverflowToolbar id="filterBar">
+                <Label text="{i18n>plant}" />
+                <Input id="inpPlant" width="8rem" value="{ui>/filter/plant}" />
+                <Label text="{i18n>workCenter}" />
+                <Input id="inpWorkCenter" width="10rem" value="{ui>/filter/workCenter}" />
+                <Label text="{i18n>inspLot}" />
+                <Input id="inpLot" width="10rem" value="{ui>/filter/inspectionLot}" />
+                <ToolbarSpacer />
+                <Button id="btnSearch" text="{i18n>search}" type="Emphasized" press=".onSearch" />
+            </OverflowToolbar>
+        </subHeader>
+        <content>
+            <Table
+                id="resultsTable"
+                items="{
+                    path: '/InspectionCharacteristic',
+                    parameters: { '$count': true }
+                }"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="100"
+                sticky="ColumnHeaders,HeaderToolbar">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>charsToRecord}" level="H2" />
+                        <ToolbarSpacer />
+                        <ObjectStatus id="dirtyStatus" text="{ui>/dirtyCount} {i18n>edited}" state="Information" visible="{= ${ui>/dirtyCount} &gt; 0 }" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="9rem"><Text text="{i18n>inspLot}" /></Column>
+                    <Column width="9rem"><Text text="{i18n>material}" /></Column>
+                    <Column><Text text="{i18n>characteristic}" /></Column>
+                    <Column width="10rem" hAlign="End"><Text text="{i18n>resultValue}" /></Column>
+                    <Column width="6rem"><Text text="{i18n>unit}" /></Column>
+                    <Column width="10rem"><Text text="{i18n>valuation}" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{InspectionLot}" />
+                            <Text text="{Material}" />
+                            <Text text="{CharacteristicDescription}" />
+                            <Input
+                                value="{ResultValue}"
+                                type="Number"
+                                textAlign="End"
+                                liveChange=".onResultChange" />
+                            <Text text="{Unit}" />
+                            <Select selectedKey="{Valuation}" change=".onResultChange">
+                                <core:Item key="" text="" />
+                                <core:Item key="A" text="{i18n>accept}" />
+                                <core:Item key="R" text="{i18n>reject}" />
+                            </Select>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="btnPost"
+                    text="{i18n>postResults}"
+                    type="Emphasized"
+                    icon="sap-icon://accept"
+                    enabled="{= ${ui>/dirtyCount} &gt; 0 }"
+                    press=".onPostResults" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
