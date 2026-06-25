@@ -15,7 +15,7 @@ server:
         backend:
           - path: /sap
             url: REPLACE_WITH_ABAP_SYSTEM_URL
-            client: "100"
+            client: "500"
         ui5:
           path:
             - /resources

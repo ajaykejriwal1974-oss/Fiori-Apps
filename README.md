@@ -78,3 +78,6 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
   adaptation project vs. backend.
 - [`docs/PUBLISHING.md`](docs/PUBLISHING.md) — deploy to the Front-End Server and
   publish/launch each app as its own Fiori Launchpad tile (on-premise).
+- [`docs/ACTIVATION.md`](docs/ACTIVATION.md) — how the Basis Fiori activation
+  runbook (KSQ/KHQ, client 500) and this repo fit together: base-app activation
+  → extension deploy order, and the base app → business role → repo artifact map.

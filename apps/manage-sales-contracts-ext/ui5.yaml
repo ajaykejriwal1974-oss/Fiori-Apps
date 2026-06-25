@@ -25,7 +25,7 @@ server:
           target:
             # Destination/URL of the on-premise S/4HANA Front-End Server.
             url: REPLACE_WITH_ABAP_SYSTEM_URL
-            client: "100"
+            client: "500"
           ignoreCertErrors: false
     - name: fiori-tools-proxy
       afterMiddleware: compression
@@ -34,7 +34,7 @@ server:
         backend:
           - path: /sap
             url: REPLACE_WITH_ABAP_SYSTEM_URL
-            client: "100"
+            client: "500"
         ui5:
           path:
             - /resources
