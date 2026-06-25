@@ -1,0 +1,13 @@
+// Read-only HU items + a static action that posts ONE material document for all
+// scanned items via BAPI_GOODSMVT_CREATE. Unmanaged: the post is a BAPI call,
+// there is no custom persistence.
+unmanaged implementation in class zbp_i_hu_item unique;
+strict ( 2 );
+
+define behavior for ZI_HU_Item alias HuItem
+{
+  // Mass post: header (movement type, plant, storage locations) + items.
+  static action postGoodsMovement
+    parameter ZD_HU_PostMovement
+    result [1] ZD_HU_MvtResult;
+}
