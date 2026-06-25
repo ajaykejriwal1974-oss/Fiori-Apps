@@ -1,0 +1,9 @@
+CLASS zbp_i_dd_shade DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_dd_shade.
+ENDCLASS.
+
+CLASS zbp_i_dd_shade IMPLEMENTATION.
+ENDCLASS.
