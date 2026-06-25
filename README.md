@@ -88,3 +88,6 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/GO-LIVE-CHECKLIST.md`](docs/GO-LIVE-CHECKLIST.md) — per-app checklist:
   placeholder values to collect, backend prerequisites, deploy / publish / verify
   steps, and a suggested execution sequence.
+- [`docs/TRANSPORT-PLAN.md`](docs/TRANSPORT-PLAN.md) — package hierarchy and
+  transport-request grouping/sequence to move the objects DEV → KSQ → PROD on the
+  embedded FES.
