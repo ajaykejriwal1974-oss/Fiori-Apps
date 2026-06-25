@@ -20,12 +20,12 @@ delivered app **without modifying SAP source**.
 | App | Fiori ID | Replaces (Z) | Status |
 |---|---|---|---|
 | [Manage Sales Orders](apps/manage-sales-orders-ext) | F1873 | ZVA01 / ZVA01N, ZSOCLOSE | Scaffolded (UI layer; placeholders to complete on live system) |
+| [Confirm Production Operation](apps/confirm-production-operation-ext) | F3069 | ZCO11N / ZCO11A | Scaffolded (UI layer; placeholders to complete on live system) |
 
-> Remaining Table B candidates to scaffold next on request: F3069 (Confirm
-> Production Operation), F0867A (Manage Outbound Deliveries), F2655 (Record
-> Inspection Results), MIGO/HU goods movement, Manage Sales Contracts
-> (close/release/rate), HU packing, and the ZDD_SHADE Custom Business Object
-> (RAP, not an adaptation project).
+> Remaining Table B candidates to scaffold next on request: F0867A (Manage
+> Outbound Deliveries), F2655 (Record Inspection Results), MIGO/HU goods movement,
+> Manage Sales Contracts (close/release/rate), HU packing, and the ZDD_SHADE
+> Custom Business Object (RAP, not an adaptation project).
 
 ## Layout
 
