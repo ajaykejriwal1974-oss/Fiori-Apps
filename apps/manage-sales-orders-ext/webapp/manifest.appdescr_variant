@@ -16,6 +16,27 @@
       }
     },
     {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "SalesOrder-manageKejriwal": {
+            "semanticObject": "SalesOrder",
+            "action": "manageKejriwal",
+            "icon": "sap-icon://sales-order",
+            "title": "{{flpTitle}}",
+            "subTitle": "{{flpSubtitle}}",
+            "signature": {
+              "parameters": {},
+              "additionalParameters": "allowed"
+            }
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
       "changeType": "appdescr_ui_generic_app_changePageConfiguration",
       "content": {
         "parentPage": {
