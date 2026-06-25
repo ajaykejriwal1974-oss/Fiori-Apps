@@ -1,0 +1,47 @@
+# SAPUI5 tooling config for the adaptation project (on-premise S/4HANA target).
+# Replace the placeholders marked REPLACE_WITH_* before running locally.
+specVersion: "3.0"
+metadata:
+  name: kejriwal.zcontract.manage.extension
+type: application
+configuration:
+  propertiesFileSourceEncoding: UTF-8
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      afterTask: replaceVersion
+      configuration:
+        type: abap
+        appName: REPLACE_WITH_BASE_APP_BSP_NAME
+        languages:
+          - sap: EN
+            i18n: en
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            # Destination/URL of the on-premise S/4HANA Front-End Server.
+            url: REPLACE_WITH_ABAP_SYSTEM_URL
+            client: "100"
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - path: /sap
+            url: REPLACE_WITH_ABAP_SYSTEM_URL
+            client: "100"
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: fiori-tools-proxy
+      configuration:
+        port: 35729
+        path: webapp

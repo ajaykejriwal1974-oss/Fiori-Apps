@@ -22,9 +22,11 @@ delivered app **without modifying SAP source**.
 | [Manage Sales Orders](apps/manage-sales-orders-ext) | F1873 | ZVA01 / ZVA01N, ZSOCLOSE | Scaffolded (UI layer; placeholders to complete on live system) |
 | [Confirm Production Operation](apps/confirm-production-operation-ext) | F3069 | ZCO11N / ZCO11A | Scaffolded (UI layer; placeholders to complete on live system) |
 | [Manage Outbound Deliveries](apps/manage-outbound-deliveries-ext) | F0867A | ZDEL | Scaffolded (UI layer; challan print via Output Management) |
+| [Manage Sales Contracts](apps/manage-sales-contracts-ext) | VA42 / verify | ZCON_CLOSE / ZCON_CLOSE1 / ZCOREL / ZCON02 | Scaffolded (UI layer; status actions call backend) |
 
 > Remaining Table B candidates to scaffold next on request: MIGO/HU goods
-> movement, Manage Sales Contracts (close/release/rate), and HU packing.
+> movement, HU packing, and ZBATCH_CHANGE contract batch update (mass — likely a
+> custom RAP app, not an adaptation project).
 
 ## Custom Fiori apps (not adaptation projects)
 

@@ -1,0 +1,26 @@
+{
+  "name": "kejriwal-manage-sales-contracts-ext",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Adaptation project (clean-core extension) for Manage Sales Contracts. Re-adds custom contract status (close/release/complete) and pending-rate update the clean-core way.",
+  "keywords": [
+    "ui5",
+    "adaptation-project",
+    "sap-fiori",
+    "s4hana-onpremise"
+  ],
+  "scripts": {
+    "start": "ui5 serve --open \"test/flpSandbox.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}

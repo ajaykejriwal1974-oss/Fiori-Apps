@@ -1,0 +1,42 @@
+<!--
+  Custom UI section for Manage Sales Contracts.
+  Re-adds the custom contract lifecycle (close / release / complete) and the
+  pending-contract rate update that used to live behind ZCON_CLOSE / ZCON_CLOSE1
+  / ZCOREL / ZCON02.
+
+  CLEAN-CORE NOTE:
+  - The custom STATUS itself is backend status management / RAP. This section
+    only DISPLAYS the current custom status and TRIGGERS the backend actions.
+  - YY1_PendingRate_CON and YY1_KejStatus_CON must exist on the OData service
+    (key-user field for the rate; status exposed via the status model). Until
+    then these are UI-only placeholders.
+  - The Close / Release / Complete buttons call backend RAP actions / BAdI - they
+    do not implement the status logic in the UI.
+-->
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Panel id="contractStatusPanel" headerText="{i18n>contractStatusRate}" expandable="true" expanded="true">
+        <form:SimpleForm
+            id="contractStatusForm"
+            layout="ResponsiveGridLayout"
+            editable="true"
+            labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+            columnsXL="2" columnsL="2" columnsM="1">
+            <form:content>
+                <Label text="{i18n>customStatus}" />
+                <ObjectStatus id="contractStatus" text="{YY1_KejStatus_CON}" />
+
+                <Label text="{i18n>pendingRate}" />
+                <Input id="inpPendingRate" value="{YY1_PendingRate_CON}" type="Number" />
+            </form:content>
+        </form:SimpleForm>
+        <Toolbar id="contractActionsToolbar">
+            <ToolbarSpacer />
+            <Button id="btnRelease" text="{i18n>release}" icon="sap-icon://unlocked" press=".onReleaseContract" />
+            <Button id="btnComplete" text="{i18n>complete}" icon="sap-icon://complete" press=".onCompleteContract" />
+            <Button id="btnClose" text="{i18n>close}" icon="sap-icon://sys-cancel" type="Reject" press=".onCloseContract" />
+        </Toolbar>
+    </Panel>
+</core:FragmentDefinition>
