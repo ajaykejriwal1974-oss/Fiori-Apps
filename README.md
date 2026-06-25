@@ -24,9 +24,9 @@ delivered app **without modifying SAP source**.
 | [Manage Outbound Deliveries](apps/manage-outbound-deliveries-ext) | F0867A | ZDEL | Scaffolded (UI layer; challan print via Output Management) |
 | [Manage Sales Contracts](apps/manage-sales-contracts-ext) | VA42 / verify | ZCON_CLOSE / ZCON_CLOSE1 / ZCOREL / ZCON02 | Scaffolded (UI layer; status actions call backend) |
 
-> Remaining Table B candidates to scaffold next on request: HU/dyeing packing
-> (ZPACK01D/02D/03D, ZREPACKD) and ZBATCH_CHANGE contract batch update (both
-> likely custom RAP apps, not adaptation projects).
+> All Table B items are now scaffolded (4 adaptation projects + 4 custom apps +
+> 1 RAP business object). Each still needs its live-system placeholders filled
+> and its documented backend (CDS / RAP / BAdI / HU config / Output Management).
 
 ## Custom Fiori apps (not adaptation projects)
 
@@ -38,6 +38,8 @@ service rather than as adaptation projects.
 |---|---|---|---|
 | [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; needs custom RAP QM service |
 | [Post Goods Movement (HU / Box)](apps/post-goods-movement-hu) | ZBOX_MOVE (vs MIGO) | MIGO is a GUI tx; box/HU-wise movement is a scan-driven flow | UI authored; needs custom RAP goods-movement + HU service |
+| [Dyeing Packing](apps/dyeing-packing) | ZPACK01D/02D/03D, ZREPACKD | Textile cone/carton/pallet structure not in standard HU UI | UI authored; needs custom RAP packing service / HU config |
+| [Contract Batch Update](apps/contract-batch-update) | ZBATCH_CHANGE | Mass batch assignment across contract items | UI authored; needs custom RAP mass-update service |
 
 ## Backend (non-UI) artifacts
 

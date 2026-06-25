@@ -1,0 +1,67 @@
+<mvc:View
+    controllerName="kejriwal.sd.contractbatchupdate.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}" showHeader="true">
+        <content>
+            <Panel id="selectPanel" headerText="{i18n>selectHeader}" expandable="false">
+                <Toolbar id="selectToolbar">
+                    <Label text="{i18n>contract}" />
+                    <Input id="inpContract" width="14rem" value="{ui>/contract}" submit=".onLoadContract" placeholder="{i18n>contractPlaceholder}" />
+                    <Button id="btnLoad" text="{i18n>load}" type="Emphasized" icon="sap-icon://search" press=".onLoadContract" />
+                    <ToolbarSpacer />
+                    <Label text="{i18n>massBatch}" />
+                    <Input id="inpMassBatch" width="12rem" value="{ui>/massBatch}" />
+                    <Button id="btnApplyAll" text="{i18n>applyToSelected}" icon="sap-icon://multiselect-all" press=".onApplyToSelected" />
+                </Toolbar>
+            </Panel>
+
+            <Table
+                id="itemsTable"
+                items="{ui>/items}"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="200"
+                sticky="ColumnHeaders">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>itemsTitle} ({= ${ui>/items}.length })" level="H2" />
+                        <ToolbarSpacer />
+                        <ObjectStatus id="dirtyStatus" text="{ui>/dirtyCount} {i18n>changed}" state="Information" visible="{= ${ui>/dirtyCount} &gt; 0 }" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="6rem"><Text text="{i18n>itemNo}" /></Column>
+                    <Column width="10rem"><Text text="{i18n>material}" /></Column>
+                    <Column><Text text="{i18n>description}" /></Column>
+                    <Column width="10rem"><Text text="{i18n>currentBatch}" /></Column>
+                    <Column width="12rem"><Text text="{i18n>newBatch}" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{ui>ContractItem}" />
+                            <Text text="{ui>Material}" />
+                            <Text text="{ui>MaterialDescription}" />
+                            <Text text="{ui>CurrentBatch}" />
+                            <Input value="{ui>NewBatch}" liveChange=".onBatchChange" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="btnSave"
+                    text="{i18n>updateBatches}"
+                    type="Emphasized"
+                    icon="sap-icon://save"
+                    enabled="{= ${ui>/dirtyCount} &gt; 0 }"
+                    press=".onUpdateBatches" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
