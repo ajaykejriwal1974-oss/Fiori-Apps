@@ -1,0 +1,28 @@
+{
+  "name": "kejriwal-post-goods-movement-hu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom Fiori app for box / handling-unit-wise goods movement (replaces ZBOX_MOVE; thin app over the goods-movement + HU APIs).",
+  "keywords": [
+    "ui5",
+    "freestyle",
+    "sap-fiori",
+    "mm",
+    "handling-unit",
+    "s4hana-onpremise"
+  ],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}
