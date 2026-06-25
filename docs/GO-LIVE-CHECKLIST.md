@@ -109,22 +109,27 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 ### Post Goods Movement (HU / Box) — `apps/post-goods-movement-hu`
 - Intent: `MaterialDocument-postHuKejriwal` · Role: `SAP_BR_INVENTORY_MANAGER`
 - [ ] **A** `REPLACE_WITH_HU_GM_SERVICE` + S2
-- [ ] **B** Build RAP service: HU read (`HandlingUnitItem`) + movement create
-      (BAPI_GOODSMVT_CREATE equivalent); wire `onScanHu` + `onPostMovement`
+- [ ] **B** Build RAP service from the skeleton at `backend/goods-movement-hu-rap`
+      (HU read + `postGoodsMovement` static action → BAPI_GOODSMVT_CREATE);
+      complete the `TODO`/`VERIFY` + binding `ZUI_HU_GOODS_MOVEMENT`; wire
+      `onScanHu` + `onPostMovement`
 - [ ] **C** S3 · **D** S4 · **E** S5
 
 ### Dyeing Packing — `apps/dyeing-packing`
 - Intent: `HandlingUnit-packDyeingKejriwal` · Role: `SAP_BR_WAREHOUSE_CLERK`
 - [ ] **A** `REPLACE_WITH_PACKING_SERVICE` + S2
 - [ ] **B** First check standard **HU Management + packing instructions** can model
-      cone/carton/pallet; else build RAP deep-create service; wire `onCreateHus`
+      cone/carton/pallet; else build the RAP service from the skeleton at
+      `backend/packing-hu-rap` (`createHandlingUnits` → BAPI_HU_CREATE/PACK,
+      binding `ZUI_PACKING`); wire `onCreateHus`
 - [ ] **C** S3 · **D** S4 · **E** S5
 
 ### Contract Batch Update — `apps/contract-batch-update`
 - Intent: `SalesContract-updateBatchKejriwal` · Role: `SAP_BR_INTERNAL_SALES_REP`
 - [ ] **A** `REPLACE_WITH_CONTRACT_BATCH_SERVICE` + S2
-- [ ] **B** Build RAP service: contract-items entity + mass-update action over
-      (contract, item, batch); wire `onLoadContract` + `onUpdateBatches`
+- [ ] **B** Build RAP service from the skeleton at `backend/contract-batch-rap`
+      (contract-items read + `updateBatches` action → BAPI_SALESDOCUMENT_CHANGE,
+      binding `ZUI_CONTRACT_BATCH`); wire `onLoadContract` + `onUpdateBatches`
 - [ ] **C** S3 · **D** S4 · **E** S5
 
 ---

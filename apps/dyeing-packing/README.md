@@ -41,6 +41,11 @@ carton inside pallet) for the reference and stores net/gross weights, mapping to
 the standard HU API where possible. The `onCreateHus` / `onRepack` `TODO`s in
 `controller/Main.controller.js` mark where to wire it.
 
+> A RAP **skeleton** for this service is authored at
+> [`backend/packing-hu-rap`](../../backend/packing-hu-rap) (`createHandlingUnits`
+> static action → BAPI_HU_CREATE/PACK). Point `REPLACE_WITH_PACKING_SERVICE` at
+> its binding `ZUI_PACKING`.
+
 ## ⚠️ Placeholders you MUST replace
 
 1. `REPLACE_WITH_PACKING_SERVICE` (manifest `dataSources.mainService.uri`).

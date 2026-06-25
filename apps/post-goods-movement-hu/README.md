@@ -41,6 +41,11 @@ Build a **RAP/OData V4 service** that:
 The two `TODO`s in `controller/Main.controller.js` (`onScanHu` read,
 `onPostMovement` create) mark exactly where to wire these.
 
+> A RAP **skeleton** for this service is authored at
+> [`backend/goods-movement-hu-rap`](../../backend/goods-movement-hu-rap) (HU read
+> + `postGoodsMovement` static action → BAPI_GOODSMVT_CREATE). Point
+> `REPLACE_WITH_HU_GM_SERVICE` at its binding `ZUI_HU_GOODS_MOVEMENT`.
+
 ## ⚠️ Placeholders you MUST replace
 
 1. `REPLACE_WITH_HU_GM_SERVICE` (manifest `dataSources.mainService.uri`).
