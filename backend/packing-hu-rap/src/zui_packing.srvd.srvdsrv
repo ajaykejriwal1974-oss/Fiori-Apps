@@ -1,0 +1,4 @@
+@EndUserText.label: 'Dyeing Packing Service'
+define service ZUI_PACKING {
+  expose ZC_Packing_Unit as PackingUnit;
+}

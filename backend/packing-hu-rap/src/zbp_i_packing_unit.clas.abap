@@ -1,0 +1,9 @@
+CLASS zbp_i_packing_unit DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_packing_unit.
+ENDCLASS.
+
+CLASS zbp_i_packing_unit IMPLEMENTATION.
+ENDCLASS.
