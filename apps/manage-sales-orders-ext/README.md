@@ -54,6 +54,14 @@ business logic are a separate, clean-core backend effort:
 - **`ZDD_SHADE` shade master** → key-user Custom Business Object (RAP); drives the
   shade value help.
 
+## Extensibility tier
+
+Per SAP clean-core guidance, create the plain custom **fields** (denier, shade,
+lustre, contract link) with **tier-1 key-user** *Custom Fields & Logic* where the
+Sales Order supports it; this adaptation project (**tier 2**) owns the grouped
+section, shade value help, and the `onBeforeSave` logic. See
+[`docs/EXTENSIBILITY.md`](../../docs/EXTENSIBILITY.md).
+
 ## Run locally
 
 ```bash
