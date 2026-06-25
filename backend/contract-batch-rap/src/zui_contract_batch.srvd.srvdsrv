@@ -1,0 +1,4 @@
+@EndUserText.label: 'Contract Batch Update Service'
+define service ZUI_CONTRACT_BATCH {
+  expose ZC_Contract_Item as ContractItem;
+}
