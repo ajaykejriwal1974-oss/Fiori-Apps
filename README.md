@@ -47,3 +47,11 @@ apps/
 
 Each project's own README lists the `REPLACE_WITH_*` placeholders that must be
 filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
+
+## Docs
+
+- [`docs/EXTENSIBILITY.md`](docs/EXTENSIBILITY.md) — SAP clean-core extensibility
+  tiers; per-app guidance on what to build as tier-1 key-user vs. tier-2
+  adaptation project vs. backend.
+- [`docs/PUBLISHING.md`](docs/PUBLISHING.md) — deploy to the Front-End Server and
+  publish/launch each app as its own Fiori Launchpad tile (on-premise).

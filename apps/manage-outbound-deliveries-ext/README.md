@@ -48,6 +48,14 @@ Adaptation Editor**:
 - **Challan print** → Output Management output type + Adobe form (replaces
   `ZRPT_DELIVERY_CHALLAN`).
 
+## Extensibility tier
+
+Per SAP clean-core guidance, create the plain custom **fields** (challan no/date,
+vehicle, transporter, e-way bill) with **tier-1 key-user** *Custom Fields & Logic*
+on the outbound delivery; this adaptation project (**tier 2**) owns the grouped
+section, the "Print Challan" action, and the `onBeforeSave` guard. See
+[`docs/EXTENSIBILITY.md`](../../docs/EXTENSIBILITY.md).
+
 ## Run locally
 
 ```bash

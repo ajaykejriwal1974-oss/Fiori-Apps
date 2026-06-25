@@ -48,6 +48,15 @@ an explicit `REPLACE_WITH_*` token (kept deliberately invalid). Complete them in
 - **Shade master** (`ZDD_SHADE`) → key-user Custom Business Object (RAP); drives
   the shade value help.
 
+## Extensibility tier
+
+Per SAP clean-core guidance, create the plain custom **fields** (shade, dye-lot,
+recipe, temperature, WIP batch) with **tier-1 key-user** *Custom Fields & Logic*
+**if** the production confirmation entity supports it (verify — it may not; fall
+back to a tier-2 CDS extend). This adaptation project (**tier 2**) owns the
+grouped section and guards. See
+[`docs/EXTENSIBILITY.md`](../../docs/EXTENSIBILITY.md).
+
 ## Run locally
 
 ```bash
