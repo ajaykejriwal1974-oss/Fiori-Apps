@@ -81,3 +81,6 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/ACTIVATION.md`](docs/ACTIVATION.md) — how the Basis Fiori activation
   runbook (KSQ/KHQ, client 500) and this repo fit together: base-app activation
   → extension deploy order, and the base app → business role → repo artifact map.
+- [`docs/GO-LIVE-CHECKLIST.md`](docs/GO-LIVE-CHECKLIST.md) — per-app checklist:
+  placeholder values to collect, backend prerequisites, deploy / publish / verify
+  steps, and a suggested execution sequence.
