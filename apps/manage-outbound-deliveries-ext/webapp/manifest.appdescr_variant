@@ -16,6 +16,27 @@
       }
     },
     {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "OutboundDelivery-manageKejriwal": {
+            "semanticObject": "OutboundDelivery",
+            "action": "manageKejriwal",
+            "icon": "sap-icon://shipping-status",
+            "title": "{{flpTitle}}",
+            "subTitle": "{{flpSubtitle}}",
+            "signature": {
+              "parameters": {},
+              "additionalParameters": "allowed"
+            }
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
       "changeType": "appdescr_ui_generic_app_changePageConfiguration",
       "content": {
         "parentPage": {
