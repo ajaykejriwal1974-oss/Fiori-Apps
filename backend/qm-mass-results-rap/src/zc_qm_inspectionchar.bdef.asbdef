@@ -1,0 +1,7 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_QM_InspectionChar alias InspectionChar
+{
+  use update;
+}

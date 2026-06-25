@@ -41,6 +41,11 @@ inspection-lot & characteristic results). The app expects, at minimum, an
 `WorkCenter`, `CharacteristicDescription`, `ResultValue`, `Unit`, `Valuation`,
 and either updatable properties or a bound **mass-post action**.
 
+> A RAP **skeleton** for this service is authored at
+> [`backend/qm-mass-results-rap`](../../backend/qm-mass-results-rap) (unmanaged
+> BO: read CDS over QM + `update`/`save` that records via the QM BAPI). Point
+> `REPLACE_WITH_QM_MASS_SERVICE` at its service binding `ZUI_QM_INSPECTIONCHAR`.
+
 ## ⚠️ Placeholders you MUST replace
 
 1. `REPLACE_WITH_QM_MASS_SERVICE` (manifest `dataSources.mainService.uri`) – the

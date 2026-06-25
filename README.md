@@ -36,7 +36,7 @@ service rather than as adaptation projects.
 
 | App | Replaces (Z) | Why custom | Status |
 |---|---|---|---|
-| [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; needs custom RAP QM service |
+| [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; QM RAP service skeleton in backend/qm-mass-results-rap |
 | [Post Goods Movement (HU / Box)](apps/post-goods-movement-hu) | ZBOX_MOVE (vs MIGO) | MIGO is a GUI tx; box/HU-wise movement is a scan-driven flow | UI authored; needs custom RAP goods-movement + HU service |
 | [Dyeing Packing](apps/dyeing-packing) | ZPACK01D/02D/03D, ZREPACKD | Textile cone/carton/pallet structure not in standard HU UI | UI authored; needs custom RAP packing service / HU config |
 | [Contract Batch Update](apps/contract-batch-update) | ZBATCH_CHANGE | Mass batch assignment across contract items | UI authored; needs custom RAP mass-update service |
@@ -46,6 +46,7 @@ service rather than as adaptation projects.
 | Artifact | Type | Replaces (Z) | Status |
 |---|---|---|---|
 | [Shade Master](backend/shade-master-rap) | RAP Custom Business Object | ZDD_SHADE | Source authored (table + service binding to create in ADT) |
+| [QM Mass Results](backend/qm-mass-results-rap) | Unmanaged RAP service | ZQA32 (backend for the mass app) | Skeleton authored (QM BAPI calls + status filter to complete in ADT) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade

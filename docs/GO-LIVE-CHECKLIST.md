@@ -100,8 +100,10 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 ### Record Inspection Results (Mass) — `apps/record-inspection-results-mass`
 - Intent: `InspectionResult-recordMassKejriwal` · Role: `SAP_BR_QUALITY_TECHNICIAN`
 - [ ] **A** `REPLACE_WITH_QM_MASS_SERVICE` + S2
-- [ ] **B** Build RAP service: `InspectionCharacteristic` entity + mass-post over
-      the QM result-recording API; wire the table read + `onPostResults`
+- [ ] **B** Build RAP service from the skeleton at `backend/qm-mass-results-rap`
+      (`InspectionCharacteristic` entity, unmanaged update/save over the QM
+      result-recording BAPI); complete the QM `TODO`/`VERIFY` items + service
+      binding `ZUI_QM_INSPECTIONCHAR`
 - [ ] **C** S3 · **D** S4 · **E** S5
 
 ### Post Goods Movement (HU / Box) — `apps/post-goods-movement-hu`
