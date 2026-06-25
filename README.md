@@ -25,8 +25,17 @@ delivered app **without modifying SAP source**.
 
 > Remaining Table B candidates to scaffold next on request: F2655 (Record
 > Inspection Results), MIGO/HU goods movement, Manage Sales Contracts
-> (close/release/rate), HU packing, and the ZDD_SHADE Custom Business Object
-> (RAP, not an adaptation project).
+> (close/release/rate), and HU packing.
+
+## Backend (non-UI) artifacts
+
+| Artifact | Type | Replaces (Z) | Status |
+|---|---|---|---|
+| [Shade Master](backend/shade-master-rap) | RAP Custom Business Object | ZDD_SHADE | Source authored (table + service binding to create in ADT) |
+
+The shade master has no standard SAP equivalent, so it's a RAP business object
+(not an adaptation project). It also provides the value-help source for the shade
+fields in F1873 and F3069.
 
 ## Layout
 
