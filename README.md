@@ -23,9 +23,18 @@ delivered app **without modifying SAP source**.
 | [Confirm Production Operation](apps/confirm-production-operation-ext) | F3069 | ZCO11N / ZCO11A | Scaffolded (UI layer; placeholders to complete on live system) |
 | [Manage Outbound Deliveries](apps/manage-outbound-deliveries-ext) | F0867A | ZDEL | Scaffolded (UI layer; challan print via Output Management) |
 
-> Remaining Table B candidates to scaffold next on request: F2655 (Record
-> Inspection Results), MIGO/HU goods movement, Manage Sales Contracts
-> (close/release/rate), and HU packing.
+> Remaining Table B candidates to scaffold next on request: MIGO/HU goods
+> movement, Manage Sales Contracts (close/release/rate), and HU packing.
+
+## Custom Fiori apps (not adaptation projects)
+
+Some Table B items need a *different interaction model* than the standard app
+offers, so they're built as standalone custom Fiori apps over a (custom) RAP/OData
+service rather than as adaptation projects.
+
+| App | Replaces (Z) | Why custom | Status |
+|---|---|---|---|
+| [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; needs custom RAP QM service |
 
 ## Backend (non-UI) artifacts
 
