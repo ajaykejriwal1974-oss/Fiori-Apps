@@ -21,19 +21,32 @@ CLASS lhc_ContractItem IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      " TODO: change the batch on each item via the sales-document change API.
-      "   order_header_inx = VALUE #( updateflag = 'U' )
-      "   item    = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem batch = it-newbatch ) )
-      "   item_inx = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem updateflag = 'U' batch = 'X' ) )
-      "   CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
-      "     EXPORTING salesdocument = lv_contract ...
-      "   (BAPI_SALESORDER_CHANGE / contract-specific BAPI per release)
-      "   route return into reported/failed; commit on success.
+      " Change the batch on each contract item via the sales-document change API.
+      DATA lt_in  TYPE STANDARD TABLE OF bapisditm.
+      DATA lt_inx TYPE STANDARD TABLE OF bapisditmx.
+      lt_in  = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem batch = it-newbatch ) ).
+      lt_inx = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem updateflag = 'U' batch = 'X' ) ).
 
-      APPEND VALUE #( %cid  = key-%cid
-                      %param = VALUE #( itemsupdated = lines( lt_items )
-                                        message      = 'TODO: wire BAPI_SALESDOCUMENT_CHANGE' ) )
-             TO result.
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
+        EXPORTING salesdocument    = lv_contract
+                  order_header_inx = VALUE bapisdh1x( updateflag = 'U' )
+        TABLES    return           = lt_return
+                  order_item_in    = lt_in
+                  order_item_inx   = lt_inx.
+
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( itemsupdated = lines( lt_items )
+                                          message = |{ lines( lt_items ) } item(s) updated on contract { lv_contract }| ) ) TO result.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 
