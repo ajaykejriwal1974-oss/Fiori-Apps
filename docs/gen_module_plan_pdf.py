@@ -90,6 +90,68 @@ MODULES = [
   "ZEINV*, ZEWAY*, ZEXN, ZPDF, ZDIGI, ZTASKLIST, ZAUDIT_LOG, + 61 PRT + 28 UPL programs"),
 ]
 
+# ---- deliverable register (module-wise, code -> replaced Z-tcodes) ----------
+# Type: ADAPT = key-user adaptation of a standard app; APP = custom Fiori app;
+#       RAP-M = managed-RAP master (Fiori Elements from service binding);
+#       REPORT = analytical CDS query (List Page / Query Browser).
+# 'replaces' is the COMPLETE Z-tcode set per code (authoritative: docs/CLASSIFICATION.md
+# §"How the custom builds map" + docs/BI-CONSOLIDATION.md families). †=retired duplicate.
+REGISTER = [
+ ("SD","Sales &amp; Distribution",[
+   ("SD-01","Manage Sales Orders (adaptation, F1873)","ADAPT","ZVA01, ZVA01N, ZSOCLOSE, ZSOCLOSE1"),
+   ("SD-02","Manage Sales Contracts (adaptation)","ADAPT","ZCON_CLOSE, ZCON_CLOSE1, ZCOREL, ZCON02"),
+   ("SD-03","Manage Outbound Deliveries (adaptation, F0867A)","ADAPT","ZDEL, ZDELC"),
+   ("SD-04","Contract Batch Update","APP","ZBATCH_CHANGE"),
+   ("SD-05","Dispatch Correction","APP","ZDSP_CORR"),
+   ("SD-06","Manage Packing Details","APP","ZPACK01, ZPACK01N, ZPACK02, ZPACK02N, ZPACK03, ZREPACK"),
+   ("SD-07","Dyeing Packing","APP","ZPACK01D, ZPACK02D, ZPACK03D, ZREPACKD"),
+   ("SD-08","Transport Code Master","RAP-M","ZTRANS"),
+   ("SD-09","Truck Master","RAP-M","ZTRUCK"),
+   ("SD-10","Export Details Master","RAP-M","ZMBR2"),
+   ("SD-R1","Packing / Dispatch Register (17 → 1)","REPORT",
+    "ZPACKLIST, ZPACKLIST01, ZPACKLISTN, ZPLIST01, ZPLIST01A, ZPLIST01T, ZPLIST02, ZPLIST02A, "
+    "ZPLIST02N†, ZPLIST02T, ZPLIST03, ZPLIST03A, ZPLIST03N†, ZPLIST03T, ZPLISTD, ZPLISTDA, ZPLISTDT"),
+   ("SD-R2","Dispatch Register","REPORT","ZPWDIS, ZDISPATCH, ZPDESP, ZSCAND"),
+   ("SD-R3","Export / Incentive Register","REPORT","ZGCUDB, ZBRC, ZEXP"),
+   ("SD-R4","Pending Contract Register","REPORT","ZPCON, ZPCOND, ZPCONS, ZPCON_CP†"),
+ ]),
+ ("PP","Production Planning",[
+   ("PP-01","Confirm Production Operation (adaptation, F3069)","ADAPT","ZCO11N, ZCO11A"),
+   ("PP-02","Palletization","APP","ZPALLET, ZPALLET1, ZPAL_BOX, ZSOL_ASRS"),
+   ("PP-03","Post Packing &amp; GR","APP","ZPOST01"),
+   ("PP-04","Batch Status","APP","ZBATCHD, ZBATCH_CLS"),
+   ("PP-05","Recipe Master","RAP-M","ZRECP01, ZRECP02, ZRECP03"),
+   ("PP-06","Job Master","RAP-M","ZJOB01, ZJOB01N, ZJOB02, ZJOB02N, ZJOB03, ZJOB03N"),
+   ("PP-07","Schedule Master","RAP-M","ZSCH01, ZSCH01N, ZSCH02, ZSCH02N, ZSCH03, ZSCH03N"),
+   ("PP-08","Merge Details Master","RAP-M","ZMERGE"),
+   ("PP-09","Checked / Packed-By Master","RAP-M","ZPCBY"),
+   ("PP-10","Packing Material Master","RAP-M","ZPACK_MAST"),
+   ("PP-11","Shade Master (Dope Dyeing)","RAP-M","ZDD_SHADE"),
+   ("PP-R1","Packed-Stock Analysis (8 → 1)","REPORT",
+    "ZBOXSTOCK, ZGSTOCK, ZPRP1, ZSSTOCK, ZDSTOCK, ZSTOCK, ZPRP, ZPRPSZ"),
+   ("PP-R2","WIP Batch","REPORT","ZBATCH_WIP"),
+   ("PP-R3","Job Card Report","REPORT","ZJOBREPTN, ZJOBREPORT†"),
+   ("PP-R4","Recipe Master Report","REPORT","ZRECPM"),
+   ("PP-R5","Merge Analysis","REPORT","new analytics over ZPP_MERGE (Merge master; no standalone legacy report)"),
+ ]),
+ ("MM","Materials Management &amp; Handling Units",[
+   ("MM-01","Post Goods Movement (HU / Box)","APP","ZBOX_MOVE"),
+   ("MM-02","Inbound Delivery HUs","APP","ZHUINB"),
+   ("MM-03","HU Unpack","APP","ZHUPK"),
+   ("MM-04","MTOS Process","APP","ZMTOS, ZHUINV"),
+   ("MM-05","Gate Pass","RAP-M","ZGPS01, ZGPS02, ZGPS03, ZGPSI1, ZGPSI2, ZGPSI3"),
+   ("MM-R1","HU Inventory Analysis","REPORT","ZHUMO, ZHUREC, ZHUINV_CLS"),
+ ]),
+ ("QM","Quality Management",[
+   ("QM-01","Record Inspection Results (Mass)","APP","ZQA32"),
+ ]),
+ ("FI","Financial Accounting &amp; Compliance",[
+   ("FI-01","C-Form Allocation Master","RAP-M","ZCFORM1, ZFORM, ZFORMS, ZPCFORM"),
+   ("FI-02","Digital Signature Master","RAP-M","ZDIGI"),
+   ("FI-R1","GST Tax Register","REPORT","ZGST, ZGST1, ZGST2, ZGSTCR"),
+ ]),
+]
+
 # ---- dev-server runbook (ordered) ------------------------------------------
 STEPS = [
  ("Prerequisites &amp; baseline",
@@ -156,6 +218,28 @@ def section(m):
     h.append('</section>')
     return '\n'.join(h)
 
+TYPE_LABEL = {"ADAPT":"Adaptation","APP":"Custom app","RAP-M":"Master (RAP)","REPORT":"Report"}
+
+def register_block(reg):
+    code,name,rows = reg
+    h=[f'<div class="mod"><h3><span class="badge sm">{code}</span> {name}</h3>',
+       '<table class="reg"><tr><th>Code</th><th>App / Report</th><th>Type</th>'
+       '<th>Replaces (Z-tcodes)</th></tr>']
+    for c,d,t,rep in rows:
+        h.append(f'<tr><td class="rc">{c}</td><td>{d}</td>'
+                 f'<td class="rt">{TYPE_LABEL.get(t,t)}</td><td class="codes inl">{rep}</td></tr>')
+    h.append('</table></div>')
+    return '\n'.join(h)
+
+import re as _re
+n_apps=sum(1 for _,_,rows in REGISTER for c,d,t,rep in rows if t in ("ADAPT","APP","RAP-M"))
+n_rep =sum(1 for _,_,rows in REGISTER for c,d,t,rep in rows if t=="REPORT")
+_alltc=set()
+for _,_,rows in REGISTER:
+    for c,d,t,rep in rows:
+        for tc in _re.findall(r'\bZ[A-Z0-9_]{2,}', rep): _alltc.add(tc)
+n_tc=len(_alltc)
+reg_html='\n'.join(register_block(r) for r in REGISTER)
 cov_rows='\n'.join(f'<tr><td class="c">{c}</td><td class="n">{n}</td><td>{d}</td></tr>' for c,n,d in COVERAGE)
 mod_html='\n'.join(section(m) for m in MODULES)
 step_html='\n'.join(
@@ -181,6 +265,11 @@ table { width:100%; border-collapse:collapse; margin:6px 0 10px; font-size:9.6pt
 th,td { border:1px solid #d6dee6; padding:4px 7px; text-align:left; vertical-align:top; }
 th { background:#0a3d62; color:#fff; }
 td.c { font-weight:bold; color:#0a6cb0; width:48px; } td.n { text-align:right; width:42px; font-weight:bold; }
+.badge.sm { font-size:9.5pt; padding:0 6px; }
+table.reg { font-size:9pt; margin:4px 0 12px; }
+table.reg td.rc { font-family:'SF Mono',Consolas,monospace; font-weight:bold; color:#0a3d62; width:46px; white-space:nowrap; }
+table.reg td.rt { width:78px; color:#557; }
+.codes.inl { padding:2px 6px; font-size:8.4pt; }
 .cover { text-align:center; padding-top:60mm; page-break-after:always; }
 .cover .sub { font-size:13pt; color:#557; margin-top:6px; }
 .cover .meta { margin-top:30mm; color:#667; font-size:10pt; }
@@ -218,11 +307,23 @@ Module grouping below is functional; textile logistics (packing / HU / gate pass
 </section>
 
 <div class="sec"></div>
-<h2 style="border:none">Part A — Build inventory by module</h2>
+<h2 style="border:none">Part A — Deliverable register (module-wise, by code)</h2>
+<p class="lead">Every app, master and report built in this package, grouped by SAP module, each with a
+<b>delivery code</b> and its <b>complete set</b> of replaced Z-transactions (expanded from
+<code>docs/CLASSIFICATION.md</code> + <code>docs/BI-CONSOLIDATION.md</code>, not just the
+representative tcode). <b>{n_apps}</b> apps/masters (<code>-NN</code>), <b>{n_rep}</b> analytical
+reports (<code>-RN</code>), <b>{n_tc}</b> distinct Z-tcodes covered. Type:
+<i>Adaptation</i> = key-user extension of a standard app; <i>Custom app</i> = freestyle SAPUI5;
+<i>Master (RAP)</i> = managed-RAP Fiori Elements; <i>Report</i> = analytical CDS query.
+<code>†</code> = retired duplicate folded into the consolidated query.</p>
+{reg_html}
+
+<div class="sec"></div>
+<h2 style="border:none">Part B — Build inventory by module</h2>
 {mod_html}
 
 <div class="sec"></div>
-<h2 style="border:none">Part B — Next steps on the development server (in order)</h2>
+<h2 style="border:none">Part C — Next steps on the development server (in order)</h2>
 <p class="lead">Each step is a stage of activation/wiring on DEV. Earlier steps unblock later ones;
 masters need the least wiring, the transactional BAPI bodies the most. References point to the repo docs.</p>
 {step_html}
@@ -231,5 +332,30 @@ masters need the least wiring, the transactional BAPI bodies the most. Reference
 docs: CLASSIFICATION · WIRING-CHECKLIST · ACTIVATION · TRANSPORT-PLAN · GO-LIVE-CHECKLIST</div>
 </body></html>"""
 
-open("/home/user/KEJRIWAL_Fiori_Module_Plan.html","w").write(DOC)
+import os, subprocess, glob
+HTML = "/home/user/KEJRIWAL_Fiori_Module_Plan.html"
+PDF  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "KEJRIWAL_Fiori_Module_Plan.pdf")
+open(HTML,"w").write(DOC)
 print("wrote HTML", len(DOC), "bytes")
+
+def chrome_bin():
+    env = os.environ.get("CHROME_BIN")
+    if env and os.path.exists(env): return env
+    for pat in ("/opt/pw-browsers/chromium-*/chrome-linux/chrome",
+                "/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell"):
+        hits = sorted(glob.glob(pat))
+        if hits: return hits[-1]
+    for name in ("google-chrome","chromium","chromium-browser"):
+        from shutil import which
+        if which(name): return which(name)
+    return None
+
+CHROME = chrome_bin()
+if CHROME:
+    subprocess.run([CHROME,"--headless","--no-sandbox","--disable-gpu",
+                    "--no-pdf-header-footer",f"--print-to-pdf={PDF}",
+                    "file://"+HTML], check=True,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print("wrote PDF", PDF, os.path.getsize(PDF), "bytes")
+else:
+    print("no Chromium found; HTML written, render to PDF manually")
