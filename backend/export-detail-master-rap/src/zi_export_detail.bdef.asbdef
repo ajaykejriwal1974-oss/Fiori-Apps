@@ -13,6 +13,7 @@ authorization master ( instance )
   field ( mandatory : create ) BillingDocument;
 
   validation validateKey on save { create; update; }
+  validation validateExportCurrency on save { create; update; }
 
   mapping for zexp
   {

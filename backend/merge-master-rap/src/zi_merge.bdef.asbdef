@@ -13,6 +13,7 @@ authorization master ( instance )
   field ( mandatory : create ) OrderNumber;
 
   validation validateKey on save { create; update; }
+  validation validateMergeQty on save { create; update; }
 
   mapping for zpp_merge
   {

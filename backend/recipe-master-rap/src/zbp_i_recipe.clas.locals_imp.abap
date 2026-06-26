@@ -4,6 +4,8 @@ CLASS lhc_Recipe DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys FOR Recipe~setDefaults.
     METHODS validateKey FOR VALIDATE ON SAVE
       IMPORTING keys FOR Recipe~validateKey.
+    METHODS validateRatio FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Recipe~validateRatio.
 ENDCLASS.
 
 CLASS lhc_Recipe IMPLEMENTATION.
@@ -34,6 +36,22 @@ CLASS lhc_Recipe IMPLEMENTATION.
                                  severity = if_abap_behv_message=>severity-error
                                  text     = 'Plant is required' )
                         %element-Plant = if_abap_behv=>mk-on ) TO reported-recipe.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD validateRatio.
+    READ ENTITIES OF zi_recipe IN LOCAL MODE
+      ENTITY Recipe FIELDS ( Ratio ) WITH CORRESPONDING #( keys )
+      RESULT DATA(rows).
+    LOOP AT rows INTO DATA(row).
+      IF row-Ratio <= 0.
+        APPEND VALUE #( %tky = row-%tky ) TO failed-recipe.
+        APPEND VALUE #( %tky = row-%tky
+                        %msg = new_message_with_text(
+                                 severity = if_abap_behv_message=>severity-error
+                                 text     = 'Ratio must be greater than zero' )
+                        %element-Ratio = if_abap_behv=>mk-on ) TO reported-recipe.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
