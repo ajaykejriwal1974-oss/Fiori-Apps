@@ -6,10 +6,10 @@ document) are the **same legacy program `ZSOL_MTOS_PROCESS`** — two steps of o
 flow. They are now **one** service over the sales-order stock (`MSKA`) exposing
 both actions. (Replaces the former `mto-mts-transfer-rap` + `hu-phys-inventory-rap`.)
 
-| Action | Replaces | BAPI (TODO) |
-|---|---|---|
-| `convertToMts` | ZMTOS | `BAPI_GOODSMVT_CREATE` (movement 411 E) |
-| `createPhysInvDoc` | ZHUINV | `BAPI_MATPHYSINV_CREATE_MULT` |
+| Action | Replaces | BAPI | Status |
+|---|---|---|---|
+| `convertToMts` | ZMTOS | `BAPI_GOODSMVT_CREATE` (movement 411 E, special stock E) | **wired ✅** (VERIFY gm_code/move type) |
+| `createPhysInvDoc` | ZHUINV | `BAPI_MATPHYSINV_CREATE_MULT` | TODO |
 
 ## Objects in `src/`
 | File | Object | Role |
