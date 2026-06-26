@@ -1,0 +1,7 @@
+unmanaged implementation in class zbp_i_hu_inbound unique;
+strict ( 2 );
+
+define behavior for ZI_InboundHu alias InboundHu
+{
+  static action postInboundGr parameter ZD_InbGr result [1] ZD_InbGrResult;
+}

@@ -1,0 +1,7 @@
+unmanaged implementation in class zbp_i_hu_phys_inventory unique;
+strict ( 2 );
+
+define behavior for ZI_HuPhysInv alias HuPhysInv
+{
+  static action createPhysInvDoc parameter ZD_PhysInv result [1] ZD_PhysInvResult;
+}

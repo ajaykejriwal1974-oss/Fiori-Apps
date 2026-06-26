@@ -65,6 +65,10 @@ service rather than as adaptation projects.
 | [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |
 | [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
 | [Batch Status](backend/batch-status-rap) | Unmanaged RAP service (Route 7) | ZBATCHD / ZBATCH_CLS | Skeleton (BAPI_BATCH_CHANGE to wire) |
+| [Packing Details](backend/packing-detail-rap) | Unmanaged RAP service (Route 7) | ZPACK01/02/03(+N), ZREPACK | Skeleton (BAPI_HU_PACK / BAPI_HU_REPACK_ITM to wire) |
+| [Post Packing & GR](backend/post-packing-gr-rap) | Unmanaged RAP service (Route 7) | ZPOST01 | Skeleton (BAPI_HU_PACK + BAPI_GOODSMVT_CREATE to wire) |
+| [Inbound Delivery HUs](backend/hu-inbound-rap) | Unmanaged RAP service (Route 7) | ZHUINB | Skeleton (BAPI_INB_DELIVERY_CONFIRM_DEC to wire) |
+| [HU Physical Inventory](backend/hu-phys-inventory-rap) | Unmanaged RAP service (Route 7) | ZHUINV | Skeleton (BAPI_MATPHYSINV_CREATE_MULT to wire) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade

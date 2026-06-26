@@ -43,12 +43,18 @@ action(s) over standard SAP, BAPI marked `TODO` (same pattern as
 | MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend/mto-mts-transfer-rap` |
 | Palletization | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | `packPallet` → BAPI_HU_PACK | `backend/palletization-rap` |
 | Batch Status | ZBATCHD / ZBATCH_CLS | `closeBatch` / `deleteBatch` → BAPI_BATCH_CHANGE | `backend/batch-status-rap` |
+| Packing Details | ZPACK01/02/03(+N), ZREPACK | `packItems` → BAPI_HU_PACK, `repackItems` → BAPI_HU_REPACK_ITM | `backend/packing-detail-rap` |
+| Post Packing & GR | ZPOST01 | `postPackingAndGr` → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE | `backend/post-packing-gr-rap` |
+| Inbound Delivery HUs | ZHUINB | `postInboundGr` → BAPI_INB_DELIVERY_CONFIRM_DEC | `backend/hu-inbound-rap` |
+| HU Physical Inventory | ZHUINV | `createPhysInvDoc` → BAPI_MATPHYSINV_CREATE_MULT | `backend/hu-phys-inventory-rap` |
+
+> The full "Packing / HU / pallet" family is now built (8 services). `ZHUINV`
+> moved here from "assess vs standard" at your request — still **assess standard
+> Physical Inventory first**.
 
 ## 🔁 Reuse / extend an app already in this repo (don't build new)
 | Z | Route to |
 |---|---|
-| ZPACK01/01N/02/02N/03, ZREPACK | the [dyeing-packing](../apps/dyeing-packing) app / `backend/packing-hu-rap` (non-dyeing variant = config, not a new app) |
-| ZHUINB, ZPOST01 | the [post-goods-movement-hu](../apps/post-goods-movement-hu) pattern / `backend/goods-movement-hu-rap` |
 | ZDELC | the F0867A [delivery challan](../apps/manage-outbound-deliveries-ext) (Output Management) |
 | ZINSPLOT, ZQAR | QM — extend [record-inspection-results-mass](../apps/record-inspection-results-mass); ZINSPLOT may map to standard Create Inspection Lot |
 

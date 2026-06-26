@@ -1,0 +1,4 @@
+@EndUserText.label: 'HU Physical Inventory Service'
+define service ZUI_HU_PHYS_INV {
+  expose ZC_HuPhysInv as HuPhysInv;
+}

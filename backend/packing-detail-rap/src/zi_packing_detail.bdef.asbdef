@@ -1,0 +1,8 @@
+unmanaged implementation in class zbp_i_packing_detail unique;
+strict ( 2 );
+
+define behavior for ZI_PackingItem alias PackingItem
+{
+  static action packItems parameter ZD_Pack result [1] ZD_PackResult;
+  static action repackItems parameter ZD_Repack result [1] ZD_RepackResult;
+}
