@@ -58,6 +58,12 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [HU Unpack](apps/hu-unpack) | ZHUPK | backend/hu-unpack-rap | Unpack |
 | [Batch Status](apps/batch-status) | ZBATCHD, ZBATCH_CLS | backend/batch-status-rap | Close, Delete |
 | [MTO to MTS Transfer](apps/mto-mts-transfer) | ZMTOS | backend/mto-mts-transfer-rap | Convert to MTS |
+| [Dispatch Correction](apps/dispatch-correction) | ZDSP_CORR | backend/dispatch-correction-rap | Correct Dispatch |
+
+> **C-Form** (`ZCFORM1`/`ZFORM`/`ZFORMS`/`ZPCFORM`) is a managed master, so its
+> *Manage C-Forms* Fiori Elements app is generated from the service binding (no
+> freestyle app) — see [`backend/cform-master-rap`](backend/cform-master-rap).
+> Pending vs received = `FormNumber`/`FormDate` empty vs filled.
 
 ## Backend (non-UI) artifacts
 
@@ -79,6 +85,8 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | **Refit to real table `ZPACK_MAST`** (keys PTYPE/ARBPL/MATNR) |
 | [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | **Refit to real table `ZEXP`** (keys VBELN/KSCHL) |
 | [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
+| [C-Form Allocation](backend/cform-master-rap) | Managed RAP master (CUS) | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | Real table `ZCFORM1` (keys SALE_ORG/CUST_CODE/INVOICE_NO; pending↔received) |
+| [Dispatch Correction](backend/dispatch-correction-rap) | Unmanaged RAP service (CUS) | ZDSP_CORR | Real read `ZSOL_HUDISPATCH`⋈`ZPP_PACK`; `correctDispatch` (update to wire) |
 | [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
 | [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |
 | [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |

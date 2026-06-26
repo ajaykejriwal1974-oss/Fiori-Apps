@@ -364,6 +364,8 @@ Obsolete — retire.
 | `backend/packing-material-master-rap` | CUS | ZPACK_MAST | managed RAP over `ZPACK_MAST` |
 | `backend/export-detail-master-rap` | CUS | ZMBR2 | managed RAP over `ZEXP` |
 | `backend/digital-signature-master-rap` | CUS | ZDIGI | managed RAP over `ZTDIGI_SIGN` |
+| `backend/cform-master-rap` | CUS | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | managed RAP over `ZCFORM1` (C-Form pending↔received) |
+| `backend/dispatch-correction-rap + apps/dispatch-correction` | CUS | ZDSP_CORR | unmanaged RAP over `ZSOL_HUDISPATCH`⋈`ZPP_PACK` → correctDispatch |
 | `backend/minmax-master-rap` | CUS→STD | ZMINMAX | **reuse standard MRP** (`MARC` min/max) — no custom table |
 | `backend/packing-detail-rap` | CUS | ZPACK01/02/03(+N), ZREPACK | unmanaged RAP → BAPI_HU_PACK / reuse `ZSOL_PACK_CDS` |
 | `backend/palletization-rap` | CUS | ZPALLET/ZPALLET1/ZPAL_BOX/ZSOL_ASRS | unmanaged RAP → BAPI_HU_PACK |
