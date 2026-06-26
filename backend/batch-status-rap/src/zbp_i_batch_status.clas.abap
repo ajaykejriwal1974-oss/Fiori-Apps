@@ -1,0 +1,9 @@
+CLASS zbp_i_batch_status DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_batch_status.
+ENDCLASS.
+
+CLASS zbp_i_batch_status IMPLEMENTATION.
+ENDCLASS.

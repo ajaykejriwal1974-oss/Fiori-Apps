@@ -1,0 +1,4 @@
+@EndUserText.label: 'MTO to MTS Transfer Service'
+define service ZUI_MTO_MTS {
+  expose ZC_MtoStock as MtoStock;
+}

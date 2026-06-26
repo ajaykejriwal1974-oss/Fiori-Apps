@@ -30,18 +30,27 @@ hand-written UI). Field lists are best-effort — **VERIFY against the Z program
 | Digital Signature (confirm not Basis security) | ZDIGI | `backend/digital-signature-master-rap` |
 
 > That is **every Route 7 item that is a genuine custom master** with a derivable
-> field set. The remaining Route 7 items below are **deliberately not built as new
-> apps** — they reuse an existing app, are reports/config, or are DRC.
+> field set.
+
+## ✅ Built — transactional action services (unmanaged RAP)
+The distinct *transactional* Route 7 items (not masters) — a read model + static
+action(s) over standard SAP, BAPI marked `TODO` (same pattern as
+`backend/goods-movement-hu-rap`):
+
+| Service | Replaces (Z) | Action → BAPI | Folder |
+|---|---|---|---|
+| HU Unpack | ZHUPK | `unpackItems` → BAPI_HU_UNPACK | `backend/hu-unpack-rap` |
+| MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend/mto-mts-transfer-rap` |
+| Palletization | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | `packPallet` → BAPI_HU_PACK | `backend/palletization-rap` |
+| Batch Status | ZBATCHD / ZBATCH_CLS | `closeBatch` / `deleteBatch` → BAPI_BATCH_CHANGE | `backend/batch-status-rap` |
 
 ## 🔁 Reuse / extend an app already in this repo (don't build new)
 | Z | Route to |
 |---|---|
 | ZPACK01/01N/02/02N/03, ZREPACK | the [dyeing-packing](../apps/dyeing-packing) app / `backend/packing-hu-rap` (non-dyeing variant = config, not a new app) |
-| ZPALLET, ZPALLET1, ZPAL_BOX, ZSOL_ASRS | same packing / HU app (pallet level) |
-| ZHUINB, ZHUPK, ZPOST01, ZMTOS | the [post-goods-movement-hu](../apps/post-goods-movement-hu) pattern / `backend/goods-movement-hu-rap` |
+| ZHUINB, ZPOST01 | the [post-goods-movement-hu](../apps/post-goods-movement-hu) pattern / `backend/goods-movement-hu-rap` |
 | ZDELC | the F0867A [delivery challan](../apps/manage-outbound-deliveries-ext) (Output Management) |
-| ZINSPLOT, ZQAR | QM — extend [record-inspection-results-mass](../apps/record-inspection-results-mass) or a small RAP action |
-| ZBATCHD, ZBATCH_CLS | batch close/delete = custom **actions** on Manage Batches (F2462), not a new master |
+| ZINSPLOT, ZQAR | QM — extend [record-inspection-results-mass](../apps/record-inspection-results-mass); ZINSPLOT may map to standard Create Inspection Lot |
 
 ## 📊 Report → analytics / Metabase (not a transactional app)
 `ZMC46` (slow-moving stock), `ZWIP` (order status), `ZPC01` (std vs actual),

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Palletization Service'
+define service ZUI_PALLETIZATION {
+  expose ZC_Pallet as Pallet;
+}

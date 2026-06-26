@@ -61,6 +61,10 @@ service rather than as adaptation projects.
 | [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | Source authored (table + binding to create in ADT) |
 | [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | Source authored; assess vs std foreign trade |
 | [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | Source authored; confirm not Basis security |
+| [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
+| [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |
+| [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
+| [Batch Status](backend/batch-status-rap) | Unmanaged RAP service (Route 7) | ZBATCHD / ZBATCH_CLS | Skeleton (BAPI_BATCH_CHANGE to wire) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade

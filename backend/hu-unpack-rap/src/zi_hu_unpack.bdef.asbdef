@@ -1,0 +1,7 @@
+unmanaged implementation in class zbp_i_hu_unpack unique;
+strict ( 2 );
+
+define behavior for ZI_HuUnpackItem alias HuUnpack
+{
+  static action unpackItems parameter ZD_HuUnpack result [1] ZD_HuUnpackResult;
+}
