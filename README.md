@@ -15,6 +15,23 @@ delivered app **without modifying SAP source**.
   the clean-core way: key-user / in-app extensibility, custom CDS, or a released
   BAdI / RAP extension — never a modification.
 
+## Portfolio coverage — all 285 Z-tcodes classified & routed
+
+Every transaction in the Z-portfolio is accounted for. Authoritative routing in
+[`docs/CLASSIFICATION.md`](docs/CLASSIFICATION.md); per-class detail in the docs
+below.
+
+| Class | Count | Disposition | Detail |
+|---|--:|---|---|
+| `CUS` | 72 | Built (masters + transactional apps/services) or rerouted (Min/Max, ZBOE) / DRC excluded | apps/ + backend/ |
+| `EXT` | 19 | Built / wired into adaptations (sales order & contract status, etc.) | apps/ + backend/ |
+| `STD` | 17 | Standard Fiori app + business role; retire Z | [STD-RETIREMENT.md](docs/STD-RETIREMENT.md) |
+| `PRT` | 61 | Output Management (BRF+ / Adobe templates); gate pass built | [PRT-OUTPUT-MANAGEMENT.md](docs/PRT-OUTPUT-MANAGEMENT.md) |
+| `BI` | 87 | Consolidated to ~31; **11 CDS queries built** | [BI-CONSOLIDATION.md](docs/BI-CONSOLIDATION.md) · [backend/analytics](backend/analytics) |
+| `UPL` | 28 | Migration Cockpit / public APIs; consolidated to ~11; BDC retired | [UPL-MIGRATION.md](docs/UPL-MIGRATION.md) |
+| `RET` | 1 | Retire | — |
+| **Total** | **285** | | |
+
 ## Apps in this repo
 
 | App | Fiori ID | Replaces (Z) | Status |
@@ -158,6 +175,9 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
   clustered into families: dead/duplicate/obsolete dropped, look-alikes merged into
   parameterised CDS analytical queries, generic stock/ageing routed to standard.
   Net **≈ 87 → ~31** (~64% fewer) with no loss of coverage.
+- [`docs/UPL-MIGRATION.md`](docs/UPL-MIGRATION.md) — the **28 `UPL` upload/automation
+  programs** routed to Migration Cockpit / public APIs / standard processes; the
+  `ZAUTOPO*` (9) and F-02 BDC clones consolidated, **all BDC retired**. Net **28 → ~11**.
 - [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
   ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
   the corrected master→real-table mapping.

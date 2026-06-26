@@ -309,7 +309,7 @@ Form or print program. Re-implement via SAP Output Management (BRF+ / Adobe Form
 
 ## `UPL` — Upload / automation utility — data migration or job  (28)
 
-Mass upload / automation program. Re-platform via Migration Cockpit, LTMC, or a scheduled job / API — not an interactive Fiori app.
+Mass upload / automation program. Re-platform via Migration Cockpit, LTMC, or a scheduled job / API — not an interactive Fiori app. **Family consolidation + per-program target (28→~11): [UPL-MIGRATION.md](UPL-MIGRATION.md).**
 
 | Tcode | Program | Description | Custom tables |
 |---|---|---|---|
