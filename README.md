@@ -25,6 +25,11 @@ resolve, object names globally unique, app-manifest namespace consistency). Run
 it locally with `python3 ci/validate.py`. Semantic ABAP/CDS activation (ATC) is
 done on the S/4HANA backend — see [`ci/README.md`](ci/README.md).
 
+> 📄 **[Module-wise plan & dev-server runbook (PDF)](docs/KEJRIWAL_Fiori_Module_Plan.pdf)** —
+> the full build inventory grouped by SAP module (SD / PP / MM / QM / FI / Cross) plus the
+> step-by-step activation/wiring sequence for the development server. Regenerate with
+> `python3 docs/gen_module_plan_pdf.py` (renders via headless Chromium).
+
 ## Portfolio coverage — all 285 Z-tcodes classified & routed
 
 Every transaction in the Z-portfolio is accounted for. Authoritative routing in
