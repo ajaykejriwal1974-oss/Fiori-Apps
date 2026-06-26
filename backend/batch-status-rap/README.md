@@ -9,11 +9,14 @@ model + static action(s) that call standard BAPIs.
 
 > Could also be actions on standard Manage Batches (F2462) instead of a separate service.
 
-## Actions
-| Action | BAPI (to wire) | Purpose |
+## Actions — wired ✅
+| Action | Implementation | Purpose |
 |---|---|---|
-| `closeBatch` | `BAPI_BATCH_CHANGE` | Close a batch |
-| `deleteBatch` | `BAPI_BATCH_CHANGE` | Flag a batch for deletion |
+| `closeBatch` | UPDATE custom WIP table `ZPP_BATCHN` (CLOSED + who/when) | Close a WIP batch (replaces `ZSOL_WIP_BATCH_CLOSE`) |
+| `deleteBatch` | `BAPI_BATCH_CHANGE` (deletion flag) | Flag a batch for deletion |
+
+> VERIFY: the `ZPP_BATCHN` key (BATCHNO [+ GJAHR]) and `BAPI_BATCH_CHANGE`
+> MATERIAL vs MATERIAL_LONG for your release.
 
 ## Objects in `src/`
 Read CDS `ZI_BatchStatus` / projection `ZC_BatchStatus`, abstract import + result entities per
