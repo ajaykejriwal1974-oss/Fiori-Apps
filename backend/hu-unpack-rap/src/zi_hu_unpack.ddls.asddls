@@ -1,18 +1,16 @@
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'HU Unpack - Interface'
 @Metadata.allowExtensions: true
-// Custom transactional service (Route 7) - unmanaged RAP over standard SAP.
-// The action(s) call standard BAPIs (see the behavior class TODO).
-// VERIFY vepo as item
-    inner join vekp as hu on hu.venum = item.venum fields/filters against your release before activating.
+@ObjectModel.semanticKey: ['HandlingUnit', 'HandlingUnitItem']
+// Item-level read via the shared HU base (audit P3). unpackItems action lives on
+// the behavior (replaces ZSOL_INW_HU_UNPACK / ZHUPK).
 define root view entity ZI_HuUnpackItem
-  as select from vepo as item
-    inner join vekp as hu on hu.venum = item.venum
+  as select from ZI_HU_ItemBase
 {
-  key hu.exidv     as HandlingUnit,
-  key item.vepos   as HandlingUnitItem,
-      item.matnr   as Material,
-      item.charg   as Batch,
-      cast( item.vemng as abap.quan( 13, 3 ) ) as Quantity,
-      item.vemeh   as Unit
+  key HandlingUnit,
+  key HandlingUnitItem,
+      Material,
+      Batch,
+      Quantity,
+      Unit
 }

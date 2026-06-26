@@ -19,9 +19,10 @@ sap.ui.define([
     "use strict";
 
     // OData V4 binding of the side service that carries the contract lifecycle
-    // actions (backend/contract-status-rap, service def ZUI_CONTRACT_STATUS).
-    // Fill the binding name created in ADT (e.g. ZUI_CONTRACT_STATUS_O4).
-    var SERVICE_URL = "/sap/opu/odata4/sap/REPLACE_WITH_CONTRACT_STATUS_SERVICE/srvd/sap/REPLACE_WITH_CONTRACT_STATUS_SERVICE/0001/";
+    // actions (backend/sales-doc-status-rap, service def ZUI_SALESDOC_STATUS -
+    // consolidated contract + order status). Fill the ADT binding name (e.g.
+    // ZUI_SALESDOC_STATUS_O4).
+    var SERVICE_URL = "/sap/opu/odata4/sap/REPLACE_WITH_SALESDOC_STATUS_SERVICE/srvd/sap/REPLACE_WITH_SALESDOC_STATUS_SERVICE/0001/";
     // UI action key -> backend static action name on ZC_SalesContract.
     var ACTION_NAME = {
         Release:  "releaseContract",

@@ -1,4 +1,0 @@
-@EndUserText.label: 'Sales Order Status Service'
-define service ZUI_SALES_ORDER_STATUS {
-  expose ZC_SalesOrderStatus as SalesOrder;
-}

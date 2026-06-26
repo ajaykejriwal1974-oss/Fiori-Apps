@@ -1,4 +1,0 @@
-@EndUserText.label: 'Sales Contract Status Service'
-define service ZUI_CONTRACT_STATUS {
-  expose ZC_SalesContract as SalesContract;
-}

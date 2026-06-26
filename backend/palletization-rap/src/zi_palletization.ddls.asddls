@@ -1,15 +1,14 @@
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Palletization - Interface'
 @Metadata.allowExtensions: true
-// Custom transactional service (Route 7) - unmanaged RAP over standard SAP.
-// The action(s) call standard BAPIs (see the behavior class TODO).
-// VERIFY vekp fields/filters against your release before activating.
+// Header-level read via the shared HU base (audit P3). packPallet action on the
+// behavior (replaces ZPP_HU_CREATE / ZSOL_PALLETIZATION).
 define root view entity ZI_Pallet
-  as select from vekp
+  as select from ZI_HU_HeaderBase
 {
-  key exidv    as Pallet,
-      vhilm    as PackagingMaterial,
-      vpobjkey as Reference,
-      cast( ntgew as abap.quan( 15, 3 ) ) as NetWeight,
-      gewei    as WeightUnit
+  key HandlingUnit as Pallet,
+      PackagingMaterial,
+      Reference,
+      NetWeight,
+      WeightUnit
 }

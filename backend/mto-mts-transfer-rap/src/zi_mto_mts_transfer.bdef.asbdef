@@ -1,7 +1,0 @@
-unmanaged implementation in class zbp_i_mto_mts_transfer unique;
-strict ( 2 );
-
-define behavior for ZI_MtoStock alias MtoStock
-{
-  static action convertToMts parameter ZD_MtoMts result [1] ZD_MtoMtsResult;
-}

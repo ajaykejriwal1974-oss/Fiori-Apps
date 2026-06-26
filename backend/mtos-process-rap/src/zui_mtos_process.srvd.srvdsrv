@@ -1,0 +1,4 @@
+@EndUserText.label: 'MTOS Process Service'
+define service ZUI_MTOS_PROCESS {
+  expose ZC_MtosStock as MtosStock;
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Sales Document Status Service'
+define service ZUI_SALESDOC_STATUS {
+  expose ZC_SalesDocStatus as SalesDoc;
+}

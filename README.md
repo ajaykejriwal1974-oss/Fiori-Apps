@@ -71,10 +71,9 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Palletization](apps/palletization) | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | backend/palletization-rap | Pack Pallet |
 | [Post Packing & GR](apps/post-packing-gr) | ZPOST01 | backend/post-packing-gr-rap | Post Packing & GR |
 | [Inbound Delivery HUs](apps/inbound-delivery-hus) | ZHUINB | backend/hu-inbound-rap | Post Inbound GR |
-| [HU Physical Inventory](apps/hu-physical-inventory) | ZHUINV | backend/hu-phys-inventory-rap | Create Phys. Inv. Doc |
 | [HU Unpack](apps/hu-unpack) | ZHUPK | backend/hu-unpack-rap | Unpack |
 | [Batch Status](apps/batch-status) | ZBATCHD, ZBATCH_CLS | backend/batch-status-rap | Close, Delete |
-| [MTO to MTS Transfer](apps/mto-mts-transfer) | ZMTOS | backend/mto-mts-transfer-rap | Convert to MTS |
+| [MTOS Process](apps/mtos-process) | ZMTOS, ZHUINV | backend/mtos-process-rap | Convert to MTS, Create Phys. Inv. Doc |
 | [Dispatch Correction](apps/dispatch-correction) | ZDSP_CORR | backend/dispatch-correction-rap | Correct Dispatch |
 
 > **C-Form** (`ZCFORM1`/`ZFORM`/`ZFORMS`/`ZPCFORM`) is a managed master, so its
@@ -104,21 +103,20 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
 | [C-Form Allocation](backend/cform-master-rap) | Managed RAP master (CUS) | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | Real table `ZCFORM1` (keys SALE_ORG/CUST_CODE/INVOICE_NO; pending↔received) |
 | [Dispatch Correction](backend/dispatch-correction-rap) | Unmanaged RAP service (CUS) | ZDSP_CORR | Real read `ZSOL_HUDISPATCH`⋈`ZPP_PACK`; `correctDispatch` (update to wire) |
-| [Contract Status](backend/contract-status-rap) | Unmanaged RAP service (EXT) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | Read `VBAK` (contracts); close/complete/release/updateRate actions → wired into manage-sales-contracts-ext |
-| [Sales Order Status](backend/sales-order-status-rap) | Unmanaged RAP service (EXT) | ZSOCLOSE/ZSOCLOSE1 | Read `VBAK` (orders); close actions → wired into manage-sales-orders-ext |
+| [Sales Document Status](backend/sales-doc-status-rap) | Unmanaged RAP service (EXT, **merged**) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 + ZSOCLOSE/ZSOCLOSE1 | One `VBAK` read (contracts+orders); all 6 lifecycle actions → both adaptations (audit P2) |
+| [HU shared reads](backend/hu-shared) | Shared CDS interfaces (refactor) | — | `ZI_HU_ItemBase`/`ZI_HU_HeaderBase` reused by 7 HU services (audit P3) |
 | [Gate Pass](backend/gate-pass-rap) | Managed RAP composition (PRT/custom) | ZGPS01/02/03, ZGPSI1/2/3 | Header→item over `ZGP_HDR`/`ZGP_ITEM` (keys GPNUM/MJAHR); `ZGP_PART` associated |
 | [BI Analytical Queries](backend/analytics) | 11 CDS cube+query pairs (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
 | [PO Automation](backend/po-automation) | ABAP automation class (UPL) | ZAUTOPO* (9) | `ZCL_PO_AUTOMATION` over `ZSOL_AUPO`/`ZMM_AUTOPO`, sales org param; API call to wire |
 | [OBD Automation](backend/obd-automation) | ABAP automation class (UPL) | ZSDOBD/ZSDOBDN | `ZCL_OBD_AUTOMATION` over `ZSOL_HUDISPATCH`, plant param; API calls to wire |
 | [~~Bill of Exchange~~ → reuse standard FI](backend/bill-of-exchange-std) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
 | [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
-| [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |
+| [MTOS Process](backend/mtos-process-rap) | Unmanaged RAP service (Route 7, **merged**) | ZMTOS + ZHUINV | One MSKA read; `convertToMts` + `createPhysInvDoc` (same program ZSOL_MTOS_PROCESS; audit P1) |
 | [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
 | [Batch Status](backend/batch-status-rap) | Unmanaged RAP service (Route 7) | ZBATCHD / ZBATCH_CLS | Skeleton (BAPI_BATCH_CHANGE to wire) |
 | [Packing Details](backend/packing-detail-rap) | Unmanaged RAP service (Route 7) | ZPACK01/02/03(+N), ZREPACK | Skeleton (BAPI_HU_PACK / BAPI_HU_REPACK_ITM to wire) |
 | [Post Packing & GR](backend/post-packing-gr-rap) | Unmanaged RAP service (Route 7) | ZPOST01 | Skeleton (BAPI_HU_PACK + BAPI_GOODSMVT_CREATE to wire) |
 | [Inbound Delivery HUs](backend/hu-inbound-rap) | Unmanaged RAP service (Route 7) | ZHUINB | Skeleton (BAPI_INB_DELIVERY_CONFIRM_DEC to wire) |
-| [HU Physical Inventory](backend/hu-phys-inventory-rap) | Unmanaged RAP service (Route 7) | ZHUINV | Skeleton (BAPI_MATPHYSINV_CREATE_MULT to wire) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade

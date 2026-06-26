@@ -4,6 +4,12 @@ A review of everything built in this repo (17 apps + ~28 RAP backends + 11 BI
 queries + 2 automation classes) for overlap. Three real consolidations found;
 the rest is genuinely distinct.
 
+> **✅ All three applied.** P1 → `backend/mtos-process-rap` + `apps/mtos-process`
+> (2 services + 2 apps → 1 + 1). P2 → `backend/sales-doc-status-rap`
+> (2 services → 1). P3 → `backend/hu-shared` shared bases consumed by 7 HU
+> services (8 duplicate reads → 2 shared). Net: **−3 services, −1 app, one HU
+> read model**; no coverage lost.
+
 ## P1 — Merge `mto-mts-transfer-rap` + `hu-phys-inventory-rap` ⭐ (verified)
 **Both are the same legacy program `ZSOL_MTOS_PROCESS`.** `ZMTOS` ("Transfer MTO
 to MTS stock") and `ZHUINV` ("Physical inventory document create") are two steps

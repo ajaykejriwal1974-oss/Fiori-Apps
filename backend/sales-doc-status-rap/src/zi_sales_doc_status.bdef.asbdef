@@ -1,0 +1,18 @@
+// Read-only sales documents + lifecycle actions for both contracts and orders.
+// Unmanaged: every action drives the standard sales document via
+// BAPI_SD_SALESDOCUMENT_CHANGE. Static actions take the document id so the
+// standard Manage Sales Contracts / Orders adaptations call them by id.
+unmanaged implementation in class zbp_i_sales_doc_status unique;
+strict ( 2 );
+
+define behavior for ZI_SalesDocStatus alias SalesDoc
+{
+  // Contracts (ZCON_CLOSE / ZCON_CLOSE1 / ZCOREL / ZCON02)
+  static action closeContract     parameter ZD_ContractAction result [1] ZD_ContractResult;
+  static action completeContract  parameter ZD_ContractAction result [1] ZD_ContractResult;
+  static action releaseContract   parameter ZD_ContractAction result [1] ZD_ContractResult;
+  static action updatePendingRate parameter ZD_PendingRate   result [1] ZD_ContractResult;
+  // Orders (ZSOCLOSE / ZSOCLOSE1)
+  static action closeSalesOrder   parameter ZD_OrderAction   result [1] ZD_OrderResult;
+  static action closeOrderProgram parameter ZD_OrderAction   result [1] ZD_OrderResult;
+}
