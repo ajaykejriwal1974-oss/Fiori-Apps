@@ -1,0 +1,65 @@
+managed implementation in class zbp_i_gatepass unique;
+strict ( 2 );
+
+define behavior for ZI_GatePass alias GatePass
+persistent table zgp_hdr
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+  association _Item { create; }
+
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, CreatedByUser;
+  // GpNumber is assigned from number-range object via ZGPASS_NUM - implement as
+  // early/managed numbering in the determination (marked TODO).
+  field ( mandatory : create ) DocumentType, Plant;
+
+  determination setHeaderDefaults on modify { create; }
+  validation validateHeader on save { create; update; }
+
+  mapping for zgp_hdr
+  {
+    GpNumber       = gpnum;
+    FiscalYear     = mjahr;
+    DocumentType   = dtype;
+    Plant          = werks;
+    Department     = dept;
+    VehicleNumber  = vhnum;
+    InDate         = gindat;
+    InTime         = gintme;
+    OutDate        = gotdat;
+    OutTime        = gottme;
+    Remarks        = remks;
+    CreatedByUser  = cre_user;
+    CreatedBy      = ernam;
+    CreatedOnDate  = erdat;
+    CreatedAtTime  = erzet;
+  }
+}
+
+define behavior for ZI_GatePassItem alias GatePassItem
+persistent table zgp_item
+lock dependent by _GatePass
+authorization dependent by _GatePass
+{
+  update;
+  delete;
+  field ( readonly ) GpNumber, FiscalYear;
+  field ( mandatory : create ) Material, Quantity;
+  association _GatePass;
+
+  mapping for zgp_item
+  {
+    GpNumber            = gpnum;
+    ItemNumber          = zitem;
+    FiscalYear          = mjahr;
+    Material            = matnr;
+    MaterialDescription = maktx;
+    Supplier            = lifnr;
+    SupplierName        = name1;
+    Quantity            = gp_quan;
+    Unit                = gp_meins;
+  }
+}

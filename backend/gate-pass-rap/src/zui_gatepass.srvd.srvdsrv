@@ -1,0 +1,6 @@
+@EndUserText.label: 'Gate Pass Service'
+define service ZUI_GATEPASS {
+  expose ZC_GatePass     as GatePass;
+  expose ZC_GatePassItem as GatePassItem;
+  expose ZC_GatePassPart as GatePassPart;
+}

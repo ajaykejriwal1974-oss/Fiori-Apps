@@ -1,0 +1,45 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'Gate Pass', typeNamePlural: 'Gate Passes',
+  title: { type: #STANDARD, value: 'GpNumber' },
+  description: { type: #STANDARD, value: 'VehicleNumber' } } }
+annotate view ZC_GatePass with
+{
+  @UI.facet: [
+    { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 },
+    { id: 'Items',   purpose: #STANDARD, type: #LINEITEM_REFERENCE, label: 'Items',
+      position: 20, targetElement: '_Item' }
+  ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Gate Pass No.'
+  GpNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Fiscal Year'
+  FiscalYear;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Doc Type'
+  DocumentType;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Plant'
+  Plant;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Department'
+  Department;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Vehicle No.'
+  VehicleNumber;
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'In Date'
+  InDate;
+  @UI: { identification: [ { position: 80 } ] }
+  @EndUserText.label: 'In Time'
+  InTime;
+  @UI: { lineItem: [ { position: 90 } ], identification: [ { position: 90 } ] }
+  @EndUserText.label: 'Out Date'
+  OutDate;
+  @UI: { identification: [ { position: 100 } ] }
+  @EndUserText.label: 'Out Time'
+  OutTime;
+  @UI: { identification: [ { position: 110 } ] }
+  @EndUserText.label: 'Remarks'
+  Remarks;
+}

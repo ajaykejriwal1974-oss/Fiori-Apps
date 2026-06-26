@@ -53,9 +53,9 @@ There is **no standard SAP gate pass**, so this stays custom — but split it:
 - **Form/print** drivers → an **Adobe Form Template** printed from the gate-pass
   app via OM-style determination on a *custom* output object.
 - **Entry** transactions (`ZGPS01/02/03`, `ZGPSI1/2/3`, `ZGP`, `ZGATE`,
-  `ZGATEENTRY`) are **data capture**, not print → a small custom **RAP app**
-  (managed BO over the gate-pass table, e.g. `ZGATEPASS`/`ZZGATEPASS`) with the
-  form as its output. *Candidate for a future `backend/gate-pass-rap` build.*
+  `ZGATEENTRY`) are **data capture**, not print → **✅ built** as a managed RAP
+  composition (header → item over `ZGP_HDR`/`ZGP_ITEM`) in
+  [`backend/gate-pass-rap`](../backend/gate-pass-rap); the form is its output.
 - **Reports** (`ZGATER`, `ZGATERE`, `ZGATENR`, `ZGREPT*`, `ZGATEPASS_REPT`,
   `ZGPASS`) → CDS analytical queries over the gate-pass table (BI layer), not forms.
 
@@ -65,9 +65,11 @@ There is **no standard SAP gate pass**, so this stays custom — but split it:
 | Print / driver | ZGPASS, ZGATEPASS, ZREPASS | Custom Adobe form template (custom OM object) |
 | Reports | ZGATER, ZGATERE, ZGATENR, ZGREPT, ZGREPTNE, ZGREPTRE, ZGATEPASS_REPT | CDS query → analytics (Route BI) |
 
-> Gate pass touches `ZGATEPASS` / `ZZGATEPASS` (seen across the dictionary). If you
-> want it built like the other custom objects, say so and I'll scaffold
-> `backend/gate-pass-rap` (managed BO + form) the same way as the masters.
+> **Built:** the entry capture is now [`backend/gate-pass-rap`](../backend/gate-pass-rap)
+> — a managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (the `ZGPS*`/`ZGPSI*`
+> model). `ZGP_PART` (inward receipts) is associated read-only pending a data-model
+> fix (no `MJAHR` key). The print/driver and report rows above still route to OM /
+> analytics respectively.
 
 ## 4. Labels / barcode / stickers (10)
 No native S/4 label engine — use an **OM form template with barcode fields**

@@ -383,6 +383,7 @@ Obsolete — retire.
 | `apps/manage-sales-contracts-ext + backend/contract-status-rap` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls RAP close/complete/release/updateRate actions over VBAK |
 | `apps/manage-sales-orders-ext + backend/sales-order-status-rap` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + RAP close action over VBAK |
 | `apps/manage-outbound-deliveries-ext` | CUS→EXT | ZDELC/ZDEL | Output Management on F0867A |
+| `backend/gate-pass-rap` | PRT→custom | ZGPS01/02/03, ZGPSI1/2/3 | managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (custom object; form via OM) |
 
 > Items in `EXT` like `ZCON_CLOSE`, `ZCOREL`, `ZSOCLOSE`, `ZVA01(N)` are sales-order/contract *close / release* add-ons — extend the standard Manage Sales Orders / Contracts apps (adaptation), reusing the existing `ZVBAP`-based logic rather than rebuilding the order UI.
 
