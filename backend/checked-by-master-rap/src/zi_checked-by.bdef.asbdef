@@ -1,0 +1,33 @@
+managed implementation in class zbp_i_checked-by unique;
+strict ( 2 );
+
+define behavior for ZI_CheckedBy alias CheckedBy
+persistent table zcheckedby
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) OperatorId;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination setDefaults on modify { create; }
+  validation validateKey on save { create; update; }
+
+  mapping for zcheckedby
+  {
+    OperatorId             = operator_id;
+    OperatorName           = operator_name;
+    OperatorRole           = operator_role;
+    Plant                  = plant;
+    IsActive               = is_active;
+    CreatedBy              = created_by;
+    CreatedAt              = created_at;
+    LastChangedBy          = last_changed_by;
+    LastChangedAt          = last_changed_at;
+    LocalLastChangedAt     = local_last_changed_at;
+  }
+}

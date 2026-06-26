@@ -1,0 +1,34 @@
+managed implementation in class zbp_i_packing-material unique;
+strict ( 2 );
+
+define behavior for ZI_PackMaterial alias PackMaterial
+persistent table zpackmat
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) PackingMaterial;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination setDefaults on modify { create; }
+  validation validateKey on save { create; update; }
+
+  mapping for zpackmat
+  {
+    PackingMaterial        = packing_material;
+    Description            = description;
+    PackType               = pack_type;
+    TareWeight             = tare_weight;
+    WeightUnit             = weight_unit;
+    IsActive               = is_active;
+    CreatedBy              = created_by;
+    CreatedAt              = created_at;
+    LastChangedBy          = last_changed_by;
+    LastChangedAt          = last_changed_at;
+    LocalLastChangedAt     = local_last_changed_at;
+  }
+}

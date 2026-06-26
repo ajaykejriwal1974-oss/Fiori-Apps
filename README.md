@@ -53,6 +53,14 @@ service rather than as adaptation projects.
 | [Recipe Master](backend/recipe-master-rap) | Managed RAP master (Route 7) | ZRECP01/02/03 | Source authored (table + binding to create in ADT) |
 | [Job Master](backend/job-master-rap) | Managed RAP master (Route 7) | ZJOB01/02/03 | Source authored (table + binding to create in ADT) |
 | [Truck Master](backend/truck-master-rap) | Managed RAP master (Route 7) | ZTRUCK | Source authored (table + binding to create in ADT) |
+| [Schedule Master](backend/schedule-master-rap) | Managed RAP master (Route 7) | ZSCH01/02/03 | Source authored (table + binding to create in ADT) |
+| [Transport Code](backend/transport-code-master-rap) | Managed RAP master (Route 7) | ZTRANS | Source authored (table + binding to create in ADT) |
+| [Min/Max Levels](backend/minmax-master-rap) | Managed RAP master (Route 7) | ZMINMAX | Source authored (composite key; table + binding in ADT) |
+| [Merge Details](backend/merge-master-rap) | Managed RAP master (Route 7) | ZMERGE | Source authored (table + binding to create in ADT) |
+| [Checked/Packed By](backend/checked-by-master-rap) | Managed RAP master (Route 7) | ZPCBY | Source authored (table + binding to create in ADT) |
+| [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | Source authored (table + binding to create in ADT) |
+| [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | Source authored; assess vs std foreign trade |
+| [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | Source authored; confirm not Basis security |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade

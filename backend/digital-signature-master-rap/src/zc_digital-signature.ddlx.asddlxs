@@ -1,0 +1,26 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'DigSign', typeNamePlural: 'DigSigns',
+  title: { type: #STANDARD, value: 'SignatoryId' },
+  description: { type: #STANDARD, value: 'SignatoryName' } } }
+annotate view ZC_DigSign with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Signatory ID'
+  SignatoryId;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Signatory Name'
+  SignatoryName;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Designation'
+  Designation;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Valid From'
+  ValidFrom;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ], selectionField: [ { position: 50 } ] }
+  @EndUserText.label: 'Valid To'
+  ValidTo;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ], selectionField: [ { position: 60 } ] }
+  @EndUserText.label: 'Active'
+  IsActive;
+}

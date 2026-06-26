@@ -1,0 +1,32 @@
+managed implementation in class zbp_i_transport-code unique;
+strict ( 2 );
+
+define behavior for ZI_TransportCode alias TransportCode
+persistent table ztranscode
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TransportCode;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination setDefaults on modify { create; }
+  validation validateKey on save { create; update; }
+
+  mapping for ztranscode
+  {
+    TransportCode          = transport_code;
+    TransportName          = transport_name;
+    TransportMode          = transport_mode;
+    IsActive               = is_active;
+    CreatedBy              = created_by;
+    CreatedAt              = created_at;
+    LastChangedBy          = last_changed_by;
+    LastChangedAt          = last_changed_at;
+    LocalLastChangedAt     = local_last_changed_at;
+  }
+}

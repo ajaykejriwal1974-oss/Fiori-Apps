@@ -1,0 +1,4 @@
+@EndUserText.label: 'Min-Max Levels Service'
+define service ZUI_MINMAX {
+  expose ZC_MinMax as MinMax;
+}

@@ -7,32 +7,31 @@ routes below are recommendations, not a final build list.
 
 > Key idea: Route 7 is **not 68 apps**. Create/Change/Display variants of one
 > master collapse into **one** Fiori Elements app; several items are really
-> reports, config, or DRC. Build only what is genuinely a custom transactional
-> object with no standard equivalent.
+> reports, config, or DRC. We build only the genuine custom transactional objects
+> with no standard equivalent — that is the **custom masters** below.
 
-## ✅ Built now — managed-RAP custom masters (Shade-Master pattern)
+## ✅ Built — managed-RAP custom masters (Shade-Master pattern)
 Each is a `backend/<name>-master-rap/` managed RAP BO; the Fiori Elements
-"Manage …" app is generated from the service binding via the `.ddlx`.
+"Manage …" app is generated from the service binding via the `.ddlx` (no
+hand-written UI). Field lists are best-effort — **VERIFY against the Z program**.
 
 | Master | Replaces (Z) | Folder |
 |---|---|---|
-| Dyeing Recipe Master | ZRECP01 / ZRECP02 / ZRECP03 | `backend/recipe-master-rap` |
+| Dyeing Recipe Master (links to Shade Master) | ZRECP01/02/03 | `backend/recipe-master-rap` |
 | Job Master | ZJOB01/01N/02/02N/03/03N | `backend/job-master-rap` |
 | Truck Master | ZTRUCK | `backend/truck-master-rap` |
+| Schedule Master | ZSCH01/01N/02/02N/03/03N | `backend/schedule-master-rap` |
+| Transport Code | ZTRANS | `backend/transport-code-master-rap` |
+| Min/Max Levels (composite key material+plant) | ZMINMAX | `backend/minmax-master-rap` |
+| Merge Details | ZMERGE | `backend/merge-master-rap` |
+| Checked / Packed By | ZPCBY | `backend/checked-by-master-rap` |
+| Packing Material Master | ZPACK_MAST | `backend/packing-material-master-rap` |
+| Export Details (assess vs std foreign trade) | ZMBR2 | `backend/export-detail-master-rap` |
+| Digital Signature (confirm not Basis security) | ZDIGI | `backend/digital-signature-master-rap` |
 
-## 🔨 Build next — same managed-RAP master pattern
-Straight repeats of the pattern above (one app per master, C/U/D in one):
-
-| Master | Replaces (Z) | Notes |
-|---|---|---|
-| Schedule Master | ZSCH01/01N/02/02N/03/03N | production/dispatch schedule |
-| Transport Code | ZTRANS | small master |
-| Min / Max Levels | ZMINMAX | material min/max (key = material+plant) |
-| Merge Details | ZMERGE | |
-| Checked / Packed By | ZPCBY | operator master |
-| Packing Material Master | ZPACK_MAST | |
-| Export Details | ZMBR2 | assess vs standard foreign-trade first |
-| Digital Signature | ZDIGI | master/config — confirm not a Basis/security setting |
+> That is **every Route 7 item that is a genuine custom master** with a derivable
+> field set. The remaining Route 7 items below are **deliberately not built as new
+> apps** — they reuse an existing app, are reports/config, or are DRC.
 
 ## 🔁 Reuse / extend an app already in this repo (don't build new)
 | Z | Route to |
@@ -66,8 +65,8 @@ The E-Invoice / E-Way Bill cockpit is **standard SAP DRC**, not a custom rebuild
 `ZEINV_UPDATE`, `ZEINV_UPGRADE`, `ZEWAY_CANC`, `ZEXN` (custom invoice numbering).
 → Replace with **standard DRC for India**; do not build.
 
-## How to add the next master
+## How to add another master
 Copy any `backend/*-master-rap/` folder, rename objects (`ZI_*` / `ZC_*` /
 `zbp_i_*` / `ZUI_*` / table), adjust the field list to the Z program, and add the
-DB table + OData V4 service binding in ADT. The generated Fiori Elements app comes
-from the `.ddlx` metadata extension — no hand-written UI.
+DB table + OData V4 service binding in ADT. The Fiori Elements app comes from the
+`.ddlx` metadata extension.
