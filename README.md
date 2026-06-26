@@ -145,6 +145,9 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/REUSE-EXISTING.md`](docs/REUSE-EXISTING.md) — bind/consume the **existing**
   61 OData services + 96 CDS (`ZSOL_*`, `ZSOL_F4*`) and existing repo apps instead
   of rebuilding; which masters reuse which legacy tables.
+- [`docs/STD-RETIREMENT.md`](docs/STD-RETIREMENT.md) — the **17 `STD` tcodes** mapped
+  to their standard S/4HANA Fiori app + classic tx + `SAP_BR_*` business role, with
+  the per-tcode retirement procedure (assign role, migrate variants, retire Z).
 - [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
   ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
   the corrected master→real-table mapping.

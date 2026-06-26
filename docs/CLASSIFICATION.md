@@ -123,7 +123,7 @@ Standard process with custom add-ons. Extend the standard Fiori app (adaptation 
 
 ## `STD` — Use STANDARD Fiori app — retire the Z program  (17)
 
-A standard S/4HANA Fiori app already covers this. Map the user to the standard app + Fiori role; retire the custom transaction.
+A standard S/4HANA Fiori app already covers this. Map the user to the standard app + Fiori role; retire the custom transaction. **Per-tcode app + business role + retirement steps: [STD-RETIREMENT.md](STD-RETIREMENT.md).**
 
 | Tcode | Program | Description | Custom tables |
 |---|---|---|---|
