@@ -1,29 +1,65 @@
 @Metadata.layer: #CORE
 @UI: { headerInfo: { typeName: 'Schedule', typeNamePlural: 'Schedules',
-  title: { type: #STANDARD, value: 'ScheduleId' },
-  description: { type: #STANDARD, value: 'ScheduleDate' } } }
+  title: { type: #STANDARD, value: 'ScheduleNumber' },
+  description: { type: #STANDARD, value: 'Plant' } } }
 annotate view ZC_Schedule with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
-  @EndUserText.label: 'Schedule ID'
-  ScheduleId;
+  @EndUserText.label: 'Schedule Number'
+  ScheduleNumber;
   @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
-  @EndUserText.label: 'Schedule Date'
-  ScheduleDate;
-  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
-  @EndUserText.label: 'Material'
-  Material;
-  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
-  @EndUserText.label: 'Quantity'
-  Quantity;
-  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ], selectionField: [ { position: 50 } ] }
+  @EndUserText.label: 'Fiscal Year'
+  FiscalYear;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
   @EndUserText.label: 'Plant'
   Plant;
-  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ], selectionField: [ { position: 60 } ] }
-  @EndUserText.label: 'Status'
-  ScheduleStatus;
-  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ], selectionField: [ { position: 70 } ] }
-  @EndUserText.label: 'Active'
-  IsActive;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Card Number'
+  CardNumber;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Schedule Date'
+  ScheduleDate;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Schedule Time'
+  ScheduleTime;
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Sales Document'
+  SalesDocument;
+  @UI: { lineItem: [ { position: 80 } ], identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Sales Item'
+  SalesItem;
+  @UI: { lineItem: [ { position: 90 } ], identification: [ { position: 90 } ] }
+  @EndUserText.label: 'Dyeing Date'
+  DyeingDate;
+  @UI: { lineItem: [ { position: 100 } ], identification: [ { position: 100 } ] }
+  @EndUserText.label: 'Material'
+  Material;
+  @UI: { lineItem: [ { position: 110 } ], identification: [ { position: 110 } ] }
+  @EndUserText.label: 'Material Description'
+  MaterialDesc;
+  @UI: { lineItem: [ { position: 120 } ], identification: [ { position: 120 } ] }
+  @EndUserText.label: 'Schedule Qty'
+  ScheduleQty;
+  @UI: { lineItem: [ { position: 130 } ], identification: [ { position: 130 } ] }
+  @EndUserText.label: 'Unit'
+  SalesUnit;
+  @UI: { lineItem: [ { position: 140 } ], identification: [ { position: 140 } ] }
+  @EndUserText.label: 'Shade'
+  ShadeCode;
+  @UI: { lineItem: [ { position: 150 } ], identification: [ { position: 150 } ] }
+  @EndUserText.label: 'Remarks'
+  Remarks;
+  @UI: { lineItem: [ { position: 160 } ], identification: [ { position: 160 } ] }
+  @EndUserText.label: 'Complete'
+  CompleteFlag;
+  @UI: { lineItem: [ { position: 170 } ], identification: [ { position: 170 } ] }
+  @EndUserText.label: 'Deleted'
+  DeletionFlag;
+  @UI: { lineItem: [ { position: 180 } ], identification: [ { position: 180 } ] }
+  @EndUserText.label: 'Created By'
+  CreatedBy;
+  @UI: { lineItem: [ { position: 190 } ], identification: [ { position: 190 } ] }
+  @EndUserText.label: 'Changed By'
+  LastChangedBy;
 }

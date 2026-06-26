@@ -2,22 +2,29 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 @Search.searchable: true
-@ObjectModel.semanticKey: ['RecipeCode']
+@ObjectModel.semanticKey: ['Plant', 'GreyCode', 'DyeCode', 'ShadeCode', 'ItemNumber']
 define root view entity ZC_Recipe
   provider contract transactional_query
   as projection on ZI_Recipe
 {
-  key RecipeCode,
+  key Plant,
+  key GreyCode,
+  key DyeCode,
+  key ShadeCode,
+  key ItemNumber,
       @Search.defaultSearchElement: true
-      RecipeName,
-      ShadeCode,
-      ProcessType,
-      Temperature,
-      DurationInMinutes,
-      IsActive,
+      GreyItemDesc,
+      DyeItemDesc,
+      Component,
+      ComponentDesc,
+      ComponentType,
+      Ratio,
+      SalesUnit,
+      Remarks,
       CreatedBy,
-      CreatedAt,
+      CreatedOnDate,
+      CreatedAtTime,
       LastChangedBy,
-      LastChangedAt,
-      LocalLastChangedAt
+      LastChangedDate,
+      LastChangedTime
 }

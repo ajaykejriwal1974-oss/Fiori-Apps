@@ -1,0 +1,4 @@
+@EndUserText.label: 'Transport Code Master Service'
+define service ZUI_TRANSPORT {
+  expose ZC_Transport as Transport;
+}

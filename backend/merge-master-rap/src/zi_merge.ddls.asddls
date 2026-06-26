@@ -1,26 +1,18 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Merge Details - Interface'
+@EndUserText.label: 'Merge Details Master - Interface'
 @Metadata.allowExtensions: true
-@ObjectModel.semanticKey: ['MergeId']
-// Custom master (Route 7) - managed RAP, same pattern as ZDD_SHADE.
-// VERIFY the field list against the original Z program before activating. Likely a batch/lot merge log - VERIFY the exact purpose against ZMERGE.
+// Custom master (Route 7) - managed RAP over legacy table ZPP_MERGE (ZMERGE).
+// Field list mirrors the real Z-table (field dictionary). This legacy table
+// has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
+// (add a TIMESTAMPL column to enable it).
 define root view entity ZI_Merge
-  as select from zmerge
+  as select from zpp_merge
 {
-  key merge_id                   as MergeId,
-      material                   as Material,
-      source_batch               as SourceBatch,
-      target_batch               as TargetBatch,
-      merge_date                 as MergeDate,
-      is_active                  as IsActive,
-      @Semantics.user.createdBy: true
-      created_by                 as CreatedBy,
-      @Semantics.systemDateTime.createdAt: true
-      created_at                 as CreatedAt,
-      @Semantics.user.lastChangedBy: true
-      last_changed_by            as LastChangedBy,
-      @Semantics.systemDateTime.lastChangedAt: true
-      last_changed_at            as LastChangedAt,
-      @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at      as LocalLastChangedAt
+  key aurnr                  as OrderNumber,
+  key grade                  as Grade,
+  key enduse                 as EndUse,
+      charg                  as Batch,
+      shdcd                  as ShadeCode,
+      menge                  as Quantity,
+      shdcd2                 as ShadeCode2
 }

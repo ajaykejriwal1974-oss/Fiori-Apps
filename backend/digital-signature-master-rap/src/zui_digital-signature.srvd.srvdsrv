@@ -1,4 +1,0 @@
-@EndUserText.label: 'Digital Signature Service'
-define service ZUI_DIGSIGN {
-  expose ZC_DigSign as DigSign;
-}

@@ -10,13 +10,15 @@ CLASS lhc_Job IMPLEMENTATION.
 
   METHOD setDefaults.
     READ ENTITIES OF zi_job IN LOCAL MODE
-      ENTITY Job FIELDS ( IsActive ) WITH CORRESPONDING #( keys )
+      ENTITY Job FIELDS ( CreatedOnDate CreatedAtTime LastChangedDate LastChangedTime ) WITH CORRESPONDING #( keys )
       RESULT DATA(rows).
     MODIFY ENTITIES OF zi_job IN LOCAL MODE
-      ENTITY Job UPDATE FIELDS ( IsActive )
-        WITH VALUE #( FOR r IN rows (
-          %tky     = r-%tky
-          IsActive = COND #( WHEN r-IsActive IS INITIAL THEN abap_true ELSE r-IsActive ) ) )
+      ENTITY Job UPDATE FIELDS ( CreatedOnDate CreatedAtTime LastChangedDate LastChangedTime )
+        WITH VALUE #( FOR r IN rows ( %tky = r-%tky
+          CreatedOnDate = COND #( WHEN r-CreatedOnDate IS INITIAL THEN sy-datum ELSE r-CreatedOnDate )
+          CreatedAtTime = COND #( WHEN r-CreatedAtTime IS INITIAL THEN sy-uzeit ELSE r-CreatedAtTime )
+          LastChangedDate = sy-datum
+          LastChangedTime = sy-uzeit ) ) )
       REPORTED DATA(upd).
   ENDMETHOD.
 

@@ -1,29 +1,42 @@
-# Transport Code (Route 7 custom master) - managed RAP
+# Transport Code Master (ZTRANS) — managed RAP over `ZTRANS`
 
-Custom master with **no standard SAP equivalent** (KEJRIWAL Z-portfolio, Route 7).
-Built as **managed RAP** - same pattern as `backend/shade-master-rap`. The Fiori
-Elements "Manage Transport Code" app is generated from the service binding via the
-metadata extension `zc_transport-code.ddlx`.
+Custom master (KEJRIWAL Z-portfolio, `CUS`). Built as a **managed RAP**
+business object **mapped onto the existing legacy table `ZTRANS`** —
+no new persistence is created. The Fiori Elements *Manage* app is generated
+from the service binding via the metadata extension `zc_transport.ddlx`.
 
-> **Skeleton.** The field list is a best-effort starting point - **VERIFY it
-> against the original Z program** and confirm there is no standard app in the
-> Fiori Apps Reference Library before building.
+> **Fields are refit to the real Z-table** (from the field dictionary):
+> data elements, types, lengths and the key mirror the legacy table. Wire
+> value helps (reuse `ZSOL_F4*`) and confirm before activating.
+
+## Fields (from the field dictionary)
+
+| CDS element | Table column | Key |
+|---|---|:--:|
+| `TransportCode` | `ZZTRCODE` | 🔑 |
+| `TruckNumber` | `ZZTRCKNO` | 🔑 |
+| `Description` | `ZZTRDESC` |  |
 
 ## Objects in `src/`
+
 | File | Object | Role |
 |---|---|---|
-| `zi_transport-code.ddls.asddls` | `ZI_TransportCode` | Interface CDS over `ztranscode` |
-| `zc_transport-code.ddls.asddls` | `ZC_TransportCode` | Projection (`transactional_query`) |
-| `zi_transport-code.bdef.asbdef` | Behavior (managed) | create/update/delete, ETag, mapping |
-| `zc_transport-code.bdef.asbdef` | Projection behavior | use create/update/delete |
-| `zbp_i_transport-code.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
-| `zc_transport-code.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
-| `zui_transport-code.srvd.srvdsrv` | Service def `ZUI_TRANSPORTCODE` | exposes `ZC_TransportCode` |
+| `zi_transport.ddls.asddls` | `ZI_Transport` | Interface CDS over `ztrans` |
+| `zc_transport.ddls.asddls` | `ZC_Transport` | Projection (`transactional_query`) |
+| `zi_transport.bdef.asbdef` | Behavior (managed) | create/update/delete, mapping |
+| `zc_transport.bdef.asbdef` | Projection behavior | use create/update/delete |
+| `zbp_i_transport.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
+| `zc_transport.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
+| `zui_transport.srvd.srvdsrv` | Service def `ZUI_TRANSPORT` | exposes `ZC_Transport` |
 
 ## Create in ADT
-- DB table `ztranscode`: `transport_code` (key char10), `transport_name` char40, `transport_mode` char10 (Road/Rail/Air), `is_active` abap_boolean
-- Admin fields: `abp_creation_user/tstmpl`, `abp_lastchange_user/tstmpl`, `abp_locinst_lastchange_tstmpl`.
-- Service binding `ZUI_TRANSPORTCODE_O4` (OData V4 - UI).
+- The table `ZTRANS` **already exists** — the managed BO binds to it
+  as `persistent table ztrans`. No DDIC table to create.
+- Key: `ZZTRCODE`, `ZZTRCKNO`.
+- This legacy table has **no TIMESTAMPL column**, so the optimistic-
+  concurrency ETag is omitted; `lock master` still applies. Add a
+  TIMESTAMPL column if optimistic locking is required.
+- Create the OData V4 UI service binding `ZUI_TRANSPORT_O4` in ADT.
 
 ## Branch
-Developed on `claude/fiori-app-extensions-h1nb64`.
+Tracked on `claude/fiori-app-extensions-h1nb64`.

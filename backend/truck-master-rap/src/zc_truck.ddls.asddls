@@ -9,14 +9,5 @@ define root view entity ZC_Truck
 {
   key TruckNumber,
       @Search.defaultSearchElement: true
-      TransporterName,
-      TransportCode,
-      DriverName,
-      CapacityInKg,
-      IsActive,
-      CreatedBy,
-      CreatedAt,
-      LastChangedBy,
-      LastChangedAt,
-      LocalLastChangedAt
+      CarrierName
 }

@@ -46,21 +46,21 @@ service rather than as adaptation projects.
 | Artifact | Type | Replaces (Z) | Status |
 |---|---|---|---|
 | [Shade Master](backend/shade-master-rap) | RAP Custom Business Object | ZDD_SHADE | Source authored (table + service binding to create in ADT) |
-| [QM Mass Results](backend/qm-mass-results-rap) | Unmanaged RAP service | ZQA32 (backend for the mass app) | Skeleton authored (QM BAPI calls + status filter to complete in ADT) |
+| [QM Mass Results](backend/qm-mass-results-rap) | Unmanaged RAP service | ZQA32 / `ZQM_MASS_RESULT2` (legacy buffer `ZINSPLOT_QA32`) | Skeleton authored (reads std QM; result API + status filter to complete in ADT) |
 | [HU Goods Movement](backend/goods-movement-hu-rap) | Unmanaged RAP service | ZBOX_MOVE (backend) | Skeleton authored (BAPI_GOODSMVT_CREATE + HU read to complete in ADT) |
 | [Dyeing Packing](backend/packing-hu-rap) | Unmanaged RAP service | ZPACK / ZREPACKD (backend) | Skeleton authored (BAPI_HU_CREATE/PACK to complete in ADT) |
 | [Contract Batch Update](backend/contract-batch-rap) | Unmanaged RAP service | ZBATCH_CHANGE (backend) | Skeleton authored (BAPI_SALESDOCUMENT_CHANGE to complete in ADT) |
-| [Recipe Master](backend/recipe-master-rap) | Managed RAP master (Route 7) | ZRECP01/02/03 | Source authored (table + binding to create in ADT) |
-| [Job Master](backend/job-master-rap) | Managed RAP master (Route 7) | ZJOB01/02/03 | Source authored (table + binding to create in ADT) |
-| [Truck Master](backend/truck-master-rap) | Managed RAP master (Route 7) | ZTRUCK | Source authored (table + binding to create in ADT) |
-| [Schedule Master](backend/schedule-master-rap) | Managed RAP master (Route 7) | ZSCH01/02/03 | Source authored (table + binding to create in ADT) |
-| [Transport Code](backend/transport-code-master-rap) | Managed RAP master (Route 7) | ZTRANS | Source authored (table + binding to create in ADT) |
-| [Min/Max Levels](backend/minmax-master-rap) | Managed RAP master (Route 7) | ZMINMAX | Source authored (composite key; table + binding in ADT) |
-| [Merge Details](backend/merge-master-rap) | Managed RAP master (Route 7) | ZMERGE | Source authored (table + binding to create in ADT) |
-| [Checked/Packed By](backend/checked-by-master-rap) | Managed RAP master (Route 7) | ZPCBY | Source authored (table + binding to create in ADT) |
-| [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | Source authored (table + binding to create in ADT) |
-| [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | Source authored; assess vs std foreign trade |
-| [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | Source authored; confirm not Basis security |
+| [Recipe Master](backend/recipe-master-rap) | Managed RAP master (Route 7) | ZRECP01/02/03 | **Refit to real table `ZPP_RECEIPE`** (19 fields, 5-part key) |
+| [Job Master](backend/job-master-rap) | Managed RAP master (Route 7) | ZJOB01/02/03(N) | **Refit to real table `ZPP_JOBN`** (key JOBNO) |
+| [Truck Master](backend/truck-master-rap) | Managed RAP master (Route 7) | ZTRUCK | **Refit to real table `ZTB_TRUCK_MSTR`** (key TRUCKNO) |
+| [Schedule Master](backend/schedule-master-rap) | Managed RAP master (Route 7) | ZSCH01/02/03(N) | **Refit to real table `ZPP_SCHEDULEN`** (keys SCHNO/GJAHR) |
+| [Transport Code](backend/transport-code-master-rap) | Managed RAP master (Route 7) | ZTRANS | **Refit to real table `ZTRANS`** (keys ZZTRCODE/ZZTRCKNO) |
+| [~~Min/Max Levels~~ → reuse standard MRP](backend/minmax-master-rap) | Stub (de-scoped) | ZMINMAX | **Reuse standard** — min/max on `MARC`, no custom table |
+| [Merge Details](backend/merge-master-rap) | Managed RAP master (Route 7) | ZMERGE | **Refit to real table `ZPP_MERGE`** (keys AURNR/GRADE/ENDUSE) |
+| [Checked/Packed By](backend/checked-by-master-rap) | Managed RAP master (Route 7) | ZPCBY | **Refit to real table `ZPP_PCBY`** (keys SR_NO/PC) |
+| [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | **Refit to real table `ZPACK_MAST`** (keys PTYPE/ARBPL/MATNR) |
+| [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | **Refit to real table `ZEXP`** (keys VBELN/KSCHL) |
+| [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
 | [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
 | [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |
 | [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
@@ -110,6 +110,12 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/TRANSPORT-PLAN.md`](docs/TRANSPORT-PLAN.md) — package hierarchy and
   transport-request grouping/sequence to move the objects DEV → KSQ → PROD on the
   embedded FES.
-- [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — routing of the 68 Route 7
-  ("keep custom / review") Z-codes: build-as-master / reuse-existing / report /
-  config / DRC-excluded, plus the 3 custom masters built here.
+- [`docs/CLASSIFICATION.md`](docs/CLASSIFICATION.md) — **authoritative** routing of
+  **all 285 tcodes** from the `classification` column (CUS / EXT / STD / BI / PRT /
+  UPL), plus how each repo build maps to the CUS/EXT rows. Supersedes ROUTE7-PLAN.
+- [`docs/REUSE-EXISTING.md`](docs/REUSE-EXISTING.md) — bind/consume the **existing**
+  61 OData services + 96 CDS (`ZSOL_*`, `ZSOL_F4*`) and existing repo apps instead
+  of rebuilding; which masters reuse which legacy tables.
+- [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
+  ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
+  the corrected master→real-table mapping.

@@ -1,29 +1,40 @@
-# Min-Max Levels (Route 7 custom master) - managed RAP
+# Min/Max Levels (ZMINMAX / ZSOL_MIN_MAX) — reuse STANDARD, do not build
 
-Custom master with **no standard SAP equivalent** (KEJRIWAL Z-portfolio, Route 7).
-Built as **managed RAP** - same pattern as `backend/shade-master-rap`. The Fiori
-Elements "Manage Min-Max Levels" app is generated from the service binding via the
-metadata extension `zc_minmax.ddlx`.
+> **Re-classified after the field-dictionary review.** This is **not** a genuine
+> custom master. The program `ZSOL_MIN_MAX` maintains **min/max stock levels**,
+> and the dictionary shows it touches only `ZZMARA` (a customer append on the
+> material master) — there is **no dedicated Z-table** behind it. Min/Max stock
+> is **standard material planning data**, so this is a clean-core **reuse**, not
+> a rebuild.
 
-> **Skeleton.** The field list is a best-effort starting point - **VERIFY it
-> against the original Z program** and confirm there is no standard app in the
-> Fiori Apps Reference Library before building.
+## What it really is
+"Maximum/Minimum" stock levels live on the standard material master MRP views:
 
-## Objects in `src/`
-| File | Object | Role |
-|---|---|---|
-| `zi_minmax.ddls.asddls` | `ZI_MinMax` | Interface CDS over `zminmax` |
-| `zc_minmax.ddls.asddls` | `ZC_MinMax` | Projection (`transactional_query`) |
-| `zi_minmax.bdef.asbdef` | Behavior (managed) | create/update/delete, ETag, mapping |
-| `zc_minmax.bdef.asbdef` | Projection behavior | use create/update/delete |
-| `zbp_i_minmax.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
-| `zc_minmax.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
-| `zui_minmax.srvd.srvdsrv` | Service def `ZUI_MINMAX` | exposes `ZC_MinMax` |
+| Field | Standard home |
+|---|---|
+| Reorder point (min) | `MARC-MINBE` (MRP 1) |
+| Maximum stock level | `MARC-MABST` (MRP 1) |
+| Safety stock | `MARC-EISBE` (MRP 2) |
+| MRP type / lot size | `MARC-DISMM` / `MARC-DISLS` |
 
-## Create in ADT
-- DB table `zminmax`: composite key `material` char40 + `plant` char4; `min_qty` quan(13,3), `max_qty` quan(13,3), `base_unit` unit(3), `is_active` abap_boolean
-- Admin fields: `abp_creation_user/tstmpl`, `abp_lastchange_user/tstmpl`, `abp_locinst_lastchange_tstmpl`.
-- Service binding `ZUI_MINMAX_O4` (OData V4 - UI).
+The textile-specific yarn attributes the old program also read (`ZZMARA`:
+`ZZPDTYP`, `ZZDENIR`, `ZZFILAM`, `ZZLUSTER`, `ZZSHDCD`, …) are **already custom
+fields on the material**, surfaced through key-user extensibility.
+
+## Route — reuse existing infrastructure
+1. **Maintain** min/max via the standard Fiori apps:
+   - **Manage Material Master** / **Change Material (MM02)** MRP views, or
+   - **Mass Maintenance of Materials** for bulk min/max updates.
+2. If a focused "edit only min/max for a plant" screen is wanted, build it as a
+   **key-user / adaptation** restricted view of the standard Manage Material app —
+   **not** a new BO with a new table.
+3. Expose the `ZZMARA` yarn attributes as **custom fields** on the standard
+   material object (tier-1 key-user extensibility), reusing the append that
+   already exists.
+
+> No managed-RAP custom table is created for Min/Max. The previous skeleton (a
+> fake `zminmax` table) has been removed because it would have duplicated
+> standard MRP data.
 
 ## Branch
-Developed on `claude/fiori-app-extensions-h1nb64`.
+Tracked on `claude/fiori-app-extensions-h1nb64`.

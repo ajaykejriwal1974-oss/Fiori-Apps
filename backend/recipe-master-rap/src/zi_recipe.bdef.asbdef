@@ -2,34 +2,40 @@ managed implementation in class zbp_i_recipe unique;
 strict ( 2 );
 
 define behavior for ZI_Recipe alias Recipe
-persistent table zrecipe
+persistent table zpp_receipe
 lock master
 authorization master ( instance )
-etag master LocalLastChangedAt
 {
   create;
   update;
   delete;
 
-  field ( mandatory : create ) RecipeCode;
-  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( mandatory : create ) Plant;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
 
-  determination setDefaults on modify { create; }
+  determination setDefaults on modify { create; update; }
   validation validateKey on save { create; update; }
 
-  mapping for zrecipe
+  mapping for zpp_receipe
   {
-    RecipeCode           = recipe_code;
-    RecipeName           = recipe_name;
-    ShadeCode            = shade_code;
-    ProcessType          = process_type;
-    Temperature          = temperature;
-    DurationInMinutes    = duration_min;
-    IsActive             = is_active;
-    CreatedBy            = created_by;
-    CreatedAt            = created_at;
-    LastChangedBy        = last_changed_by;
-    LastChangedAt        = last_changed_at;
-    LocalLastChangedAt   = local_last_changed_at;
+    Plant                = werks;
+    GreyCode             = grey_code;
+    DyeCode              = dye_code;
+    ShadeCode            = shdcd;
+    ItemNumber           = posnr;
+    GreyItemDesc         = grey_item;
+    DyeItemDesc          = dye_item;
+    Component            = component;
+    ComponentDesc        = comp_desc;
+    ComponentType        = comp_type;
+    Ratio                = ratio;
+    SalesUnit            = vrkme;
+    Remarks              = remarks;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
   }
 }

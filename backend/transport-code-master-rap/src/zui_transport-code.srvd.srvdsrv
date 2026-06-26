@@ -1,4 +1,0 @@
-@EndUserText.label: 'Transport Code Service'
-define service ZUI_TRANSPORTCODE {
-  expose ZC_TransportCode as TransportCode;
-}

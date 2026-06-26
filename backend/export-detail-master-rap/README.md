@@ -1,31 +1,45 @@
-# Export Details (Route 7 custom master) - managed RAP
+# Export Details Master (ZMBR2) — managed RAP over `ZEXP`
 
-Custom master with **no standard SAP equivalent** (KEJRIWAL Z-portfolio, Route 7).
-Built as **managed RAP** - same pattern as `backend/shade-master-rap`. The Fiori
-Elements "Manage Export Details" app is generated from the service binding via the
-metadata extension `zc_export-detail.ddlx`.
+Custom master (KEJRIWAL Z-portfolio, `CUS`). Built as a **managed RAP**
+business object **mapped onto the existing legacy table `ZEXP`** —
+no new persistence is created. The Fiori Elements *Manage* app is generated
+from the service binding via the metadata extension `zc_export_detail.ddlx`.
 
-> Assess against standard Foreign Trade / SD export first; build only if no standard fit.
+> **Fields are refit to the real Z-table** (from the field dictionary):
+> data elements, types, lengths and the key mirror the legacy table. Wire
+> value helps (reuse `ZSOL_F4*`) and confirm before activating.
 
-> **Skeleton.** The field list is a best-effort starting point - **VERIFY it
-> against the original Z program** and confirm there is no standard app in the
-> Fiori Apps Reference Library before building.
+## Fields (from the field dictionary)
+
+| CDS element | Table column | Key |
+|---|---|:--:|
+| `BillingDocument` | `VBELN` | 🔑 |
+| `ConditionType` | `KSCHL` | 🔑 |
+| `NetValue` | `NETWR` |  |
+| `Currency` | `WAERK` |  |
+| `ExchangeRate` | `KURSK` |  |
+| `BillingDate` | `FKDAT` |  |
 
 ## Objects in `src/`
+
 | File | Object | Role |
 |---|---|---|
-| `zi_export-detail.ddls.asddls` | `ZI_ExportDetail` | Interface CDS over `zexportdtl` |
-| `zc_export-detail.ddls.asddls` | `ZC_ExportDetail` | Projection (`transactional_query`) |
-| `zi_export-detail.bdef.asbdef` | Behavior (managed) | create/update/delete, ETag, mapping |
-| `zc_export-detail.bdef.asbdef` | Projection behavior | use create/update/delete |
-| `zbp_i_export-detail.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
-| `zc_export-detail.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
-| `zui_export-detail.srvd.srvdsrv` | Service def `ZUI_EXPORTDETAIL` | exposes `ZC_ExportDetail` |
+| `zi_export_detail.ddls.asddls` | `ZI_ExportDetail` | Interface CDS over `zexp` |
+| `zc_export_detail.ddls.asddls` | `ZC_ExportDetail` | Projection (`transactional_query`) |
+| `zi_export_detail.bdef.asbdef` | Behavior (managed) | create/update/delete, mapping |
+| `zc_export_detail.bdef.asbdef` | Projection behavior | use create/update/delete |
+| `zbp_i_export_detail.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
+| `zc_export_detail.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
+| `zui_export_detail.srvd.srvdsrv` | Service def `ZUI_EXPORT_DETAIL` | exposes `ZC_ExportDetail` |
 
 ## Create in ADT
-- DB table `zexportdtl`: `export_id` (key char10), `customer` char10, `country` land1, `incoterms` char3, `currency` waers, `is_active` abap_boolean
-- Admin fields: `abp_creation_user/tstmpl`, `abp_lastchange_user/tstmpl`, `abp_locinst_lastchange_tstmpl`.
-- Service binding `ZUI_EXPORTDETAIL_O4` (OData V4 - UI).
+- The table `ZEXP` **already exists** — the managed BO binds to it
+  as `persistent table zexp`. No DDIC table to create.
+- Key: `VBELN`, `KSCHL`.
+- This legacy table has **no TIMESTAMPL column**, so the optimistic-
+  concurrency ETag is omitted; `lock master` still applies. Add a
+  TIMESTAMPL column if optimistic locking is required.
+- Create the OData V4 UI service binding `ZUI_EXPORT_DETAIL_O4` in ADT.
 
 ## Branch
-Developed on `claude/fiori-app-extensions-h1nb64`.
+Tracked on `claude/fiori-app-extensions-h1nb64`.

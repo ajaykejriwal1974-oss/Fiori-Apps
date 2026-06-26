@@ -1,29 +1,45 @@
-# Packing Material Master (Route 7 custom master) - managed RAP
+# Packing Material Master (ZPACK_MAST) — managed RAP over `ZPACK_MAST`
 
-Custom master with **no standard SAP equivalent** (KEJRIWAL Z-portfolio, Route 7).
-Built as **managed RAP** - same pattern as `backend/shade-master-rap`. The Fiori
-Elements "Manage Packing Material Master" app is generated from the service binding via the
-metadata extension `zc_packing-material.ddlx`.
+Custom master (KEJRIWAL Z-portfolio, `CUS`). Built as a **managed RAP**
+business object **mapped onto the existing legacy table `ZPACK_MAST`** —
+no new persistence is created. The Fiori Elements *Manage* app is generated
+from the service binding via the metadata extension `zc_packing_material.ddlx`.
 
-> **Skeleton.** The field list is a best-effort starting point - **VERIFY it
-> against the original Z program** and confirm there is no standard app in the
-> Fiori Apps Reference Library before building.
+> **Fields are refit to the real Z-table** (from the field dictionary):
+> data elements, types, lengths and the key mirror the legacy table. Wire
+> value helps (reuse `ZSOL_F4*`) and confirm before activating.
+
+## Fields (from the field dictionary)
+
+| CDS element | Table column | Key |
+|---|---|:--:|
+| `PackingType` | `PTYPE` | 🔑 |
+| `WorkCenter` | `ARBPL` | 🔑 |
+| `Material` | `MATNR` | 🔑 |
+| `StorageLocation` | `LGORT` |  |
+| `Batch` | `CHARG` |  |
+| `Sequence` | `SEQ` |  |
 
 ## Objects in `src/`
+
 | File | Object | Role |
 |---|---|---|
-| `zi_packing-material.ddls.asddls` | `ZI_PackMaterial` | Interface CDS over `zpackmat` |
-| `zc_packing-material.ddls.asddls` | `ZC_PackMaterial` | Projection (`transactional_query`) |
-| `zi_packing-material.bdef.asbdef` | Behavior (managed) | create/update/delete, ETag, mapping |
-| `zc_packing-material.bdef.asbdef` | Projection behavior | use create/update/delete |
-| `zbp_i_packing-material.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
-| `zc_packing-material.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
-| `zui_packing-material.srvd.srvdsrv` | Service def `ZUI_PACKMATERIAL` | exposes `ZC_PackMaterial` |
+| `zi_packing_material.ddls.asddls` | `ZI_PackingMaterial` | Interface CDS over `zpack_mast` |
+| `zc_packing_material.ddls.asddls` | `ZC_PackingMaterial` | Projection (`transactional_query`) |
+| `zi_packing_material.bdef.asbdef` | Behavior (managed) | create/update/delete, mapping |
+| `zc_packing_material.bdef.asbdef` | Projection behavior | use create/update/delete |
+| `zbp_i_packing_material.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
+| `zc_packing_material.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
+| `zui_packing_material.srvd.srvdsrv` | Service def `ZUI_PACKING_MATERIAL` | exposes `ZC_PackingMaterial` |
 
 ## Create in ADT
-- DB table `zpackmat`: `packing_material` (key char18), `description` char40, `pack_type` char10 (Cone/Carton/Pallet), `tare_weight` quan(13,3), `weight_unit` unit(3), `is_active` abap_boolean
-- Admin fields: `abp_creation_user/tstmpl`, `abp_lastchange_user/tstmpl`, `abp_locinst_lastchange_tstmpl`.
-- Service binding `ZUI_PACKMATERIAL_O4` (OData V4 - UI).
+- The table `ZPACK_MAST` **already exists** — the managed BO binds to it
+  as `persistent table zpack_mast`. No DDIC table to create.
+- Key: `PTYPE`, `ARBPL`, `MATNR`.
+- This legacy table has **no TIMESTAMPL column**, so the optimistic-
+  concurrency ETag is omitted; `lock master` still applies. Add a
+  TIMESTAMPL column if optimistic locking is required.
+- Create the OData V4 UI service binding `ZUI_PACKING_MATERIAL_O4` in ADT.
 
 ## Branch
-Developed on `claude/fiori-app-extensions-h1nb64`.
+Tracked on `claude/fiori-app-extensions-h1nb64`.

@@ -1,22 +1,18 @@
-@EndUserText.label: 'Merge Details - Projection'
+@EndUserText.label: 'Merge Details Master - Projection'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 @Search.searchable: true
-@ObjectModel.semanticKey: ['MergeId']
+@ObjectModel.semanticKey: ['OrderNumber', 'Grade', 'EndUse']
 define root view entity ZC_Merge
   provider contract transactional_query
   as projection on ZI_Merge
 {
-  key MergeId,
+  key OrderNumber,
+  key Grade,
+  key EndUse,
       @Search.defaultSearchElement: true
-      Material,
-      SourceBatch,
-      TargetBatch,
-      MergeDate,
-      IsActive,
-      CreatedBy,
-      CreatedAt,
-      LastChangedBy,
-      LastChangedAt,
-      LocalLastChangedAt
+      Batch,
+      ShadeCode,
+      Quantity,
+      ShadeCode2
 }

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Export Details Master Service'
+define service ZUI_EXPORT_DETAIL {
+  expose ZC_ExportDetail as ExportDetail;
+}

@@ -1,33 +1,52 @@
-# Job Master (Route 7 custom master) - managed RAP
+# Job Master (ZJOB01/02/03(N)) — managed RAP over `ZPP_JOBN`
 
-Custom master with **no standard SAP equivalent** (KEJRIWAL Z-portfolio, Route 7).
-Built as a **managed RAP** business object - same pattern as `backend/shade-master-rap`
-(framework owns the custom table). The Fiori Elements "Manage Job Master" app is
-generated from the service binding via the metadata extension `zc_job.ddlx`.
+Custom master (KEJRIWAL Z-portfolio, `CUS`). Built as a **managed RAP**
+business object **mapped onto the existing legacy table `ZPP_JOBN`** —
+no new persistence is created. The Fiori Elements *Manage* app is generated
+from the service binding via the metadata extension `zc_job.ddlx`.
 
-> **Skeleton.** The field list is a best-effort starting point - **VERIFY it
-> against the original Z program** (and confirm there is truly no standard app in
-> the Fiori Apps Reference Library) before building.
+> **Fields are refit to the real Z-table** (from the field dictionary):
+> data elements, types, lengths and the key mirror the legacy table. Wire
+> value helps (reuse `ZSOL_F4*`) and confirm before activating.
+
+## Fields (from the field dictionary)
+
+| CDS element | Table column | Key |
+|---|---|:--:|
+| `JobNumber` | `JOBNO` | 🔑 |
+| `BatchNumber` | `BATCHNO` |  |
+| `ScheduleNumber` | `SCHNO` |  |
+| `Plant` | `WERKS` |  |
+| `DyeingWorkCenter` | `DYE_ARBPL` |  |
+| `WindingWorkCenter` | `WIN_ARBPL` |  |
+| `DeletionFlag` | `DELIND` |  |
+| `CreatedBy` | `ERNAM` |  |
+| `CreatedOnDate` | `ERDAT` |  |
+| `CreatedAtTime` | `ERZET` |  |
+| `LastChangedBy` | `LASTUSER` |  |
+| `LastChangedDate` | `LASTDATE` |  |
+| `LastChangedTime` | `LASTTIME` |  |
 
 ## Objects in `src/`
+
 | File | Object | Role |
 |---|---|---|
-| `zi_job.ddls.asddls` | `ZI_Job` | Interface CDS over `zjob` |
+| `zi_job.ddls.asddls` | `ZI_Job` | Interface CDS over `zpp_jobn` |
 | `zc_job.ddls.asddls` | `ZC_Job` | Projection (`transactional_query`) |
-| `zi_job.bdef.asbdef` | Behavior (managed) | create/update/delete, ETag, mapping |
+| `zi_job.bdef.asbdef` | Behavior (managed) | create/update/delete, mapping |
 | `zc_job.bdef.asbdef` | Projection behavior | use create/update/delete |
-| `zbp_i_job.clas.abap` + `.locals_imp` | Behavior pool | `setDefaults` + `validateKey` |
+| `zbp_i_job.clas.*` | Behavior pool | `setDefaults` + `validateKey` |
 | `zc_job.ddlx.asddlxs` | Metadata ext | Fiori Elements List Report / Object Page |
-| `zui_job.srvd.srvdsrv` | Service def `ZUI_JOB` | exposes `ZC_Job` as `Job` |
+| `zui_job.srvd.srvdsrv` | Service def `ZUI_JOB` | exposes `ZC_Job` |
 
 ## Create in ADT
-- DB table `zjob` (spec below) + service binding `ZUI_JOB_O4` (OData V4 - UI).
-
-### Table `zjob` (DDIC)
-| `job_number` (key, char10), `job_name` char40, `job_type` char20, `plant` char4, `work_center` char8, `is_active` abap_boolean |
-- Admin fields: `created_by abp_creation_user`, `created_at abp_creation_tstmpl`,
-  `last_changed_by abp_lastchange_user`, `last_changed_at abp_lastchange_tstmpl`,
-  `local_last_changed_at abp_locinst_lastchange_tstmpl`.
+- The table `ZPP_JOBN` **already exists** — the managed BO binds to it
+  as `persistent table zpp_jobn`. No DDIC table to create.
+- Key: `JOBNO`.
+- This legacy table has **no TIMESTAMPL column**, so the optimistic-
+  concurrency ETag is omitted; `lock master` still applies. Add a
+  TIMESTAMPL column if optimistic locking is required.
+- Create the OData V4 UI service binding `ZUI_JOB_O4` in ADT.
 
 ## Branch
-Developed on `claude/fiori-app-extensions-h1nb64`.
+Tracked on `claude/fiori-app-extensions-h1nb64`.

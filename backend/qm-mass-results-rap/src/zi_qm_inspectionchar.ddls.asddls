@@ -3,9 +3,13 @@
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['InspectionLot', 'InspectionOperation', 'InspectionCharacteristic']
 //
-//  Read model for mass / multi-lot inspection result entry (replaces ZQA32).
-//  Sourced from the standard QM dictionary; results are NOT persisted here -
-//  they are recorded through the QM result-recording API in the behavior save.
+//  Read model for mass / multi-lot inspection result entry (replaces ZQA32,
+//  legacy program ZQM_MASS_RESULT2). Sourced from the standard QM dictionary;
+//  results are NOT persisted here - they are recorded through the QM
+//  result-recording API in the behavior save. The legacy program buffered
+//  spec/result rows in custom table ZINSPLOT_QA32 (DATES/SELMATNR/WERK/CHARG/
+//  PLNNR/MERKNR/UPPER_VALUE/LOWER_VALUE/RESULTS) - that buffer is NOT needed
+//  once results post straight through the standard QM API.
 //
 //  VERIFY against your release before activating: QM table/field names
 //  (qamv/qals/qapo/qamr), the "open characteristic" status filter, and the

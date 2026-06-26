@@ -2,33 +2,26 @@ managed implementation in class zbp_i_merge unique;
 strict ( 2 );
 
 define behavior for ZI_Merge alias Merge
-persistent table zmerge
+persistent table zpp_merge
 lock master
 authorization master ( instance )
-etag master LocalLastChangedAt
 {
   create;
   update;
   delete;
 
-  field ( mandatory : create ) MergeId;
-  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( mandatory : create ) OrderNumber;
 
-  determination setDefaults on modify { create; }
   validation validateKey on save { create; update; }
 
-  mapping for zmerge
+  mapping for zpp_merge
   {
-    MergeId                = merge_id;
-    Material               = material;
-    SourceBatch            = source_batch;
-    TargetBatch            = target_batch;
-    MergeDate              = merge_date;
-    IsActive               = is_active;
-    CreatedBy              = created_by;
-    CreatedAt              = created_at;
-    LastChangedBy          = last_changed_by;
-    LastChangedAt          = last_changed_at;
-    LocalLastChangedAt     = local_last_changed_at;
+    OrderNumber          = aurnr;
+    Grade                = grade;
+    EndUse               = enduse;
+    Batch                = charg;
+    ShadeCode            = shdcd;
+    Quantity             = menge;
+    ShadeCode2           = shdcd2;
   }
 }

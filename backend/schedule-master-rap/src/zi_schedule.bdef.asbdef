@@ -2,34 +2,44 @@ managed implementation in class zbp_i_schedule unique;
 strict ( 2 );
 
 define behavior for ZI_Schedule alias Schedule
-persistent table zschedule
+persistent table zpp_schedulen
 lock master
 authorization master ( instance )
-etag master LocalLastChangedAt
 {
   create;
   update;
   delete;
 
-  field ( mandatory : create ) ScheduleId;
-  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( mandatory : create ) ScheduleNumber;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
 
-  determination setDefaults on modify { create; }
+  determination setDefaults on modify { create; update; }
   validation validateKey on save { create; update; }
 
-  mapping for zschedule
+  mapping for zpp_schedulen
   {
-    ScheduleId             = schedule_id;
-    ScheduleDate           = schedule_date;
-    Material               = material;
-    Quantity               = quantity;
-    Plant                  = plant;
-    ScheduleStatus         = schedule_status;
-    IsActive               = is_active;
-    CreatedBy              = created_by;
-    CreatedAt              = created_at;
-    LastChangedBy          = last_changed_by;
-    LastChangedAt          = last_changed_at;
-    LocalLastChangedAt     = local_last_changed_at;
+    ScheduleNumber       = schno;
+    FiscalYear           = gjahr;
+    Plant                = werks;
+    CardNumber           = kdno;
+    ScheduleDate         = schdt;
+    ScheduleTime         = schtime;
+    SalesDocument        = vbeln;
+    SalesItem            = posnr;
+    DyeingDate           = dyedt;
+    Material             = matnr;
+    MaterialDesc         = maktx;
+    ScheduleQty          = sch_qty;
+    SalesUnit            = vrkme;
+    ShadeCode            = shdcd;
+    Remarks              = remarks;
+    CompleteFlag         = complete;
+    DeletionFlag         = delind;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
   }
 }

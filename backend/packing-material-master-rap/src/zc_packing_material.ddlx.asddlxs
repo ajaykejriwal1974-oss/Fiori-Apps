@@ -1,0 +1,26 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'PackMaterial', typeNamePlural: 'PackMaterials',
+  title: { type: #STANDARD, value: 'PackingType' },
+  description: { type: #STANDARD, value: 'StorageLocation' } } }
+annotate view ZC_PackingMaterial with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Packing Type'
+  PackingType;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Work Center'
+  WorkCenter;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Material'
+  Material;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Storage Location'
+  StorageLocation;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Batch'
+  Batch;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Sequence'
+  Sequence;
+}

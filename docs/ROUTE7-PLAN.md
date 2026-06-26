@@ -1,5 +1,12 @@
 # Route 7 ("Keep custom / review", 68) — build routing
 
+> ⚠️ **Superseded by [`CLASSIFICATION.md`](CLASSIFICATION.md).** That doc routes
+> **all 285 tcodes** from the authoritative `classification` column
+> (CUS/EXT/STD/BI/PRT/UPL). The masters below have also been **refit to their
+> real Z-tables** from the field dictionary — see the corrected table list.
+> For binding to existing services instead of rebuilding, see
+> [`REUSE-EXISTING.md`](REUSE-EXISTING.md).
+
 From `KEJRIWAL_Zportfolio_Fiori2025.pdf` §8. These have **no obvious standard
 match**. The portfolio doc itself says each must be confirmed by **program code
 review + Fiori Apps Reference Library** before committing build effort, so the
@@ -15,22 +22,28 @@ Each is a `backend/<name>-master-rap/` managed RAP BO; the Fiori Elements
 "Manage …" app is generated from the service binding via the `.ddlx` (no
 hand-written UI). Field lists are best-effort — **VERIFY against the Z program**.
 
-| Master | Replaces (Z) | Folder |
-|---|---|---|
-| Dyeing Recipe Master (links to Shade Master) | ZRECP01/02/03 | `backend/recipe-master-rap` |
-| Job Master | ZJOB01/01N/02/02N/03/03N | `backend/job-master-rap` |
-| Truck Master | ZTRUCK | `backend/truck-master-rap` |
-| Schedule Master | ZSCH01/01N/02/02N/03/03N | `backend/schedule-master-rap` |
-| Transport Code | ZTRANS | `backend/transport-code-master-rap` |
-| Min/Max Levels (composite key material+plant) | ZMINMAX | `backend/minmax-master-rap` |
-| Merge Details | ZMERGE | `backend/merge-master-rap` |
-| Checked / Packed By | ZPCBY | `backend/checked-by-master-rap` |
-| Packing Material Master | ZPACK_MAST | `backend/packing-material-master-rap` |
-| Export Details (assess vs std foreign trade) | ZMBR2 | `backend/export-detail-master-rap` |
-| Digital Signature (confirm not Basis security) | ZDIGI | `backend/digital-signature-master-rap` |
+Field lists are now **refit to the real Z-tables** (field dictionary) — keys and
+all columns mirror the legacy table. Each maps the **existing** table (no new
+persistence).
 
-> That is **every Route 7 item that is a genuine custom master** with a derivable
-> field set.
+| Master | Replaces (Z) | Real table | Keys | Folder |
+|---|---|---|---|---|
+| Dyeing Recipe Master (links to Shade) | ZRECP01/02/03 | `ZPP_RECEIPE` | WERKS, GREY_CODE, DYE_CODE, SHDCD, POSNR | `backend/recipe-master-rap` |
+| Job Master | ZJOB01/02/03(N) | `ZPP_JOBN` | JOBNO | `backend/job-master-rap` |
+| Truck Master | ZTRUCK | `ZTB_TRUCK_MSTR` | TRUCKNO | `backend/truck-master-rap` |
+| Schedule Master | ZSCH01/02/03(N) | `ZPP_SCHEDULEN` | SCHNO, GJAHR | `backend/schedule-master-rap` |
+| Transport Code | ZTRANS | `ZTRANS` | ZZTRCODE, ZZTRCKNO | `backend/transport-code-master-rap` |
+| Merge Details | ZMERGE | `ZPP_MERGE` | AURNR, GRADE, ENDUSE | `backend/merge-master-rap` |
+| Checked / Packed By | ZPCBY | `ZPP_PCBY` | SR_NO, PC | `backend/checked-by-master-rap` |
+| Packing Material Master | ZPACK_MAST | `ZPACK_MAST` | PTYPE, ARBPL, MATNR | `backend/packing-material-master-rap` |
+| Export Details | ZMBR2 | `ZEXP` | VBELN, KSCHL | `backend/export-detail-master-rap` |
+| Digital Signature | ZDIGI | `ZTDIGI_SIGN` | BUKRS | `backend/digital-signature-master-rap` |
+| ~~Min/Max Levels~~ → **reuse standard MRP** | ZMINMAX | `MARC` (std) | — | `backend/minmax-master-rap` (stub) |
+
+> **Correction from the field dictionary:** `ZTRUCK` *does* have a real table
+> (`ZTB_TRUCK_MSTR`); `ZMINMAX` does **not** — it maintains standard MRP min/max
+> on `MARC`, so it was de-scoped to a reuse stub (no custom table). Number range
+> for Schedule lives in `ZPP_SHNUM`; the FG↔RM merge cross-ref in `ZTB_MERGE_MST`.
 
 ## ✅ Built — transactional action services (unmanaged RAP)
 The distinct *transactional* Route 7 items (not masters) — a read model + static

@@ -1,27 +1,38 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Schedule Master - Interface'
 @Metadata.allowExtensions: true
-@ObjectModel.semanticKey: ['ScheduleId']
-// Custom master (Route 7) - managed RAP, same pattern as ZDD_SHADE.
-// VERIFY the field list against the original Z program before activating.
+// Custom master (Route 7) - managed RAP over legacy table ZPP_SCHEDULEN (ZSCH01/02/03(N)).
+// Field list mirrors the real Z-table (field dictionary). This legacy table
+// has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
+// (add a TIMESTAMPL column to enable it).
 define root view entity ZI_Schedule
-  as select from zschedule
+  as select from zpp_schedulen
 {
-  key schedule_id                as ScheduleId,
-      schedule_date              as ScheduleDate,
-      material                   as Material,
-      quantity                   as Quantity,
-      plant                      as Plant,
-      schedule_status            as ScheduleStatus,
-      is_active                  as IsActive,
+  key schno                  as ScheduleNumber,
+  key gjahr                  as FiscalYear,
+      werks                  as Plant,
+      kdno                   as CardNumber,
+      schdt                  as ScheduleDate,
+      schtime                as ScheduleTime,
+      vbeln                  as SalesDocument,
+      posnr                  as SalesItem,
+      dyedt                  as DyeingDate,
+      matnr                  as Material,
+      maktx                  as MaterialDesc,
+      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
+      sch_qty                as ScheduleQty,
+      @Semantics.unitOfMeasure: true
+      vrkme                  as SalesUnit,
+      shdcd                  as ShadeCode,
+      remarks                as Remarks,
+      complete               as CompleteFlag,
+      delind                 as DeletionFlag,
       @Semantics.user.createdBy: true
-      created_by                 as CreatedBy,
-      @Semantics.systemDateTime.createdAt: true
-      created_at                 as CreatedAt,
+      ernam                  as CreatedBy,
+      erdat                  as CreatedOnDate,
+      erzet                  as CreatedAtTime,
       @Semantics.user.lastChangedBy: true
-      last_changed_by            as LastChangedBy,
-      @Semantics.systemDateTime.lastChangedAt: true
-      last_changed_at            as LastChangedAt,
-      @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at      as LocalLastChangedAt
+      lastuser               as LastChangedBy,
+      lastdate               as LastChangedDate,
+      lasttime               as LastChangedTime
 }

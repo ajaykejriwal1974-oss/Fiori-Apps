@@ -9,14 +9,16 @@ define root view entity ZC_Job
 {
   key JobNumber,
       @Search.defaultSearchElement: true
-      JobName,
-      JobType,
+      BatchNumber,
+      ScheduleNumber,
       Plant,
-      WorkCenter,
-      IsActive,
+      DyeingWorkCenter,
+      WindingWorkCenter,
+      DeletionFlag,
       CreatedBy,
-      CreatedAt,
+      CreatedOnDate,
+      CreatedAtTime,
       LastChangedBy,
-      LastChangedAt,
-      LocalLastChangedAt
+      LastChangedDate,
+      LastChangedTime
 }

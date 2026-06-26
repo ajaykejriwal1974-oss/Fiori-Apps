@@ -1,26 +1,13 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Truck Master - Interface'
 @Metadata.allowExtensions: true
-@ObjectModel.semanticKey: ['TruckNumber']
-// Custom master (Route 7) - managed RAP, same pattern as ZDD_SHADE.
-// VERIFY the field list against the original Z program before activating.
+// Custom master (Route 7) - managed RAP over legacy table ZTB_TRUCK_MSTR (ZTRUCK).
+// Field list mirrors the real Z-table (field dictionary). This legacy table
+// has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
+// (add a TIMESTAMPL column to enable it).
 define root view entity ZI_Truck
-  as select from ztruck
+  as select from ztb_truck_mstr
 {
-  key truck_number               as TruckNumber,
-      transporter_name           as TransporterName,
-      transport_code             as TransportCode,
-      driver_name                as DriverName,
-      capacity_kg                as CapacityInKg,
-      is_active                  as IsActive,
-      @Semantics.user.createdBy: true
-      created_by                 as CreatedBy,
-      @Semantics.systemDateTime.createdAt: true
-      created_at                 as CreatedAt,
-      @Semantics.user.lastChangedBy: true
-      last_changed_by            as LastChangedBy,
-      @Semantics.systemDateTime.lastChangedAt: true
-      last_changed_at            as LastChangedAt,
-      @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at      as LocalLastChangedAt
+  key truckno                as TruckNumber,
+      carrier_name           as CarrierName
 }

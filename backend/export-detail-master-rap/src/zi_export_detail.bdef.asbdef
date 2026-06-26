@@ -1,0 +1,26 @@
+managed implementation in class zbp_i_export_detail unique;
+strict ( 2 );
+
+define behavior for ZI_ExportDetail alias ExportDetail
+persistent table zexp
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) BillingDocument;
+
+  validation validateKey on save { create; update; }
+
+  mapping for zexp
+  {
+    BillingDocument      = vbeln;
+    ConditionType        = kschl;
+    NetValue             = netwr;
+    Currency             = waerk;
+    ExchangeRate         = kursk;
+    BillingDate          = fkdat;
+  }
+}

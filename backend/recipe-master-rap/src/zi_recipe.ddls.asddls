@@ -1,27 +1,34 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Dyeing Recipe Master - Interface'
 @Metadata.allowExtensions: true
-@ObjectModel.semanticKey: ['RecipeCode']
-// Custom master (Route 7) - managed RAP, same pattern as ZDD_SHADE.
-// VERIFY the field list against the original Z program before activating.
+// Custom master (Route 7) - managed RAP over legacy table ZPP_RECEIPE (ZRECP01/02/03).
+// Field list mirrors the real Z-table (field dictionary). This legacy table
+// has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
+// (add a TIMESTAMPL column to enable it).
 define root view entity ZI_Recipe
-  as select from zrecipe
+  as select from zpp_receipe
 {
-  key recipe_code                as RecipeCode,
-      recipe_name                as RecipeName,
-      shade_code                 as ShadeCode,
-      process_type               as ProcessType,
-      temperature                as Temperature,
-      duration_min               as DurationInMinutes,
-      is_active                  as IsActive,
+  key werks                  as Plant,
+  key grey_code              as GreyCode,
+  key dye_code               as DyeCode,
+  key shdcd                  as ShadeCode,
+  key posnr                  as ItemNumber,
+      grey_item              as GreyItemDesc,
+      dye_item               as DyeItemDesc,
+      component              as Component,
+      comp_desc              as ComponentDesc,
+      comp_type              as ComponentType,
+      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
+      ratio                  as Ratio,
+      @Semantics.unitOfMeasure: true
+      vrkme                  as SalesUnit,
+      remarks                as Remarks,
       @Semantics.user.createdBy: true
-      created_by                 as CreatedBy,
-      @Semantics.systemDateTime.createdAt: true
-      created_at                 as CreatedAt,
+      ernam                  as CreatedBy,
+      erdat                  as CreatedOnDate,
+      erzet                  as CreatedAtTime,
       @Semantics.user.lastChangedBy: true
-      last_changed_by            as LastChangedBy,
-      @Semantics.systemDateTime.lastChangedAt: true
-      last_changed_at            as LastChangedAt,
-      @Semantics.systemDateTime.localInstanceLastChangedAt: true
-      local_last_changed_at      as LocalLastChangedAt
+      lastuser               as LastChangedBy,
+      lastdate               as LastChangedDate,
+      lasttime               as LastChangedTime
 }

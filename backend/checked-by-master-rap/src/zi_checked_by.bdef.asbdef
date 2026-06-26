@@ -1,0 +1,23 @@
+managed implementation in class zbp_i_checked_by unique;
+strict ( 2 );
+
+define behavior for ZI_CheckedBy alias CheckedBy
+persistent table zpp_pcby
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) SerialNumber;
+
+  validation validateKey on save { create; update; }
+
+  mapping for zpp_pcby
+  {
+    SerialNumber         = sr_no;
+    CheckedPackedFlag    = pc;
+    UserName             = usr_name;
+  }
+}
