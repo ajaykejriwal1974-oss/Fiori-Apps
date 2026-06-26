@@ -6,8 +6,10 @@ no new persistence is created. The Fiori Elements *Manage* app is generated
 from the service binding via the metadata extension `zc_checked_by.ddlx`.
 
 > **Fields are refit to the real Z-table** (from the field dictionary):
-> data elements, types, lengths and the key mirror the legacy table. Wire
-> value helps (reuse `ZSOL_F4*`) and confirm before activating.
+> data elements, types, lengths and the key mirror the legacy table.
+> **Value helps** (standard `I_*StdVH`; shade fields → the Shade master
+> `ZC_DD_Shade`) and **in-table text** are wired on the projection/interface —
+> VERIFY the released VH names per release before activating.
 
 ## Fields (from the field dictionary)
 
