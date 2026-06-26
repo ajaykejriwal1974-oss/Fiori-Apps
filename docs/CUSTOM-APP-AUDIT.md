@@ -4,11 +4,27 @@ A review of everything built in this repo (17 apps + ~28 RAP backends + 11 BI
 queries + 2 automation classes) for overlap. Three real consolidations found;
 the rest is genuinely distinct.
 
-> **✅ All three applied.** P1 → `backend/mtos-process-rap` + `apps/mtos-process`
+> **✅ All applied.** P1 → `backend/mtos-process-rap` + `apps/mtos-process`
 > (2 services + 2 apps → 1 + 1). P2 → `backend/sales-doc-status-rap`
 > (2 services → 1). P3 → `backend/hu-shared` shared bases consumed by 7 HU
-> services (8 duplicate reads → 2 shared). Net: **−3 services, −1 app, one HU
-> read model**; no coverage lost.
+> services (8 duplicate reads → 2 shared). **P4** (follow-up scan) → the two BI
+> cubes over `ZPP_PACK` merged into one `ZI_PackedStockCube` feeding both queries
+> (one cube, many queries). Net: **−3 services, −1 app, −1 BI cube, one HU read
+> model**; no coverage lost.
+
+## Follow-up scan (post-merge) — clean
+- **Object names** — every CDS view / behavior / service / class / abstract
+  entity name is **globally unique** across the repo (no activation collision
+  from the merges).
+- **P4 — two `ZPP_PACK` cubes merged** (only same-table BI pair): packed-stock +
+  packing-register now share one cube with both dimension sets.
+- **Action result structures** — several tiny `ZD_*Result` entities share a shape
+  (`{Message}` ×4, `{MaterialDocument, Message}` ×3). **Left as-is on purpose**:
+  per-action result types are idiomatic RAP and self-documenting; a shared
+  generic result would couple unrelated actions for ~5 saved lines. Not worth it.
+- Everything else (11 masters, the other 10 BI cubes, the 2 automation classes,
+  contract-batch vs status, dispatch-correction vs obd-automation vs the BI
+  dispatch query) is genuinely distinct — confirmed, no further merges.
 
 ## P1 — Merge `mto-mts-transfer-rap` + `hu-phys-inventory-rap` ⭐ (verified)
 **Both are the same legacy program `ZSOL_MTOS_PROCESS`.** `ZMTOS` ("Transfer MTO

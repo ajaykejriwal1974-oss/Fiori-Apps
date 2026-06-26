@@ -24,6 +24,10 @@ Design Studio, or expose it through the external BI tool.
 | `ZC_DispatchRegisterQuery` | `ZSOL_HUDISPATCH` | ZPWDIS, ZDISPATCH, ZPDESP |
 | `ZC_GstTaxQuery` | `ZSOL_GST_DET` | ZGST, ZGST1, ZGST2, ZGSTCR (or standard GST/DRC) |
 
+> `ZC_PackedStockQuery` and `ZC_PackingRegisterQuery` share **one** cube
+> `ZI_PackedStockCube` (both over `ZPP_PACK` — audit P4, one cube many queries),
+> so it's **11 queries over 10 cubes**.
+
 > **11 queries replace ~40 Z reports.** The rest of the 87 are dropped
 > (dead/duplicate), routed to **standard** inventory/AR/AP apps, or covered by
 > already-built transactional apps — see the consolidation doc.
