@@ -1,0 +1,46 @@
+<mvc:View
+    controllerName="kejriwal.pp.packingdetails.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}">
+        <content>
+            <Table
+                id="table"
+                items="{/PackingItem}"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="50">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>actpackItems}" press=".onPackItems" type="Emphasized"/>
+                        <Button text="{i18n>actrepackItems}" press=".onRepackItems" type="Emphasized"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                        <Column><Text text="{i18n>colHandlingUnit}"/></Column>
+                        <Column><Text text="{i18n>colHandlingUnitItem}"/></Column>
+                        <Column><Text text="{i18n>colMaterial}"/></Column>
+                        <Column><Text text="{i18n>colBatch}"/></Column>
+                        <Column><Text text="{i18n>colQuantity}"/></Column>
+                        <Column><Text text="{i18n>colUnit}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{HandlingUnit}"/>
+                            <Text text="{HandlingUnitItem}"/>
+                            <Text text="{Material}"/>
+                            <Text text="{Batch}"/>
+                            <Text text="{Quantity}"/>
+                            <Text text="{Unit}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

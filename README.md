@@ -41,6 +41,24 @@ service rather than as adaptation projects.
 | [Dyeing Packing](apps/dyeing-packing) | ZPACK01D/02D/03D, ZREPACKD | Textile cone/carton/pallet structure not in standard HU UI | UI authored; RAP skeleton in backend/packing-hu-rap |
 | [Contract Batch Update](apps/contract-batch-update) | ZBATCH_CHANGE | Mass batch assignment across contract items | UI authored; RAP skeleton in backend/contract-batch-rap |
 
+### CUS transactional apps (front-ends for the Route 7 services)
+
+Freestyle worklist apps for the `CUS` transactional services — each binds to the
+OData V4 service of its backend and exposes the static action(s) as table actions.
+List binding + action buttons are wired; the action **invocation** and BAPIs are
+`TODO` (see each README).
+
+| App | Replaces (Z) | Backend service | Actions |
+|---|---|---|---|
+| [Packing Details](apps/manage-packing-details) | ZPACK01/01N/02/02N/03, ZREPACK | backend/packing-detail-rap | Pack, Repack |
+| [Palletization](apps/palletization) | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | backend/palletization-rap | Pack Pallet |
+| [Post Packing & GR](apps/post-packing-gr) | ZPOST01 | backend/post-packing-gr-rap | Post Packing & GR |
+| [Inbound Delivery HUs](apps/inbound-delivery-hus) | ZHUINB | backend/hu-inbound-rap | Post Inbound GR |
+| [HU Physical Inventory](apps/hu-physical-inventory) | ZHUINV | backend/hu-phys-inventory-rap | Create Phys. Inv. Doc |
+| [HU Unpack](apps/hu-unpack) | ZHUPK | backend/hu-unpack-rap | Unpack |
+| [Batch Status](apps/batch-status) | ZBATCHD, ZBATCH_CLS | backend/batch-status-rap | Close, Delete |
+| [MTO to MTS Transfer](apps/mto-mts-transfer) | ZMTOS | backend/mto-mts-transfer-rap | Convert to MTS |
+
 ## Backend (non-UI) artifacts
 
 | Artifact | Type | Replaces (Z) | Status |
