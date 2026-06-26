@@ -1,10 +1,18 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
     "sap/m/MessageBox"
-], function (Controller, JSONModel, MessageToast, MessageBox) {
+], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox) {
     "use strict";
+
+    // The OData V4 service namespace the bound action is qualified with. After the
+    // service binding is created in ADT, set this to the service definition name
+    // (e.g. "com.kejriwal.zui_hu_goods_movement") so the action path resolves.
+    var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
+    var ENTITY_SET = "/HandlingUnitItem";
 
     return Controller.extend("kejriwal.mm.goodsmovementhu.controller.Main", {
 
@@ -38,21 +46,35 @@ sap.ui.define([
                 return;
             }
 
-            // TODO: read HU contents from the backend and append the real rows.
-            // The line below is a placeholder marker row so the flow is visible
-            // until the HU service is wired; remove it once the read is in place.
-            var aItems = oUiModel.getProperty("/items");
-            aItems.push({
-                HandlingUnit: sHu,
-                Material: "",
-                MaterialDescription: this._text("pendingHuRead"),
-                Batch: "",
-                Quantity: "0",
-                Unit: ""
+            var oModel = this.getView().getModel();   // OData V4 default model
+            var oList = oModel.bindList(ENTITY_SET, undefined, undefined, [
+                new Filter("HandlingUnit", FilterOperator.EQ, sHu)
+            ]);
+            var that = this;
+            oList.requestContexts(0, 200).then(function (aContexts) {
+                if (!aContexts.length) {
+                    MessageToast.show(that._text("huNotFound", [sHu]));
+                    that._resetScan();
+                    return;
+                }
+                var aItems = oUiModel.getProperty("/items");
+                aContexts.forEach(function (oCtx) {
+                    var o = oCtx.getObject();
+                    aItems.push({
+                        HandlingUnit: o.HandlingUnit,
+                        Material: o.Material,
+                        MaterialDescription: o.MaterialDescription || "",
+                        Batch: o.Batch,
+                        Quantity: o.Quantity,
+                        Unit: o.Unit
+                    });
+                });
+                oUiModel.setProperty("/items", aItems);
+                that._resetScan();
+                MessageToast.show(that._text("huAdded", [sHu]));
+            }).catch(function (oErr) {
+                MessageBox.error(that._text("huReadFailed", [sHu, (oErr && oErr.message) || ""]));
             });
-            oUiModel.setProperty("/items", aItems);
-            this._resetScan();
-            MessageToast.show(this._text("huAdded", [sHu]));
         },
 
         onRemoveItem: function (oEvent) {
@@ -87,8 +109,32 @@ sap.ui.define([
                 return;
             }
 
-            // TODO: create the material document via the goods-movement service.
-            MessageToast.show(this._text("postTodo", [oUi.items.length, oUi.header.movementType]));
+            var oModel = this.getView().getModel();   // OData V4 default model
+            var oAction = oModel.bindContext(ENTITY_SET + "/" + SERVICE_NS + ".postGoodsMovement(...)");
+            oAction.setParameter("MovementType", oUi.header.movementType);
+            oAction.setParameter("Plant", oUi.header.plant);
+            oAction.setParameter("StorageLocation", oUi.header.storageLocation);
+            oAction.setParameter("ReceivingStorageLocation", oUi.header.moveStorageLocation);
+            oAction.setParameter("_Item", oUi.items.map(function (o) {
+                return {
+                    Material: o.Material,
+                    Batch: o.Batch,
+                    Quantity: o.Quantity,
+                    Unit: o.Unit
+                };
+            }));
+
+            var that = this;
+            oAction.invoke().then(function () {
+                var oResult = oAction.getBoundContext().getObject();
+                MessageBox.success(that._text("postDone", [
+                    (oResult && oResult.MaterialDocument) || "",
+                    (oResult && oResult.Message) || ""
+                ]));
+                that.getView().getModel("ui").setProperty("/items", []);
+            }).catch(function (oErr) {
+                MessageBox.error(that._text("postFailed", [(oErr && oErr.message) || ""]));
+            });
         },
 
         _huAlreadyAdded: function (sHu) {
