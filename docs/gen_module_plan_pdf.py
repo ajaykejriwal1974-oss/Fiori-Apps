@@ -152,6 +152,38 @@ REGISTER = [
  ]),
 ]
 
+# ---- GitHub -> server import path (3 stages) -------------------------------
+GH2SRV = [
+ ("Stage 1A — Backend ABAP → DEV via abapGit",
+  "The backend is serialized in ADT/abapGit format (.ddls / .bdef / .clas / .srvd), so abapGit recreates it as real "
+  "repository objects. In DEV: open abapGit (ADT plug-in or ZABAPGIT_STANDALONE); create the ZKEJRIWAL_BE_* Z packages "
+  "first (never $TMP); clone/link the repo and pull; then activate in FU#2 dependency order. Objects activating under a "
+  "Z package collect onto a workbench transport. One package ↔ one repo/folder, so either point a per-feature abapGit "
+  "repo at each backend/&lt;feature&gt; folder, or import an offline ZIP per package.",
+  "abapGit · TRANSPORT-PLAN.md §1 · ADT-ACTIVATION-CHECKLIST FU#2"),
+ ("Stage 1B — UI apps → DEV (FES) via fiori deploy",
+  "The SAPUI5 apps deploy as BSP applications, not abapGit objects. Fill the REPLACE_WITH_* placeholders, then "
+  "npm install &amp;&amp; npm run deploy (fiori deploy) pushes each app's BSP to the embedded Front-End Server and attaches "
+  "it to a workbench TR — set packageName off $TMP to a real ZKEJRIWAL_UI_* package first. The four adaptation projects "
+  "deploy the same way as app variants.",
+  "PUBLISHING.md · WIRING-CHECKLIST.md"),
+ ("Air-gapped DEV (no internet to GitHub)",
+  "The SAP box needs no internet. Backend: download the repo ZIP and use abapGit Import → from ZIP per package. UI: run "
+  "npm run deploy from a workstation/CI box that reaches both npm and the FES. If DEV does clone GitHub over HTTPS, first "
+  "import the GitHub TLS chain into STRUST or the clone fails on certificate verification.",
+  "abapGit offline · STRUST"),
+ ("Stage 2 — Service bindings + launchpad (per system)",
+  "Create + activate/publish each OData V4 service binding (FU#1); fill the REPLACE_WITH_*_SERVICE manifest tokens and "
+  "controller SERVICE_NS. Build launchpad content (catalogs, target mappings, tiles, spaces/pages, PFCG roles) as TR-FLP. "
+  "Bindings transport as objects but must be re-activated in each target system.",
+  "ADT-ACTIVATION-CHECKLIST FU#1 · PUBLISHING.md"),
+ ("Stage 3 — DEV → KSQ → PROD via STMS",
+  "Now it is ordinary STMS. Group objects into the feature transports (TRANSPORT-PLAN.md §3) and release in order: "
+  "TR-01 Shade foundation → config TRs → TR-02..TR-09 features → TR-FLP launchpad → roles. On the embedded FES the "
+  "backend + UI ride the same route. Import the same ordered set into KSQ, validate, sign off, then PROD.",
+  "TRANSPORT-PLAN.md §3–4 · GO-LIVE-CHECKLIST.md"),
+]
+
 # ---- dev-server runbook (ordered) ------------------------------------------
 STEPS = [
  ("Prerequisites &amp; baseline",
@@ -246,6 +278,10 @@ step_html='\n'.join(
  f'<div class="step"><div class="snum">{i+1}</div><div class="sbody"><h3>{t}</h3><p>{b}</p>'
  f'<p class="ref">Reference: {r}</p></div></div>'
  for i,(t,b,r) in enumerate(STEPS))
+gh_html='\n'.join(
+ f'<div class="step"><div class="snum">{i+1}</div><div class="sbody"><h3>{t}</h3><p>{b}</p>'
+ f'<p class="ref">Tooling: {r}</p></div></div>'
+ for i,(t,b,r) in enumerate(GH2SRV))
 
 CSS = """
 @page { size: A4; margin: 16mm 14mm; }
@@ -270,6 +306,8 @@ table.reg { font-size:9pt; margin:4px 0 12px; }
 table.reg td.rc { font-family:'SF Mono',Consolas,monospace; font-weight:bold; color:#0a3d62; width:46px; white-space:nowrap; }
 table.reg td.rt { width:78px; color:#557; }
 .codes.inl { padding:2px 6px; font-size:8.4pt; }
+.flow { background:#f6f8fa; border:1px solid #d6dee6; border-radius:5px; padding:8px 12px;
+        font-family:'SF Mono',Consolas,monospace; font-size:8.6pt; white-space:pre-wrap; color:#243; margin:6px 0 10px; }
 .cover { text-align:center; padding-top:60mm; page-break-after:always; }
 .cover .sub { font-size:13pt; color:#557; margin-top:6px; }
 .cover .meta { margin-top:30mm; color:#667; font-size:10pt; }
@@ -323,13 +361,25 @@ reports (<code>-RN</code>), <b>{n_tc}</b> distinct Z-tcodes covered. Type:
 {mod_html}
 
 <div class="sec"></div>
-<h2 style="border:none">Part C — Next steps on the development server (in order)</h2>
-<p class="lead">Each step is a stage of activation/wiring on DEV. Earlier steps unblock later ones;
+<h2 style="border:none">Part C — From GitHub to the server (import &amp; transport)</h2>
+<p class="lead">Getting the source <b>out of GitHub and into SAP</b> is <b>not</b> an SAP transport — a transport (STMS)
+only moves objects <i>within</i> the landscape. Git → SAP is a separate <b>import</b> step, with different tools per layer.
+Three stages: <b>import</b> to DEV (abapGit for backend, fiori&nbsp;deploy for UI) → <b>bindings + launchpad</b> →
+<b>STMS</b> up to KSQ/PROD.</p>
+<div class="flow">GitHub repo --(import)--&gt; SAP DEV --(STMS transport)--&gt; KSQ --&gt; PROD
+        abapGit (backend) + fiori deploy (UI)        TR-01 ... TR-FLP</div>
+{gh_html}
+<p class="note">Full detail: docs/GITHUB-TO-SERVER.md. The SAP server never "pulls a transport from GitHub" —
+a developer or CI imports the source, then the activated objects are transported.</p>
+
+<div class="sec"></div>
+<h2 style="border:none">Part D — Next steps on the development server (in order)</h2>
+<p class="lead">Once the source is in DEV (Part C, Stage 1), this is the activation/wiring sequence. Earlier steps unblock later ones;
 masters need the least wiring, the transactional BAPI bodies the most. References point to the repo docs.</p>
 {step_html}
 
 <div class="foot">KEJRIWAL Fiori extension package · module-wise plan &amp; dev runbook · {DATE} ·
-docs: CLASSIFICATION · WIRING-CHECKLIST · ACTIVATION · TRANSPORT-PLAN · GO-LIVE-CHECKLIST</div>
+docs: CLASSIFICATION · WIRING-CHECKLIST · GITHUB-TO-SERVER · ADT-ACTIVATION-CHECKLIST · ACTIVATION · TRANSPORT-PLAN · GO-LIVE-CHECKLIST</div>
 </body></html>"""
 
 import os, subprocess, glob

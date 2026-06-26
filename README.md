@@ -28,8 +28,9 @@ done on the S/4HANA backend — see [`ci/README.md`](ci/README.md).
 > 📄 **[Module-wise plan & dev-server runbook (PDF)](docs/KEJRIWAL_Fiori_Module_Plan.pdf)** —
 > Part A is the **deliverable register**: every app, master and report grouped by SAP module
 > (SD / PP / MM / QM / FI), each with a **delivery code** (e.g. `SD-04`, `PP-R1`) and the
-> **Z-tcodes it replaces** (29 apps/masters + 11 reports). Part B is the build inventory by
-> module; Part C is the step-by-step dev-server sequence. Regenerate with
+> **Z-tcodes it replaces** (29 apps/masters + 11 reports, complete tcode sets). Part B is the
+> build inventory by module; **Part C is the GitHub→server import path** (abapGit + fiori deploy
+> → STMS); Part D is the step-by-step dev-server sequence. Regenerate with
 > `python3 docs/gen_module_plan_pdf.py` (renders via headless Chromium).
 >
 > 📄 **[ADT activation checklist + dev runbook (PDF)](docs/KEJRIWAL_ADT_Activation_Checklist.pdf)** —
@@ -178,6 +179,9 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/GO-LIVE-CHECKLIST.md`](docs/GO-LIVE-CHECKLIST.md) — per-app checklist:
   placeholder values to collect, backend prerequisites, deploy / publish / verify
   steps, and a suggested execution sequence.
+- [`docs/GITHUB-TO-SERVER.md`](docs/GITHUB-TO-SERVER.md) — how the source gets **out of
+  GitHub and into SAP** (abapGit for the backend, `fiori deploy` for the UI apps),
+  including the air-gapped/offline-ZIP path, before the STMS transports take over.
 - [`docs/TRANSPORT-PLAN.md`](docs/TRANSPORT-PLAN.md) — package hierarchy and
   transport-request grouping/sequence to move the objects DEV → KSQ → PROD on the
   embedded FES.
