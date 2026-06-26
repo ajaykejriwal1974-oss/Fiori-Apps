@@ -26,9 +26,17 @@ it locally with `python3 ci/validate.py`. Semantic ABAP/CDS activation (ATC) is
 done on the S/4HANA backend — see [`ci/README.md`](ci/README.md).
 
 > 📄 **[Module-wise plan & dev-server runbook (PDF)](docs/KEJRIWAL_Fiori_Module_Plan.pdf)** —
-> the full build inventory grouped by SAP module (SD / PP / MM / QM / FI / Cross) plus the
-> step-by-step activation/wiring sequence for the development server. Regenerate with
+> Part A is the **deliverable register**: every app, master and report grouped by SAP module
+> (SD / PP / MM / QM / FI), each with a **delivery code** (e.g. `SD-04`, `PP-R1`) and the
+> **Z-tcodes it replaces** (29 apps/masters + 11 reports). Part B is the build inventory by
+> module; Part C is the step-by-step dev-server sequence. Regenerate with
 > `python3 docs/gen_module_plan_pdf.py` (renders via headless Chromium).
+>
+> 📄 **[ADT activation checklist + dev runbook (PDF)](docs/KEJRIWAL_ADT_Activation_Checklist.pdf)** —
+> the four system-side follow-ups (activate objects → confirm VERIFY markers → create service
+> bindings → ATC/tiles) with the VERIFY table and the 26-service binding table. Source:
+> [`docs/ADT-ACTIVATION-CHECKLIST.md`](docs/ADT-ACTIVATION-CHECKLIST.md). Regenerate with
+> `python3 docs/gen_adt_checklist_pdf.py`.
 
 ## Portfolio coverage — all 285 Z-tcodes classified & routed
 
