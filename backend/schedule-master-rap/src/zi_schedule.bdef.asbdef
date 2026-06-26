@@ -15,6 +15,7 @@ authorization master ( instance )
 
   determination setDefaults on modify { create; update; }
   validation validateKey on save { create; update; }
+  validation validateScheduleQty on save { create; update; }
 
   mapping for zpp_schedulen
   {

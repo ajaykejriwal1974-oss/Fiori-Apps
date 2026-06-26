@@ -13,6 +13,7 @@ authorization master ( instance )
   field ( mandatory : create ) SalesOrganization;
 
   validation validateKey on save { create; update; }
+  validation validateReceipt on save { create; update; }
 
   mapping for zcform1
   {

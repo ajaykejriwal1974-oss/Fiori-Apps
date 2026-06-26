@@ -4,6 +4,8 @@ CLASS lhc_Schedule DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys FOR Schedule~setDefaults.
     METHODS validateKey FOR VALIDATE ON SAVE
       IMPORTING keys FOR Schedule~validateKey.
+    METHODS validateScheduleQty FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Schedule~validateScheduleQty.
 ENDCLASS.
 
 CLASS lhc_Schedule IMPLEMENTATION.
@@ -34,6 +36,22 @@ CLASS lhc_Schedule IMPLEMENTATION.
                                  severity = if_abap_behv_message=>severity-error
                                  text     = 'ScheduleNumber is required' )
                         %element-ScheduleNumber = if_abap_behv=>mk-on ) TO reported-schedule.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD validateScheduleQty.
+    READ ENTITIES OF zi_schedule IN LOCAL MODE
+      ENTITY Schedule FIELDS ( ScheduleQty ) WITH CORRESPONDING #( keys )
+      RESULT DATA(rows).
+    LOOP AT rows INTO DATA(row).
+      IF row-ScheduleQty <= 0.
+        APPEND VALUE #( %tky = row-%tky ) TO failed-schedule.
+        APPEND VALUE #( %tky = row-%tky
+                        %msg = new_message_with_text(
+                                 severity = if_abap_behv_message=>severity-error
+                                 text     = 'Schedule quantity must be greater than zero' )
+                        %element-ScheduleQty = if_abap_behv=>mk-on ) TO reported-schedule.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
