@@ -8,8 +8,11 @@ API**.
 
 > **Skeleton, not compile-ready.** The QM table/field names, the "open
 > characteristic" status filter, and the result-recording BAPI parameters must be
-> **verified against your release** in ADT before activation. The structure and
-> RAP wiring are complete; the QM specifics are marked `TODO` / `VERIFY`.
+> **verified against your release** in ADT before activation.
+>
+> **Wired ✅** — the saver now calls `BAPI_INSPCHAR_SETRESULT` + `BAPI_INSPCHAR_CLOSE`
+> per buffered row, routes errors into `reported`, and commits once. VERIFY the
+> `bapi2045d4` result-structure fields for your release.
 
 ## Why unmanaged RAP
 

@@ -13,7 +13,7 @@ tables, no new persistence.
 | `zc_dispatch_box.ddls.asddls` | `ZC_DispatchBox` | Projection (`transactional_query`) |
 | `zi_dispatch_box.bdef.asbdef` | Behavior (unmanaged) | `static action correctDispatch` |
 | `zc_dispatch_box.bdef.asbdef` | Projection behavior | `use action correctDispatch` |
-| `zbp_i_dispatch_box.clas.*` | Behavior pool | `correctDispatch` handler (BAPI/update `TODO`) |
+| `zbp_i_dispatch_box.clas.*` | Behavior pool | `correctDispatch` **wired** (UPDATE `ZSOL_HUDISPATCH`) |
 | `zd_dispatch_correct.ddls.asddls` | Param (header) | `NewSalesOrder` / `NewSalesOrderItem` / `NewStatus` + `_Item` |
 | `zd_dispatch_correct_item.ddls.asddls` | Param (item) | `BoxNumber` (one per selected box) |
 | `zd_dispatch_result.ddls.asddls` | Result | `BoxesUpdated` + `Message` |
@@ -26,7 +26,7 @@ tables, no new persistence.
 > `ZPP_PACK` is keyed by `BOXNO` + `GJAHR` — confirm the join (year predicate or
 > "latest GJAHR") against your data before activating.
 
-## Wiring (TODO)
+## Wiring — done ✅ (VERIFY notes)
 `correctDispatch` updates `ZSOL_HUDISPATCH` (SO / item / status) for each box and
 keeps `ZPP_PACK` in sync. If a box is already invoiced/posted, the goods movement
 must be reversed first. Reuse the existing `ZSOL_DISPATCH_CORRECTION` routine
