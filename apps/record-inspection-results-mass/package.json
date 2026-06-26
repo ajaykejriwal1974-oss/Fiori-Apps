@@ -1,0 +1,27 @@
+{
+  "name": "kejriwal-record-inspection-results-mass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom Fiori app for mass / multi-lot inspection result entry (replaces ZQA32; clean-core alternative to F2655 which records one lot at a time).",
+  "keywords": [
+    "ui5",
+    "freestyle",
+    "sap-fiori",
+    "qm",
+    "s4hana-onpremise"
+  ],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'QM Mass Inspection Results Service'
+define service ZUI_QM_INSPECTIONCHAR {
+  expose ZC_QM_InspectionChar as InspectionCharacteristic;
+}

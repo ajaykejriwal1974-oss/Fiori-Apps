@@ -1,0 +1,27 @@
+managed implementation in class zbp_i_merge unique;
+strict ( 2 );
+
+define behavior for ZI_Merge alias Merge
+persistent table zpp_merge
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) OrderNumber;
+
+  validation validateKey on save { create; update; }
+
+  mapping for zpp_merge
+  {
+    OrderNumber          = aurnr;
+    Grade                = grade;
+    EndUse               = enduse;
+    Batch                = charg;
+    ShadeCode            = shdcd;
+    Quantity             = menge;
+    ShadeCode2           = shdcd2;
+  }
+}

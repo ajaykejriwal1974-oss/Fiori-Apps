@@ -1,0 +1,22 @@
+managed implementation in class zbp_i_truck unique;
+strict ( 2 );
+
+define behavior for ZI_Truck alias Truck
+persistent table ztb_truck_mstr
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TruckNumber;
+
+  validation validateKey on save { create; update; }
+
+  mapping for ztb_truck_mstr
+  {
+    TruckNumber          = truckno;
+    CarrierName          = carrier_name;
+  }
+}

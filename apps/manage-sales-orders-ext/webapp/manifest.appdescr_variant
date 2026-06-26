@@ -1,0 +1,76 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fioriId": "F1873",
+  "id": "kejriwal.zsalesorder.manage.extension",
+  "reference": "REPLACE_WITH_BASE_APP_COMPONENT_ID",
+  "namespace": "apps/REPLACE_WITH_BASE_APP_COMPONENT_ID/changes/kejriwal/zsalesorder/manage/extension/",
+  "version": "1.0.0",
+  "packageName": "$TMP",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "SalesOrder-manageKejriwal": {
+            "semanticObject": "SalesOrder",
+            "action": "manageKejriwal",
+            "icon": "sap-icon://sales-order",
+            "title": "{{flpTitle}}",
+            "subTitle": "{{flpSubtitle}}",
+            "signature": {
+              "parameters": {},
+              "additionalParameters": "allowed"
+            }
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+      "content": {
+        "parentPage": {
+          "component": "sap.suite.ui.generic.template.ObjectPage",
+          "entitySet": "C_SalesOrder"
+        },
+        "entityPropertyChange": {
+          "propertyPath": "component/settings/sections/TextileAttributesSection",
+          "operation": "UPSERT",
+          "propertyValue": {
+            "id": "TextileAttributesSection",
+            "title": "{i18n>textileAttributes}",
+            "template": "kejriwal.zsalesorder.manage.extension.changes.fragments.TextileAttributes"
+          }
+        }
+      }
+    },
+    {
+      "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+      "content": {
+        "parentPage": {
+          "component": "sap.suite.ui.generic.template.ObjectPage",
+          "entitySet": "C_SalesOrder"
+        },
+        "entityPropertyChange": {
+          "propertyPath": "component/settings/sections/OrderStatusSection",
+          "operation": "UPSERT",
+          "propertyValue": {
+            "id": "OrderStatusSection",
+            "title": "{i18n>orderStatus}",
+            "template": "kejriwal.zsalesorder.manage.extension.changes.fragments.OrderStatusActions"
+          }
+        }
+      }
+    }
+  ]
+}

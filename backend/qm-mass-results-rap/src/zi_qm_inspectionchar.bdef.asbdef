@@ -1,0 +1,23 @@
+// Unmanaged behavior: the result-recording persistence is the standard QM API,
+// not a custom table. The UI edits ResultValue / Valuation (update) and submits;
+// the save sequence records the buffered rows through the QM BAPI.
+//
+// Add an authorization master ( global ) + get_global_authorizations before
+// going live; omitted here to keep the skeleton minimal.
+unmanaged implementation in class zbp_i_qm_inspectionchar unique;
+strict ( 2 );
+
+define behavior for ZI_QM_InspectionChar alias InspectionChar
+{
+  update;
+
+  // Only the result + valuation are editable; everything else comes from QM.
+  field ( readonly )
+    CharacteristicDescription,
+    Material,
+    Plant,
+    WorkCenter,
+    Unit,
+    InspectionType,
+    Origin;
+}

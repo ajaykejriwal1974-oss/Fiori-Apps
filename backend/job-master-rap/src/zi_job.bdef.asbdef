@@ -1,0 +1,35 @@
+managed implementation in class zbp_i_job unique;
+strict ( 2 );
+
+define behavior for ZI_Job alias Job
+persistent table zpp_jobn
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) JobNumber;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  determination setDefaults on modify { create; update; }
+  validation validateKey on save { create; update; }
+
+  mapping for zpp_jobn
+  {
+    JobNumber            = jobno;
+    BatchNumber          = batchno;
+    ScheduleNumber       = schno;
+    Plant                = werks;
+    DyeingWorkCenter     = dye_arbpl;
+    WindingWorkCenter    = win_arbpl;
+    DeletionFlag         = delind;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
+  }
+}

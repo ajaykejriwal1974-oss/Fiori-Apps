@@ -1,0 +1,78 @@
+<mvc:View
+    controllerName="kejriwal.pp.dyeingpacking.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:t="sap.ui.table"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}" showHeader="true">
+        <content>
+            <Panel id="headerPanel" headerText="{i18n>packingHeader}" expandable="false">
+                <f:SimpleForm
+                    id="headerForm"
+                    layout="ResponsiveGridLayout"
+                    editable="true"
+                    labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+                    columnsXL="2" columnsL="2" columnsM="1">
+                    <f:content>
+                        <Label text="{i18n>reference}" required="true" />
+                        <Input id="inpReference" value="{ui>/header/reference}" placeholder="{i18n>referencePlaceholder}" />
+
+                        <Label text="{i18n>material}" />
+                        <Input id="inpMaterial" value="{ui>/header/material}" />
+
+                        <Label text="{i18n>batch}" />
+                        <Input id="inpBatch" value="{ui>/header/batch}" />
+
+                        <Label text="{i18n>shade}" />
+                        <Input id="inpShade" value="{ui>/header/shade}" />
+                    </f:content>
+                </f:SimpleForm>
+                <Toolbar id="addToolbar">
+                    <Button id="btnAddCone" text="{i18n>addCone}" icon="sap-icon://add" press=".onAddCone" />
+                    <Button id="btnAddCarton" text="{i18n>addCarton}" icon="sap-icon://add" press=".onAddCarton" />
+                    <Button id="btnAddPallet" text="{i18n>addPallet}" icon="sap-icon://add" press=".onAddPallet" />
+                    <ToolbarSpacer />
+                    <ObjectStatus id="totalNet" text="{i18n>totalNet}: {ui>/totals/net} {ui>/header/weightUnit}" />
+                    <ObjectStatus id="totalGross" text="{i18n>totalGross}: {ui>/totals/gross} {ui>/header/weightUnit}" state="Information" />
+                </Toolbar>
+            </Panel>
+
+            <t:Table
+                id="packingTable"
+                rows="{ui>/units}"
+                selectionMode="None"
+                visibleRowCountMode="Auto"
+                minAutoRowCount="6"
+                ariaLabelledBy="title">
+                <t:extension>
+                    <OverflowToolbar>
+                        <Title id="title" text="{i18n>packingStructure} ({= ${ui>/units}.length })" level="H2" />
+                        <ToolbarSpacer />
+                        <Button id="btnRepack" text="{i18n>repack}" icon="sap-icon://synchronize" press=".onRepack" />
+                    </OverflowToolbar>
+                </t:extension>
+                <t:columns>
+                    <t:Column width="9rem"><Label text="{i18n>level}" /><t:template><Text text="{ui>level}" /></t:template></t:Column>
+                    <t:Column width="11rem"><Label text="{i18n>packingMaterial}" /><t:template><Input value="{ui>packingMaterial}" /></t:template></t:Column>
+                    <t:Column width="7rem" hAlign="End"><Label text="{i18n>quantity}" /><t:template><Input value="{ui>quantity}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>netWeight}" /><t:template><Input value="{ui>netWeight}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>grossWeight}" /><t:template><Input value="{ui>grossWeight}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="4rem" hAlign="Center"><Label text="" /><t:template><Button icon="sap-icon://decline" type="Transparent" press=".onRemoveUnit" /></t:template></t:Column>
+                </t:columns>
+            </t:Table>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="btnPack"
+                    text="{i18n>createHus}"
+                    type="Emphasized"
+                    icon="sap-icon://accept"
+                    enabled="{= ${ui>/units}.length &gt; 0 }"
+                    press=".onCreateHus" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

@@ -1,0 +1,39 @@
+<!--
+  Custom UI section for Manage Sales Orders (F1873).
+  Re-adds the textile order attributes that used to live on the Z screen
+  SAPMZ_SO_CREATE (denier, shade, lustre, contract link).
+
+  CLEAN-CORE NOTE:
+  These fields can only bind to data the OData service actually exposes.
+  The underlying properties (to_TextileAttr / YY1_* extension fields) must be
+  added on the backend first via a custom CDS extension (append/extend view)
+  or in-app key-user field extensibility, and exposed on the C_SalesOrder
+  entity. Until then these controls are UI-only placeholders.
+-->
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form">
+    <form:SimpleForm
+        id="textileAttributesForm"
+        title="{i18n>textileAttributes}"
+        layout="ResponsiveGridLayout"
+        editable="true"
+        labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+        columnsXL="2" columnsL="2" columnsM="1">
+        <form:content>
+            <Label text="{i18n>denier}" />
+            <Input id="inpDenier" value="{YY1_Denier_SO}" />
+
+            <Label text="{i18n>shade}" />
+            <Input id="inpShade" value="{YY1_Shade_SO}" showValueHelp="true" valueHelpRequest=".onShadeValueHelp" />
+
+            <Label text="{i18n>lustre}" />
+            <Input id="inpLustre" value="{YY1_Lustre_SO}" />
+
+            <Label text="{i18n>contractLink}" />
+            <Input id="inpContract" value="{YY1_ContractRef_SO}" />
+        </form:content>
+    </form:SimpleForm>
+</core:FragmentDefinition>

@@ -1,0 +1,27 @@
+managed implementation in class zbp_i_digital_signature unique;
+strict ( 2 );
+
+define behavior for ZI_DigitalSignature alias DigiSign
+persistent table ztdigi_sign
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) CompanyCode;
+
+  validation validateKey on save { create; update; }
+
+  mapping for ztdigi_sign
+  {
+    CompanyCode          = bukrs;
+    Email                = email;
+    Password             = pwd;
+    IpAddress            = ip;
+    PfxPrefix            = pfx;
+    SourceFolder         = source_folder;
+    DestinationFolder    = dest_folder;
+  }
+}

@@ -1,0 +1,23 @@
+managed implementation in class zbp_i_transport unique;
+strict ( 2 );
+
+define behavior for ZI_Transport alias Transport
+persistent table ztrans
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TransportCode;
+
+  validation validateKey on save { create; update; }
+
+  mapping for ztrans
+  {
+    TransportCode        = zztrcode;
+    TruckNumber          = zztrckno;
+    Description          = zztrdesc;
+  }
+}

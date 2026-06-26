@@ -1,0 +1,64 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Shade',
+    typeNamePlural: 'Shades',
+    title: { type: #STANDARD, value: 'ShadeCode' },
+    description: { type: #STANDARD, value: 'ShadeName' }
+  }
+}
+annotate view ZC_DD_Shade with
+{
+  @UI.facet: [ {
+    id: 'General',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 10
+  } ]
+
+  @UI: {
+    lineItem:       [ { position: 10, importance: #HIGH } ],
+    identification: [ { position: 10 } ],
+    selectionField: [ { position: 10 } ]
+  }
+  @EndUserText.label: 'Shade Code'
+  ShadeCode;
+
+  @UI: {
+    lineItem:       [ { position: 20, importance: #HIGH } ],
+    identification: [ { position: 20 } ],
+    selectionField: [ { position: 20 } ]
+  }
+  @EndUserText.label: 'Shade Name'
+  ShadeName;
+
+  @UI: {
+    lineItem:       [ { position: 30, importance: #MEDIUM } ],
+    identification: [ { position: 30 } ],
+    selectionField: [ { position: 30 } ]
+  }
+  @EndUserText.label: 'Colour Family'
+  ColorFamily;
+
+  @UI: {
+    lineItem:       [ { position: 40 } ],
+    identification: [ { position: 40 } ]
+  }
+  @EndUserText.label: 'RGB Hex'
+  RgbHex;
+
+  @UI: {
+    lineItem:       [ { position: 50 } ],
+    identification: [ { position: 50 } ]
+  }
+  @EndUserText.label: 'Lustre'
+  Lustre;
+
+  @UI: {
+    lineItem:       [ { position: 60 } ],
+    identification: [ { position: 60 } ]
+  }
+  @EndUserText.label: 'Active'
+  IsActive;
+}

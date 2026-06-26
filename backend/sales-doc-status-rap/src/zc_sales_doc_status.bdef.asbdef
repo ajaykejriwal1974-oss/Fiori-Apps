@@ -1,0 +1,12 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_SalesDocStatus alias SalesDoc
+{
+  use action closeContract;
+  use action completeContract;
+  use action releaseContract;
+  use action updatePendingRate;
+  use action closeSalesOrder;
+  use action closeOrderProgram;
+}

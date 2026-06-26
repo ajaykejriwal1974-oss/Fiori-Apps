@@ -1,0 +1,4 @@
+@EndUserText.label: 'Job Master Service'
+define service ZUI_JOB {
+  expose ZC_Job as Job;
+}

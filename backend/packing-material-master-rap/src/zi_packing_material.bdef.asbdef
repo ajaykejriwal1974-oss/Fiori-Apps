@@ -1,0 +1,26 @@
+managed implementation in class zbp_i_packing_material unique;
+strict ( 2 );
+
+define behavior for ZI_PackingMaterial alias PackMaterial
+persistent table zpack_mast
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) PackingType;
+
+  validation validateKey on save { create; update; }
+
+  mapping for zpack_mast
+  {
+    PackingType          = ptype;
+    WorkCenter           = arbpl;
+    Material             = matnr;
+    StorageLocation      = lgort;
+    Batch                = charg;
+    Sequence             = seq;
+  }
+}

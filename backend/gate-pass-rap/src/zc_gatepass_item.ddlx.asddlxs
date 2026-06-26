@@ -1,0 +1,26 @@
+@Metadata.layer: #CORE
+annotate view ZC_GatePassItem with
+{
+  @UI.facet: [ { id: 'ItemGeneral', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Item', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ] }
+  @EndUserText.label: 'Item'
+  ItemNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  @EndUserText.label: 'Material'
+  Material;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Description'
+  MaterialDescription;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Supplier'
+  Supplier;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Supplier Name'
+  SupplierName;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Quantity'
+  Quantity;
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Unit'
+  Unit;
+}

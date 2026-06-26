@@ -1,0 +1,8 @@
+unmanaged implementation in class zbp_i_batch_status unique;
+strict ( 2 );
+
+define behavior for ZI_BatchStatus alias Batch
+{
+  static action closeBatch parameter ZD_BatchClose result [1] ZD_BatchCloseResult;
+  static action deleteBatch parameter ZD_BatchDelete result [1] ZD_BatchDeleteResult;
+}

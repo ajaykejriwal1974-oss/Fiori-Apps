@@ -1,0 +1,9 @@
+CLASS zbp_i_transport DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_transport.
+ENDCLASS.
+
+CLASS zbp_i_transport IMPLEMENTATION.
+ENDCLASS.

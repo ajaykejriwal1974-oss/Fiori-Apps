@@ -1,0 +1,23 @@
+{
+  "fileName": "id_1750000000001_codeExt",
+  "fileType": "change",
+  "changeType": "codeExt",
+  "moduleName": "kejriwal/zsalesorder/manage/extension/changes/coding/SalesOrderObjectPageExt",
+  "reference": "REPLACE_WITH_BASE_APP_COMPONENT_ID",
+  "namespace": "apps/REPLACE_WITH_BASE_APP_COMPONENT_ID/changes/",
+  "projectId": "kejriwal.zsalesorder.manage.extension",
+  "creation": "2026-06-25T00:00:00.000Z",
+  "originalLanguage": "EN",
+  "support": {
+    "generator": "@sap/adaptation-project",
+    "sapui5Version": "1.120.0"
+  },
+  "layer": "CUSTOMER_BASE",
+  "content": {
+    "codeRef": "coding/SalesOrderObjectPageExt.js"
+  },
+  "selector": {
+    "controllerName": "REPLACE_WITH_OBJECT_PAGE_CONTROLLER_NAME"
+  },
+  "texts": {}
+}

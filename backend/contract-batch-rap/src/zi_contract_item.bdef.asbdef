@@ -1,0 +1,11 @@
+// Read contract items + a static action that mass-updates the batch on the
+// selected items via the standard sales-document change API. Unmanaged.
+unmanaged implementation in class zbp_i_contract_item unique;
+strict ( 2 );
+
+define behavior for ZI_Contract_Item alias ContractItem
+{
+  static action updateBatches
+    parameter ZD_Ctr_Batch_Update
+    result [1] ZD_Ctr_Batch_Result;
+}

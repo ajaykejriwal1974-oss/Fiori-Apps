@@ -1,0 +1,34 @@
+managed implementation in class zbp_i_dd_shade unique;
+strict ( 2 );
+
+define behavior for ZI_DD_Shade alias Shade
+persistent table zdd_shade
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) ShadeCode;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination setDefaults on modify { create; }
+  validation validateShade on save { create; update; }
+
+  mapping for zdd_shade
+  {
+    ShadeCode          = shade_code;
+    ShadeName          = shade_name;
+    ColorFamily        = color_family;
+    RgbHex             = rgb_hex;
+    Lustre             = lustre;
+    IsActive           = is_active;
+    CreatedBy          = created_by;
+    CreatedAt          = created_at;
+    LastChangedBy      = last_changed_by;
+    LastChangedAt      = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}

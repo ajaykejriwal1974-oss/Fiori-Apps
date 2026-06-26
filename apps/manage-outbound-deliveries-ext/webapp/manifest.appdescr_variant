@@ -1,0 +1,58 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fioriId": "F0867A",
+  "id": "kejriwal.zdelivery.manage.extension",
+  "reference": "REPLACE_WITH_BASE_APP_COMPONENT_ID",
+  "namespace": "apps/REPLACE_WITH_BASE_APP_COMPONENT_ID/changes/kejriwal/zdelivery/manage/extension/",
+  "version": "1.0.0",
+  "packageName": "$TMP",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "OutboundDelivery-manageKejriwal": {
+            "semanticObject": "OutboundDelivery",
+            "action": "manageKejriwal",
+            "icon": "sap-icon://shipping-status",
+            "title": "{{flpTitle}}",
+            "subTitle": "{{flpSubtitle}}",
+            "signature": {
+              "parameters": {},
+              "additionalParameters": "allowed"
+            }
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+      "content": {
+        "parentPage": {
+          "component": "sap.suite.ui.generic.template.ObjectPage",
+          "entitySet": "C_OutboundDelivery"
+        },
+        "entityPropertyChange": {
+          "propertyPath": "component/settings/sections/DeliveryChallanSection",
+          "operation": "UPSERT",
+          "propertyValue": {
+            "id": "DeliveryChallanSection",
+            "title": "{i18n>deliveryChallan}",
+            "template": "kejriwal.zdelivery.manage.extension.changes.fragments.DeliveryChallan"
+          }
+        }
+      }
+    }
+  ]
+}

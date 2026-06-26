@@ -1,0 +1,4 @@
+@EndUserText.label: 'Batch Status Service'
+define service ZUI_BATCH_STATUS {
+  expose ZC_BatchStatus as Batch;
+}

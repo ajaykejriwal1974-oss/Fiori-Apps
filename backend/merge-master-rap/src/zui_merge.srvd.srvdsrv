@@ -1,0 +1,4 @@
+@EndUserText.label: 'Merge Details Master Service'
+define service ZUI_MERGE {
+  expose ZC_Merge as Merge;
+}

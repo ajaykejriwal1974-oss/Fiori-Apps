@@ -1,0 +1,45 @@
+managed implementation in class zbp_i_schedule unique;
+strict ( 2 );
+
+define behavior for ZI_Schedule alias Schedule
+persistent table zpp_schedulen
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) ScheduleNumber;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  determination setDefaults on modify { create; update; }
+  validation validateKey on save { create; update; }
+
+  mapping for zpp_schedulen
+  {
+    ScheduleNumber       = schno;
+    FiscalYear           = gjahr;
+    Plant                = werks;
+    CardNumber           = kdno;
+    ScheduleDate         = schdt;
+    ScheduleTime         = schtime;
+    SalesDocument        = vbeln;
+    SalesItem            = posnr;
+    DyeingDate           = dyedt;
+    Material             = matnr;
+    MaterialDesc         = maktx;
+    ScheduleQty          = sch_qty;
+    SalesUnit            = vrkme;
+    ShadeCode            = shdcd;
+    Remarks              = remarks;
+    CompleteFlag         = complete;
+    DeletionFlag         = delind;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
+  }
+}

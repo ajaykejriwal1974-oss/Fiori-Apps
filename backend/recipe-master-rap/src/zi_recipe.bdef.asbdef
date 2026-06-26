@@ -1,0 +1,41 @@
+managed implementation in class zbp_i_recipe unique;
+strict ( 2 );
+
+define behavior for ZI_Recipe alias Recipe
+persistent table zpp_receipe
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) Plant;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  determination setDefaults on modify { create; update; }
+  validation validateKey on save { create; update; }
+
+  mapping for zpp_receipe
+  {
+    Plant                = werks;
+    GreyCode             = grey_code;
+    DyeCode              = dye_code;
+    ShadeCode            = shdcd;
+    ItemNumber           = posnr;
+    GreyItemDesc         = grey_item;
+    DyeItemDesc          = dye_item;
+    Component            = component;
+    ComponentDesc        = comp_desc;
+    ComponentType        = comp_type;
+    Ratio                = ratio;
+    SalesUnit            = vrkme;
+    Remarks              = remarks;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
+  }
+}

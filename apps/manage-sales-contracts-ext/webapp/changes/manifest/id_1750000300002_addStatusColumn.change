@@ -1,0 +1,33 @@
+{
+  "fileName": "id_1750000300002_addStatusColumn",
+  "fileType": "change",
+  "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+  "reference": "REPLACE_WITH_BASE_APP_COMPONENT_ID",
+  "namespace": "apps/REPLACE_WITH_BASE_APP_COMPONENT_ID/changes/",
+  "projectId": "kejriwal.zcontract.manage.extension",
+  "creation": "2026-06-25T00:00:00.000Z",
+  "originalLanguage": "EN",
+  "layer": "CUSTOMER_BASE",
+  "support": {
+    "generator": "@sap/adaptation-project",
+    "sapui5Version": "1.120.0"
+  },
+  "content": {
+    "parentPage": {
+      "component": "sap.suite.ui.generic.template.ListReport",
+      "entitySet": "C_SalesContract"
+    },
+    "entityPropertyChange": {
+      "propertyPath": "component/settings/lineItem/columns/YY1_KejStatus_CON",
+      "operation": "UPSERT",
+      "propertyValue": {
+        "header": "{@i18n>customStatus}",
+        "width": "10rem",
+        "horizontalAlign": "Begin",
+        "availability": "Adaptation",
+        "leadingProperty": "YY1_KejStatus_CON"
+      }
+    }
+  },
+  "texts": {}
+}

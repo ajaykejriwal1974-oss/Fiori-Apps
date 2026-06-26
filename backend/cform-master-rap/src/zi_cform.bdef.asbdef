@@ -1,0 +1,30 @@
+managed implementation in class zbp_i_cform unique;
+strict ( 2 );
+
+define behavior for ZI_Cform alias CForm
+persistent table zcform1
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) SalesOrganization;
+
+  validation validateKey on save { create; update; }
+
+  mapping for zcform1
+  {
+    SalesOrganization    = sale_org;
+    Customer             = cust_code;
+    BillingDocument      = invoice_no;
+    BillingDate          = invoice_dt;
+    InvoiceValue         = invoice_val;
+    FormType             = form_type;
+    FormNumber           = form_no;
+    FormDate             = form_dt;
+    AllocatedValue       = allocated_value;
+    Quantity             = qty;
+  }
+}

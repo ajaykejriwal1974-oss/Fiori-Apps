@@ -1,0 +1,47 @@
+<!--
+  Custom UI section for Confirm Production Operation (F3069).
+  Re-adds the dyeing-process confirmation fields that used to live on the Z
+  screen behind ZCO11N / ZCO11A (shade, dye-lot, recipe/temperature params,
+  WIP batch link) - not present on the standard confirmation screen.
+
+  CLEAN-CORE NOTE:
+  These controls can only bind to data the OData service actually exposes.
+  The underlying YY1_* fields must be added on the backend first via a custom
+  CDS extension (or key-user in-app field extensibility) on the production
+  operation confirmation entity. Until then they are UI-only placeholders.
+
+  FRAMEWORK NOTE:
+  F3069 is commonly a freestyle SAPUI5 app. This fragment is injected via
+  addXMLAtExtensionPoint (see ../id_*_addXMLDyeingSection.change). Confirm the
+  real extension point / parent control id in the BAS Adaptation Editor.
+-->
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Panel id="dyeingConfirmationPanel" headerText="{i18n>dyeingConfirmation}" expandable="true" expanded="true">
+        <form:SimpleForm
+            id="dyeingConfirmationForm"
+            layout="ResponsiveGridLayout"
+            editable="true"
+            labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+            columnsXL="2" columnsL="2" columnsM="1">
+            <form:content>
+                <Label text="{i18n>shade}" />
+                <Input id="inpShade" value="{YY1_Shade_CONF}" showValueHelp="true" valueHelpRequest=".onShadeValueHelp" />
+
+                <Label text="{i18n>dyeLot}" />
+                <Input id="inpDyeLot" value="{YY1_DyeLot_CONF}" />
+
+                <Label text="{i18n>recipe}" />
+                <Input id="inpRecipe" value="{YY1_Recipe_CONF}" />
+
+                <Label text="{i18n>temperature}" />
+                <Input id="inpTemperature" value="{YY1_Temperature_CONF}" type="Number" description="{i18n>celsius}" />
+
+                <Label text="{i18n>wipBatch}" />
+                <Input id="inpWipBatch" value="{YY1_WIPBatch_CONF}" />
+            </form:content>
+        </form:SimpleForm>
+    </Panel>
+</core:FragmentDefinition>

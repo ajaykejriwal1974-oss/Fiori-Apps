@@ -1,0 +1,26 @@
+{
+  "name": "kejriwal-mtos-process",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Custom Fiori app for MTOS Process (ZMTOS, ZHUINV); clean-core replacement for ZSOL_MTOS_PROCESS (MTO->MTS transfer + phys. inv. doc).",
+  "keywords": [
+    "ui5",
+    "freestyle",
+    "sap-fiori",
+    "s4hana-onpremise"
+  ],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}
