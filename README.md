@@ -148,6 +148,10 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/STD-RETIREMENT.md`](docs/STD-RETIREMENT.md) — the **17 `STD` tcodes** mapped
   to their standard S/4HANA Fiori app + classic tx + `SAP_BR_*` business role, with
   the per-tcode retirement procedure (assign role, migrate variants, retire Z).
+- [`docs/PRT-OUTPUT-MANAGEMENT.md`](docs/PRT-OUTPUT-MANAGEMENT.md) — the **61 `PRT`
+  print/form programs** re-platformed onto S/4HANA Output Management (BRF+
+  determination + Adobe form templates), grouped by output object; gate-pass,
+  labels and the 3 non-form items handled, pre-GST 201-forms flagged to retire.
 - [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
   ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
   the corrected master→real-table mapping.

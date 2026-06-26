@@ -241,7 +241,7 @@ Reporting only. Re-platform as CDS analytical queries / Embedded Analytics or th
 
 ## `PRT` — Print / output — Output Management (Adobe / SmartForms)  (61)
 
-Form or print program. Re-implement via SAP Output Management (BRF+ / Adobe Forms / form templates). Not a tile of its own.
+Form or print program. Re-implement via SAP Output Management (BRF+ / Adobe Forms / form templates). Not a tile of its own. **Per-program output object + template mapping: [PRT-OUTPUT-MANAGEMENT.md](PRT-OUTPUT-MANAGEMENT.md).**
 
 | Tcode | Program | Description | Custom tables |
 |---|---|---|---|
