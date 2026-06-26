@@ -87,6 +87,8 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
 | [C-Form Allocation](backend/cform-master-rap) | Managed RAP master (CUS) | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | Real table `ZCFORM1` (keys SALE_ORG/CUST_CODE/INVOICE_NO; pending↔received) |
 | [Dispatch Correction](backend/dispatch-correction-rap) | Unmanaged RAP service (CUS) | ZDSP_CORR | Real read `ZSOL_HUDISPATCH`⋈`ZPP_PACK`; `correctDispatch` (update to wire) |
+| [Contract Status](backend/contract-status-rap) | Unmanaged RAP service (EXT) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | Read `VBAK` (contracts); close/complete/release/updateRate actions → wired into manage-sales-contracts-ext |
+| [Sales Order Status](backend/sales-order-status-rap) | Unmanaged RAP service (EXT) | ZSOCLOSE/ZSOCLOSE1 | Read `VBAK` (orders); close actions → wired into manage-sales-orders-ext |
 | [~~Bill of Exchange~~ → reuse standard FI](backend/bill-of-exchange-std) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
 | [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
 | [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |

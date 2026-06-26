@@ -1,0 +1,34 @@
+<!--
+  Custom UI section for Manage Sales Orders (F1873).
+  Re-adds the sales-order close that used to live behind ZSOCLOSE / ZSOCLOSE1
+  (ZSOL_SALESORDER_CLOSE / ZSOL_SO_CLOSE).
+
+  CLEAN-CORE NOTE:
+  - The Close button calls a BACKEND RAP static action on the ZUI_SALES_ORDER_STATUS
+    side service (backend/sales-order-status-rap) - the close logic (reject open
+    quantity via BAPI_SD_SALESDOCUMENT_CHANGE) runs on the backend, never in the UI.
+  - YY1_KejStatus_SO (the displayed custom status) must be exposed on the OData
+    service; until then it is a UI-only placeholder.
+-->
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Panel id="orderStatusPanel" headerText="{i18n>orderStatus}" expandable="true" expanded="true">
+        <form:SimpleForm
+            id="orderStatusForm"
+            layout="ResponsiveGridLayout"
+            editable="false"
+            labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+            columnsXL="2" columnsL="2" columnsM="1">
+            <form:content>
+                <Label text="{i18n>customStatus}" />
+                <ObjectStatus id="orderStatus" text="{YY1_KejStatus_SO}" />
+            </form:content>
+        </form:SimpleForm>
+        <Toolbar id="orderActionsToolbar">
+            <ToolbarSpacer />
+            <Button id="btnCloseOrder" text="{i18n>closeOrder}" icon="sap-icon://sys-cancel" type="Reject" press=".onCloseSalesOrder" />
+        </Toolbar>
+    </Panel>
+</core:FragmentDefinition>

@@ -12,9 +12,15 @@
 sap.ui.define([
     "sap/ui/core/mvc/ControllerExtension",
     "sap/m/MessageToast",
-    "sap/m/MessageBox"
-], function (ControllerExtension, MessageToast, MessageBox) {
+    "sap/m/MessageBox",
+    "sap/ui/model/odata/v4/ODataModel"
+], function (ControllerExtension, MessageToast, MessageBox, ODataModel) {
     "use strict";
+
+    // OData V4 binding of the side service that carries the sales-order close
+    // action (backend/sales-order-status-rap, service def ZUI_SALES_ORDER_STATUS).
+    // Fill the binding name created in ADT (e.g. ZUI_SALES_ORDER_STATUS_O4).
+    var SERVICE_URL = "/sap/opu/odata4/sap/REPLACE_WITH_SALES_ORDER_STATUS_SERVICE/srvd/sap/REPLACE_WITH_SALES_ORDER_STATUS_SERVICE/0001/";
 
     return ControllerExtension.extend("kejriwal.zsalesorder.manage.extension.changes.coding.SalesOrderObjectPageExt", {
 
@@ -46,6 +52,50 @@ sap.ui.define([
          */
         onShadeValueHelp: function () {
             MessageToast.show(this._text("shadeValueHelpTodo"));
+        },
+
+        /**
+         * Close the current sales order (ZSOCLOSE). Confirms, then calls the
+         * closeSalesOrder static action on the ZUI_SALES_ORDER_STATUS side
+         * service by order id - the reject-open-quantity logic runs on the
+         * backend (BAPI_SD_SALESDOCUMENT_CHANGE), never in the UI.
+         */
+        onCloseSalesOrder: function () {
+            var oContext = this.base.getView().getBindingContext();
+            if (!oContext) {
+                MessageToast.show(this._text("noOrder"));
+                return;
+            }
+            var sOrder = oContext.getObject().SalesOrder;
+            MessageBox.confirm(this._text("confirmCloseOrder"), {
+                onClose: function (sResult) {
+                    if (sResult !== MessageBox.Action.OK) {
+                        return;
+                    }
+                    var oSide = this._getStatusModel();
+                    var oOperation = oSide.bindContext("/closeSalesOrder(...)");
+                    oOperation.setParameter("SalesOrder", sOrder);
+                    oOperation.invoke().then(function () {
+                        var oRes = oOperation.getBoundContext().getObject() || {};
+                        MessageToast.show(oRes.Message || this._text("orderClosed"));
+                        oContext.refresh();
+                    }.bind(this), function (oError) {
+                        MessageBox.error((oError && oError.message) || this._text("orderCloseFailed"));
+                    }.bind(this));
+                }.bind(this)
+            });
+        },
+
+        /** Lazily create/cache the OData V4 model for the status side service. */
+        _getStatusModel: function () {
+            if (!this._oStatusModel) {
+                this._oStatusModel = new ODataModel({
+                    serviceUrl: SERVICE_URL,
+                    synchronizationMode: "None",
+                    operationMode: "Server"
+                });
+            }
+            return this._oStatusModel;
         },
 
         _text: function (sKey) {

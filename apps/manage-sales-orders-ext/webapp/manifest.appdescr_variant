@@ -53,6 +53,24 @@
           }
         }
       }
+    },
+    {
+      "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+      "content": {
+        "parentPage": {
+          "component": "sap.suite.ui.generic.template.ObjectPage",
+          "entitySet": "C_SalesOrder"
+        },
+        "entityPropertyChange": {
+          "propertyPath": "component/settings/sections/OrderStatusSection",
+          "operation": "UPSERT",
+          "propertyValue": {
+            "id": "OrderStatusSection",
+            "title": "{i18n>orderStatus}",
+            "template": "kejriwal.zsalesorder.manage.extension.changes.fragments.OrderStatusActions"
+          }
+        }
+      }
     }
   ]
 }

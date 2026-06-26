@@ -380,8 +380,8 @@ Obsolete — retire.
 | `backend/qm-mass-results-rap` | EXT | ZQA32 | read std QM + result API (legacy buffer `ZINSPLOT_QA32`) |
 | `backend/contract-batch-rap` | EXT | ZBATCH_CHANGE | unmanaged RAP → reuse `ZSOL_SALE_ORDER_BATCH_UPDATE` |
 | `backend/shade-master-rap` | EXT | ZDD_SHADE | managed RAP custom CBO (reference pattern) |
-| `apps/manage-sales-contracts-ext` | EXT | ZCON_CLOSE/ZCOREL | adaptation of Manage Sales Contracts |
-| `apps/manage-sales-orders-ext` | EXT | ZVA01/ZVA01N/ZSOCLOSE | adaptation of Manage Sales Orders (F1873) |
+| `apps/manage-sales-contracts-ext + backend/contract-status-rap` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls RAP close/complete/release/updateRate actions over VBAK |
+| `apps/manage-sales-orders-ext + backend/sales-order-status-rap` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + RAP close action over VBAK |
 | `apps/manage-outbound-deliveries-ext` | CUS→EXT | ZDELC/ZDEL | Output Management on F0867A |
 
 > Items in `EXT` like `ZCON_CLOSE`, `ZCOREL`, `ZSOCLOSE`, `ZVA01(N)` are sales-order/contract *close / release* add-ons — extend the standard Manage Sales Orders / Contracts apps (adaptation), reusing the existing `ZVBAP`-based logic rather than rebuilding the order UI.

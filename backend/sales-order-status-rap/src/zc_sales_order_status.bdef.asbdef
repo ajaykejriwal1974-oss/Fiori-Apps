@@ -1,0 +1,8 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_SalesOrderStatus alias SalesOrder
+{
+  use action closeSalesOrder;
+  use action closeOrderProgram;
+}

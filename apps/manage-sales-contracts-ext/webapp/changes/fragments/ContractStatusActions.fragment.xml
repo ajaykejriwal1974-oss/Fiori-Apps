@@ -34,6 +34,7 @@
         </form:SimpleForm>
         <Toolbar id="contractActionsToolbar">
             <ToolbarSpacer />
+            <Button id="btnUpdateRate" text="{i18n>updateRate}" icon="sap-icon://edit" press=".onUpdatePendingRate" />
             <Button id="btnRelease" text="{i18n>release}" icon="sap-icon://unlocked" press=".onReleaseContract" />
             <Button id="btnComplete" text="{i18n>complete}" icon="sap-icon://complete" press=".onCompleteContract" />
             <Button id="btnClose" text="{i18n>close}" icon="sap-icon://sys-cancel" type="Reject" press=".onCloseContract" />
