@@ -11,7 +11,7 @@ these, not stood up in parallel.
 
 | Need (this repo) | Existing infra to reuse | Action |
 |---|---|---|
-| HU physical inventory post (`hu-phys-inventory-rap`) | `ZSOL_PHYS_INV_POST_SRV` (`ZSOL_MTOS_PROCESS`) | Bind the Fiori app to the existing service; drop the new post action |
+| HU physical inventory post (`mtos-process-rap`) | `ZSOL_PHYS_INV_POST_SRV` (`ZSOL_MTOS_PROCESS`) | Bind the Fiori app to the existing service; drop the new post action |
 | HU inbound GR (`hu-inbound-rap`) | `ZSOL_INBOUND_HU` | Consume the existing inbound-HU service |
 | Packing details read (`packing-detail-rap`) | `ZSOL_PACK_CDS` + `ZPP_PACK_MODULE*` | Read via existing pack CDS; only the *action* is new |
 | Batch close/delete (`batch-status-rap`) | `ZSOL_BATCH_CDS`, `ZSOL_WIP_BATCH_CLOSE`, `ZPP_BATCH_DELETE` | Wrap the existing batch programs; reuse their selection logic |

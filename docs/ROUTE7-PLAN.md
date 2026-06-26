@@ -53,13 +53,13 @@ action(s) over standard SAP, BAPI marked `TODO` (same pattern as
 | Service | Replaces (Z) | Action → BAPI | Folder |
 |---|---|---|---|
 | HU Unpack | ZHUPK | `unpackItems` → BAPI_HU_UNPACK | `backend/hu-unpack-rap` |
-| MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend/mto-mts-transfer-rap` |
+| MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend/mtos-process-rap` |
 | Palletization | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | `packPallet` → BAPI_HU_PACK | `backend/palletization-rap` |
 | Batch Status | ZBATCHD / ZBATCH_CLS | `closeBatch` / `deleteBatch` → BAPI_BATCH_CHANGE | `backend/batch-status-rap` |
 | Packing Details | ZPACK01/02/03(+N), ZREPACK | `packItems` → BAPI_HU_PACK, `repackItems` → BAPI_HU_REPACK_ITM | `backend/packing-detail-rap` |
 | Post Packing & GR | ZPOST01 | `postPackingAndGr` → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE | `backend/post-packing-gr-rap` |
 | Inbound Delivery HUs | ZHUINB | `postInboundGr` → BAPI_INB_DELIVERY_CONFIRM_DEC | `backend/hu-inbound-rap` |
-| HU Physical Inventory | ZHUINV | `createPhysInvDoc` → BAPI_MATPHYSINV_CREATE_MULT | `backend/hu-phys-inventory-rap` |
+| HU Physical Inventory | ZHUINV | `createPhysInvDoc` → BAPI_MATPHYSINV_CREATE_MULT | `backend/mtos-process-rap` |
 
 > The full "Packing / HU / pallet" family is now built (8 services). `ZHUINV`
 > moved here from "assess vs standard" at your request — still **assess standard

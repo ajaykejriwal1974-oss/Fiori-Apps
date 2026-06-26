@@ -372,16 +372,15 @@ Obsolete — retire.
 | `backend/palletization-rap` | CUS | ZPALLET/ZPALLET1/ZPAL_BOX/ZSOL_ASRS | unmanaged RAP → BAPI_HU_PACK |
 | `backend/post-packing-gr-rap` | CUS | ZPOST01 | unmanaged RAP → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE |
 | `backend/hu-inbound-rap` | CUS | ZHUINB | unmanaged RAP → reuse `ZSOL_INBOUND_HU` |
-| `backend/hu-phys-inventory-rap` | CUS | ZHUINV | unmanaged RAP → reuse `ZSOL_PHYS_INV_POST_SRV` |
+| `backend/mtos-process-rap` | CUS | ZHUINV + ZMTOS | unmanaged RAP (same program ZSOL_MTOS_PROCESS): createPhysInvDoc + convertToMts |
 | `backend/hu-unpack-rap` | CUS | ZHUPK | unmanaged RAP → BAPI_HU_UNPACK |
 | `backend/batch-status-rap` | CUS | ZBATCHD, ZBATCH_CLS | unmanaged RAP → BAPI_BATCH_CHANGE / reuse `ZSOL_BATCH_CDS` |
-| `backend/mto-mts-transfer-rap` | CUS | ZMTOS / ZHUINV (MTOS) | unmanaged RAP → BAPI_GOODSMVT_CREATE |
 | `backend/goods-movement-hu-rap` | EXT | ZBOX_MOVE | unmanaged RAP → reuse `ZSOL_POST_GOODS_MOVEMENTS` |
 | `backend/qm-mass-results-rap` | EXT | ZQA32 | read std QM + result API (legacy buffer `ZINSPLOT_QA32`) |
 | `backend/contract-batch-rap` | EXT | ZBATCH_CHANGE | unmanaged RAP → reuse `ZSOL_SALE_ORDER_BATCH_UPDATE` |
 | `backend/shade-master-rap` | EXT | ZDD_SHADE | managed RAP custom CBO (reference pattern) |
-| `apps/manage-sales-contracts-ext + backend/contract-status-rap` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls RAP close/complete/release/updateRate actions over VBAK |
-| `apps/manage-sales-orders-ext + backend/sales-order-status-rap` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + RAP close action over VBAK |
+| `apps/manage-sales-contracts-ext + backend/sales-doc-status-rap` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls the merged sales-doc status actions (close/complete/release/updateRate) over VBAK |
+| `apps/manage-sales-orders-ext + backend/sales-doc-status-rap` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + the merged sales-doc close action over VBAK |
 | `apps/manage-outbound-deliveries-ext` | CUS→EXT | ZDELC/ZDEL | Output Management on F0867A |
 | `backend/gate-pass-rap` | PRT→custom | ZGPS01/02/03, ZGPSI1/2/3 | managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (custom object; form via OM) |
 

@@ -25,7 +25,7 @@ by the dimension that used to be a separate tcode.
 ## B. Already covered elsewhere — don't rebuild as a report (≈5)
 | Z tcode | Covered by |
 |---|---|
-| `ZMTOS` | transactional **`backend/mto-mts-transfer-rap`** (the report is its worklist) |
+| `ZMTOS` | transactional **`backend/mtos-process-rap`** (the report is its worklist) |
 | `ZMC46` (slow-moving) | analytics layer already (was routed in ROUTE7-PLAN) |
 | `ZRECPM` (recipe report) | the **Recipe Master** app (`backend/recipe-master-rap`) — add a query |
 | `ZJOBREPORT` (old job card) | superseded by `ZJOBREPTN`; both feed the **Job Master** app |
