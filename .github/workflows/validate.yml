@@ -1,0 +1,34 @@
+name: Validate
+
+# Structural validation of the Fiori package: JSON, XML, and CDS/RAP/ABAP.
+# No SAP backend required — this is parse/reference/structure checking only.
+# (Full semantic ABAP/CDS validation is done by ATC on the S/4HANA system.)
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate JSON / XML / CDS / RAP / ABAP
+        run: python3 ci/validate.py
+
+      - name: Lint UI5 app descriptors (xmllint well-formedness, belt-and-braces)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libxml2-utils
+          fail=0
+          while IFS= read -r f; do
+            xmllint --noout "$f" || { echo "xmllint failed: $f"; fail=1; }
+          done < <(find apps -name '*.xml')
+          exit $fail

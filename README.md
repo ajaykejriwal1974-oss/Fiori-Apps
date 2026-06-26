@@ -15,6 +15,16 @@ delivered app **without modifying SAP source**.
   the clean-core way: key-user / in-app extensibility, custom CDS, or a released
   BAdI / RAP extension — never a modification.
 
+## Validation / CI
+
+A GitHub Actions **Validate** workflow ([`.github/workflows/validate.yml`](.github/workflows/validate.yml))
+runs [`ci/validate.py`](ci/validate.py) on every push and PR: JSON / XML
+well-formedness + CDS/RAP/ABAP structural checks (balanced blocks, no hyphen in
+object names, all service/projection/behavior/param/composition references
+resolve, object names globally unique, app-manifest namespace consistency). Run
+it locally with `python3 ci/validate.py`. Semantic ABAP/CDS activation (ATC) is
+done on the S/4HANA backend — see [`ci/README.md`](ci/README.md).
+
 ## Portfolio coverage — all 285 Z-tcodes classified & routed
 
 Every transaction in the Z-portfolio is accounted for. Authoritative routing in
