@@ -120,6 +120,15 @@ stock), ~~`ZASTOCK`~~ (junk). **Use standard inventory apps — build nothing.**
 Each surviving query carries the old variants as **parameters/dimensions**, so no
 functional coverage is lost.
 
+## ✅ Built — 11 consolidated analytical queries
+The custom survivors are built as CDS cube+query pairs in
+[`backend/analytics`](../backend/analytics) (read-only, dimensions = old
+variants): `ZC_PackedStockQuery`, `ZC_PackingRegisterQuery`, `ZC_WipBatchQuery`,
+`ZC_HuInventoryQuery`, `ZC_PendingContractQuery`, `ZC_ExportRegisterQuery`,
+`ZC_MergeAnalysisQuery`, `ZC_RecipeAnalysisQuery`, `ZC_JobCardQuery`,
+`ZC_DispatchRegisterQuery`, `ZC_GstTaxQuery`. These 11 replace ~40 of the BI
+reports; the remainder are dropped, routed to standard, or covered by built apps.
+
 ## Method to confirm before cutting
 1. **Usage** — pull `ST03N`/`STAD` last-run + frequency per tcode; anything with
    0 runs in 12 months and a duplicate program is a safe drop.
