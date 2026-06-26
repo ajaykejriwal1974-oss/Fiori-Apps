@@ -180,6 +180,9 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/UPL-MIGRATION.md`](docs/UPL-MIGRATION.md) — the **28 `UPL` upload/automation
   programs** routed to Migration Cockpit / public APIs / standard processes; the
   `ZAUTOPO*` (9) and F-02 BDC clones consolidated, **all BDC retired**. Net **28 → ~11**.
+- [`docs/CUSTOM-APP-AUDIT.md`](docs/CUSTOM-APP-AUDIT.md) — duplication/consolidation
+  audit of the built apps & services: merge MTOS (ZHUINV+ZMTOS, same program),
+  merge the two VBAK status services, share one HU read model across 8 services.
 - [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
   ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
   the corrected master→real-table mapping.
