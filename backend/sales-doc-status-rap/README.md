@@ -19,8 +19,18 @@ Static actions take the document id, so both adaptations
 ([`manage-sales-contracts-ext`](../../apps/manage-sales-contracts-ext) and
 [`manage-sales-orders-ext`](../../apps/manage-sales-orders-ext)) call them by id —
 they both point at `REPLACE_WITH_SALESDOC_STATUS_SERVICE`. Each action drives the
-standard sales document via `BAPI_SD_SALESDOCUMENT_CHANGE` (TODO); no standard
-object is modified.
+standard sales document via `BAPI_SALESDOCUMENT_CHANGE`; no standard object is
+modified.
+
+## Status — BAPI wired ✅
+- **close/complete** (contract + order) → read open `VBAP` items, set reason for
+  rejection via `BAPI_SALESDOCUMENT_CHANGE` (shared `reject_open_items` helper).
+- **release** → clear delivery/billing blocks (`DLV_BLOCK`/`BILL_BLOCK`).
+- **updatePendingRate** → reprice open items via `CONDITIONS_IN` (cond type `PR00`).
+- All with `RETURN` handling + rollback/commit.
+
+VERIFY: the rejection reason code, the price condition type (`PR00`), and whether
+contracts should use `BAPI_CUSTOMERCONTRACT_CHANGE` for your release.
 
 ## Objects in `src/`
 `ZI_SalesDocStatus` (VBAK read) · `ZC_SalesDocStatus` (projection) · behavior
