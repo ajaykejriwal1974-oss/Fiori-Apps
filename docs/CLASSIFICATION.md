@@ -147,7 +147,7 @@ A standard S/4HANA Fiori app already covers this. Map the user to the standard a
 
 ## `BI` — Report / analytics — route to the analytical layer  (87)
 
-Reporting only. Re-platform as CDS analytical queries / Embedded Analytics or the external BI layer (Metabase). Not a transactional app.
+Reporting only. Re-platform as CDS analytical queries / Embedded Analytics or the external BI layer (Metabase). Not a transactional app. **Many are duplicates/variants — consolidation to ~31: [BI-CONSOLIDATION.md](BI-CONSOLIDATION.md).**
 
 | Tcode | Program | Description | Custom tables |
 |---|---|---|---|

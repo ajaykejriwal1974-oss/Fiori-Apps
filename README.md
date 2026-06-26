@@ -153,6 +153,10 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
   print/form programs** re-platformed onto S/4HANA Output Management (BRF+
   determination + Adobe form templates), grouped by output object; gate-pass,
   labels and the 3 non-form items handled, pre-GST 201-forms flagged to retire.
+- [`docs/BI-CONSOLIDATION.md`](docs/BI-CONSOLIDATION.md) — the **87 `BI` reports**
+  clustered into families: dead/duplicate/obsolete dropped, look-alikes merged into
+  parameterised CDS analytical queries, generic stock/ageing routed to standard.
+  Net **≈ 87 → ~31** (~64% fewer) with no loss of coverage.
 - [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — earlier routing of the Route 7
   ("keep custom / review") Z-codes (superseded by CLASSIFICATION.md); now carries
   the corrected master→real-table mapping.
