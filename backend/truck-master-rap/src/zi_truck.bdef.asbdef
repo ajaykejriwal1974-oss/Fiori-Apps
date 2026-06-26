@@ -1,0 +1,34 @@
+managed implementation in class zbp_i_truck unique;
+strict ( 2 );
+
+define behavior for ZI_Truck alias Truck
+persistent table ztruck
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TruckNumber;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination setDefaults on modify { create; }
+  validation validateKey on save { create; update; }
+
+  mapping for ztruck
+  {
+    TruckNumber          = truck_number;
+    TransporterName      = transporter_name;
+    TransportCode        = transport_code;
+    DriverName           = driver_name;
+    CapacityInKg         = capacity_kg;
+    IsActive             = is_active;
+    CreatedBy            = created_by;
+    CreatedAt            = created_at;
+    LastChangedBy        = last_changed_by;
+    LastChangedAt        = last_changed_at;
+    LocalLastChangedAt   = local_last_changed_at;
+  }
+}

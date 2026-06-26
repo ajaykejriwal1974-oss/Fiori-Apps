@@ -50,6 +50,9 @@ service rather than as adaptation projects.
 | [HU Goods Movement](backend/goods-movement-hu-rap) | Unmanaged RAP service | ZBOX_MOVE (backend) | Skeleton authored (BAPI_GOODSMVT_CREATE + HU read to complete in ADT) |
 | [Dyeing Packing](backend/packing-hu-rap) | Unmanaged RAP service | ZPACK / ZREPACKD (backend) | Skeleton authored (BAPI_HU_CREATE/PACK to complete in ADT) |
 | [Contract Batch Update](backend/contract-batch-rap) | Unmanaged RAP service | ZBATCH_CHANGE (backend) | Skeleton authored (BAPI_SALESDOCUMENT_CHANGE to complete in ADT) |
+| [Recipe Master](backend/recipe-master-rap) | Managed RAP master (Route 7) | ZRECP01/02/03 | Source authored (table + binding to create in ADT) |
+| [Job Master](backend/job-master-rap) | Managed RAP master (Route 7) | ZJOB01/02/03 | Source authored (table + binding to create in ADT) |
+| [Truck Master](backend/truck-master-rap) | Managed RAP master (Route 7) | ZTRUCK | Source authored (table + binding to create in ADT) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade
@@ -91,3 +94,6 @@ filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 - [`docs/TRANSPORT-PLAN.md`](docs/TRANSPORT-PLAN.md) — package hierarchy and
   transport-request grouping/sequence to move the objects DEV → KSQ → PROD on the
   embedded FES.
+- [`docs/ROUTE7-PLAN.md`](docs/ROUTE7-PLAN.md) — routing of the 68 Route 7
+  ("keep custom / review") Z-codes: build-as-master / reuse-existing / report /
+  config / DRC-excluded, plus the 3 custom masters built here.

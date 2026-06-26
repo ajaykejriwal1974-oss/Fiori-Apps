@@ -1,0 +1,26 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'Truck', typeNamePlural: 'Trucks',
+  title: { type: #STANDARD, value: 'TruckNumber' },
+  description: { type: #STANDARD, value: 'TransporterName' } } }
+annotate view ZC_Truck with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Truck Number'
+  TruckNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Transporter'
+  TransporterName;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Transport Code'
+  TransportCode;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Driver'
+  DriverName;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ], selectionField: [ { position: 50 } ] }
+  @EndUserText.label: 'Capacity (kg)'
+  CapacityInKg;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ], selectionField: [ { position: 60 } ] }
+  @EndUserText.label: 'Active'
+  IsActive;
+}
