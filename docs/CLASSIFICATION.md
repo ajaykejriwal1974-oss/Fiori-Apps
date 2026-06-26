@@ -367,6 +367,7 @@ Obsolete — retire.
 | `backend/cform-master-rap` | CUS | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | managed RAP over `ZCFORM1` (C-Form pending↔received) |
 | `backend/dispatch-correction-rap + apps/dispatch-correction` | CUS | ZDSP_CORR | unmanaged RAP over `ZSOL_HUDISPATCH`⋈`ZPP_PACK` → correctDispatch |
 | `backend/minmax-master-rap` | CUS→STD | ZMINMAX | **reuse standard MRP** (`MARC` min/max) — no custom table |
+| `backend/bill-of-exchange-std` | CUS→STD | ZBOE | **reuse standard FI** Bill of Exchange (`F-36`/`F-33`/`FBW*`) — no custom table |
 | `backend/packing-detail-rap` | CUS | ZPACK01/02/03(+N), ZREPACK | unmanaged RAP → BAPI_HU_PACK / reuse `ZSOL_PACK_CDS` |
 | `backend/palletization-rap` | CUS | ZPALLET/ZPALLET1/ZPAL_BOX/ZSOL_ASRS | unmanaged RAP → BAPI_HU_PACK |
 | `backend/post-packing-gr-rap` | CUS | ZPOST01 | unmanaged RAP → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE |

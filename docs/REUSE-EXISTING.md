@@ -63,10 +63,17 @@ The 17 `STD` rows in [CLASSIFICATION.md](CLASSIFICATION.md#std--use-standard-fio
 material list…) map 1:1 to standard S/4HANA Fiori apps — assign the standard app
 + role and retire the custom transaction. Nothing to build.
 
+Two `CUS`-classified tcodes are really standard too (no program, no Z-table):
+
+| Z | Reuse standard | Stub |
+|---|---|---|
+| `ZMINMAX` | Material MRP min/max on `MARC` (Manage/Change Material) | `backend/minmax-master-rap` |
+| `ZBOE` | FI Bill of Exchange (`F-36` / `F-33` / `FBW*`, special G/L) | `backend/bill-of-exchange-std` |
+
 ## Net effect
 - **Masters:** 10 managed-RAP BOs, each over an **existing** legacy table.
 - **Transactional:** new services contribute only the action; **read + F4 reuse
   existing CDS/OData**.
-- **Min/Max + 17 STD tcodes:** reuse standard, build nothing.
+- **Min/Max + ZBOE + 17 STD tcodes:** reuse standard, build nothing.
 - **87 BI / 61 PRT / 28 UPL:** analytics / Output Management / migration layers,
   not new tiles.
