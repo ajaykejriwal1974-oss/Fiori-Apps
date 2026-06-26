@@ -61,12 +61,45 @@ CLASS lhc_MtosStock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD createPhysInvDoc.
+    " VERIFY: BAPI_MATPHYSINV_CREATE_MULT head/item structure names and the
+    " head<->item linkage (here one head for all items) for your release.
     LOOP AT keys INTO DATA(key).
-      DATA(ls_param) = key-%param.
-      " TODO: create the physical-inventory document for the stock via
-      "   BAPI_MATPHYSINV_CREATE_MULT.
-      APPEND VALUE #( %cid = key-%cid
-                      %param = VALUE #( message = 'TODO: wire BAPI_MATPHYSINV_CREATE_MULT' ) ) TO result.
+      DATA(h)        = key-%param.
+      DATA(lt_items) = key-%param-_item.
+      IF lt_items IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( message = 'No items for the physical-inventory document' ) ) TO result.
+        CONTINUE.
+      ENDIF.
+
+      DATA(lv_today) = cl_abap_context_info=>get_system_date( ).
+      DATA lt_head TYPE STANDARD TABLE OF bapi_physinv_create_head.
+      lt_head = VALUE #( ( plant = h-plant stge_loc = h-storagelocation
+                           doc_date = lv_today plan_date = lv_today fisc_year = h-fiscalyear ) ).
+      DATA lt_phys_items TYPE STANDARD TABLE OF bapi_physinv_create_items.
+      lt_phys_items = VALUE #( FOR it IN lt_items ( material = it-material batch = it-batch ) ).
+
+      DATA lt_docs   TYPE STANDARD TABLE OF bapi_physinv_create_docs.
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CALL FUNCTION 'BAPI_MATPHYSINV_CREATE_MULT'
+        TABLES head                   = lt_head
+               items                  = lt_phys_items
+               physinventorydocuments = lt_docs
+               return                 = lt_return.
+
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        DATA(lv_doc) = COND #( WHEN lt_docs IS NOT INITIAL THEN lt_docs[ 1 ]-phys_inv_doc ).
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( physinvdocument = lv_doc
+                                          message = |Physical-inventory document { lv_doc } created| ) ) TO result.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 
