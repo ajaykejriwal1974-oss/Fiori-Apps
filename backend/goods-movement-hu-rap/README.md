@@ -27,11 +27,16 @@ Unmanaged RAP - there is no custom persistence; the post is a BAPI call.
 
 Create in ADT: **service binding `ZUI_HU_GOODS_MOVEMENT_O4`** (OData V4 – UI).
 
-## Complete (TODO / VERIFY)
+## Status — BAPI wired ✅
 
-1. Read CDS: confirm `vekp`/`vepo` fields for your release.
-2. Handler: map header + items to `BAPI_GOODSMVT_CREATE` (`gm_code` per scenario),
-   route `return` into `reported`/`failed`, commit on success.
+`postGoodsMovement` now calls **`BAPI_GOODSMVT_CREATE`** for real: builds the GM
+header + items from the action parameters, evaluates `return`, rolls back on
+error and `BAPI_TRANSACTION_COMMIT`s on success, returning the material document.
+
+Remaining **VERIFY** on the system:
+1. Read CDS: confirm `vekp`/`vepo` fields for your release (shared via `hu-shared`).
+2. `gm_code` is set to `'04'` (transfer posting / MB1B) — change to `'03'` (issue)
+   or `'01'` (receipt) per the box/HU movement type your flow uses.
 3. Add authorization (plant / movement-type checks).
 
 ## Wiring to the app
