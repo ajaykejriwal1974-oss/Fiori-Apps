@@ -108,6 +108,8 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Sales Order Status](backend/sales-order-status-rap) | Unmanaged RAP service (EXT) | ZSOCLOSE/ZSOCLOSE1 | Read `VBAK` (orders); close actions → wired into manage-sales-orders-ext |
 | [Gate Pass](backend/gate-pass-rap) | Managed RAP composition (PRT/custom) | ZGPS01/02/03, ZGPSI1/2/3 | Header→item over `ZGP_HDR`/`ZGP_ITEM` (keys GPNUM/MJAHR); `ZGP_PART` associated |
 | [BI Analytical Queries](backend/analytics) | 11 CDS cube+query pairs (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
+| [PO Automation](backend/po-automation) | ABAP automation class (UPL) | ZAUTOPO* (9) | `ZCL_PO_AUTOMATION` over `ZSOL_AUPO`/`ZMM_AUTOPO`, sales org param; API call to wire |
+| [OBD Automation](backend/obd-automation) | ABAP automation class (UPL) | ZSDOBD/ZSDOBDN | `ZCL_OBD_AUTOMATION` over `ZSOL_HUDISPATCH`, plant param; API calls to wire |
 | [~~Bill of Exchange~~ → reuse standard FI](backend/bill-of-exchange-std) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
 | [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
 | [MTO→MTS Transfer](backend/mto-mts-transfer-rap) | Unmanaged RAP service (Route 7) | ZMTOS | Skeleton (BAPI_GOODSMVT_CREATE to wire) |

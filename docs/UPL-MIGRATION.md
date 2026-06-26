@@ -20,9 +20,11 @@ All over `ZMM_AUTOPO` / `ZSOL_AUPO`, one program per plant (5000/6000/7000/8000)
 plus "new" variants: `ZAUTOPO`, `ZAUTOPO8`, `ZAUTOPOG`, `ZAUTOPOJ`, `ZAUTOPOM`,
 `ZAUTOPOM1`, `ZAUTOPON`, `ZAUTOPOS` (programs `ZPRG_PO_CREATE*`).
 
-→ **one** PO-automation interface with **plant as a parameter**, calling the
-**Purchase Order API** (`API_PURCHASEORDER_PROCESS_SRV` / `BAPI_PO_CREATE1`) off
-the `ZMM_AUTOPO` driver table. **8 retired.**
+→ **one** PO-automation interface with **sales org as a parameter**, calling the
+**Purchase Order API** (`BAPI_PO_CREATE1`) off the `ZSOL_AUPO` config +
+`ZMM_AUTOPO` log. **✅ built** as `ZCL_PO_AUTOMATION` in
+[`backend/po-automation`](../backend/po-automation) (job-schedulable class, API
+call TODO). **8 retired.**
 
 ## B. FI document posting (F-02) — 4 → 1
 `ZF02` (`BAPI_ACC_DOCUMENT_POST`), `ZSAL_POST` (`ZFI_BAPI_F_02`), `ZFIEX`
@@ -43,7 +45,9 @@ G/L), driven from **one** load template. **2 retired** (one object, three sheets
 over `ZSOL_HUDISPATCH` / `ZPP_PACK` / delivery.
 
 → **one** OBD-automation service on the **Outbound Delivery API**
-(`API_OUTBOUND_DELIVERY_SRV` + goods-issue), reusing the dispatch tables. **1 retired.**
+(`API_OUTBOUND_DELIVERY_SRV` + goods-issue), reusing the dispatch tables.
+**✅ built** as `ZCL_OBD_AUTOMATION` in [`backend/obd-automation`](../backend/obd-automation)
+(job-schedulable class, API calls TODO). **1 retired.**
 
 ## E. One-off master / data uploads → Migration Cockpit (one object each)
 | Z | Program | Migration Cockpit object / API |
