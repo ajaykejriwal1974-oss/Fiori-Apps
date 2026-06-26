@@ -1,10 +1,18 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
     "sap/m/MessageBox"
-], function (Controller, JSONModel, MessageToast, MessageBox) {
+], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox) {
     "use strict";
+
+    // The OData V4 service namespace the bound action is qualified with. After the
+    // service binding is created in ADT, set this to the service definition name
+    // (e.g. "com.kejriwal.zui_contract_batch") so the action path resolves.
+    var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
+    var ENTITY_SET = "/ContractItem";
 
     return Controller.extend("kejriwal.sd.contractbatchupdate.controller.Main", {
 
@@ -30,10 +38,37 @@ sap.ui.define([
                 MessageToast.show(this._text("contractRequired"));
                 return;
             }
-            // TODO: read the contract items from the backend and fill /items.
             oModel.setProperty("/items", []);
             oModel.setProperty("/dirtyCount", 0);
-            MessageToast.show(this._text("loadTodo", [sContract]));
+
+            var that = this;
+            var oODataModel = this.getView().getModel();   // OData V4 default model
+            var oList = oODataModel.bindList(ENTITY_SET, undefined, undefined, [
+                new Filter("SalesContract", FilterOperator.EQ, sContract)
+            ]);
+            oList.requestContexts(0, 1000).then(function (aContexts) {
+                if (!aContexts.length) {
+                    MessageToast.show(that._text("contractEmpty", [sContract]));
+                    return;
+                }
+                var aItems = aContexts.map(function (oCtx) {
+                    var o = oCtx.getObject();
+                    return {
+                        SalesContract: o.SalesContract,
+                        ContractItem: o.ContractItem,
+                        Material: o.Material,
+                        MaterialDescription: o.MaterialDescription || "",
+                        CurrentBatch: o.CurrentBatch || "",
+                        NewBatch: "",
+                        Plant: o.Plant || ""
+                    };
+                });
+                oModel.setProperty("/items", aItems);
+                that._recalcDirty();
+                MessageToast.show(that._text("contractLoaded", [aItems.length, sContract]));
+            }).catch(function (oErr) {
+                MessageBox.error(that._text("loadFailed", [sContract, (oErr && oErr.message) || ""]));
+            });
         },
 
         /** Apply the mass batch value to all selected rows. */
@@ -73,8 +108,28 @@ sap.ui.define([
                 MessageToast.show(this._text("noChanges"));
                 return;
             }
-            // TODO: call the backend mass-update action with aChanged.
-            MessageToast.show(this._text("updateTodo", [aChanged.length]));
+            var sContract = (this.getView().getModel("ui").getProperty("/contract") || "").trim();
+            var oModel = this.getView().getModel();   // OData V4 default model
+            var oAction = oModel.bindContext(ENTITY_SET + "/" + SERVICE_NS + ".updateBatches(...)");
+            oAction.setParameter("SalesContract", sContract);
+            oAction.setParameter("_Item", aChanged.map(function (o) {
+                return {
+                    ContractItem: o.ContractItem,
+                    NewBatch: o.NewBatch
+                };
+            }));
+
+            var that = this;
+            oAction.invoke().then(function () {
+                var oResult = oAction.getBoundContext().getObject();
+                MessageBox.success(that._text("updateDone", [
+                    (oResult && oResult.ItemsUpdated) || 0,
+                    (oResult && oResult.Message) || ""
+                ]));
+                that.onLoadContract();   // refresh from the backend
+            }).catch(function (oErr) {
+                MessageBox.error(that._text("updateFailed", [(oErr && oErr.message) || ""]));
+            });
         },
 
         _changedItems: function () {

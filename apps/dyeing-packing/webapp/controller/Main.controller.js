@@ -1,10 +1,18 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
     "sap/m/MessageBox"
-], function (Controller, JSONModel, MessageToast, MessageBox) {
+], function (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox) {
     "use strict";
+
+    // The OData V4 service namespace the bound action is qualified with. After the
+    // service binding is created in ADT, set this to the service definition name
+    // (e.g. "com.kejriwal.zui_packing") so the action path resolves.
+    var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
+    var ENTITY_SET = "/PackingUnit";
 
     return Controller.extend("kejriwal.pp.dyeingpacking.controller.Main", {
 
@@ -55,14 +63,44 @@ sap.ui.define([
          * just clears the working set so the user can re-build it.
          */
         onRepack: function () {
+            var that = this;
+            var oUiModel = this.getView().getModel("ui");
+            var sRef = (oUiModel.getProperty("/header/reference") || "").trim();
+            if (!sRef) {
+                MessageBox.error(this._text("referenceRequired"));
+                return;
+            }
             MessageBox.confirm(this._text("confirmRepack"), {
                 onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        this.getView().getModel("ui").setProperty("/units", []);
-                        this._recalcTotals();
-                        // TODO: re-read existing HUs for the reference and repopulate.
+                    if (sAction !== MessageBox.Action.OK) {
+                        return;
                     }
-                }.bind(this)
+                    oUiModel.setProperty("/units", []);
+                    that._recalcTotals();
+                    var oModel = that.getView().getModel();   // OData V4 default model
+                    var oList = oModel.bindList(ENTITY_SET, undefined, undefined, [
+                        new Filter("Reference", FilterOperator.EQ, sRef)
+                    ]);
+                    oList.requestContexts(0, 500).then(function (aContexts) {
+                        var aUnits = [];
+                        aContexts.forEach(function (oCtx) {
+                            var o = oCtx.getObject();
+                            aUnits.push({
+                                levelType: o.PackingGroup || "",
+                                level: o.PackingGroup || "",
+                                packingMaterial: o.PackagingMaterial,
+                                quantity: "1",
+                                netWeight: o.NetWeight,
+                                grossWeight: o.GrossWeight
+                            });
+                        });
+                        oUiModel.setProperty("/units", aUnits);
+                        that._recalcTotals();
+                        MessageToast.show(that._text("repackLoaded", [aUnits.length, sRef]));
+                    }).catch(function (oErr) {
+                        MessageBox.error(that._text("repackFailed", [sRef, (oErr && oErr.message) || ""]));
+                    });
+                }
             });
         },
 
@@ -82,8 +120,35 @@ sap.ui.define([
                 MessageToast.show(this._text("noUnits"));
                 return;
             }
-            // TODO: create the HU structure via the packing service.
-            MessageToast.show(this._text("packTodo", [oUi.units.length, oUi.header.reference]));
+            var oModel = this.getView().getModel();   // OData V4 default model
+            var oAction = oModel.bindContext(ENTITY_SET + "/" + SERVICE_NS + ".createHandlingUnits(...)");
+            oAction.setParameter("Reference", oUi.header.reference);
+            oAction.setParameter("Material", oUi.header.material);
+            oAction.setParameter("Batch", oUi.header.batch);
+            oAction.setParameter("Shade", oUi.header.shade);
+            oAction.setParameter("_Unit", oUi.units.map(function (o) {
+                return {
+                    LevelType: o.levelType,
+                    PackingMaterial: o.packingMaterial,
+                    Quantity: o.quantity,
+                    NetWeight: o.netWeight,
+                    GrossWeight: o.grossWeight
+                };
+            }));
+
+            var that = this;
+            oAction.invoke().then(function () {
+                var oResult = oAction.getBoundContext().getObject();
+                MessageBox.success(that._text("packDone", [
+                    (oResult && oResult.HandlingUnitsCreated) || 0,
+                    (oResult && oResult.TopHandlingUnit) || "",
+                    (oResult && oResult.Message) || ""
+                ]));
+                that.getView().getModel("ui").setProperty("/units", []);
+                that._recalcTotals();
+            }).catch(function (oErr) {
+                MessageBox.error(that._text("packFailed", [(oErr && oErr.message) || ""]));
+            });
         },
 
         _recalcTotals: function () {
