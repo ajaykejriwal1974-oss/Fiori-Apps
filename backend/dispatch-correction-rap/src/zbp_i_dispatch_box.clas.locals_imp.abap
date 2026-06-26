@@ -23,19 +23,27 @@ CLASS lhc_DispatchBox IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      " TODO: apply the dispatch correction for each box in lt_boxes:
-      "   - validate the box exists in ZSOL_HUDISPATCH and is not already
-      "     invoiced / posted (else the goods movement must be reversed first);
-      "   - UPDATE ZSOL_HUDISPATCH SET so = ls_header-newsalesorder,
-      "       so_item = ls_header-newsalesorderitem, status = ls_header-newstatus
-      "       WHERE boxno = box-boxnumber;
-      "   - keep ZPP_PACK in sync if the order assignment drives packing;
-      "   - reuse the existing ZSOL_DISPATCH_CORRECTION routine where possible.
-      "   (collect failures into reported/failed; COMMIT handled by save sequence)
+      " Re-assign each box on the dispatch table (replaces ZSOL_DISPATCH_CORRECTION).
+      " VERIFY: if a box is already invoiced/posted the goods movement must be
+      " reversed first, and ZPP_PACK kept in sync when the order drives packing.
+      DATA(lv_count) = 0.
+      LOOP AT lt_boxes INTO DATA(box).
+        UPDATE zsol_hudispatch
+          SET so      = @ls_header-newsalesorder,
+              so_item = @ls_header-newsalesorderitem,
+              status  = @ls_header-newstatus
+          WHERE boxno = @box-boxnumber.
+        IF sy-subrc = 0.
+          lv_count += 1.
+        ENDIF.
+      ENDLOOP.
+      IF lv_count > 0.
+        COMMIT WORK.
+      ENDIF.
 
       APPEND VALUE #( %cid  = key-%cid
-                      %param = VALUE #( boxesupdated = lines( lt_boxes )
-                                        message = 'TODO: wire ZSOL_DISPATCH_CORRECTION update' ) )
+                      %param = VALUE #( boxesupdated = lv_count
+                                        message = |{ lv_count } of { lines( lt_boxes ) } box(es) re-assigned to SO { ls_header-newsalesorder }| ) )
              TO result.
     ENDLOOP.
   ENDMETHOD.

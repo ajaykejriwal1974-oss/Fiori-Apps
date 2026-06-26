@@ -8,10 +8,13 @@ a read model + static action(s) calling standard BAPIs.
 > **VERIFY against your release and the original Z program** before activating.
 
 
-## Actions
-| Action | BAPI (to wire) | Purpose |
+## Actions — GR wired ✅
+| Action | Implementation | Purpose |
 |---|---|---|
-| `postPackingAndGr` | `BAPI_GOODSMVT_CREATE` | Pack + post goods receipt |
+| `postPackingAndGr` | reads HU contents (VEPO⋈VEKP) → `BAPI_GOODSMVT_CREATE` (gm_code `01`) | Post goods receipt for the selected HUs |
+
+> The GR is wired; if the HUs still need **packing** first, add the `BAPI_HU_PACK`
+> call before the GR. VERIFY `gm_code`/movement type for your GR scenario.
 
 ## Objects in `src/`
 Read CDS `ZI_PostPackGr` / projection `ZC_PostPackGr`, abstract import + result entities per
