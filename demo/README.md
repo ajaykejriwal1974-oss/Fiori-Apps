@@ -24,9 +24,13 @@ run on the S/4HANA Front-End Server, not in this mock demo):
 - **Standard apps (adopt as-is)** — the delivered S/4HANA 2025 apps used as-is
   (the STD / Table A portfolio), each with its Fiori ID, classic transaction,
   business role, and the Z transaction it retires.
+- **Master data (managed RAP → Fiori Elements)** — the custom master objects;
+  each managed-RAP service binding generates a *Manage…* Fiori Elements app.
+- **Analytical queries (BI / CDS)** — the 11 CDS analytical queries (Query
+  Browser / Analytical List Page) that replace ~40 Z reports.
 
-Edit the `ADAPTATION` and `STANDARD` tables at the top of `build.py` to add or
-adjust these reference tiles.
+Edit the `ADAPTATION`, `STANDARD`, `MASTER_DATA` and `BI_QUERIES` tables at the
+top of `build.py` to add or adjust these reference tiles.
 
 > **Mock data only.** Buttons and edits work against the in-browser JSON model;
 > nothing is posted anywhere. Use it to review layout, fields, columns and flows.
