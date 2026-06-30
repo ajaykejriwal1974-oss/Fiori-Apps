@@ -1,0 +1,4 @@
+{"DispatchBox":[
+ {"BoxNumber":"BOX-100231","SalesOrder":"0030045671","SalesOrderItem":"10","Material":"FG-FABRIC-220","Grade":"A","Status":"Dispatched"},
+ {"BoxNumber":"BOX-100232","SalesOrder":"0030045671","SalesOrderItem":"10","Material":"FG-FABRIC-220","Grade":"A","Status":"Dispatched"},
+ {"BoxNumber":"BOX-100240","SalesOrder":"0030045699","SalesOrderItem":"20","Material":"FG-YARN-3040","Grade":"B","Status":"Packed"}]}

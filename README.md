@@ -15,6 +15,27 @@ delivered app **without modifying SAP source**.
   the clean-core way: key-user / in-app extensibility, custom CDS, or a released
   BAdI / RAP extension — never a modification.
 
+## Test the apps now — hosted demo Launchpad
+
+While the S/4HANA 2025 backend is still being prepared, you can open and click
+through **all 12 custom freestyle apps** in a browser — each runs the **real UI5
+code** against **realistic mock data**, with the OpenUI5 runtime served
+**same-origin** (works on iOS Safari, no CDN):
+
+```
+https://ajaykejriwal1974-oss.github.io/Fiori-Apps/
+```
+
+A tile grid (grouped by module: PP / SD / MM / QM) links to every app; mock data
+only — nothing is posted to a backend. The site is built by
+[`demo/build.py`](demo/build.py) and published to the `gh-pages` branch
+automatically by [`.github/workflows/demo-pages.yml`](.github/workflows/demo-pages.yml)
+on every push to `main` that touches `apps/**` or `demo/**`. Build/run it
+locally and see how it works in [`demo/README.md`](demo/README.md).
+
+> **One-time setup:** repo public (or Pages on a paid plan), then Settings →
+> Pages → *Deploy from a branch* → `gh-pages` / `root`.
+
 ## Validation / CI
 
 A GitHub Actions **Validate** workflow ([`.github/workflows/validate.yml`](.github/workflows/validate.yml))
