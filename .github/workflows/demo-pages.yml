@@ -1,0 +1,76 @@
+name: Build & deploy demo Launchpad to GitHub Pages
+
+# Builds a static sandbox Fiori Launchpad for the custom freestyle apps and
+# publishes it to the `gh-pages` branch (Settings -> Pages -> Deploy from a
+# branch: gh-pages /root). Every app runs the real UI5 code against mock JSON
+# data and a SAME-ORIGIN OpenUI5 runtime (no external CDN — required for iOS
+# Safari). Runs automatically when an app, the mock data, or the builder change.
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/**"
+      - "demo/**"
+      - "apps/batch-status/ui5-build.yaml"
+      - ".github/workflows/demo-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "demo-pages-deploy"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install UI5 tooling
+        working-directory: apps/batch-status
+        run: npm install --no-audit --no-fund
+
+      - name: Build shared OpenUI5 runtime (same-origin, all libs)
+        working-directory: apps/batch-status
+        run: npx ui5 build --all --config ui5-build.yaml --dest "$GITHUB_WORKSPACE/demo-runtime"
+
+      - name: Prune runtime (keep bundle + Horizon theme)
+        working-directory: demo-runtime
+        run: |
+          find . -name '*-dbg.js' -delete
+          find . -name '*.js.map' -delete
+          rm -rf test-resources || true
+          python3 - <<'PY'
+          import os, shutil
+          for root, dirs, files in os.walk('resources', topdown=True):
+              if os.path.basename(root) == 'themes':
+                  for d in list(dirs):
+                      if d not in ('base', 'sap_horizon'):
+                          shutil.rmtree(os.path.join(root, d))
+          PY
+
+      - name: Assemble demo site (apps + mock data + portal)
+        run: python3 demo/build.py --resources demo-runtime/resources --dest demo-dist
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: demo-dist
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: "Deploy demo ${{ github.sha }}"

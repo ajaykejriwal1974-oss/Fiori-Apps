@@ -1,0 +1,4 @@
+{"InspectionCharacteristic":[
+ {"InspectionLot":"010000045671","Material":"FG-YARN-3040","CharacteristicDescription":"Count (Ne)","ResultValue":"30.2","Unit":"Ne","Valuation":""},
+ {"InspectionLot":"010000045671","Material":"FG-YARN-3040","CharacteristicDescription":"Tensile Strength","ResultValue":"410","Unit":"cN/tex","Valuation":""},
+ {"InspectionLot":"010000045680","Material":"FG-FABRIC-220","CharacteristicDescription":"GSM","ResultValue":"220","Unit":"g/m2","Valuation":""}]}
