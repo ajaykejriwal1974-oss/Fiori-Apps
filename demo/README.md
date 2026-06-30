@@ -61,6 +61,9 @@ demo/
      `post-goods-movement-hu`) — these build their data interactively in a named
      `ui` model, so the empty seed in the controller `onInit` is replaced with
      realistic rows.
+   - **self-contained apps** (`maintenance`) — already ship a named JSONModel
+     over a bundled `model/data.json`, so nothing is injected (listed in
+     `SELF_CONTAINED`).
 
 ## Build locally
 
