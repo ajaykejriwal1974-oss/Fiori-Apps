@@ -1,5 +1,9 @@
 # Fiori Apps – KEJRIWAL extensions
 
+> 🚀 **Live demo launchpad:** **<https://ajaykejriwal1974-oss.github.io/Fiori-Apps/>**
+> — open and click through every app (real UI5 code, mock data, no backend) while
+> the S/4HANA 2025 upgrade is in progress. See [Test the apps now](#test-the-apps-now--hosted-demo-launchpad).
+
 Clean-core SAP Fiori extensions for the S/4HANA 2025 migration, derived from
 `KEJRIWAL_Z_to_Fiori_Mapping.pdf`. Each standard app that needs customization
 (Table B of the mapping) gets its own **SAPUI5 Adaptation Project** under
