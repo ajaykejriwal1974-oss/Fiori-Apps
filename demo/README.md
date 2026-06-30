@@ -15,10 +15,18 @@ https://ajaykejriwal1974-oss.github.io/Fiori-Apps/
 ```
 
 The landing page is a tile grid grouped by module (PP / SD / MM / QM). Click a
-tile to open that app; the in-app banner links back to the launchpad. A final
-**Adaptation projects** section lists the 4 `*-ext` apps as non-clickable info
-tiles — they extend a standard delivered Fiori app (clean-core) and run on the
-S/4HANA Front-End Server, so they don't render in this mock demo.
+tile to open that app; the in-app banner links back to the launchpad. Two further
+**reference** sections complete the portfolio with non-clickable info tiles (they
+run on the S/4HANA Front-End Server, not in this mock demo):
+
+- **Adaptation projects** — the 4 `*-ext` apps that extend a standard delivered
+  Fiori app (clean-core), with their Fiori ID and the Z they replace.
+- **Standard apps (adopt as-is)** — the delivered S/4HANA 2025 apps used as-is
+  (the STD / Table A portfolio), each with its Fiori ID, classic transaction,
+  business role, and the Z transaction it retires.
+
+Edit the `ADAPTATION` and `STANDARD` tables at the top of `build.py` to add or
+adjust these reference tiles.
 
 > **Mock data only.** Buttons and edits work against the in-browser JSON model;
 > nothing is posted anywhere. Use it to review layout, fields, columns and flows.

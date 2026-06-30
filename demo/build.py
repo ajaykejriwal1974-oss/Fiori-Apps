@@ -71,6 +71,23 @@ ADAPTATION = [
     ("confirm-production-operation-ext","Confirm Production Operation","F3069",  "ZCO11N / ZCO11A"),
 ]
 
+# Standard delivered S/4HANA 2025 Fiori apps adopted as-is (the STD / Table A
+# portfolio) — no development, assigned via business role. Reference tiles only;
+# they run on the S/4HANA FES, not in this mock demo.
+# (module, title, fiori, classic tx, business role, replaces Z)
+STANDARD = [
+    ("PP", "Manage Batches",                   "F2462",  "MSC3N",        "SAP_BR_WAREHOUSE_CLERK",   "ZBATCH01/02/03(N)"),
+    ("MM", "Compare Supplier Quotations",       "F2324",  "ME49",         "SAP_BR_PURCHASER",         "ZME49"),
+    ("MM", "Manage Material Master",            "F1602",  "MM60",         "SAP_BR_BUYER",             "ZMM60"),
+    ("FI", "Display Line Items in G/L",         "F0706",  "FAGLL03",      "SAP_BR_GL_ACCOUNTANT",     "ZFBL3N / ZZFBL3N"),
+    ("FI", "Manage Customer Line Items",        "F0711",  "FBL5N",        "SAP_BR_AR_ACCOUNTANT",     "ZFBL5N / ZZFBL5N"),
+    ("FI", "Manage Journal Entries",            "F0717A", "FB03",         "SAP_BR_GL_ACCOUNTANT",     "ZFB03"),
+    ("FI", "Manage Credit Memo Requests",       "F0696",  "VA01 (G2/L2)", "SAP_BR_BILLING_CLERK",     "ZCRDRNOTE"),
+    ("FI", "Post Asset Acquisition",            "ABZON",  "F-90",         "SAP_BR_AA_ACCOUNTANT",     "ZF90"),
+    ("FI", "Reprocess Bank Statement Items",    "F1681",  "FF67",         "SAP_BR_CASH_SPECIALIST",   "ZFF67"),
+    ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE"),
+]
+
 
 def read(path):
     with open(path, encoding="utf-8") as fh:
@@ -244,13 +261,17 @@ def portal_html(tiles_by_group, adaptation_section=""):
   .tile.info .meta b {{ color:#32363a; font-weight:600; }}
   .badge {{ display:inline-block; font-size:10px; font-weight:600; letter-spacing:.03em;
            color:#6a6d70; background:#ececec; border-radius:4px; padding:1px 6px; }}
+  /* standard-app tiles (adopt as-is) — green accent */
+  .tile.std {{ background:#f5faf6; border-style:dashed; border-color:#cfe6d4; }}
+  .tile.std .ico {{ background:#e3f1e6; color:#256029; }}
+  .tile.std .badge {{ color:#256029; background:#dcefe1; }}
   footer {{ text-align:center; color:#9a9d9f; font-size:12px; padding:24px; }}
 </style>
 </head>
 <body>
 <header>
-  <h1>Kejriwal &mdash; Custom Fiori Apps</h1>
-  <p>S/4HANA 2025 upgrade &mdash; sandbox launchpad for testing the configuration</p>
+  <h1>Kejriwal &mdash; Fiori App Portfolio</h1>
+  <p>S/4HANA 2025 upgrade &mdash; sandbox launchpad: custom apps (live demo) + adaptation &amp; standard apps (reference)</p>
 </header>
 <main>
   <div class="note"><b>Demo build.</b> Every app runs the real UI5 code against
@@ -300,6 +321,30 @@ def adaptation_section_html():
     )
 
 
+def standard_tile(module, title, fiori, classic, role, replaces):
+    """Non-clickable reference tile for a standard app adopted as-is."""
+    return (
+        f'<div class="tile std" title="Standard S/4HANA app — assign via business role, runs on the FES">'
+        f'<div class="ico">{module}</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">{fiori} &middot; {classic}</div>'
+        f'<div class="meta"><span class="badge">STANDARD</span><br>'
+        f'<b>Role:</b> {role}<br><b>replaces</b> {replaces}</div></div></div>'
+    )
+
+
+def standard_section_html():
+    cells = "".join(standard_tile(*row) for row in STANDARD)
+    return (
+        '<h2 class="grp">Standard apps (adopt as-is &mdash; no development)</h2>\n'
+        '<div class="note" style="background:#f0f8f1;border-color:#cfe6d4">'
+        'Delivered S/4HANA 2025 Fiori apps used <b>as-is</b> &mdash; activated and '
+        'assigned via the listed <b>business role</b>, retiring the old Z transaction. '
+        'No code in this repo; they run on the S/4HANA FES, not in this mock demo.</div>\n'
+        f'<div class="grid">{cells}</div>\n'
+    )
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--resources", required=True, help="path to OpenUI5 'resources' dir")
@@ -329,7 +374,8 @@ def main():
         print(f"  built {app}")
 
     write(os.path.join(dest, "index.html"),
-          portal_html(tiles_by_group, adaptation_section_html()))
+          portal_html(tiles_by_group,
+                      adaptation_section_html() + standard_section_html()))
     write(os.path.join(dest, ".nojekyll"), "")
     print(f"Done -> {dest}")
 
