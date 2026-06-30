@@ -15,7 +15,10 @@ https://ajaykejriwal1974-oss.github.io/Fiori-Apps/
 ```
 
 The landing page is a tile grid grouped by module (PP / SD / MM / QM). Click a
-tile to open that app; the in-app banner links back to the launchpad.
+tile to open that app; the in-app banner links back to the launchpad. A final
+**Adaptation projects** section lists the 4 `*-ext` apps as non-clickable info
+tiles — they extend a standard delivered Fiori app (clean-core) and run on the
+S/4HANA Front-End Server, so they don't render in this mock demo.
 
 > **Mock data only.** Buttons and edits work against the in-browser JSON model;
 > nothing is posted anywhere. Use it to review layout, fields, columns and flows.
