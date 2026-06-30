@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Maintenance — Schedule &amp; Breakdown</title>
+
+    <!-- PWA install metadata (installable on iOS via Add to Home Screen) -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0a6ed1">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Maintenance">
+
+    <!-- Full-height chain + disable WebKit momentum-scroll compositing, which
+         drops the table content to blank on iOS Safari/Chrome. -->
+    <style>
+        /* Full height chain: #content → ComponentContainer → UIArea → View →
+           Page. If any link is auto-height, the Page's content section collapses
+           (~32px) and the tables get clipped to blank (seen on iOS Safari). */
+        html, body, #content { height: 100%; margin: 0; }
+        #content > .sapUiComponentContainer,
+        [id$="-uiarea"],
+        [id$="-uiarea"] > .sapUiView,
+        [id$="-uiarea"] > .sapUiView > .sapMPage { height: 100%; }
+        .sapMPageScroll, .sapMScrollCont, .sapMListUl, .sapMPageEnableScrolling {
+            -webkit-overflow-scrolling: auto !important;
+        }
+    </style>
+
+    <!-- On-screen error banner: surfaces JS errors instead of a blank page -->
+    <script>
+        window.addEventListener("error", function (e) {
+            _showErr((e.message || "error") + " @ " + ((e.filename || "").split("/").pop()) + ":" + (e.lineno || ""));
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+            var r = e.reason; _showErr("promise: " + ((r && (r.message || r.stack)) || r));
+        });
+        function _showErr(m) {
+            try {
+                var d = document.getElementById("_err") || document.createElement("div");
+                d.id = "_err";
+                d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:99999;background:#bb0000;color:#fff;font:12px/1.4 monospace;padding:8px;white-space:pre-wrap;max-height:50%;overflow:auto";
+                d.textContent = "ERR " + m;
+                (document.body || document.documentElement).appendChild(d);
+            } catch (_) { /* ignore */ }
+        }
+    </script>
+
+    <script
+        id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{"kejriwal.pm.maintenance": "./"}'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true">
+    </script>
+</head>
+<body class="sapUiBody">
+    <div
+        id="content"
+        data-sap-ui-component
+        data-name="kejriwal.pm.maintenance"
+        data-id="container"
+        data-settings='{"id": "maintenance", "height": "100%", "width": "100%"}'></div>
+    <!-- Kill any previously-installed service worker so no stale/corrupt cache
+         is served (a prior SW build cached cross-origin UI5 and broke the app). -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (rs) {
+                rs.forEach(function (r) { r.unregister(); });
+            }).catch(function () {});
+            if (window.caches && caches.keys) {
+                caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () {});
+            }
+        }
+    </script>
+</body>
+</html>

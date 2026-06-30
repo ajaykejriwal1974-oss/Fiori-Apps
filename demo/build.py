@@ -11,7 +11,7 @@ runtime (no external CDN — required for iOS Safari). The output is a flat site
       <app>/                copied webapp + demo index.html + mock/data.json
       ...
 
-Two app shapes are handled:
+Three app shapes are handled:
   * "default-model" apps  -> the table binds the default ("") model. We swap that
                              model in manifest.json from the OData dataSource to a
                              JSONModel over mock/data.json.
@@ -19,6 +19,9 @@ Two app shapes are handled:
                              "ui" JSONModel (onInit seeds it empty). We replace
                              that empty seed with realistic rows so the demo shows
                              content on load.
+  * "self-contained" apps -> already ship a named JSONModel over a bundled
+                             model/data.json (e.g. the Maintenance PM app), so we
+                             only copy the webapp + write the demo index.html.
 
 Usage:
     python3 demo/build.py --resources /path/to/openui5/resources --dest dist
@@ -58,7 +61,12 @@ APPS = [
     ("inbound-delivery-hus",          "Inventory (MM)",   "sap-icon://inventory"),
     ("post-goods-movement-hu",        "Inventory (MM)",   "sap-icon://goods-issue"),
     ("record-inspection-results-mass","Quality (QM)",     "sap-icon://quality-issue"),
+    ("maintenance",                   "Maintenance (PM)", "sap-icon://wrench"),
 ]
+
+# Self-contained apps that already ship their own JSON data (a named model over a
+# bundled model/data.json) — no mock swap/seed needed, just copy + demo index.html.
+SELF_CONTAINED = {"maintenance"}
 
 # Adaptation projects (*-ext): these layer custom fields / sections / logic onto
 # a STANDARD delivered Fiori app, so they have no standalone webapp that renders
@@ -242,6 +250,10 @@ def build_app(app, dest):
     # demo index.html (same-origin bootstrap + height fix)
     write(os.path.join(dest_app, "index.html"),
           demo_index_html(namespace, settings_id, title))
+
+    # self-contained apps already bundle their own JSON data — nothing to inject
+    if app in SELF_CONTAINED:
+        return title
 
     seed = json.loads(read(os.path.join(MOCK_DIR, app + ".json")))
     if app in UI_MODEL_APPS:

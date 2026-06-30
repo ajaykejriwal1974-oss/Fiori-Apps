@@ -18,9 +18,11 @@ delivered app **without modifying SAP source**.
 ## Test the apps now — hosted demo Launchpad
 
 While the S/4HANA 2025 backend is still being prepared, you can open and click
-through **all 12 custom freestyle apps** in a browser — each runs the **real UI5
-code** against **realistic mock data**, with the OpenUI5 runtime served
-**same-origin** (works on iOS Safari, no CDN):
+through the apps in a browser — the **12 custom freestyle apps** plus the
+**Maintenance (PM)** app — each runs the **real UI5 code** against **realistic
+mock data**, with the OpenUI5 runtime served **same-origin** (works on iOS
+Safari, no CDN). Reference tiles for the adaptation, standard, master-data and
+analytical-query portfolio round out the launchpad:
 
 ```
 https://ajaykejriwal1974-oss.github.io/Fiori-Apps/
