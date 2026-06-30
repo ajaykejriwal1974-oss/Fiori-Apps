@@ -88,6 +88,41 @@ STANDARD = [
     ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE"),
 ]
 
+# Master-data apps: managed RAP business objects whose service binding generates
+# a standard Fiori Elements list/object-page app ("Manage ...") on the FES.
+# (title, custom table, replaces Z)
+MASTER_DATA = [
+    ("Shade Master",             "ZDD_SHADE",          "ZDD_SHADE"),
+    ("Recipe Master",            "ZPP_RECEIPE",        "ZRECP01/02/03"),
+    ("Job Master",               "ZPP_JOBN",           "ZJOB01/02/03(N)"),
+    ("Truck Master",             "ZTB_TRUCK_MSTR",     "ZTRUCK"),
+    ("Schedule Master",          "ZPP_SCHEDULEN",      "ZSCH01/02/03(N)"),
+    ("Transport Code",           "ZTRANS",             "ZTRANS"),
+    ("Merge Details",            "ZPP_MERGE",          "ZMERGE"),
+    ("Checked / Packed By",      "ZPP_PCBY",           "ZPCBY"),
+    ("Packing Material Master",  "ZPACK_MAST",         "ZPACK_MAST"),
+    ("Export Details",           "ZEXP",               "ZMBR2"),
+    ("Digital Signature",        "ZTDIGI_SIGN",        "ZDIGI"),
+    ("C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
+    ("Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
+]
+
+# Analytical (BI) CDS queries (ZC_*Query over a cube) — consumed in the Query
+# Browser / an Analytical List Page on the FES. (title, query, replaces)
+BI_QUERIES = [
+    ("Packed Stock",       "ZC_PackedStockQuery",      "8 stock reports (ZBOXSTOCK...)"),
+    ("Packing Register",   "ZC_PackingRegisterQuery",  "17 pack-list reports"),
+    ("WIP Batch",          "ZC_WipBatchQuery",         "ZBATCH_WIP"),
+    ("HU Inventory",       "ZC_HuInventoryQuery",      "ZHUINV_CLS, ZHUMO, ZHUREC"),
+    ("Pending Contract",   "ZC_PendingContractQuery",  "ZPCON, ZPCOND, ZPCONS"),
+    ("Export Register",    "ZC_ExportRegisterQuery",   "ZGCUDB, ZBRC/ZEXP"),
+    ("Merge Analysis",     "ZC_MergeAnalysisQuery",    "merge stock reports"),
+    ("Recipe Analysis",    "ZC_RecipeAnalysisQuery",   "ZRECPM"),
+    ("Job Card",           "ZC_JobCardQuery",          "ZJOBREPTN"),
+    ("Dispatch Register",  "ZC_DispatchRegisterQuery", "ZPWDIS, ZDISPATCH, ZPDESP"),
+    ("GST Tax",            "ZC_GstTaxQuery",           "ZGST, ZGST1, ZGST2, ZGSTCR"),
+]
+
 
 def read(path):
     with open(path, encoding="utf-8") as fh:
@@ -257,14 +292,23 @@ def portal_html(tiles_by_group, adaptation_section=""):
   .tile.info {{ cursor:default; background:#fafafa; border-style:dashed; }}
   .tile.info:hover {{ box-shadow:0 1px 2px rgba(0,0,0,.04); transform:none; }}
   .tile.info .ico {{ background:#eee; color:#6a6d70; }}
-  .tile.info .meta {{ font-size:11px; color:#6a6d70; margin-top:6px; line-height:1.5; }}
-  .tile.info .meta b {{ color:#32363a; font-weight:600; }}
+  .tile .meta {{ font-size:11px; color:#6a6d70; margin-top:6px; line-height:1.5;
+               overflow-wrap:anywhere; }}
+  .tile .meta b {{ color:#32363a; font-weight:600; }}
   .badge {{ display:inline-block; font-size:10px; font-weight:600; letter-spacing:.03em;
            color:#6a6d70; background:#ececec; border-radius:4px; padding:1px 6px; }}
   /* standard-app tiles (adopt as-is) — green accent */
   .tile.std {{ background:#f5faf6; border-style:dashed; border-color:#cfe6d4; }}
   .tile.std .ico {{ background:#e3f1e6; color:#256029; }}
   .tile.std .badge {{ color:#256029; background:#dcefe1; }}
+  /* master-data tiles — amber accent */
+  .tile.master {{ background:#fdf8f0; border-style:dashed; border-color:#ecdcc0; }}
+  .tile.master .ico {{ background:#f6e8cf; color:#8a5a00; }}
+  .tile.master .badge {{ color:#8a5a00; background:#f1e2c6; }}
+  /* analytical (BI) tiles — purple accent */
+  .tile.bi {{ background:#f8f6fc; border-style:dashed; border-color:#ddd3ee; }}
+  .tile.bi .ico {{ background:#eae6f7; color:#5b3a9e; }}
+  .tile.bi .badge {{ color:#5b3a9e; background:#e7dffa; }}
   footer {{ text-align:center; color:#9a9d9f; font-size:12px; padding:24px; }}
 </style>
 </head>
@@ -345,6 +389,52 @@ def standard_section_html():
     )
 
 
+def master_tile(title, table, replaces):
+    return (
+        f'<div class="tile master" title="Managed RAP master — Fiori Elements app generated from the service binding">'
+        f'<div class="ico">&#9636;</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">{table}</div>'
+        f'<div class="meta"><span class="badge">MASTER DATA</span><br>'
+        f'<b>Fiori Elements</b> &middot; replaces {replaces}</div></div></div>'
+    )
+
+
+def master_section_html():
+    cells = "".join(master_tile(*row) for row in MASTER_DATA)
+    return (
+        '<h2 class="grp">Master data (managed RAP &rarr; Fiori Elements)</h2>\n'
+        '<div class="note" style="background:#fdf6ea;border-color:#ecdcc0">'
+        'Custom master objects built as <b>managed RAP</b> business objects; the '
+        'service binding generates a standard <b>Manage&hellip;</b> Fiori Elements '
+        'app on the FES. Each maintains only its own custom table.</div>\n'
+        f'<div class="grid">{cells}</div>\n'
+    )
+
+
+def bi_tile(title, query, replaces):
+    return (
+        f'<div class="tile bi" title="CDS analytical query — open in the Query Browser / Analytical List Page">'
+        f'<div class="ico">&#9650;</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">{query}</div>'
+        f'<div class="meta"><span class="badge">ANALYTICS</span><br>'
+        f'<b>Query Browser / ALP</b> &middot; replaces {replaces}</div></div></div>'
+    )
+
+
+def bi_section_html():
+    cells = "".join(bi_tile(*row) for row in BI_QUERIES)
+    return (
+        '<h2 class="grp">Analytical queries (BI / CDS)</h2>\n'
+        '<div class="note" style="background:#f6f3fc;border-color:#ddd3ee">'
+        '<b>11 CDS analytical queries</b> replace ~40 Z reports &mdash; the old '
+        'report variants become drill-down dimensions. Open each in the <b>Query '
+        'Browser</b> or an Analytical List Page; read-only, on the FES.</div>\n'
+        f'<div class="grid">{cells}</div>\n'
+    )
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--resources", required=True, help="path to OpenUI5 'resources' dir")
@@ -375,7 +465,8 @@ def main():
 
     write(os.path.join(dest, "index.html"),
           portal_html(tiles_by_group,
-                      adaptation_section_html() + standard_section_html()))
+                      adaptation_section_html() + standard_section_html()
+                      + master_section_html() + bi_section_html()))
     write(os.path.join(dest, ".nojekyll"), "")
     print(f"Done -> {dest}")
 
