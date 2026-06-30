@@ -60,6 +60,17 @@ APPS = [
     ("record-inspection-results-mass","Quality (QM)",     "sap-icon://quality-issue"),
 ]
 
+# Adaptation projects (*-ext): these layer custom fields / sections / logic onto
+# a STANDARD delivered Fiori app, so they have no standalone webapp that renders
+# in this mock demo. They appear as non-clickable info tiles for completeness.
+ADAPTATION = [
+    # folder                            title                          fiori  replaces (Z)
+    ("manage-sales-orders-ext",         "Manage Sales Orders",         "F1873",  "ZVA01 / ZVA01N, ZSOCLOSE"),
+    ("manage-sales-contracts-ext",      "Manage Sales Contracts",      "VA42",   "ZCON_CLOSE/1, ZCOREL, ZCON02"),
+    ("manage-outbound-deliveries-ext",  "Manage Outbound Deliveries",  "F0867A", "ZDEL"),
+    ("confirm-production-operation-ext","Confirm Production Operation","F3069",  "ZCO11N / ZCO11A"),
+]
+
 
 def read(path):
     with open(path, encoding="utf-8") as fh:
@@ -191,11 +202,12 @@ def build_app(app, dest):
     return title
 
 
-def portal_html(tiles_by_group):
+def portal_html(tiles_by_group, adaptation_section=""):
     groups = ""
     for group, tiles in tiles_by_group.items():
         cells = "".join(tiles)
         groups += f'<h2 class="grp">{group}</h2>\n<div class="grid">{cells}</div>\n'
+    groups += adaptation_section
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -214,7 +226,7 @@ def portal_html(tiles_by_group):
   .grp {{ font-size:14px; text-transform:uppercase; letter-spacing:.05em;
          color:#6a6d70; margin:28px 0 10px; }}
   .grid {{ display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }}
-  a.tile {{ display:flex; flex-direction:column; justify-content:space-between;
+  .tile {{ display:flex; flex-direction:column; justify-content:space-between;
            min-height:110px; background:#fff; border:1px solid #e5e5e5; border-radius:10px;
            padding:14px 16px; text-decoration:none; color:inherit;
            box-shadow:0 1px 2px rgba(0,0,0,.04); transition:box-shadow .15s,transform .15s; }}
@@ -224,6 +236,14 @@ def portal_html(tiles_by_group):
                align-items:center; justify-content:center; }}
   .tile .ttl {{ font-size:15px; font-weight:600; margin-top:10px; }}
   .tile .sub {{ font-size:12px; color:#6a6d70; margin-top:2px; }}
+  /* info tiles (adaptation projects — not runnable in the mock demo) */
+  .tile.info {{ cursor:default; background:#fafafa; border-style:dashed; }}
+  .tile.info:hover {{ box-shadow:0 1px 2px rgba(0,0,0,.04); transform:none; }}
+  .tile.info .ico {{ background:#eee; color:#6a6d70; }}
+  .tile.info .meta {{ font-size:11px; color:#6a6d70; margin-top:6px; line-height:1.5; }}
+  .tile.info .meta b {{ color:#32363a; font-weight:600; }}
+  .badge {{ display:inline-block; font-size:10px; font-weight:600; letter-spacing:.03em;
+           color:#6a6d70; background:#ececec; border-radius:4px; padding:1px 6px; }}
   footer {{ text-align:center; color:#9a9d9f; font-size:12px; padding:24px; }}
 </style>
 </head>
@@ -255,6 +275,31 @@ def tile(app, group, title):
     )
 
 
+def info_tile(folder, title, fiori, replaces):
+    """Non-clickable tile for an adaptation project (extends a standard app)."""
+    return (
+        f'<div class="tile info" title="Adaptation project — runs on S/4HANA, not in this mock demo">'
+        f'<div class="ico">+</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">{folder}</div>'
+        f'<div class="meta"><span class="badge">STANDARD&nbsp;+&nbsp;EXT</span><br>'
+        f'<b>Fiori:</b> {fiori} &middot; <b>replaces</b> {replaces}</div></div></div>'
+    )
+
+
+def adaptation_section_html():
+    cells = "".join(info_tile(*row) for row in ADAPTATION)
+    return (
+        '<h2 class="grp">Adaptation projects (extend standard apps)</h2>\n'
+        '<div class="note" style="background:#eef4fb;border-color:#c7ddef">'
+        'These layer custom fields / sections / logic onto a <b>standard delivered '
+        'Fiori app</b> (clean-core, no SAP modification), so they run on the '
+        'S/4HANA Front-End Server &mdash; <b>not</b> in this mock demo. Listed here '
+        'for completeness.</div>\n'
+        f'<div class="grid">{cells}</div>\n'
+    )
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--resources", required=True, help="path to OpenUI5 'resources' dir")
@@ -283,7 +328,8 @@ def main():
         tiles_by_group.setdefault(group, []).append(tile(app, group, title))
         print(f"  built {app}")
 
-    write(os.path.join(dest, "index.html"), portal_html(tiles_by_group))
+    write(os.path.join(dest, "index.html"),
+          portal_html(tiles_by_group, adaptation_section_html()))
     write(os.path.join(dest, ".nojekyll"), "")
     print(f"Done -> {dest}")
 
