@@ -122,7 +122,7 @@ MASTER_DATA = [
     ("PP", "Packing Material Master",  "ZPACK_MAST",         "ZPACK_MAST"),
     ("SD", "Export Details",           "ZEXP",               "ZMBR2"),
     ("FI", "Digital Signature",        "ZTDIGI_SIGN",        "ZDIGI"),
-    ("SD", "C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
+    ("FI", "C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
     ("SD", "Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
 ]
 
