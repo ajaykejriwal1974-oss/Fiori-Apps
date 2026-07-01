@@ -126,6 +126,16 @@ STANDARD = [
     # Fiori Apps Reference Library). Pairs with Record Inspection Results.
     ("QM", "Master Inspection Characteristics", "F2219", "QS21/22/23", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
     ("QM", "Manage Inspection Plans",           "F3788", "QP01/02/03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
+    # QM inspection & quality-issue lifecycle — standard S/4HANA 2025 (F2170 /
+    # F2689 verified; the rest are transaction-based QM apps, classic tx anchor).
+    ("QM", "Manage Inspection Lots",            "QA32/QA33", "QA03 (display)", "SAP_BR_QUALITY_ENGINEER", "inspection-lot worklist — triggers results & usage decision"),
+    ("QM", "Record Inspection Results",         "F2170", "QE51N",      "SAP_BR_QUALITY_TECHNICIAN", "standard results recording (your custom app = mass ZQA32 version)"),
+    ("QM", "Record Results for Inspection Points","F2689","QE01",      "SAP_BR_QUALITY_TECHNICIAN", "in-process inspection points (production)"),
+    ("QM", "Manage Usage Decisions",            "QA11",  "QA11 / QA13", "SAP_BR_QUALITY_ENGINEER", "accept / reject the inspection lot"),
+    ("QM", "Manage Quality Notifications",      "QM01",  "QM01/02/03", "SAP_BR_QUALITY_ENGINEER", "customer / vendor complaints + internal quality problems"),
+    ("QM", "Create Quality Certificate (Delivery)","QC22","QC22 / QC01 (profile)","SAP_BR_QUALITY_ENGINEER","outbound quality certificate — exports"),
+    ("QM", "Manage Quality Info Records",       "QI01",  "QI01 / QV51", "SAP_BR_QUALITY_ENGINEER", "procurement / sales quality info records"),
+    ("QM", "Manage Catalogs / Code Groups",     "QS41",  "QS41 / QS51", "SAP_BR_QUALITY_PLANNER",  "defect / failure catalogs (ISO 14224 codes)"),
     # Maintenance (PM/EAM) — standard S/4HANA 2025 apps covering the maintenance
     # business processes (all app IDs verified in the Fiori Apps Reference
     # Library; technical objects use the W-prefixed GUI-transaction apps).
