@@ -132,6 +132,7 @@ STANDARD = [
     ("PM", "Request Maintenance",                   "F1511A","IW21 (simplified)","SAP_BR_EMPLOYEE_MAINTENANCE","shop-floor maintenance request (any employee)"),
     ("PM", "Manage Maintenance Plans",              "F5325", "IP01/02/03", "SAP_BR_MAINTENANCE_PLANNER",    "preventive plans + strategy"),
     ("PM", "Mass Schedule Maintenance Plans",       "F2774", "IP30",       "SAP_BR_MAINTENANCE_PLANNER",    "schedule due plans / deadline monitoring"),
+    ("PM", "Advanced Scheduling Board",             "F5460", "IW37N (order ops)","SAP_BR_MAINTENANCE_PLANNER","graphical Gantt scheduling — dispatch order operations to work centres (planner dashboard = F2227)"),
     ("PM", "Report and Repair Malfunction",         "F2023", "IW21 / IW26","SAP_BR_MAINTENANCE_TECHNICIAN", "emergency malfunction report + repair"),
     ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "maintenance notifications + work orders"),
     ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "downtime / MTBF / MTTR KPIs"),
