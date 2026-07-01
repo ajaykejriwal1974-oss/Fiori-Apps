@@ -106,6 +106,16 @@ STANDARD = [
     ("MM", "Compare Supplier Quotations",       "F2324",  "ME49",         "SAP_BR_PURCHASER",         "ZME49"),
     ("MM", "Manage Material Master",            "F1602",  "MM60",         "SAP_BR_BUYER",             "ZMM60 — incl. spare-part materials (stock / reorder / vendor)"),
     ("MM", "Maintain Bill of Material",         "CS01/02/03", "IB01 (equip. BOM)", "SAP_BR_MAINTENANCE_PLANNER", "maintenance BOM — spare-part components list"),
+    # Procure-to-pay + inventory core (F2229 / F0842A / F0843 verified; the rest
+    # are transaction-based apps, classic tx anchor).
+    ("MM", "Manage Purchase Requisitions",      "F2229",  "ME51N / ME53N","SAP_BR_PURCHASER",         "purchase requisitions (PR)"),
+    ("MM", "Manage Purchase Orders",            "F0842A", "ME21N / ME23N","SAP_BR_PURCHASER",         "create / manage POs (release = F2872)"),
+    ("MM", "Manage Purchasing Info Records",    "ME11",   "ME11/12/13",  "SAP_BR_PURCHASER",         "source of supply / purchasing conditions"),
+    ("MM", "Post Goods Receipt for Purchasing Doc","F0843","MIGO",       "SAP_BR_WAREHOUSE_CLERK",   "GR against PO / inbound delivery"),
+    ("MM", "Create Supplier Invoice",           "F0859",  "MIRO",        "SAP_BR_AP_ACCOUNTANT",     "invoice verification — 3-way match (LIV)"),
+    ("MM", "Stock — Multiple Materials",        "MMBE",   "MMBE / MB52", "SAP_BR_WAREHOUSE_CLERK",   "stock overview across plant / storage / batch"),
+    ("MM", "Manage Physical Inventory",         "MI01",   "MI01/04/07",  "SAP_BR_WAREHOUSE_CLERK",   "count sheets + post differences"),
+    ("MM", "Monitor Material Coverage (MRP)",   "F0247",  "MD04 / MD01N","SAP_BR_MRP_CONTROLLER",    "MRP net requirements / shortages (uses standard Min/Max)"),
     ("FI", "Display Line Items in G/L",         "F0706",  "FAGLL03",      "SAP_BR_GL_ACCOUNTANT",     "ZFBL3N / ZZFBL3N"),
     ("FI", "Manage Customer Line Items",        "F0711",  "FBL5N",        "SAP_BR_AR_ACCOUNTANT",     "ZFBL5N / ZZFBL5N"),
     ("FI", "Manage Journal Entries",            "F0717A", "FB03",         "SAP_BR_GL_ACCOUNTANT",     "ZFB03"),
