@@ -131,6 +131,13 @@ STANDARD = [
     # Reference Library. Adopt as-is, assign the role.
     ("MM", "Release Purchase Orders",           "F2872",  "ME29N",          "SAP_BR_PURCHASING_MANAGER", "Flexible Workflow (config F2872) → approve in My Inbox (F0862)"),
     ("SD", "Release Sales Contracts",           "VA42",   "Flexible Workflow", "SAP_BR_INTERNAL_SALES_REP", "contract approval — Flexible Workflow → My Inbox (cf. Manage Sales Contracts ext)"),
+    # Order-to-cash completion — order/contract/delivery already covered by the
+    # SD adaptations; add fulfilment, billing, pricing, customer master.
+    ("SD", "Sales Order Fulfillment — Issues",  "F0251",  "VA05",        "SAP_BR_INTERNAL_SALES_REP", "analyse & resolve blocked / incomplete orders (ATP, credit, billing blocks)"),
+    ("SD", "Create Billing Documents",          "F0798",  "VF01 / VF04", "SAP_BR_BILLING_CLERK",      "billing due list — invoice creation"),
+    ("SD", "Manage Billing Documents",          "F0797",  "VF03 / VF05", "SAP_BR_BILLING_CLERK",      "review / post / cancel invoices & credit memos"),
+    ("SD", "Manage Prices — Sales",             "VK11",   "VK11/12/13",  "SAP_BR_INTERNAL_SALES_REP", "pricing condition records"),
+    ("SD", "Manage Business Partner (Customer)","BP",     "BP / XD03",   "SAP_BR_BUPA_MASTER_SPECIALIST","customer master (sales + FI-AR data)"),
     ("WF", "My Inbox (All Items)",              "F0862",  "SBWP",           "SAP_BR_EMPLOYEE",           "central inbox for Flexible Workflow approvals — PO, sales contract, credit"),
     # QM master data — delivered standard, adopt as-is (F-numbers verified in the
     # Fiori Apps Reference Library). Pairs with Record Inspection Results.
