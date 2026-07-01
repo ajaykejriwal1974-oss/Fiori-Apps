@@ -126,7 +126,9 @@ The custom survivors are built as CDS cube+query pairs in
 variants): `ZC_PackedStockQuery`, `ZC_PackingRegisterQuery`, `ZC_WipBatchQuery`,
 `ZC_HuInventoryQuery`, `ZC_PendingContractQuery`, `ZC_ExportRegisterQuery`,
 `ZC_MergeAnalysisQuery`, `ZC_RecipeAnalysisQuery`, `ZC_JobCardQuery`,
-`ZC_DispatchRegisterQuery`, `ZC_GstTaxQuery`. These 11 replace ~40 of the BI
+`ZC_DispatchRegisterQuery`, `ZC_GstTaxQuery`, plus two sibling queries on
+existing cubes — `ZC_HuMonitorQuery` (monitor/reconciliation) and
+`ZC_PendingDispatchQuery` (pending/security gate). These 13 replace ~40 of the BI
 reports; the remainder are dropped, routed to standard, or covered by built apps.
 
 ## Method to confirm before cutting

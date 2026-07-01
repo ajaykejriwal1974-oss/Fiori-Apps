@@ -26,7 +26,7 @@ on-page legend), ordered custom → extended → standard → master → analyti
   Table A portfolio): Fiori ID, classic transaction, business role, Z retired.
 - **Master data** (amber) — managed-RAP master objects; each service binding
   generates a *Manage…* Fiori Elements app.
-- **Analytics** (purple) — the 11 CDS analytical queries (Query Browser /
+- **Analytics** (purple) — the 13 CDS analytical queries (Query Browser /
   Analytical List Page) that replace ~40 Z reports.
 
 Only the Custom tiles run in the demo; the rest are reference cards (they run on

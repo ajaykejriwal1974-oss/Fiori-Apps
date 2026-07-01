@@ -78,7 +78,7 @@ below.
 | `EXT` | 19 | Built / wired into adaptations (sales order & contract status, etc.) | apps/ + backend/ |
 | `STD` | 17 | Standard Fiori app + business role; retire Z | [STD-RETIREMENT.md](docs/STD-RETIREMENT.md) |
 | `PRT` | 61 | Output Management (BRF+ / Adobe templates); gate pass built | [PRT-OUTPUT-MANAGEMENT.md](docs/PRT-OUTPUT-MANAGEMENT.md) |
-| `BI` | 87 | Consolidated to ~31; **11 CDS queries built** | [BI-CONSOLIDATION.md](docs/BI-CONSOLIDATION.md) · [backend/analytics](backend/analytics) |
+| `BI` | 87 | Consolidated to ~31; **13 CDS queries built** | [BI-CONSOLIDATION.md](docs/BI-CONSOLIDATION.md) · [backend/analytics](backend/analytics) |
 | `UPL` | 28 | Migration Cockpit / public APIs; consolidated to ~11; BDC retired | [UPL-MIGRATION.md](docs/UPL-MIGRATION.md) |
 | `RET` | 1 | Retire | — |
 | **Total** | **285** | | |
@@ -157,7 +157,7 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 | [Sales Document Status](backend/sales-doc-status-rap) | Unmanaged RAP service (EXT, **merged**) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 + ZSOCLOSE/ZSOCLOSE1 | One `VBAK` read (contracts+orders); all 6 lifecycle actions → both adaptations (audit P2) |
 | [HU shared reads](backend/hu-shared) | Shared CDS interfaces (refactor) | — | `ZI_HU_ItemBase`/`ZI_HU_HeaderBase` reused by 7 HU services (audit P3) |
 | [Gate Pass](backend/gate-pass-rap) | Managed RAP composition (PRT/custom) | ZGPS01/02/03, ZGPSI1/2/3 | Header→item over `ZGP_HDR`/`ZGP_ITEM` (keys GPNUM/MJAHR); `ZGP_PART` associated |
-| [BI Analytical Queries](backend/analytics) | 11 CDS cube+query pairs (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
+| [BI Analytical Queries](backend/analytics) | 13 CDS queries over 10 cubes (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
 | [PO Automation](backend/po-automation) | ABAP automation class (UPL) | ZAUTOPO* (9) | `ZCL_PO_AUTOMATION` over `ZSOL_AUPO`/`ZMM_AUTOPO`, sales org param; API call to wire |
 | [OBD Automation](backend/obd-automation) | ABAP automation class (UPL) | ZSDOBD/ZSDOBDN | `ZCL_OBD_AUTOMATION` over `ZSOL_HUDISPATCH`, plant param; API calls to wire |
 | [~~Bill of Exchange~~ → reuse standard FI](backend/bill-of-exchange-std) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
