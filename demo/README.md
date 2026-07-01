@@ -18,8 +18,8 @@ The landing page arranges the **whole portfolio by SAP module** (PP / SD / MM /
 QM / FI / PM). Within each module the tiles are colour-coded by type (see the
 on-page legend), ordered custom → extended → standard → master → analytics:
 
-- **Custom** (blue, clickable) — the freestyle apps + the Maintenance app; these
-  run live on mock data. The in-app banner links back to the launchpad.
+- **Custom** (blue, clickable) — the 12 freestyle apps; these run live on mock
+  data. The in-app banner links back to the launchpad.
 - **Extended** (grey) — the 4 `*-ext` adaptation projects that extend a standard
   delivered Fiori app, with their Fiori ID and the Z they replace.
 - **Standard** (green) — delivered S/4HANA 2025 apps adopted as-is (the STD /
@@ -63,9 +63,6 @@ demo/
      `post-goods-movement-hu`) — these build their data interactively in a named
      `ui` model, so the empty seed in the controller `onInit` is replaced with
      realistic rows.
-   - **self-contained apps** (`maintenance`) — already ship a named JSONModel
-     over a bundled `model/data.json`, so nothing is injected (listed in
-     `SELF_CONTAINED`).
 
 ## Build locally
 
