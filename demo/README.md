@@ -14,23 +14,25 @@ Published automatically to GitHub Pages (see the workflow below):
 https://ajaykejriwal1974-oss.github.io/Fiori-Apps/
 ```
 
-The landing page is a tile grid grouped by module (PP / SD / MM / QM). Click a
-tile to open that app; the in-app banner links back to the launchpad. Two further
-**reference** sections complete the portfolio with non-clickable info tiles (they
-run on the S/4HANA Front-End Server, not in this mock demo):
+The landing page arranges the **whole portfolio by SAP module** (PP / SD / MM /
+QM / FI / PM). Within each module the tiles are colour-coded by type (see the
+on-page legend), ordered custom → extended → standard → master → analytics:
 
-- **Adaptation projects** — the 4 `*-ext` apps that extend a standard delivered
-  Fiori app (clean-core), with their Fiori ID and the Z they replace.
-- **Standard apps (adopt as-is)** — the delivered S/4HANA 2025 apps used as-is
-  (the STD / Table A portfolio), each with its Fiori ID, classic transaction,
-  business role, and the Z transaction it retires.
-- **Master data (managed RAP → Fiori Elements)** — the custom master objects;
-  each managed-RAP service binding generates a *Manage…* Fiori Elements app.
-- **Analytical queries (BI / CDS)** — the 11 CDS analytical queries (Query
-  Browser / Analytical List Page) that replace ~40 Z reports.
+- **Custom** (blue, clickable) — the freestyle apps + the Maintenance app; these
+  run live on mock data. The in-app banner links back to the launchpad.
+- **Extended** (grey) — the 4 `*-ext` adaptation projects that extend a standard
+  delivered Fiori app, with their Fiori ID and the Z they replace.
+- **Standard** (green) — delivered S/4HANA 2025 apps adopted as-is (the STD /
+  Table A portfolio): Fiori ID, classic transaction, business role, Z retired.
+- **Master data** (amber) — managed-RAP master objects; each service binding
+  generates a *Manage…* Fiori Elements app.
+- **Analytics** (purple) — the 11 CDS analytical queries (Query Browser /
+  Analytical List Page) that replace ~40 Z reports.
 
-Edit the `ADAPTATION`, `STANDARD`, `MASTER_DATA` and `BI_QUERIES` tables at the
-top of `build.py` to add or adjust these reference tiles.
+Only the Custom tiles run in the demo; the rest are reference cards (they run on
+the S/4HANA Front-End Server). Each item's module lives in the `MODULES`, `APPS`,
+`ADAPTATION`, `STANDARD`, `MASTER_DATA` and `BI_QUERIES` tables at the top of
+`build.py` — edit those to re-file a tile or add a new one.
 
 > **Mock data only.** Buttons and edits work against the in-browser JSON model;
 > nothing is posted anywhere. Use it to review layout, fields, columns and flows.
