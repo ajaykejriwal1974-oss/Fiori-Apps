@@ -46,22 +46,33 @@ UI_MODEL_APPS = {
     "post-goods-movement-hu": "controller/Main.controller.js",
 }
 
-# Display metadata for the portal tiles. order = display order; group = module.
+# SAP module groups, in display order. The whole portfolio is arranged by these
+# — every app (custom / extended / standard / master / analytics) sits under its
+# module, distinguished by tile colour + type badge (see the legend).
+MODULES = [
+    ("PP", "Production (PP)"),
+    ("SD", "Sales &amp; Distribution (SD)"),
+    ("MM", "Materials &amp; Inventory (MM)"),
+    ("QM", "Quality (QM)"),
+    ("FI", "Finance (FI)"),
+    ("PM", "Maintenance (PM)"),
+]
+
+# Custom freestyle apps (runnable in the demo). (app folder, module)
 APPS = [
-    # app folder                       group                       icon
-    ("batch-status",                  "Production (PP)",  "sap-icon://batch-payments"),
-    ("dyeing-packing",                "Production (PP)",  "sap-icon://add-product"),
-    ("manage-packing-details",        "Production (PP)",  "sap-icon://product"),
-    ("post-packing-gr",               "Production (PP)",  "sap-icon://goods-issue"),
-    ("palletization",                 "Production (PP)",  "sap-icon://pallets"),
-    ("mtos-process",                  "Production (PP)",  "sap-icon://shipping-status"),
-    ("contract-batch-update",         "Sales (SD)",       "sap-icon://sales-document"),
-    ("dispatch-correction",           "Sales (SD)",       "sap-icon://shipping-status"),
-    ("hu-unpack",                     "Inventory (MM)",   "sap-icon://unwired"),
-    ("inbound-delivery-hus",          "Inventory (MM)",   "sap-icon://inventory"),
-    ("post-goods-movement-hu",        "Inventory (MM)",   "sap-icon://goods-issue"),
-    ("record-inspection-results-mass","Quality (QM)",     "sap-icon://quality-issue"),
-    ("maintenance",                   "Maintenance (PM)", "sap-icon://wrench"),
+    ("batch-status",                  "PP"),
+    ("dyeing-packing",                "PP"),
+    ("manage-packing-details",        "PP"),
+    ("post-packing-gr",               "PP"),
+    ("palletization",                 "PP"),
+    ("mtos-process",                  "PP"),
+    ("contract-batch-update",         "SD"),
+    ("dispatch-correction",           "SD"),
+    ("hu-unpack",                     "MM"),
+    ("inbound-delivery-hus",          "MM"),
+    ("post-goods-movement-hu",        "MM"),
+    ("record-inspection-results-mass","QM"),
+    ("maintenance",                   "PM"),
 ]
 
 # Self-contained apps that already ship their own JSON data (a named model over a
@@ -72,11 +83,11 @@ SELF_CONTAINED = {"maintenance"}
 # a STANDARD delivered Fiori app, so they have no standalone webapp that renders
 # in this mock demo. They appear as non-clickable info tiles for completeness.
 ADAPTATION = [
-    # folder                            title                          fiori  replaces (Z)
-    ("manage-sales-orders-ext",         "Manage Sales Orders",         "F1873",  "ZVA01 / ZVA01N, ZSOCLOSE"),
-    ("manage-sales-contracts-ext",      "Manage Sales Contracts",      "VA42",   "ZCON_CLOSE/1, ZCOREL, ZCON02"),
-    ("manage-outbound-deliveries-ext",  "Manage Outbound Deliveries",  "F0867A", "ZDEL"),
-    ("confirm-production-operation-ext","Confirm Production Operation","F3069",  "ZCO11N / ZCO11A"),
+    # folder                            module title                    fiori  replaces (Z)
+    ("manage-sales-orders-ext",         "SD", "Manage Sales Orders",         "F1873",  "ZVA01 / ZVA01N, ZSOCLOSE"),
+    ("manage-sales-contracts-ext",      "SD", "Manage Sales Contracts",      "VA42",   "ZCON_CLOSE/1, ZCOREL, ZCON02"),
+    ("manage-outbound-deliveries-ext",  "SD", "Manage Outbound Deliveries",  "F0867A", "ZDEL"),
+    ("confirm-production-operation-ext","PP", "Confirm Production Operation","F3069",  "ZCO11N / ZCO11A"),
 ]
 
 # Standard delivered S/4HANA 2025 Fiori apps adopted as-is (the STD / Table A
@@ -98,37 +109,37 @@ STANDARD = [
 
 # Master-data apps: managed RAP business objects whose service binding generates
 # a standard Fiori Elements list/object-page app ("Manage ...") on the FES.
-# (title, custom table, replaces Z)
+# (module, title, custom table, replaces Z)
 MASTER_DATA = [
-    ("Shade Master",             "ZDD_SHADE",          "ZDD_SHADE"),
-    ("Recipe Master",            "ZPP_RECEIPE",        "ZRECP01/02/03"),
-    ("Job Master",               "ZPP_JOBN",           "ZJOB01/02/03(N)"),
-    ("Truck Master",             "ZTB_TRUCK_MSTR",     "ZTRUCK"),
-    ("Schedule Master",          "ZPP_SCHEDULEN",      "ZSCH01/02/03(N)"),
-    ("Transport Code",           "ZTRANS",             "ZTRANS"),
-    ("Merge Details",            "ZPP_MERGE",          "ZMERGE"),
-    ("Checked / Packed By",      "ZPP_PCBY",           "ZPCBY"),
-    ("Packing Material Master",  "ZPACK_MAST",         "ZPACK_MAST"),
-    ("Export Details",           "ZEXP",               "ZMBR2"),
-    ("Digital Signature",        "ZTDIGI_SIGN",        "ZDIGI"),
-    ("C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
-    ("Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
+    ("PP", "Shade Master",             "ZDD_SHADE",          "ZDD_SHADE"),
+    ("PP", "Recipe Master",            "ZPP_RECEIPE",        "ZRECP01/02/03"),
+    ("PP", "Job Master",               "ZPP_JOBN",           "ZJOB01/02/03(N)"),
+    ("SD", "Truck Master",             "ZTB_TRUCK_MSTR",     "ZTRUCK"),
+    ("PP", "Schedule Master",          "ZPP_SCHEDULEN",      "ZSCH01/02/03(N)"),
+    ("SD", "Transport Code",           "ZTRANS",             "ZTRANS"),
+    ("PP", "Merge Details",            "ZPP_MERGE",          "ZMERGE"),
+    ("PP", "Checked / Packed By",      "ZPP_PCBY",           "ZPCBY"),
+    ("PP", "Packing Material Master",  "ZPACK_MAST",         "ZPACK_MAST"),
+    ("SD", "Export Details",           "ZEXP",               "ZMBR2"),
+    ("FI", "Digital Signature",        "ZTDIGI_SIGN",        "ZDIGI"),
+    ("SD", "C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
+    ("MM", "Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
 ]
 
 # Analytical (BI) CDS queries (ZC_*Query over a cube) — consumed in the Query
-# Browser / an Analytical List Page on the FES. (title, query, replaces)
+# Browser / an Analytical List Page on the FES. (module, title, query, replaces)
 BI_QUERIES = [
-    ("Packed Stock",       "ZC_PackedStockQuery",      "8 stock reports (ZBOXSTOCK...)"),
-    ("Packing Register",   "ZC_PackingRegisterQuery",  "17 pack-list reports"),
-    ("WIP Batch",          "ZC_WipBatchQuery",         "ZBATCH_WIP"),
-    ("HU Inventory",       "ZC_HuInventoryQuery",      "ZHUINV_CLS, ZHUMO, ZHUREC"),
-    ("Pending Contract",   "ZC_PendingContractQuery",  "ZPCON, ZPCOND, ZPCONS"),
-    ("Export Register",    "ZC_ExportRegisterQuery",   "ZGCUDB, ZBRC/ZEXP"),
-    ("Merge Analysis",     "ZC_MergeAnalysisQuery",    "merge stock reports"),
-    ("Recipe Analysis",    "ZC_RecipeAnalysisQuery",   "ZRECPM"),
-    ("Job Card",           "ZC_JobCardQuery",          "ZJOBREPTN"),
-    ("Dispatch Register",  "ZC_DispatchRegisterQuery", "ZPWDIS, ZDISPATCH, ZPDESP"),
-    ("GST Tax",            "ZC_GstTaxQuery",           "ZGST, ZGST1, ZGST2, ZGSTCR"),
+    ("PP", "Packed Stock",       "ZC_PackedStockQuery",      "8 stock reports (ZBOXSTOCK...)"),
+    ("PP", "Packing Register",   "ZC_PackingRegisterQuery",  "17 pack-list reports"),
+    ("PP", "WIP Batch",          "ZC_WipBatchQuery",         "ZBATCH_WIP"),
+    ("MM", "HU Inventory",       "ZC_HuInventoryQuery",      "ZHUINV_CLS, ZHUMO, ZHUREC"),
+    ("SD", "Pending Contract",   "ZC_PendingContractQuery",  "ZPCON, ZPCOND, ZPCONS"),
+    ("SD", "Export Register",    "ZC_ExportRegisterQuery",   "ZGCUDB, ZBRC/ZEXP"),
+    ("PP", "Merge Analysis",     "ZC_MergeAnalysisQuery",    "merge stock reports"),
+    ("PP", "Recipe Analysis",    "ZC_RecipeAnalysisQuery",   "ZRECPM"),
+    ("PP", "Job Card",           "ZC_JobCardQuery",          "ZJOBREPTN"),
+    ("SD", "Dispatch Register",  "ZC_DispatchRegisterQuery", "ZPWDIS, ZDISPATCH, ZPDESP"),
+    ("FI", "GST Tax",            "ZC_GstTaxQuery",           "ZGST, ZGST1, ZGST2, ZGSTCR"),
 ]
 
 
@@ -266,12 +277,7 @@ def build_app(app, dest):
     return title
 
 
-def portal_html(tiles_by_group, adaptation_section=""):
-    groups = ""
-    for group, tiles in tiles_by_group.items():
-        cells = "".join(tiles)
-        groups += f'<h2 class="grp">{group}</h2>\n<div class="grid">{cells}</div>\n'
-    groups += adaptation_section
+def portal_html(sections_html):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,6 +306,15 @@ def portal_html(tiles_by_group, adaptation_section=""):
                align-items:center; justify-content:center; }}
   .tile .ttl {{ font-size:15px; font-weight:600; margin-top:10px; }}
   .tile .sub {{ font-size:12px; color:#6a6d70; margin-top:2px; }}
+  .tile .badge.cust {{ color:#0a6ed1; background:#e3f0fb; }}
+  .legend {{ display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12px;
+            color:#4a4d50; margin:12px 0 4px; }}
+  .legend span {{ display:inline-flex; align-items:center; gap:6px; }}
+  .legend i {{ width:11px; height:11px; border-radius:3px; display:inline-block;
+              border:1px solid rgba(0,0,0,.12); }}
+  .sw-cust {{ background:#e3f0fb; }} .sw-ext {{ background:#eee; }}
+  .sw-std {{ background:#dcefe1; }} .sw-mas {{ background:#f1e2c6; }}
+  .sw-bi {{ background:#e7dffa; }}
   /* info tiles (adaptation projects — not runnable in the mock demo) */
   .tile.info {{ cursor:default; background:#fafafa; border-style:dashed; }}
   .tile.info:hover {{ box-shadow:0 1px 2px rgba(0,0,0,.04); transform:none; }}
@@ -327,13 +342,21 @@ def portal_html(tiles_by_group, adaptation_section=""):
 <body>
 <header>
   <h1>Kejriwal &mdash; Fiori App Portfolio</h1>
-  <p>S/4HANA 2025 upgrade &mdash; sandbox launchpad: custom apps (live demo) + adaptation &amp; standard apps (reference)</p>
+  <p>S/4HANA 2025 upgrade &mdash; the whole portfolio arranged by SAP module</p>
 </header>
 <main>
-  <div class="note"><b>Demo build.</b> Every app runs the real UI5 code against
-  realistic <b>mock data</b> &mdash; no backend / OData connection. Use it to review
-  layout, fields and flows while the S/4HANA upgrade is in progress.</div>
-  {groups}
+  <div class="note"><b>Arranged by module.</b> Every app sits under its SAP module
+  below. <b>Custom</b> apps (blue) run live on <b>mock data</b> &mdash; click to open.
+  <b>Extended</b>, <b>Standard</b>, <b>Master-data</b> and <b>Analytics</b> tiles are
+  reference cards: they run on the S/4HANA FES, not in this mock demo.</div>
+  <div class="legend">
+    <span><i class="sw-cust"></i>Custom (live demo)</span>
+    <span><i class="sw-ext"></i>Extended (adaptation)</span>
+    <span><i class="sw-std"></i>Standard (as-is)</span>
+    <span><i class="sw-mas"></i>Master data</span>
+    <span><i class="sw-bi"></i>Analytics (BI)</span>
+  </div>
+  {sections_html}
 </main>
 <footer>Generated by <code>demo/build.py</code> &middot; OpenUI5 bundled same-origin</footer>
 </body>
@@ -341,39 +364,27 @@ def portal_html(tiles_by_group, adaptation_section=""):
 """
 
 
-def tile(app, group, title):
-    badge = re.search(r"\(([A-Z]{2})\)", group)
-    badge = badge.group(1) if badge else group[:2].upper()
+def tile(app, module, title):
+    """Clickable tile for a runnable custom app (blue, live demo)."""
     return (
         f'<a class="tile" href="{app}/index.html">'
-        f'<div class="ico">{badge}</div>'
+        f'<div class="ico">{module}</div>'
         f'<div><div class="ttl">{title}</div>'
-        f'<div class="sub">{app}</div></div></a>'
+        f'<div class="sub">{app}</div>'
+        f'<div class="meta"><span class="badge cust">CUSTOM &middot; LIVE DEMO</span></div>'
+        f'</div></a>'
     )
 
 
-def info_tile(folder, title, fiori, replaces):
+def info_tile(folder, module, title, fiori, replaces):
     """Non-clickable tile for an adaptation project (extends a standard app)."""
     return (
         f'<div class="tile info" title="Adaptation project — runs on S/4HANA, not in this mock demo">'
-        f'<div class="ico">+</div>'
+        f'<div class="ico">{module}</div>'
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">{folder}</div>'
         f'<div class="meta"><span class="badge">STANDARD&nbsp;+&nbsp;EXT</span><br>'
         f'<b>Fiori:</b> {fiori} &middot; <b>replaces</b> {replaces}</div></div></div>'
-    )
-
-
-def adaptation_section_html():
-    cells = "".join(info_tile(*row) for row in ADAPTATION)
-    return (
-        '<h2 class="grp">Adaptation projects (extend standard apps)</h2>\n'
-        '<div class="note" style="background:#eef4fb;border-color:#c7ddef">'
-        'These layer custom fields / sections / logic onto a <b>standard delivered '
-        'Fiori app</b> (clean-core, no SAP modification), so they run on the '
-        'S/4HANA Front-End Server &mdash; <b>not</b> in this mock demo. Listed here '
-        'for completeness.</div>\n'
-        f'<div class="grid">{cells}</div>\n'
     )
 
 
@@ -389,22 +400,10 @@ def standard_tile(module, title, fiori, classic, role, replaces):
     )
 
 
-def standard_section_html():
-    cells = "".join(standard_tile(*row) for row in STANDARD)
-    return (
-        '<h2 class="grp">Standard apps (adopt as-is &mdash; no development)</h2>\n'
-        '<div class="note" style="background:#f0f8f1;border-color:#cfe6d4">'
-        'Delivered S/4HANA 2025 Fiori apps used <b>as-is</b> &mdash; activated and '
-        'assigned via the listed <b>business role</b>, retiring the old Z transaction. '
-        'No code in this repo; they run on the S/4HANA FES, not in this mock demo.</div>\n'
-        f'<div class="grid">{cells}</div>\n'
-    )
-
-
-def master_tile(title, table, replaces):
+def master_tile(module, title, table, replaces):
     return (
         f'<div class="tile master" title="Managed RAP master — Fiori Elements app generated from the service binding">'
-        f'<div class="ico">&#9636;</div>'
+        f'<div class="ico">{module}</div>'
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">{table}</div>'
         f'<div class="meta"><span class="badge">MASTER DATA</span><br>'
@@ -412,22 +411,10 @@ def master_tile(title, table, replaces):
     )
 
 
-def master_section_html():
-    cells = "".join(master_tile(*row) for row in MASTER_DATA)
-    return (
-        '<h2 class="grp">Master data (managed RAP &rarr; Fiori Elements)</h2>\n'
-        '<div class="note" style="background:#fdf6ea;border-color:#ecdcc0">'
-        'Custom master objects built as <b>managed RAP</b> business objects; the '
-        'service binding generates a standard <b>Manage&hellip;</b> Fiori Elements '
-        'app on the FES. Each maintains only its own custom table.</div>\n'
-        f'<div class="grid">{cells}</div>\n'
-    )
-
-
-def bi_tile(title, query, replaces):
+def bi_tile(module, title, query, replaces):
     return (
         f'<div class="tile bi" title="CDS analytical query — open in the Query Browser / Analytical List Page">'
-        f'<div class="ico">&#9650;</div>'
+        f'<div class="ico">{module}</div>'
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">{query}</div>'
         f'<div class="meta"><span class="badge">ANALYTICS</span><br>'
@@ -435,16 +422,17 @@ def bi_tile(title, query, replaces):
     )
 
 
-def bi_section_html():
-    cells = "".join(bi_tile(*row) for row in BI_QUERIES)
-    return (
-        '<h2 class="grp">Analytical queries (BI / CDS)</h2>\n'
-        '<div class="note" style="background:#f6f3fc;border-color:#ddd3ee">'
-        '<b>11 CDS analytical queries</b> replace ~40 Z reports &mdash; the old '
-        'report variants become drill-down dimensions. Open each in the <b>Query '
-        'Browser</b> or an Analytical List Page; read-only, on the FES.</div>\n'
-        f'<div class="grid">{cells}</div>\n'
-    )
+def modules_html(by_module):
+    """Render every module section; within each, tiles ordered by type rank."""
+    out = ""
+    for code, label in MODULES:
+        items = by_module.get(code)
+        if not items:
+            continue
+        items.sort(key=lambda t: t[0])          # stable: custom→ext→std→master→bi
+        cells = "".join(html for _, html in items)
+        out += f'<h2 class="grp">{label}</h2>\n<div class="grid">{cells}</div>\n'
+    return out
 
 
 def main():
@@ -469,16 +457,24 @@ def main():
     else:
         shutil.copytree(args.resources, res_dest)
 
-    tiles_by_group = {}
-    for app, group, icon in APPS:
+    # Bucket every portfolio item under its module, tagged with a type rank so
+    # each module lists custom (0) → extended (1) → standard (2) → master (3)
+    # → analytics (4).
+    by_module = {code: [] for code, _ in MODULES}
+    for app, module in APPS:
         title = build_app(app, dest)
-        tiles_by_group.setdefault(group, []).append(tile(app, group, title))
+        by_module[module].append((0, tile(app, module, title)))
         print(f"  built {app}")
+    for folder, module, title, fiori, replaces in ADAPTATION:
+        by_module[module].append((1, info_tile(folder, module, title, fiori, replaces)))
+    for module, title, fiori, classic, role, replaces in STANDARD:
+        by_module[module].append((2, standard_tile(module, title, fiori, classic, role, replaces)))
+    for module, title, table, replaces in MASTER_DATA:
+        by_module[module].append((3, master_tile(module, title, table, replaces)))
+    for module, title, query, replaces in BI_QUERIES:
+        by_module[module].append((4, bi_tile(module, title, query, replaces)))
 
-    write(os.path.join(dest, "index.html"),
-          portal_html(tiles_by_group,
-                      adaptation_section_html() + standard_section_html()
-                      + master_section_html() + bi_section_html()))
+    write(os.path.join(dest, "index.html"), portal_html(modules_html(by_module)))
     write(os.path.join(dest, ".nojekyll"), "")
     print(f"Done -> {dest}")
 
