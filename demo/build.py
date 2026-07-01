@@ -262,6 +262,13 @@ def build_app(app, dest):
         shutil.rmtree(dest_app)
     shutil.copytree(src_webapp, dest_app)
 
+    # drop per-app PWA artifacts the demo index.html doesn't use (a stray
+    # service worker / web manifest would just be dead files on the site)
+    for dead in ("sw.js", "manifest.webmanifest"):
+        dpath = os.path.join(dest_app, dead)
+        if os.path.exists(dpath):
+            os.remove(dpath)
+
     # demo index.html (same-origin bootstrap + height fix)
     write(os.path.join(dest_app, "index.html"),
           demo_index_html(namespace, settings_id, title))
