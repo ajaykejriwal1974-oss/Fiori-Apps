@@ -135,6 +135,10 @@ STANDARD = [
     ("PM", "Report and Repair Malfunction",         "F2023", "IW21 / IW26","SAP_BR_MAINTENANCE_TECHNICIAN", "emergency malfunction report + repair"),
     ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "maintenance notifications + work orders"),
     ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "downtime / MTBF / MTTR KPIs"),
+    ("PM", "Perform Maintenance Jobs",              "F5104A","IW41 (time conf.)","SAP_BR_MAINTENANCE_TECHNICIAN","technician executes the order — steps + time & material confirmation"),
+    ("PM", "Process Task List (Planner)",           "W0021", "IA05 / IA06","SAP_BR_MAINTENANCE_PLANNER",   "maintenance task lists — operations behind the plans / strategies"),
+    ("PM", "Process Measuring Point",               "W0031", "IK01 / IK03","SAP_BR_MAINTENANCE_TECHNICIAN", "measuring points / counters — for condition & counter-based plans"),
+    ("PM", "Process Measurement Document",          "W0014", "IK11 / IK13","SAP_BR_MAINTENANCE_TECHNICIAN", "record meter / counter readings — drives counter-based scheduling"),
     ("PM", "Process Technical Object",              "W0029", "IE01-03 / IL01-03 / IH01", "SAP_BR_MD_SPECIALIST_EAM", "equipment & functional-location master (machines); display = W0028"),
 ]
 
