@@ -123,7 +123,7 @@ MASTER_DATA = [
     ("SD", "Export Details",           "ZEXP",               "ZMBR2"),
     ("FI", "Digital Signature",        "ZTDIGI_SIGN",        "ZDIGI"),
     ("SD", "C-Form Allocation",        "ZCFORM1",            "ZCFORM1/ZFORM/ZFORMS/ZPCFORM"),
-    ("MM", "Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
+    ("SD", "Gate Pass",                "ZGP_HDR / ZGP_ITEM", "ZGPS01-03, ZGPSI1-3"),
 ]
 
 # Analytical (BI) CDS queries (ZC_*Query over a cube) — consumed in the Query
