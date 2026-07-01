@@ -98,12 +98,14 @@ ADAPTATION = [
 STANDARD = [
     ("PP", "Manage Batches",                   "F2462",  "MSC3N",        "SAP_BR_WAREHOUSE_CLERK",   "ZBATCH01/02/03(N)"),
     ("MM", "Compare Supplier Quotations",       "F2324",  "ME49",         "SAP_BR_PURCHASER",         "ZME49"),
-    ("MM", "Manage Material Master",            "F1602",  "MM60",         "SAP_BR_BUYER",             "ZMM60"),
+    ("MM", "Manage Material Master",            "F1602",  "MM60",         "SAP_BR_BUYER",             "ZMM60 — incl. spare-part materials (stock / reorder / vendor)"),
+    ("MM", "Maintain Bill of Material",         "CS01/02/03", "IB01 (equip. BOM)", "SAP_BR_MAINTENANCE_PLANNER", "maintenance BOM — spare-part components list"),
     ("FI", "Display Line Items in G/L",         "F0706",  "FAGLL03",      "SAP_BR_GL_ACCOUNTANT",     "ZFBL3N / ZZFBL3N"),
     ("FI", "Manage Customer Line Items",        "F0711",  "FBL5N",        "SAP_BR_AR_ACCOUNTANT",     "ZFBL5N / ZZFBL5N"),
     ("FI", "Manage Journal Entries",            "F0717A", "FB03",         "SAP_BR_GL_ACCOUNTANT",     "ZFB03"),
     ("FI", "Manage Credit Memo Requests",       "F0696",  "VA01 (G2/L2)", "SAP_BR_BILLING_CLERK",     "ZCRDRNOTE"),
     ("FI", "Post Asset Acquisition",            "ABZON",  "F-90",         "SAP_BR_AA_ACCOUNTANT",     "ZF90"),
+    ("FI", "Maintenance Order Budget",          "KO22",   "KO22 / cost-centre plan", "SAP_BR_OVERHEAD_ACCOUNTANT", "internal-order / cost-centre budget for maintenance (order costs settle here)"),
     ("FI", "Reprocess Bank Statement Items",    "F1681",  "FF67",         "SAP_BR_CASH_SPECIALIST",   "ZFF67"),
     # Credit release IS Manage Documented Credit Decisions in S/4HANA FSCM
     # Credit Mgmt (F5587A) — check / release / reject credit-blocked SD docs.
@@ -128,6 +130,7 @@ STANDARD = [
     ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "maintenance notifications + work orders"),
     ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "downtime / MTBF / MTTR KPIs"),
     ("PM", "Process Technical Object",              "W0029", "IE01-03 / IL01-03 / IH01", "SAP_BR_MD_SPECIALIST_EAM", "equipment & functional-location master (machines); display = W0028"),
+    ("PM", "Manage Work Centers",                   "F6175", "CR01/02/03",  "SAP_BR_MAINTENANCE_PLANNER",   "work centres + capacity (Manage Work Center Capacity = F3289)"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
