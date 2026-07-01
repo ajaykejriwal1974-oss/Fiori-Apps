@@ -126,6 +126,15 @@ STANDARD = [
     # Credit release IS Manage Documented Credit Decisions in S/4HANA FSCM
     # Credit Mgmt (F5587A) — check / release / reject credit-blocked SD docs.
     ("FI", "Manage Documented Credit Decisions","F5587A", "FSCM-CR (DCD)", "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE — check / release / reject credit-blocked SD docs"),
+    # Record-to-report core (F0718 / F0712 / F1345 / F0996A verified; payment run
+    # + asset explorer anchored on classic tx).
+    ("FI", "Post General Journal Entries",      "F0718",  "FB50",        "SAP_BR_GL_ACCOUNTANT",     "manual G/L postings"),
+    ("FI", "Manage Supplier Line Items",        "F0712",  "FBL1N",       "SAP_BR_AP_ACCOUNTANT",     "AP open / cleared items"),
+    ("FI", "Post Incoming Payments",            "F1345",  "F-28",        "SAP_BR_AR_ACCOUNTANT",     "AR receipts + clearing"),
+    ("FI", "Post Outgoing Payments",            "F1612",  "F-53",        "SAP_BR_AP_ACCOUNTANT",     "AP payments"),
+    ("FI", "Schedule Automatic Payments",       "F110",   "F110",        "SAP_BR_AP_ACCOUNTANT",     "automatic payment program (payment run)"),
+    ("FI", "Asset Values / Explorer",           "AW01N",  "AW01N",       "SAP_BR_AA_ACCOUNTANT",     "asset values + depreciation (Post Asset Acquisition = ABZON)"),
+    ("FI", "Trial Balance",                     "F0996A", "S_ALR / F.01","SAP_BR_GL_ACCOUNTANT",     "trial balance / G/L reporting (Balance Sheet & P&L)"),
     # Release / approval apps — delivered standard in S/4HANA 2025 (via Flexible
     # Workflow -> approve in My Inbox). F-numbers verified in the Fiori Apps
     # Reference Library. Adopt as-is, assign the role.
