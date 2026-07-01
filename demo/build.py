@@ -105,18 +105,19 @@ STANDARD = [
     ("FI", "Manage Credit Memo Requests",       "F0696",  "VA01 (G2/L2)", "SAP_BR_BILLING_CLERK",     "ZCRDRNOTE"),
     ("FI", "Post Asset Acquisition",            "ABZON",  "F-90",         "SAP_BR_AA_ACCOUNTANT",     "ZF90"),
     ("FI", "Reprocess Bank Statement Items",    "F1681",  "FF67",         "SAP_BR_CASH_SPECIALIST",   "ZFF67"),
-    ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "credit cases / decisions (FSCM-CR)"),
-    # Release / approval apps — delivered standard in S/4HANA 2025 (mostly via
-    # Flexible Workflow -> My Inbox; Fiori F-numbers vary by release, classic tx
-    # is the anchor). Adopt as-is, assign the role.
-    ("FI", "Release Blocked Sales Orders",      "VKM3",   "VKM1 (blocked)", "SAP_BR_CREDIT_CONTROLLER",   "ZCM_RELEASE (remove credit block)"),
-    ("MM", "Release Purchase Orders",           "ME29N",  "ME28 (collective)", "SAP_BR_PURCHASING_MANAGER", "PO approval — Flexible Workflow / My Inbox"),
-    ("SD", "Release Sales Contracts",           "VA42",   "Flexible Workflow", "SAP_BR_INTERNAL_SALES_REP", "contract approval — Flexible Workflow (cf. Manage Sales Contracts ext)"),
+    # Credit release IS Manage Documented Credit Decisions in S/4HANA FSCM
+    # Credit Mgmt (F5587A) — check / release / reject credit-blocked SD docs.
+    ("FI", "Manage Documented Credit Decisions","F5587A", "FSCM-CR (DCD)", "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE — check / release / reject credit-blocked SD docs"),
+    # Release / approval apps — delivered standard in S/4HANA 2025 (via Flexible
+    # Workflow -> approve in My Inbox). F-numbers verified in the Fiori Apps
+    # Reference Library. Adopt as-is, assign the role.
+    ("MM", "Release Purchase Orders",           "F2872",  "ME29N",          "SAP_BR_PURCHASING_MANAGER", "Flexible Workflow (config F2872) → approve in My Inbox (F0862)"),
+    ("SD", "Release Sales Contracts",           "VA42",   "Flexible Workflow", "SAP_BR_INTERNAL_SALES_REP", "contract approval — Flexible Workflow → My Inbox (cf. Manage Sales Contracts ext)"),
     ("WF", "My Inbox (All Items)",              "F0862",  "SBWP",           "SAP_BR_EMPLOYEE",           "central inbox for Flexible Workflow approvals — PO, sales contract, credit"),
-    # QM master data — delivered standard, adopt as-is (Fiori IDs vary by release;
-    # the classic tx is the reliable anchor). Pairs with Record Inspection Results.
-    ("QM", "Master Inspection Characteristics", "QS23", "QS21 / QS22", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
-    ("QM", "Manage Inspection Plans",           "QP02", "QP01 / QP03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
+    # QM master data — delivered standard, adopt as-is (F-numbers verified in the
+    # Fiori Apps Reference Library). Pairs with Record Inspection Results.
+    ("QM", "Master Inspection Characteristics", "F2219", "QS21/22/23", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
+    ("QM", "Manage Inspection Plans",           "F3788", "QP01/02/03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
