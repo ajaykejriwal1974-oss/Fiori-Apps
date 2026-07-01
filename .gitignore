@@ -1,0 +1,14 @@
+# Python bytecode (from demo/build.py and demo/gen_coverage.py)
+__pycache__/
+*.pyc
+
+# Node / UI5 build (per-app .gitignore also covers these)
+node_modules/
+dist/
+
+# Demo build output (assembled by demo/build.py; never committed)
+demo-dist/
+demo-runtime/
+
+# OS
+.DS_Store
