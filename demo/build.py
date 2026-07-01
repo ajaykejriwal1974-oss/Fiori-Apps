@@ -118,6 +118,15 @@ STANDARD = [
     # Fiori Apps Reference Library). Pairs with Record Inspection Results.
     ("QM", "Master Inspection Characteristics", "F2219", "QS21/22/23", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
     ("QM", "Manage Inspection Plans",           "F3788", "QP01/02/03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
+    # Maintenance (PM/EAM) — standard S/4HANA 2025 apps that match the custom
+    # Maintenance app's tabs (F-numbers verified in the Fiori Apps Reference
+    # Library; Manage Technical Objects anchored on classic tx, confirm F-no).
+    ("PM", "Manage Maintenance Plans",              "F5325", "IP01/02/03", "SAP_BR_MAINTENANCE_PLANNER",    "Schedule tab — preventive plans + strategy"),
+    ("PM", "Mass Schedule Maintenance Plans",       "F2774", "IP30",       "SAP_BR_MAINTENANCE_PLANNER",    "Schedule tab — 'Schedule Now' / deadline monitoring"),
+    ("PM", "Report and Repair Malfunction",         "F2023", "IW21 / IW26","SAP_BR_MAINTENANCE_TECHNICIAN", "Breakdown tab — malfunction report + repair"),
+    ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "Breakdown tab — notifications + work orders"),
+    ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "Breakdown tab — downtime / MTBF / MTTR KPIs"),
+    ("PM", "Manage Technical Objects",              "Technical Objects", "IE01-03 / IL01-03 / CR01-02", "SAP_BR_MD_SPECIALIST_EAM", "Machines tab — equipment / func. location / work center"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
