@@ -1,0 +1,39 @@
+<mvc:View
+    controllerName="kejriwal.pp.postpackinggr.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}">
+        <content>
+            <Table
+                id="table"
+                items="{/PostPackGr}"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="50">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>actpostPackingAndGr}" press=".onPostPackingAndGr" type="Emphasized"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                        <Column><Text text="{i18n>colHandlingUnit}"/></Column>
+                        <Column><Text text="{i18n>colPackagingMaterial}"/></Column>
+                        <Column><Text text="{i18n>colReference}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{HandlingUnit}"/>
+                            <Text text="{PackagingMaterial}"/>
+                            <Text text="{Reference}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
