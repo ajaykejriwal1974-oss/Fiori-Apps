@@ -104,7 +104,13 @@ STANDARD = [
     ("FI", "Manage Credit Memo Requests",       "F0696",  "VA01 (G2/L2)", "SAP_BR_BILLING_CLERK",     "ZCRDRNOTE"),
     ("FI", "Post Asset Acquisition",            "ABZON",  "F-90",         "SAP_BR_AA_ACCOUNTANT",     "ZF90"),
     ("FI", "Reprocess Bank Statement Items",    "F1681",  "FF67",         "SAP_BR_CASH_SPECIALIST",   "ZFF67"),
-    ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE"),
+    ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "credit cases / decisions (FSCM-CR)"),
+    # Release / approval apps — delivered standard in S/4HANA 2025 (mostly via
+    # Flexible Workflow -> My Inbox; Fiori F-numbers vary by release, classic tx
+    # is the anchor). Adopt as-is, assign the role.
+    ("FI", "Release Blocked Sales Orders",      "VKM3",   "VKM1 (blocked)", "SAP_BR_CREDIT_CONTROLLER",   "ZCM_RELEASE (remove credit block)"),
+    ("MM", "Release Purchase Orders",           "ME29N",  "ME28 (collective)", "SAP_BR_PURCHASING_MANAGER", "PO approval — Flexible Workflow / My Inbox"),
+    ("SD", "Release Sales Contracts",           "VA42",   "Flexible Workflow", "SAP_BR_INTERNAL_SALES_REP", "contract approval — Flexible Workflow (cf. Manage Sales Contracts ext)"),
     # QM master data — delivered standard, adopt as-is (Fiori IDs vary by release;
     # the classic tx is the reliable anchor). Pairs with Record Inspection Results.
     ("QM", "Master Inspection Characteristics", "QS23", "QS21 / QS22", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
