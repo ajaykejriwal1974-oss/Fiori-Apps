@@ -119,15 +119,15 @@ STANDARD = [
     ("QM", "Master Inspection Characteristics", "F2219", "QS21/22/23", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
     ("QM", "Manage Inspection Plans",           "F3788", "QP01/02/03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
     # Maintenance (PM/EAM) — standard S/4HANA 2025 apps covering the maintenance
-    # business processes (F-numbers verified in the Fiori Apps Reference Library;
-    # Manage Technical Objects anchored on classic tx, confirm F-no).
+    # business processes (all app IDs verified in the Fiori Apps Reference
+    # Library; technical objects use the W-prefixed GUI-transaction apps).
     ("PM", "Request Maintenance",                   "F1511A","IW21 (simplified)","SAP_BR_EMPLOYEE_MAINTENANCE","shop-floor maintenance request (any employee)"),
     ("PM", "Manage Maintenance Plans",              "F5325", "IP01/02/03", "SAP_BR_MAINTENANCE_PLANNER",    "preventive plans + strategy"),
     ("PM", "Mass Schedule Maintenance Plans",       "F2774", "IP30",       "SAP_BR_MAINTENANCE_PLANNER",    "schedule due plans / deadline monitoring"),
     ("PM", "Report and Repair Malfunction",         "F2023", "IW21 / IW26","SAP_BR_MAINTENANCE_TECHNICIAN", "emergency malfunction report + repair"),
     ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "maintenance notifications + work orders"),
     ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "downtime / MTBF / MTTR KPIs"),
-    ("PM", "Manage Technical Objects",              "Technical Objects", "IE01-03 / IL01-03 / CR01-02", "SAP_BR_MD_SPECIALIST_EAM", "equipment / func. location / work center"),
+    ("PM", "Process Technical Object",              "W0029", "IE01-03 / IL01-03 / IH01", "SAP_BR_MD_SPECIALIST_EAM", "equipment & functional-location master (machines); display = W0028"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
