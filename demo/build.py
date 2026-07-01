@@ -136,13 +136,15 @@ BI_QUERIES = [
     ("PP", "Packed Stock",       "ZC_PackedStockQuery",      "8 stock reports (ZBOXSTOCK...)"),
     ("PP", "Packing Register",   "ZC_PackingRegisterQuery",  "17 pack-list reports"),
     ("PP", "WIP Batch",          "ZC_WipBatchQuery",         "ZBATCH_WIP"),
-    ("MM", "HU Inventory",       "ZC_HuInventoryQuery",      "ZHUINV_CLS, ZHUMO, ZHUREC"),
+    ("MM", "HU Inventory",       "ZC_HuInventoryQuery",      "ZHUINV_CLS"),
+    ("MM", "HU Monitor / Reconciliation", "ZC_HuMonitorQuery", "ZHUMO, ZHUREC"),
     ("SD", "Pending Contract",   "ZC_PendingContractQuery",  "ZPCON, ZPCOND, ZPCONS"),
     ("SD", "Export Register",    "ZC_ExportRegisterQuery",   "ZGCUDB, ZBRC/ZEXP"),
     ("PP", "Merge Analysis",     "ZC_MergeAnalysisQuery",    "merge stock reports"),
     ("PP", "Recipe Analysis",    "ZC_RecipeAnalysisQuery",   "ZRECPM"),
     ("PP", "Job Card",           "ZC_JobCardQuery",          "ZJOBREPTN"),
-    ("SD", "Dispatch Register",  "ZC_DispatchRegisterQuery", "ZPWDIS, ZDISPATCH, ZPDESP"),
+    ("SD", "Dispatch Register",  "ZC_DispatchRegisterQuery", "ZPWDIS (schedule-wise)"),
+    ("SD", "Pending / Security Dispatch", "ZC_PendingDispatchQuery", "ZDISPATCH, ZPDESP"),
     ("FI", "GST Tax",            "ZC_GstTaxQuery",           "ZGST, ZGST1, ZGST2, ZGSTCR"),
 ]
 

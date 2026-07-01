@@ -15,20 +15,24 @@ Design Studio, or expose it through the external BI tool.
 | `ZC_PackedStockQuery` | `ZPP_PACK` | ZBOXSTOCK, ZGSTOCK, ZPRP1, ZSSTOCK, ZDSTOCK, ZSTOCK, ZPRP, ZPRPSZ (8) |
 | `ZC_PackingRegisterQuery` | `ZPP_PACK` | ZPLIST01–03(+A/T/N/D), ZPACKLIST(01/N) (17) |
 | `ZC_WipBatchQuery` | `ZPP_BATCHN` | ZBATCH_WIP |
-| `ZC_HuInventoryQuery` | `ZHUINV_ITEM` | ZHUINV_CLS, ZHUMO, ZHUREC (3) |
+| `ZC_HuInventoryQuery` | `ZHUINV_ITEM` | ZHUINV_CLS |
+| `ZC_HuMonitorQuery` | `ZHUINV_ITEM` | ZHUMO, ZHUREC (monitor / reconciliation) |
 | `ZC_PendingContractQuery` | `ZPP_SCHEDULEN` | ZPCON, ZPCOND, ZPCONS (ZPCON_CP dropped) |
 | `ZC_ExportRegisterQuery` | `ZEXP` | ZGCUDB + export side of ZBRC/ZEXP |
 | `ZC_MergeAnalysisQuery` | `ZPP_MERGE` | merge slice of the stock reports |
 | `ZC_RecipeAnalysisQuery` | `ZPP_RECEIPE` | ZRECPM |
 | `ZC_JobCardQuery` | `ZPP_JOBN` | ZJOBREPTN (ZJOBREPORT retired) |
-| `ZC_DispatchRegisterQuery` | `ZSOL_HUDISPATCH` | ZPWDIS, ZDISPATCH, ZPDESP |
+| `ZC_DispatchRegisterQuery` | `ZSOL_HUDISPATCH` | ZPWDIS (schedule-wise register) |
+| `ZC_PendingDispatchQuery` | `ZSOL_HUDISPATCH` | ZDISPATCH, ZPDESP (pending / security gate) |
 | `ZC_GstTaxQuery` | `ZSOL_GST_DET` | ZGST, ZGST1, ZGST2, ZGSTCR (or standard GST/DRC) |
 
-> `ZC_PackedStockQuery` and `ZC_PackingRegisterQuery` share **one** cube
-> `ZI_PackedStockCube` (both over `ZPP_PACK` — audit P4, one cube many queries),
-> so it's **11 queries over 10 cubes**.
+> **One cube, many queries.** `ZC_PackedStockQuery` + `ZC_PackingRegisterQuery`
+> share `ZI_PackedStockCube` (over `ZPP_PACK`); `ZC_HuInventoryQuery` +
+> `ZC_HuMonitorQuery` share `ZI_HuInventoryCube`; `ZC_DispatchRegisterQuery` +
+> `ZC_PendingDispatchQuery` share `ZI_DispatchRegisterCube`. So it's
+> **13 queries over 10 cubes**.
 
-> **11 queries replace ~40 Z reports.** The rest of the 87 are dropped
+> **13 queries replace ~40 Z reports.** The rest of the 87 are dropped
 > (dead/duplicate), routed to **standard** inventory/AR/AP apps, or covered by
 > already-built transactional apps — see the consolidation doc.
 
