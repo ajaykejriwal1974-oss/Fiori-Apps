@@ -114,7 +114,7 @@ MASTER_DATA = [
     ("PP", "Shade Master",             "ZDD_SHADE",          "ZDD_SHADE"),
     ("PP", "Recipe Master",            "ZPP_RECEIPE",        "ZRECP01/02/03"),
     ("PP", "Job Master",               "ZPP_JOBN",           "ZJOB01/02/03(N)"),
-    ("SD", "Truck Master",             "ZTB_TRUCK_MSTR",     "ZTRUCK"),
+    ("MM", "Truck Master",             "ZTB_TRUCK_MSTR",     "ZTRUCK"),
     ("PP", "Schedule Master",          "ZPP_SCHEDULEN",      "ZSCH01/02/03(N)"),
     ("SD", "Transport Code",           "ZTRANS",             "ZTRANS"),
     ("PP", "Merge Details",            "ZPP_MERGE",          "ZMERGE"),
