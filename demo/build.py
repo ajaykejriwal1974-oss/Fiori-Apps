@@ -97,6 +97,12 @@ ADAPTATION = [
 # (module, title, fiori, classic tx, business role, replaces Z)
 STANDARD = [
     ("PP", "Manage Batches",                   "F2462",  "MSC3N",        "SAP_BR_WAREHOUSE_CLERK",   "ZBATCH01/02/03(N)"),
+    # Work-centre-wise production chain (discrete PP). Work centres are shared
+    # PP/PM master data; the routing ties each operation to a work centre, and
+    # confirmations (Confirm Production Operation F3069) post actuals per centre.
+    ("PP", "Manage Work Centers",              "F6175",  "CR01/02/03",   "SAP_BR_PRODN_PLANNER",     "define PP work centres (cat. 0001 machine); shared with PM"),
+    ("PP", "Manage Work Center Capacity",      "F3289",  "CM01 / CM07",  "SAP_BR_PRODN_PLANNER",     "work-centre load / capacity scheduling"),
+    ("PP", "Manage Bill of Operations (Routing)","CA01", "CA02 / CA03",  "SAP_BR_MANUF_ENGINEER",    "operations ↔ work centre — makes production work-centre-wise"),
     ("MM", "Compare Supplier Quotations",       "F2324",  "ME49",         "SAP_BR_PURCHASER",         "ZME49"),
     ("MM", "Manage Material Master",            "F1602",  "MM60",         "SAP_BR_BUYER",             "ZMM60 — incl. spare-part materials (stock / reorder / vendor)"),
     ("MM", "Maintain Bill of Material",         "CS01/02/03", "IB01 (equip. BOM)", "SAP_BR_MAINTENANCE_PLANNER", "maintenance BOM — spare-part components list"),
@@ -130,7 +136,7 @@ STANDARD = [
     ("PM", "Manage Maintenance Notifications & Orders","F4604","IW28 / IW38","SAP_BR_MAINTENANCE_PLANNER",  "maintenance notifications + work orders"),
     ("PM", "Breakdown Analysis (EAM KPI)",          "F2812", "MCI3 / MCI8","SAP_BR_MAINTENANCE_PLANNER",    "downtime / MTBF / MTTR KPIs"),
     ("PM", "Process Technical Object",              "W0029", "IE01-03 / IL01-03 / IH01", "SAP_BR_MD_SPECIALIST_EAM", "equipment & functional-location master (machines); display = W0028"),
-    ("PM", "Manage Work Centers",                   "F6175", "CR01/02/03",  "SAP_BR_MAINTENANCE_PLANNER",   "work centres + capacity (Manage Work Center Capacity = F3289)"),
+    ("PM", "Manage Work Centers",                   "F6175", "CR01/02/03",  "SAP_BR_MAINTENANCE_PLANNER",   "maintenance work centres (cat. 0005); same app defines PP work centres"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
