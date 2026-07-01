@@ -105,6 +105,10 @@ STANDARD = [
     ("FI", "Post Asset Acquisition",            "ABZON",  "F-90",         "SAP_BR_AA_ACCOUNTANT",     "ZF90"),
     ("FI", "Reprocess Bank Statement Items",    "F1681",  "FF67",         "SAP_BR_CASH_SPECIALIST",   "ZFF67"),
     ("FI", "Manage Documented Credit Decisions","F0717",  "UKM_CASE",     "SAP_BR_CREDIT_CONTROLLER", "ZCM_RELEASE"),
+    # QM master data — delivered standard, adopt as-is (Fiori IDs vary by release;
+    # the classic tx is the reliable anchor). Pairs with Record Inspection Results.
+    ("QM", "Master Inspection Characteristics", "QS23", "QS21 / QS22", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
+    ("QM", "Manage Inspection Plans",           "QP02", "QP01 / QP03", "SAP_BR_QUALITY_PLANNER", "inspection plan / task-list master"),
 ]
 
 # Master-data apps: managed RAP business objects whose service binding generates
