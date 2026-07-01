@@ -56,6 +56,7 @@ MODULES = [
     ("QM", "Quality (QM)"),
     ("FI", "Finance (FI)"),
     ("PM", "Maintenance (PM)"),
+    ("WF", "Workflow &amp; Approvals"),
 ]
 
 # Custom freestyle apps (runnable in the demo). (app folder, module)
@@ -111,6 +112,7 @@ STANDARD = [
     ("FI", "Release Blocked Sales Orders",      "VKM3",   "VKM1 (blocked)", "SAP_BR_CREDIT_CONTROLLER",   "ZCM_RELEASE (remove credit block)"),
     ("MM", "Release Purchase Orders",           "ME29N",  "ME28 (collective)", "SAP_BR_PURCHASING_MANAGER", "PO approval — Flexible Workflow / My Inbox"),
     ("SD", "Release Sales Contracts",           "VA42",   "Flexible Workflow", "SAP_BR_INTERNAL_SALES_REP", "contract approval — Flexible Workflow (cf. Manage Sales Contracts ext)"),
+    ("WF", "My Inbox (All Items)",              "F0862",  "SBWP",           "SAP_BR_EMPLOYEE",           "central inbox for Flexible Workflow approvals — PO, sales contract, credit"),
     # QM master data — delivered standard, adopt as-is (Fiori IDs vary by release;
     # the classic tx is the reliable anchor). Pairs with Record Inspection Results.
     ("QM", "Master Inspection Characteristics", "QS23", "QS21 / QS22", "SAP_BR_QUALITY_PLANNER", "MIC master (shade/denier via batch class)"),
