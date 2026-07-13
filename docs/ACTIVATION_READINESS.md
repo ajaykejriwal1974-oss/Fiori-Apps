@@ -16,15 +16,12 @@
 
 ## 0 · Global pre-requisites (apply to every app)
 
-1. **System baseline** — build/transport on **S/4HANA 2025**.
-   **Landscape check (2026-07-13, verified against the live system):** DEV **KSD**
-   (host `kejerpd4`, database **HANA / HDB**, instance `00`) reports **SAP release 816 /
-   kernel 916** — i.e. **upgraded well beyond 1909** (1909 = SAP_BASIS 754), consistent
-   with the **S/4HANA 2025** ABAP Platform. The build pack's "KSD is still 1909" note is
-   therefore **superseded** — the earlier DEV-1909 blocker appears resolved.
-   *Still to confirm the exact product level:* SAP GUI → **System → Status → Component
-   version** → `S4CORE` (109+ = 2025) and `SAP_BASIS` SP. Once confirmed, develop on KSD
-   and transport **DEV → QA → KSQ**.
+1. **System baseline — CONFIRMED on S/4HANA 2025.**
+   Verified 2026-07-13 via System → Status → Installed Software on DEV **KSD**
+   (host `kejerpd4`, DB **HANA 2.0 SPS08**, instance `00`, client 500):
+   - **Product:** SAP S/4HANA 2025 (on-premise) · ABAP Platform 2025 · S/4HANA Foundation 2025 · **SAP Fiori FES for S/4HANA 2025** — all *Initial Shipment Stack*.
+   - **Components:** `S4CORE` **109**, `S4FND`/`S4CEXT` 109, `SAP_BASIS`/`SAP_ABA`/`SAP_GWFND`/`SAP_UI` **816**, kernel **9.16**. **SP-Level 0000** (fresh install, no SP stack applied yet).
+   - **Impact:** the build pack's "KSD is still 1909" note is **obsolete — the DEV upgrade is done.** Gateway Foundation + Fiori FES are present, so the OData + launchpad stack is ready. **Build on KSD and transport DEV → QA → KSQ.**
 2. **Authorization** — most interface CDS views ship with
    `@AccessControl.authorizationCheck: #NOT_REQUIRED`. Before production, switch the
    consumption views to **`#CHECK`** and add **DCL** (access controls).
@@ -129,7 +126,7 @@ Queries: `ZC_PackedStockQuery`, `ZC_PackingRegisterQuery`, `ZC_WipBatchQuery`,
 
 ## 6 · Suggested activation order
 
-1. **Confirm KSD release** — live check (2026-07-13) shows KSD on **HANA**, release **816 / kernel 916** (i.e. **no longer 1909**; the old upgrade blocker appears resolved). Verify `S4CORE 109+` via System → Status, then develop on KSD → transport DEV → QA → KSQ.
+1. **KSD is on S/4HANA 2025 — confirmed** (S4CORE 109 / SAP_BASIS 816 / ABAP Platform 2025 / Fiori FES 2025, HANA 2.0 SPS08, Initial Shipment SP0000). The old DEV-1909 blocker is cleared. Develop on KSD → transport **DEV → QA → KSQ**.
 2. **Create `ZDD_SHADE`** table (only new persistence).
 3. **Master-data apps** (§3) — lowest risk: bind existing tables, verify VH, publish service, build tile.
 4. **Analytics** (§5) — read-only; fix auth + wiring, expose via Query Browser.
