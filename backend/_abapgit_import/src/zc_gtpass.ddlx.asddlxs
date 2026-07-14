@@ -2,7 +2,7 @@
 @UI: { headerInfo: { typeName: 'Gate Pass', typeNamePlural: 'Gate Passes',
   title: { type: #STANDARD, value: 'GpNumber' },
   description: { type: #STANDARD, value: 'VehicleNumber' } } }
-annotate view ZC_GATEPASS with
+annotate view ZC_GTPASS with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }

@@ -2,9 +2,9 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['GpNumber', 'FiscalYear']
-define root view entity ZC_GATEPASS
+define root view entity ZC_GTPASS
   provider contract transactional_query
-  as projection on ZI_GATEPASS
+  as projection on ZI_GTPASS
 {
   key GpNumber,
   key FiscalYear,

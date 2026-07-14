@@ -1,6 +1,6 @@
 managed;
 
-define behavior for ZI_GATEPASS alias GatePass
+define behavior for ZI_GTPASS alias GatePass
 persistent table zgp_hdr
 lock master
 {

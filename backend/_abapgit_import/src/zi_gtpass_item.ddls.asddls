@@ -2,7 +2,7 @@
 @EndUserText.label: 'Gate Pass Item - Interface'
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['GpNumber', 'ItemNumber', 'FiscalYear']
-define root view entity ZI_GATEPASS_ITEM
+define root view entity ZI_GTPASS_ITEM
   as select from zgp_item
 {
   key gpnum                  as GpNumber,

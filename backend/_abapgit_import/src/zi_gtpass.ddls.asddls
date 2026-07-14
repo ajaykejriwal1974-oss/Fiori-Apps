@@ -3,8 +3,8 @@
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['GpNumber', 'FiscalYear']
 // Flat managed BO over ZGP_HDR (no composition). Items are a separate flat BO
-// (ZI_GATEPASS_ITEM) exposed by the same service.
-define root view entity ZI_GATEPASS
+// (ZI_GTPASS_ITEM) exposed by the same service.
+define root view entity ZI_GTPASS
   as select from zgp_hdr
 {
   key gpnum                  as GpNumber,

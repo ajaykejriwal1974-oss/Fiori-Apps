@@ -1,6 +1,6 @@
 projection;
 
-define behavior for ZC_GATEPASS_ITEM alias GatePassItem
+define behavior for ZC_GTPASS_ITEM alias GatePassItem
 {
   use create;
   use update;

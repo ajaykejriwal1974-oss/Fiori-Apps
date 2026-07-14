@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <BDEF>
-    <NAME>ZI_GATEPASS_ITEM</NAME>
+    <NAME>ZI_GTPASS</NAME>
     <TYPE>BDEF/BDO</TYPE>
-    <DESCRIPTION>Behavior for ZI_GATEPASS_ITEM</DESCRIPTION>
+    <DESCRIPTION>Behavior for ZI_GTPASS</DESCRIPTION>
     <DESCRIPTION_TEXT_LIMIT>60</DESCRIPTION_TEXT_LIMIT>
     <LANGUAGE>EN</LANGUAGE>
     <MASTER_LANGUAGE>EN</MASTER_LANGUAGE>

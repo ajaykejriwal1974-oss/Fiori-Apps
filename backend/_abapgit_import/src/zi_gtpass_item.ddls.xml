@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DDLS>
-    <DDLNAME>ZC_GATEPASS_ITEM</DDLNAME>
+    <DDLNAME>ZI_GTPASS_ITEM</DDLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <DDTEXT>Gate Pass Item - Projection</DDTEXT>
+    <DDTEXT>Gate Pass Item - Interface</DDTEXT>
    </DDLS>
   </asx:values>
  </asx:abap>
