@@ -1,6 +1,4 @@
 projection;
-strict ( 2 );
-
 define behavior for ZC_MTOS_PROCESS alias MtosStock
 {
   use action convertToMts;

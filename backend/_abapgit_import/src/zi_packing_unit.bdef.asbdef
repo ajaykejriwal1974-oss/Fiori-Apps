@@ -1,8 +1,6 @@
 // Read existing HUs for a reference + a static action that creates the textile
 // cone/carton/pallet HU hierarchy via the standard HU API. Unmanaged.
 unmanaged implementation in class zbp_i_packing_unit unique;
-strict ( 2 );
-
 define behavior for ZI_PACKING_UNIT alias PackingUnit
 {
   static action createHandlingUnits

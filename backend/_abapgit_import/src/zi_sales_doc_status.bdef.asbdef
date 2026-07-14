@@ -3,8 +3,6 @@
 // BAPI_SD_SALESDOCUMENT_CHANGE. Static actions take the document id so the
 // standard Manage Sales Contracts / Orders adaptations call them by id.
 unmanaged implementation in class zbp_i_sales_doc_status unique;
-strict ( 2 );
-
 define behavior for ZI_SALES_DOC_STATUS alias SalesDoc
 {
   // Contracts (ZCON_CLOSE / ZCON_CLOSE1 / ZCOREL / ZCON02)

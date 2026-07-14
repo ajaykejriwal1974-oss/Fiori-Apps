@@ -1,6 +1,4 @@
 projection;
-strict ( 2 );
-
 define behavior for ZC_HU_UNPACK alias HuUnpack
 {
   use action unpackItems;

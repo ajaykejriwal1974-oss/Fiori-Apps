@@ -1,6 +1,4 @@
 unmanaged implementation in class zbp_i_mtos_process unique;
-strict ( 2 );
-
 define behavior for ZI_MTOS_PROCESS alias MtosStock
 {
   // ZMTOS  - transfer make-to-order stock to own/MTS stock

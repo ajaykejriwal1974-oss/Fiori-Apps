@@ -1,6 +1,4 @@
 projection;
-strict ( 2 );
-
 define behavior for ZC_SALES_DOC_STATUS alias SalesDoc
 {
   use action closeContract;
