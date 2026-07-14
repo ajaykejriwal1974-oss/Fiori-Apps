@@ -24,8 +24,6 @@ define root view entity ZI_QM_INSPECTIONCHAR
     on  _Result.prueflos = char.prueflos
     and _Result.vorglfnr = char.vorglfnr
     and _Result.merknr   = char.merknr
-  association [0..1] to I_WorkCenter as _WorkCenter
-    on _WorkCenter.WorkCenterInternalID = oper.arbid
 {
   key char.prueflos                                  as InspectionLot,
   key char.vorglfnr                                  as InspectionOperation,
@@ -33,7 +31,6 @@ define root view entity ZI_QM_INSPECTIONCHAR
       char.kurztext                                  as CharacteristicDescription,
       lot.matnr                                      as Material,
       lot.werk                                       as Plant,
-      _WorkCenter.WorkCenter                         as WorkCenter,
       char.maeinheit                                 as Unit,
       cast( _Result.mittelwert as abap.dec( 16, 3 ) ) as ResultValue,
       _Result.mbewertg                               as Valuation,

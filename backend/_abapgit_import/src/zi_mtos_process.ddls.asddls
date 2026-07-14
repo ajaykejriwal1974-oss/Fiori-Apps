@@ -14,8 +14,6 @@ define root view entity ZI_MTOS_PROCESS
   key werks  as Plant,
   key vbeln  as SalesOrder,
   key posnr  as SalesOrderItem,
-      @Semantics.quantity.unitOfMeasure: 'BaseUnit'
-      cast( kalab as abap.quan( 13, 3 ) ) as Quantity,
-      @Semantics.unitOfMeasure: true
+      cast( kalab as abap.dec( 13, 3 ) ) as Quantity,
       meins  as BaseUnit
 }

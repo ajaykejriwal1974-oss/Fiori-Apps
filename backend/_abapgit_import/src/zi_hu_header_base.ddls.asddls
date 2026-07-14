@@ -13,8 +13,8 @@ define view entity ZI_HU_HEADER_BASE
       vpobj                                as ReferenceObject,
       vpobjkey                             as Reference,
       vhilm                                as PackagingMaterial,
-      cast( ntgew as abap.quan( 15, 3 ) )  as NetWeight,
-      cast( brgew as abap.quan( 15, 3 ) )  as GrossWeight,
+      cast( ntgew as abap.dec( 15, 3 ) )  as NetWeight,
+      cast( brgew as abap.dec( 15, 3 ) )  as GrossWeight,
       gewei                                as WeightUnit,
       vegr1                                as PackingGroup
 }

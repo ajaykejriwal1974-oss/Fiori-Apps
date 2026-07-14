@@ -13,7 +13,7 @@ define view entity ZI_HU_ITEM_BASE
   key item.vepos                               as HandlingUnitItem,
       item.matnr                               as Material,
       item.charg                               as Batch,
-      cast( item.vemng as abap.quan( 13, 3 ) ) as Quantity,
+      cast( item.vemng as abap.dec( 13, 3 ) ) as Quantity,
       item.vemeh                               as Unit,
       item.werks                               as Plant,
       item.lgort                               as StorageLocation

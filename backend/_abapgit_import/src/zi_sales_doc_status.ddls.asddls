@@ -17,7 +17,7 @@ define root view entity ZI_SALES_DOC_STATUS
       auart                                       as SalesDocumentType,
       vkorg                                       as SalesOrganization,
       kunnr                                       as SoldToParty,
-      cast( netwr as abap.curr( 15, 2 ) )         as NetValue,
+      cast( netwr as abap.dec( 15, 2 ) )         as NetValue,
       waerk                                       as Currency,
       gbstk                                       as OverallProcessingStatus,
       erdat                                       as CreatedOnDate

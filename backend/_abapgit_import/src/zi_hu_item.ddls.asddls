@@ -5,7 +5,7 @@
 // Item-level read via the shared HU base (audit P3). postGoodsMovement action
 // lives on the behavior (replaces ZBOX_MOVE).
 define root view entity ZI_HU_ITEM
-  as select from ZI_HU_ITEMBase
+  as select from ZI_HU_ITEM_BASE
 {
   key HandlingUnit,
   key HandlingUnitItem,

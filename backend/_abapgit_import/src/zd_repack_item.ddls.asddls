@@ -2,5 +2,5 @@
 define abstract entity ZD_REPACK_ITEM
 {
   HandlingUnitItem : abap.numc(4);
-  Quantity : abap.quan(13,3);
+  Quantity : abap.dec(13,3);
 }

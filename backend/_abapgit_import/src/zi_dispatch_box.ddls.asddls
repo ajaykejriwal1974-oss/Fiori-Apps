@@ -25,5 +25,5 @@ define root view entity ZI_DISPATCH_BOX
       disp.time                                   as CreatedAtTime,
       pack.matnr                                  as Material,
       pack.grade                                  as Grade,
-      cast( pack.netwt as abap.quan( 13, 3 ) )    as NetWeight
+      cast( pack.netwt as abap.dec( 13, 3 ) )    as NetWeight
 }

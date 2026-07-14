@@ -4,7 +4,7 @@
 // Header-level read via the shared HU base (audit P3). postInboundGr action on
 // the behavior (replaces ZSOL_INBOUND_HU / ZHUINB).
 define root view entity ZI_HU_INBOUND
-  as select from ZI_HU_HeaderBase
+  as select from ZI_HU_HEADER_BASE
 {
   key HandlingUnit,
       Reference as InboundDelivery,
