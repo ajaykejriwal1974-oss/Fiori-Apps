@@ -1,0 +1,26 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'ExportDetail', typeNamePlural: 'ExportDetails',
+  title: { type: #STANDARD, value: 'BillingDocument' },
+  description: { type: #STANDARD, value: 'ExchangeRate' } } }
+annotate view ZC_ExportDetail with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Billing Document'
+  BillingDocument;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Condition Type'
+  ConditionType;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Net Value'
+  NetValue;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Currency'
+  Currency;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Exchange Rate'
+  ExchangeRate;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Billing Date'
+  BillingDate;
+}

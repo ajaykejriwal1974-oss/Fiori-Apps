@@ -1,0 +1,19 @@
+managed;
+
+define behavior for ZI_CheckedBy alias CheckedBy
+persistent table zpp_pcby
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) SerialNumber;
+
+  mapping for zpp_pcby
+  {
+    SerialNumber         = sr_no;
+    CheckedPackedFlag    = pc;
+    UserName             = usr_name;
+  }
+}

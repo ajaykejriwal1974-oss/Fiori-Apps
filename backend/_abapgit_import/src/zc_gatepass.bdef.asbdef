@@ -1,0 +1,16 @@
+projection;
+
+define behavior for ZC_GatePass alias GatePass
+{
+  use create;
+  use update;
+  use delete;
+  use association _Item { create; }
+}
+
+define behavior for ZC_GatePassItem alias GatePassItem
+{
+  use update;
+  use delete;
+  use association _GatePass;
+}

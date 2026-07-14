@@ -1,0 +1,4 @@
+@EndUserText.label: 'Truck Master Service'
+define service ZUI_TRUCK {
+  expose ZC_Truck as Truck;
+}

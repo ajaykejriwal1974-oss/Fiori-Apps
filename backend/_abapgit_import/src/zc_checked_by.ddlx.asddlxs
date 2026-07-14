@@ -1,0 +1,17 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'CheckedBy', typeNamePlural: 'CheckedBys',
+  title: { type: #STANDARD, value: 'SerialNumber' },
+  description: { type: #STANDARD, value: 'UserName' } } }
+annotate view ZC_CheckedBy with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Serial Number'
+  SerialNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Checked/Packed'
+  CheckedPackedFlag;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'User Name'
+  UserName;
+}

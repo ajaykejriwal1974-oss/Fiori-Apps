@@ -1,0 +1,4 @@
+@EndUserText.label: 'Checked / Packed By Master Service'
+define service ZUI_CHECKED_BY {
+  expose ZC_CheckedBy as CheckedBy;
+}
