@@ -14,6 +14,6 @@ define root view entity ZI_Merge
   key enduse                 as EndUse,
       charg                  as Batch,
       shdcd                  as ShadeCode,
-      menge                  as Quantity,
+      cast(menge as abap.dec(23,3)) as Quantity,
       shdcd2                 as ShadeCode2
 }

@@ -25,9 +25,7 @@ define root view entity ZI_Recipe
       @Semantics.text: true
       comp_desc              as ComponentDesc,
       comp_type              as ComponentType,
-      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
-      ratio                  as Ratio,
-      @Semantics.unitOfMeasure: true
+      cast(ratio as abap.dec(23,3)) as Ratio,
       vrkme                  as SalesUnit,
       remarks                as Remarks,
       @Semantics.user.createdBy: true

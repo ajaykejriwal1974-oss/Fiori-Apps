@@ -2,7 +2,7 @@
 @UI: { headerInfo: { typeName: 'DigiSign', typeNamePlural: 'DigiSigns',
   title: { type: #STANDARD, value: 'CompanyCode' },
   description: { type: #STANDARD, value: 'Email' } } }
-annotate view ZC_DigitalSignature with
+annotate view ZC_DIGITAL_SIGNATURE with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }

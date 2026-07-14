@@ -6,14 +6,12 @@
 // has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
 // (add a TIMESTAMPL column to enable it). Code fields carry in-table text
 // (@ObjectModel.text.element) and value helps (on the projection).
-define root view entity ZI_ExportDetail
+define root view entity ZI_EXPORT_DETAIL
   as select from zexp
 {
   key vbeln                  as BillingDocument,
   key kschl                  as ConditionType,
-      @Semantics.amount.currencyCode: 'Currency'
-      netwr                  as NetValue,
-      @Semantics.currencyCode: true
+      cast(netwr as abap.dec(23,2)) as NetValue,
       waerk                  as Currency,
       kursk                  as ExchangeRate,
       fkdat                  as BillingDate

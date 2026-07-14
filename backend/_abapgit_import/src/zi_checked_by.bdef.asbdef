@@ -1,6 +1,6 @@
 managed;
 
-define behavior for ZI_CheckedBy alias CheckedBy
+define behavior for ZI_CHECKED_BY alias CheckedBy
 persistent table zpp_pcby
 lock master
 {

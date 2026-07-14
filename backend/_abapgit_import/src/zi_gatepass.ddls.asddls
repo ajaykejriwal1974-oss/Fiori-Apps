@@ -8,7 +8,7 @@
 // number comes from number-range object via ZGPASS_NUM (wire in the determination).
 define root view entity ZI_GatePass
   as select from zgp_hdr
-  composition [0..*] of ZI_GatePassItem as _Item
+  composition [0..*] of ZI_GATEPASS_ITEM as _Item
 {
   key gpnum                  as GpNumber,
   key mjahr                  as FiscalYear,

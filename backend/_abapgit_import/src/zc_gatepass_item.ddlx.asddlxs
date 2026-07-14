@@ -1,5 +1,5 @@
 @Metadata.layer: #CORE
-annotate view ZC_GatePassItem with
+annotate view ZC_GATEPASS_ITEM with
 {
   @UI.facet: [ { id: 'ItemGeneral', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Item', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ] }

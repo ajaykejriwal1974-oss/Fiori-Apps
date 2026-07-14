@@ -5,7 +5,7 @@
 // NOTE: ZGP_PART has keys GPNUM + ZITEM + CNT but NO MJAHR - so it is a plain
 // associated entity here, not a composition child. Add MJAHR to ZGP_PART (or a
 // surrogate) to fold it into the gate-pass composition tree.
-define view entity ZI_GatePassPart
+define view entity ZI_GATEPASS_PART
   as select from zgp_part
 {
   key gpnum                  as GpNumber,

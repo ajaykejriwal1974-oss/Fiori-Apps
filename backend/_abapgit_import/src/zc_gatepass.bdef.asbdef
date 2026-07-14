@@ -8,7 +8,7 @@ define behavior for ZC_GatePass alias GatePass
   use association _Item { create; }
 }
 
-define behavior for ZC_GatePassItem alias GatePassItem
+define behavior for ZC_GATEPASS_ITEM alias GatePassItem
 {
   use update;
   use delete;

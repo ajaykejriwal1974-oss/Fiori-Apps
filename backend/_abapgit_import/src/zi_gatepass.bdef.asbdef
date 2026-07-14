@@ -34,7 +34,7 @@ lock master
   }
 }
 
-define behavior for ZI_GatePassItem alias GatePassItem
+define behavior for ZI_GATEPASS_ITEM alias GatePassItem
 persistent table zgp_item
 lock dependent by _GatePass
 {

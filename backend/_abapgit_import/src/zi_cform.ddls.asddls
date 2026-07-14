@@ -13,10 +13,10 @@ define root view entity ZI_Cform
   key cust_code              as Customer,
   key invoice_no             as BillingDocument,
       invoice_dt             as BillingDate,
-      invoice_val            as InvoiceValue,
+      cast(invoice_val as abap.dec(23,2)) as InvoiceValue,
       form_type              as FormType,
       form_no                as FormNumber,
       form_dt                as FormDate,
-      allocated_value        as AllocatedValue,
-      qty                    as Quantity
+      cast(allocated_value as abap.dec(23,2)) as AllocatedValue,
+      cast(qty as abap.dec(23,3)) as Quantity
 }

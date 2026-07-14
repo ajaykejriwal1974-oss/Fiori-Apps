@@ -5,9 +5,9 @@
 @ObjectModel.semanticKey: ['BillingDocument', 'ConditionType']
 // Value helps reference standard released VH CDS (VERIFY the exact name per
 // release); shade fields use the Shade master ZC_DD_Shade.
-define root view entity ZC_ExportDetail
+define root view entity ZC_EXPORT_DETAIL
   provider contract transactional_query
-  as projection on ZI_ExportDetail
+  as projection on ZI_EXPORT_DETAIL
 {
   key BillingDocument,
   key ConditionType,

@@ -1,6 +1,6 @@
 projection;
 
-define behavior for ZC_ExportDetail alias ExportDetail
+define behavior for ZC_EXPORT_DETAIL alias ExportDetail
 {
   use create;
   use update;

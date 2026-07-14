@@ -6,7 +6,7 @@
 // has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
 // (add a TIMESTAMPL column to enable it). Code fields carry in-table text
 // (@ObjectModel.text.element) and value helps (on the projection).
-define root view entity ZI_CheckedBy
+define root view entity ZI_CHECKED_BY
   as select from zpp_pcby
 {
   key sr_no                  as SerialNumber,

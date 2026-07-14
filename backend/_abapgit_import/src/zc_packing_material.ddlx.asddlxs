@@ -2,7 +2,7 @@
 @UI: { headerInfo: { typeName: 'PackMaterial', typeNamePlural: 'PackMaterials',
   title: { type: #STANDARD, value: 'PackingType' },
   description: { type: #STANDARD, value: 'StorageLocation' } } }
-annotate view ZC_PackingMaterial with
+annotate view ZC_PACKING_MATERIAL with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }

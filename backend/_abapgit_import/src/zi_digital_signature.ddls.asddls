@@ -6,7 +6,7 @@
 // has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
 // (add a TIMESTAMPL column to enable it). Code fields carry in-table text
 // (@ObjectModel.text.element) and value helps (on the projection).
-define root view entity ZI_DigitalSignature
+define root view entity ZI_DIGITAL_SIGNATURE
   as select from ztdigi_sign
 {
   key bukrs                  as CompanyCode,

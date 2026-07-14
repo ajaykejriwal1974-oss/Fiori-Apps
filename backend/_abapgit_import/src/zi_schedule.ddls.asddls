@@ -22,9 +22,7 @@ define root view entity ZI_Schedule
       matnr                  as Material,
       @Semantics.text: true
       maktx                  as MaterialDesc,
-      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
-      sch_qty                as ScheduleQty,
-      @Semantics.unitOfMeasure: true
+      cast(sch_qty as abap.dec(23,3)) as ScheduleQty,
       vrkme                  as SalesUnit,
       shdcd                  as ShadeCode,
       remarks                as Remarks,

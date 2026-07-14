@@ -23,5 +23,5 @@ define root view entity ZC_GatePass
       CreatedBy,
       CreatedOnDate,
       CreatedAtTime,
-      _Item : redirected to composition child ZC_GatePassItem
+      _Item : redirected to composition child ZC_GATEPASS_ITEM
 }

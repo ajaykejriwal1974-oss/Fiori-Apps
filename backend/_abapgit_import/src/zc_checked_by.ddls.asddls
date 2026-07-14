@@ -5,9 +5,9 @@
 @ObjectModel.semanticKey: ['SerialNumber', 'CheckedPackedFlag']
 // Value helps reference standard released VH CDS (VERIFY the exact name per
 // release); shade fields use the Shade master ZC_DD_Shade.
-define root view entity ZC_CheckedBy
+define root view entity ZC_CHECKED_BY
   provider contract transactional_query
-  as projection on ZI_CheckedBy
+  as projection on ZI_CHECKED_BY
 {
   key SerialNumber,
   key CheckedPackedFlag,

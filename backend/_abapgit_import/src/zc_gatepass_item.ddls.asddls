@@ -1,8 +1,8 @@
 @EndUserText.label: 'Gate Pass - Projection (item)'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
-define view entity ZC_GatePassItem
-  as projection on ZI_GatePassItem
+define view entity ZC_GATEPASS_ITEM
+  as projection on ZI_GATEPASS_ITEM
 {
   key GpNumber,
   key ItemNumber,
@@ -14,5 +14,5 @@ define view entity ZC_GatePassItem
       Quantity,
       Unit,
       _GatePass : redirected to parent ZC_GatePass,
-      _Part     : redirected to ZC_GatePassPart
+      _Part     : redirected to ZC_GATEPASS_PART
 }

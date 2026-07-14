@@ -6,7 +6,7 @@
 // has no TIMESTAMPL column, so the optimistic-concurrency ETag is omitted
 // (add a TIMESTAMPL column to enable it). Code fields carry in-table text
 // (@ObjectModel.text.element) and value helps (on the projection).
-define root view entity ZI_PackingMaterial
+define root view entity ZI_PACKING_MATERIAL
   as select from zpack_mast
 {
   key ptype                  as PackingType,

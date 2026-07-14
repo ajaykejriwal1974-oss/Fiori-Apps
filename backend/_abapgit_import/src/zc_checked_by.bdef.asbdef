@@ -1,6 +1,6 @@
 projection;
 
-define behavior for ZC_CheckedBy alias CheckedBy
+define behavior for ZC_CHECKED_BY alias CheckedBy
 {
   use create;
   use update;

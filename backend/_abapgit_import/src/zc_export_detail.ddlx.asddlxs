@@ -2,7 +2,7 @@
 @UI: { headerInfo: { typeName: 'ExportDetail', typeNamePlural: 'ExportDetails',
   title: { type: #STANDARD, value: 'BillingDocument' },
   description: { type: #STANDARD, value: 'ExchangeRate' } } }
-annotate view ZC_ExportDetail with
+annotate view ZC_EXPORT_DETAIL with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }

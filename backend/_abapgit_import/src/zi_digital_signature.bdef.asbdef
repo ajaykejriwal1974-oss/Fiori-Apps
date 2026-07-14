@@ -1,6 +1,6 @@
 managed;
 
-define behavior for ZI_DigitalSignature alias DigiSign
+define behavior for ZI_DIGITAL_SIGNATURE alias DigiSign
 persistent table ztdigi_sign
 lock master
 {

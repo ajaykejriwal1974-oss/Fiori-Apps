@@ -5,9 +5,9 @@
 @ObjectModel.semanticKey: ['PackingType', 'WorkCenter', 'Material']
 // Value helps reference standard released VH CDS (VERIFY the exact name per
 // release); shade fields use the Shade master ZC_DD_Shade.
-define root view entity ZC_PackingMaterial
+define root view entity ZC_PACKING_MATERIAL
   provider contract transactional_query
-  as projection on ZI_PackingMaterial
+  as projection on ZI_PACKING_MATERIAL
 {
   key PackingType,
   key WorkCenter,

@@ -2,7 +2,7 @@
 @UI: { headerInfo: { typeName: 'CheckedBy', typeNamePlural: 'CheckedBys',
   title: { type: #STANDARD, value: 'SerialNumber' },
   description: { type: #STANDARD, value: 'UserName' } } }
-annotate view ZC_CheckedBy with
+annotate view ZC_CHECKED_BY with
 {
   @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }

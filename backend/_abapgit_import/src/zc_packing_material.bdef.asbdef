@@ -1,6 +1,6 @@
 projection;
 
-define behavior for ZC_PackingMaterial alias PackMaterial
+define behavior for ZC_PACKING_MATERIAL alias PackMaterial
 {
   use create;
   use update;
