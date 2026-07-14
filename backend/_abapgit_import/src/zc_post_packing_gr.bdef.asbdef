@@ -1,0 +1,7 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_POST_PACKING_GR alias PostPackGr
+{
+  use action postPackingAndGr;
+}

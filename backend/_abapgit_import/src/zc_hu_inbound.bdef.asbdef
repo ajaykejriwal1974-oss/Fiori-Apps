@@ -1,0 +1,7 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_HU_INBOUND alias InboundHu
+{
+  use action postInboundGr;
+}

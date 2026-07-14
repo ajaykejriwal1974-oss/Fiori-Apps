@@ -1,16 +1,39 @@
-# abapGit import — KGPL master-data RAP backend
+# abapGit import — KGPL RAP backend (master-data + custom apps)
 
-This folder is a **ready-to-import abapGit repository** for the 13 master-data RAP
-business objects. Pulling it with abapGit creates **83 objects in one shot** (30 CDS
-views, 14 metadata extensions, 26 behavior definitions, 13 service definitions) —
-instead of hand-typing each one in ADT.
+This folder is a **ready-to-import abapGit repository**. It now covers **two sets** of
+RAP business objects in one bundle:
+
+1. **13 master-data apps** (Fiori Elements / class-free managed BOs) — no ABAP behavior
+   class needed; the pull activates without any hand-written ABAP.
+2. **13 custom (freestyle) apps** (unmanaged RAP BOs *with* a behavior class that calls
+   BAPIs) plus 2 background automation classes — these DO include their `zbp_i_*` /
+   `zcl_*` ABAP behavior/automation classes.
+
+Pulling it with abapGit creates the master-data objects (30 CDS views, 14 metadata
+extensions, 26 behavior definitions, 13 service definitions) **and** the custom-app
+objects (CDS interface/projection views, `ZD_*` abstract action entities, unmanaged
+behavior definitions, `ZBP_I_*` behavior classes, 13 more service definitions) — instead
+of hand-typing each one in ADT.
+
+> **Activate the custom apps in small groups, not all at once.** The behavior classes
+> carry drafted BAPI logic with `VERIFY`-tagged spots for release-specific field/status
+> names; the first activation of each app is where any field/status mismatch vs your real
+> tables surfaces. Pulling everything and activating in one batch means one bad object can
+> cancel the whole activation batch — so activate app-by-app (or in small clusters) and we
+> iterate on the errors. See `docs/CUSTOM_APPS_WIRING_PLAN.md` for the per-app BAPI map,
+> complexity, and recommended order (start with Batch Status 🟢, end with the goods-movement
+> group 🔴). The two automation classes (`ZCL_PO_AUTOMATION`, `ZCL_OBD_AUTOMATION`)
+> reference config tables (`ZSOL_AUPO`, `ZMM_AUTOPO`, `ZSOL_HUDISPATCH`) that need
+> verification against your system.
 
 - Target package on KSD: **`ZKGPL_FIORI`**
 - Branch: **`claude/fiori-apps-ui5-completeness-4bvlmp`**
 - All objects bind **existing legacy Z-tables** — no new tables are created by the pull
   (except Shade, see prerequisites).
-- All behavior definitions are **class-free** (`managed;`, no `implementation in class`),
-  so **no ABAP behavior class is needed** and the pull activates without any hand-written ABAP.
+- The **master-data** behavior definitions are **class-free** (`managed;`, no
+  `implementation in class`), so those activate without any hand-written ABAP. The
+  **custom-app** behavior definitions are **unmanaged with `implementation in class`**, and
+  their `ZBP_I_*` behavior classes are included in this bundle.
 
 ## What is / isn't included
 
@@ -19,8 +42,10 @@ instead of hand-typing each one in ADT.
 | Interface CDS views `ZI_*` | Service **bindings** `ZUI_*_O4` (create via ADT wizard) |
 | Projection CDS views `ZC_*` | The **Publish** step (blocked until Basis config — see below) |
 | Metadata extensions `ZC_*` | Behavior **classes** (deliberately omitted — objects are class-free) |
-| Behavior definitions `ZI_*` / `ZC_*` (class-free) | Table **`ZDD_SHADE`** (already built on KSD) |
-| Service definitions `ZUI_*` | |
+| Behavior definitions (master-data class-free; custom-app unmanaged) | Table **`ZDD_SHADE`** (already built on KSD) |
+| Service definitions `ZUI_*` (26 total) | |
+| Behavior classes `ZBP_I_*` (custom apps) + `ZCL_*` automation | |
+| Abstract action entities `ZD_*` (custom-app action params/results) | |
 
 ## Prerequisites (once)
 

@@ -1,0 +1,7 @@
+unmanaged implementation in class zbp_i_palletization unique;
+strict ( 2 );
+
+define behavior for ZI_PALLETIZATION alias Pallet
+{
+  static action packPallet parameter ZD_PACK_PALLET result [1] ZD_PACK_PALLET_RESULT;
+}
