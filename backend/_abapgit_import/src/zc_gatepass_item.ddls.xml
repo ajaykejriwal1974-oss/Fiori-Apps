@@ -5,7 +5,7 @@
    <DDLS>
     <DDLNAME>ZC_GATEPASS_ITEM</DDLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <DDTEXT>Gate Pass - Projection (item)</DDTEXT>
+    <DDTEXT>Gate Pass Item - Projection</DDTEXT>
    </DDLS>
   </asx:values>
  </asx:abap>

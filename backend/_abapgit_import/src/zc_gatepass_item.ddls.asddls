@@ -1,7 +1,9 @@
-@EndUserText.label: 'Gate Pass - Projection (item)'
+@EndUserText.label: 'Gate Pass Item - Projection'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
-define view entity ZC_GATEPASS_ITEM
+@ObjectModel.semanticKey: ['GpNumber', 'ItemNumber', 'FiscalYear']
+define root view entity ZC_GATEPASS_ITEM
+  provider contract transactional_query
   as projection on ZI_GATEPASS_ITEM
 {
   key GpNumber,
@@ -12,6 +14,5 @@ define view entity ZC_GATEPASS_ITEM
       Supplier,
       SupplierName,
       Quantity,
-      Unit,
-      _GatePass : redirected to parent ZC_GATEPASS
+      Unit
 }

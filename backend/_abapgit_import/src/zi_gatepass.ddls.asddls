@@ -1,13 +1,11 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Gate Pass - Interface (header)'
+@EndUserText.label: 'Gate Pass Header - Interface'
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['GpNumber', 'FiscalYear']
-// Managed RAP composition over ZGP_HDR (header) + ZGP_ITEM (items). The inward
-// receipt detail ZGP_PART is intentionally NOT part of the composition (it lacks
-// the MJAHR key); add it back as a separate read-only entity if needed.
+// Flat managed BO over ZGP_HDR (no composition). Items are a separate flat BO
+// (ZI_GATEPASS_ITEM) exposed by the same service.
 define root view entity ZI_GATEPASS
   as select from zgp_hdr
-  composition [0..*] of ZI_GATEPASS_ITEM as _Item
 {
   key gpnum                  as GpNumber,
   key mjahr                  as FiscalYear,
@@ -24,6 +22,5 @@ define root view entity ZI_GATEPASS
       @Semantics.user.createdBy: true
       ernam                  as CreatedBy,
       erdat                  as CreatedOnDate,
-      erzet                  as CreatedAtTime,
-      _Item
+      erzet                  as CreatedAtTime
 }

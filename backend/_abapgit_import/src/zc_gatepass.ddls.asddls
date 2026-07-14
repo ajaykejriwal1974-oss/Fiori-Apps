@@ -1,4 +1,4 @@
-@EndUserText.label: 'Gate Pass - Projection (header)'
+@EndUserText.label: 'Gate Pass Header - Projection'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 @ObjectModel.semanticKey: ['GpNumber', 'FiscalYear']
@@ -20,6 +20,5 @@ define root view entity ZC_GATEPASS
       CreatedByUser,
       CreatedBy,
       CreatedOnDate,
-      CreatedAtTime,
-      _Item : redirected to composition child ZC_GATEPASS_ITEM
+      CreatedAtTime
 }

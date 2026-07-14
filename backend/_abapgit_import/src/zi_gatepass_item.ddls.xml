@@ -5,7 +5,7 @@
    <DDLS>
     <DDLNAME>ZI_GATEPASS_ITEM</DDLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <DDTEXT>Gate Pass - Interface (item)</DDTEXT>
+    <DDTEXT>Gate Pass Item - Interface</DDTEXT>
    </DDLS>
   </asx:values>
  </asx:abap>

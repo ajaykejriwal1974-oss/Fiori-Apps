@@ -4,11 +4,7 @@
   description: { type: #STANDARD, value: 'VehicleNumber' } } }
 annotate view ZC_GATEPASS with
 {
-  @UI.facet: [
-    { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 },
-    { id: 'Items',   purpose: #STANDARD, type: #LINEITEM_REFERENCE, label: 'Items',
-      position: 20, targetElement: '_Item' }
-  ]
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
   @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
   @EndUserText.label: 'Gate Pass No.'
   GpNumber;

@@ -8,6 +8,7 @@ lock master
   update;
   delete;
 
+  field ( readonly : update ) TransportCode, TruckNumber;
   field ( mandatory : create ) TransportCode, TruckNumber;
 
   mapping for ztrckmstr
