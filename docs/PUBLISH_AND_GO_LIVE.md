@@ -35,6 +35,8 @@ until each shows **Published**:
 | 9  | `ZUI_CHECKED_BY_O4`        | `ZUI_CHECKED_BY`         |
 | 10 | `ZUI_DIGITAL_SIGNATURE_O4` | `ZUI_DIGITAL_SIGNATURE`  |
 | 11 | `ZUI_EXPORT_DETAIL_04`     | `ZUI_EXPORT_DETAIL`      |
+| 12 | `ZUI_TRANSPORT_O4`         | `ZUI_TRANSPORT`          |
+| 13 | `ZUI_GTPASS_O4`           | `ZUI_GTPASS`             |
 
 Once published, each app previews from the binding ("Preview" / the service URL) and can be
 added to the Fiori Launchpad.
@@ -46,22 +48,24 @@ The trust dropped after an ICM restart during setup. **Basis:** import the GitHu
 into `SSL Client (Standard)`, **Save**, restart ICM, and confirm it persists across restarts —
 so future abapGit pulls (and the Gate Pass / Transport re-add below) work without re-fixing.
 
-## Gate Pass + Transport — reworked, ready for the next pull
+## Gate Pass + Transport — imported (all 13 apps now live)
 
-Both were reworked and re-added to `backend/_abapgit_import/`. Pull them once the GitHub
-SSL trust is stable (step 3), then create their bindings (`ZUI_GATEPASS_O4`,
-`ZUI_TRANSPORT_O4`, OData V4 - UI) like the others.
+Both are now active on KSD:
 
-- **Transport** — now a managed BO on the base table **`ZTRCKMSTR`** (keys `ZZTRCODE` /
-  `ZZTRCKNO`) instead of the `ZTRANS` view. The description (`ZZTRDESC`, in `ZTRPTMSTR`) is
-  omitted; re-add via a read-only association if it's needed in the app.
-- **Gate Pass** — header→item composition (`ZGP_HDR` → `ZGP_ITEM`). The `ZGP_PART` inward-
-  receipt child was removed (it has no `MJAHR` key and broke the composition runtime object);
-  expose it separately as a read-only entity later if required.
+- **Transport** — managed BO on base table **`ZTRCKMSTR`** (keys `ZZTRCODE` / `ZZTRCKNO`);
+  the `ZTRANS` view was not usable as a managed-BO persistence table. Description (`ZTRPTMSTR`)
+  omitted; add via a read-only association if needed.
+- **Gate Pass** — re-modelled as **two flat independent managed BOs** (header + item, no
+  composition), and **renamed `GATEPASS` → `GTPASS`** (`ZI_GTPASS` / `ZC_GTPASS` /
+  `ZI_GTPASS_ITEM` / `ZC_GTPASS_ITEM` / `ZUI_GTPASS`). The composition kept producing a
+  corrupted runtime object that could neither activate nor be deleted; fresh names sidestep it.
+  Create bindings `ZUI_GTPASS_O4` (header service).
 
-Note: if the old broken Gate Pass/Transport objects are still inactive on KSD from the first
-attempt, delete them (or let the pull overwrite/delete) before activating the reworked ones,
-so no stale runtime object lingers.
+### Cleanup — old corrupt Gate Pass objects
+The original `ZC_GATEPASS` / `ZI_GATEPASS` / `ZC_GATEPASS_ITEM` / `ZI_GATEPASS_PART` etc. remain
+on KSD as inactive, corrupted objects (they blocked both activation and deletion). They are
+harmless and unused. To remove them, Basis can clear the inconsistent runtime via **SE14**
+(Database Utility) → object → Activate and adjust database / Delete, then delete the ABAP objects.
 
 ## What was done (summary)
 
