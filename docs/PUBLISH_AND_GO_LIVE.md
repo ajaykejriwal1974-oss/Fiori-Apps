@@ -46,18 +46,22 @@ The trust dropped after an ICM restart during setup. **Basis:** import the GitHu
 into `SSL Client (Standard)`, **Save**, restart ICM, and confirm it persists across restarts —
 so future abapGit pulls (and the Gate Pass / Transport re-add below) work without re-fixing.
 
-## Deferred — Gate Pass + Transport (need CDS rework, not import mechanics)
+## Gate Pass + Transport — reworked, ready for the next pull
 
-These two were pulled out of the import because they have data-model issues:
+Both were reworked and re-added to `backend/_abapgit_import/`. Pull them once the GitHub
+SSL trust is stable (step 3), then create their bindings (`ZUI_GATEPASS_O4`,
+`ZUI_TRANSPORT_O4`, OData V4 - UI) like the others.
 
-- **Transport** — binds `ZTRANS`, which is a DDIC **database view**, not a table. A *managed*
-  RAP business object must persist to a real transparent table. Rework: base the BO on the
-  underlying table (e.g. `ZTRCKMSTR`) instead of the view.
-- **Gate Pass** — composition where the `ZGP_PART` child lacks the parent's fiscal-year (`MJAHR`)
-  key, causing runtime-object inconsistency. Rework: add `MJAHR` to `ZGP_PART` (or a surrogate)
-  so it folds into the composition tree, or model `_Part` as read-only.
+- **Transport** — now a managed BO on the base table **`ZTRCKMSTR`** (keys `ZZTRCODE` /
+  `ZZTRCKNO`) instead of the `ZTRANS` view. The description (`ZZTRDESC`, in `ZTRPTMSTR`) is
+  omitted; re-add via a read-only association if it's needed in the app.
+- **Gate Pass** — header→item composition (`ZGP_HDR` → `ZGP_ITEM`). The `ZGP_PART` inward-
+  receipt child was removed (it has no `MJAHR` key and broke the composition runtime object);
+  expose it separately as a read-only entity later if required.
 
-Both will be fixed and re-added via a follow-up abapGit pull.
+Note: if the old broken Gate Pass/Transport objects are still inactive on KSD from the first
+attempt, delete them (or let the pull overwrite/delete) before activating the reworked ones,
+so no stale runtime object lingers.
 
 ## What was done (summary)
 
