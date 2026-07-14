@@ -24,12 +24,20 @@ def err(msg): errors.append(msg)
 
 def rel(p): return os.path.relpath(p, ROOT)
 
+# Directories that are packaging *mirrors* of backend sources (e.g. the
+# abapGit-import bundle) — excluded from the backend scan so their copies are
+# not flagged as duplicate object names. The canonical sources under
+# backend/<app>-rap/src remain fully validated.
+MIRROR_DIRS = ("_abapgit_import",)
+def _is_mirror(p):
+    return any(f"{os.sep}{d}{os.sep}" in p for d in MIRROR_DIRS)
+
 # ---------------------------------------------------------------- collect files
 def files(*exts, under="."):
     out = []
     for ext in exts:
         out += glob.glob(os.path.join(ROOT, under, "**", ext), recursive=True)
-    return sorted(out)
+    return sorted(p for p in out if not _is_mirror(p))
 
 backend_cds = files("*.asddls", "*.asbdef", "*.ddlx.asddlxs", "*.srvdsrv", under="backend")
 abap        = files("*.clas.abap", under="backend")
