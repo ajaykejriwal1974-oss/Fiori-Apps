@@ -13,6 +13,6 @@ define root view entity ZI_EXPORT_DETAIL
   key kschl                  as ConditionType,
       cast(netwr as abap.dec(23,2)) as NetValue,
       waerk                  as Currency,
-      kursk                  as ExchangeRate,
+      cast(kursk as abap.dec(9,5)) as ExchangeRate,
       fkdat                  as BillingDate
 }
