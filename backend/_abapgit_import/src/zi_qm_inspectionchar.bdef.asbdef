@@ -14,7 +14,6 @@ define behavior for ZI_QM_INSPECTIONCHAR alias InspectionChar
     CharacteristicDescription,
     Material,
     Plant,
-    WorkCenter,
     Unit,
     InspectionType,
     Origin;

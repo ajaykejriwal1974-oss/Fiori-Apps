@@ -31,12 +31,9 @@ define root view entity ZI_QM_INSPECTIONCHAR
       char.kurztext                                  as CharacteristicDescription,
       lot.matnr                                      as Material,
       lot.werk                                       as Plant,
-      char.maeinheit                                 as Unit,
-      cast( _Result.mittelwert as abap.dec( 16, 3 ) ) as ResultValue,
+      char.masseinhsw                                as Unit,
+      fltp_to_dec( _Result.mittelwert as abap.dec( 16, 3 ) ) as ResultValue,
       _Result.mbewertg                               as Valuation,
       lot.art                                        as InspectionType,
       lot.herkunft                                   as Origin
 }
-//  Open characteristics only (lot released / inspection in process).
-//  Replace 'stat34' with the correct status flag for your release.
-where lot.stat34 = 'X'

@@ -8,7 +8,7 @@
 //   - createPhysInvDoc (ZHUINV): create the physical-inventory document
 // Both actions drive standard BAPIs (see the behavior); no custom persistence.
 define root view entity ZI_MTOS_PROCESS
-  as select from mska
+  as select from nsdm_e_mska
 {
   key matnr  as Material,
   key werks  as Plant,
