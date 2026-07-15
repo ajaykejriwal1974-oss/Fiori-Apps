@@ -12,14 +12,12 @@
 //  once results post straight through the standard QM API.
 //
 //  VERIFY against your release before activating: QM table/field names
-//  (qamv/qals/qapo/qamr), the "open characteristic" status filter, and the
+//  (qamv/qals/qamr), the "open characteristic" status filter, and the
 //  work-center derivation. Prefer released QM CDS interfaces where available.
 //
 define root view entity ZI_QM_INSPECTIONCHAR
   as select from qamv as char
     inner join      qals as lot  on  lot.prueflos  = char.prueflos
-    left outer join qapo as oper on  oper.prueflos = char.prueflos
-                                 and oper.vorglfnr = char.vorglfnr
   association [0..1] to qamr         as _Result
     on  _Result.prueflos = char.prueflos
     and _Result.vorglfnr = char.vorglfnr
