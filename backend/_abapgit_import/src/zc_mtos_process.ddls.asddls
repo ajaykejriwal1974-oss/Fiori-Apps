@@ -7,6 +7,7 @@ define root view entity ZC_MTOS_PROCESS
   provider contract transactional_query
   as projection on ZI_MTOS_PROCESS
 {
+  @Search.defaultSearchElement: true
   key Material,
   key Plant,
   key SalesOrder,

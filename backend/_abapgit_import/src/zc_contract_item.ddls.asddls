@@ -7,6 +7,7 @@ define root view entity ZC_CONTRACT_ITEM
   provider contract transactional_query
   as projection on ZI_CONTRACT_ITEM
 {
+  @Search.defaultSearchElement: true
   key SalesContract,
   key ContractItem,
       Material,

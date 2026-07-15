@@ -6,6 +6,7 @@ define root view entity ZC_BATCH_STATUS
   provider contract transactional_query
   as projection on ZI_BATCH_STATUS
 {
+  @Search.defaultSearchElement: true
   key Material,
   key Plant,
   key Batch,
