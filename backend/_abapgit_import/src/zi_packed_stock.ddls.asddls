@@ -27,7 +27,7 @@ define view entity ZI_PACKED_STOCK
       // packing / dispatch register dimensions
       vbeln            as SalesDocument,
       posnr            as SalesItem,
-      aufnr            as Order,
+      aufnr            as ProductionOrder,
       plist            as PackingListFlag,
       posted           as Posted,
       pldate           as PackingListDate,

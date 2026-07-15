@@ -14,7 +14,7 @@ define view entity ZC_PACKING_REGISTER
       @AnalyticsDetails.query.axis: #FREE
       SalesItem,
       @AnalyticsDetails.query.axis: #FREE
-      Order,
+      ProductionOrder,
       @AnalyticsDetails.query.axis: #FREE
       Material,
       @AnalyticsDetails.query.axis: #FREE

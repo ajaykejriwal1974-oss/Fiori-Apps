@@ -12,7 +12,7 @@ define view entity ZC_WipBatchQuery
       @AnalyticsDetails.query.axis: #ROWS
       Plant,
       @AnalyticsDetails.query.axis: #FREE
-      Order,
+      ProductionOrder,
       @AnalyticsDetails.query.axis: #FREE
       BatchDate,
       @AnalyticsDetails.query.axis: #FREE

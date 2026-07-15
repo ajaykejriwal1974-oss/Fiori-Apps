@@ -6,7 +6,7 @@ define view entity ZC_MergeAnalysisQuery
   as projection on ZI_MergeAnalysisCube
 {
       @AnalyticsDetails.query.axis: #ROWS
-      Order,
+      ProductionOrder,
       @AnalyticsDetails.query.axis: #ROWS
       Grade,
       @AnalyticsDetails.query.axis: #ROWS

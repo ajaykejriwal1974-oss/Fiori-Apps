@@ -7,7 +7,7 @@
 define view entity ZI_MERGE_ANALYSIS
   as select from zpp_merge
 {
-  key aurnr            as Order,
+  key aurnr            as ProductionOrder,
   key grade            as Grade,
   key enduse           as EndUse,
       charg            as Batch,

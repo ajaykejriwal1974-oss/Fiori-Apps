@@ -10,7 +10,7 @@ define view entity ZI_WipBatchCube
   key batchno          as Batch,
   key gjahr            as FiscalYear,
       werks            as Plant,
-      aufnr            as Order,
+      aufnr            as ProductionOrder,
       bchdate          as BatchDate,
       grey_code        as GreyMaterial,
       dye_code         as DyedMaterial,
