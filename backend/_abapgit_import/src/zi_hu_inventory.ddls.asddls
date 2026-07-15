@@ -17,9 +17,7 @@ define view entity ZI_HU_INVENTORY
       inv_by           as CountedBy,
       inv_date         as CountDate,
       @DefaultAggregation: #SUM
-      @Semantics.quantity.unitOfMeasure: 'BaseUnit'
-      vemng            as CountedQuantity,
-      @Semantics.unitOfMeasure: true
+      cast( vemng as abap.dec( 15, 3 ) ) as CountedQuantity,
       meins            as BaseUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

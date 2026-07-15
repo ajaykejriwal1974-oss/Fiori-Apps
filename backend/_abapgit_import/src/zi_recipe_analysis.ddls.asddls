@@ -15,9 +15,7 @@ define view entity ZI_RECIPE_ANALYSIS
       component        as Component,
       comp_type        as ComponentType,
       @DefaultAggregation: #SUM
-      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
-      ratio            as Ratio,
-      @Semantics.unitOfMeasure: true
+      cast( ratio as abap.dec( 15, 3 ) ) as Ratio,
       vrkme            as SalesUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

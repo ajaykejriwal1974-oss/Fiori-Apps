@@ -11,11 +11,9 @@ define view entity ZI_ExportRegisterCube
   key kschl            as ConditionType,
       fkdat            as BillingDate,
       @DefaultAggregation: #SUM
-      kursk            as ExchangeRate,
+      cast( kursk as abap.dec( 15, 3 ) ) as ExchangeRate,
       @DefaultAggregation: #SUM
-      @Semantics.amount.currencyCode: 'Currency'
-      netwr            as NetValue,
-      @Semantics.currencyCode: true
+      cast( netwr as abap.dec( 15, 3 ) ) as NetValue,
       waerk            as Currency,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

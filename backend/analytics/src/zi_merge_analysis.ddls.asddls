@@ -13,7 +13,7 @@ define view entity ZI_MergeAnalysisCube
       charg            as Batch,
       shdcd            as ShadeCode,
       @DefaultAggregation: #SUM
-      menge            as Quantity,
+      cast( menge as abap.dec( 15, 3 ) ) as Quantity,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

@@ -17,9 +17,7 @@ define view entity ZI_WIP_BATCH
       assigned         as Assigned,
       closed           as Closed,
       @DefaultAggregation: #SUM
-      @Semantics.quantity.unitOfMeasure: 'BatchUnit'
-      qty              as Quantity,
-      @Semantics.unitOfMeasure: true
+      cast( qty as abap.dec( 15, 3 ) ) as Quantity,
       vrkme            as BatchUnit,
       @DefaultAggregation: #SUM
       cast( cheeses as abap.dec( 15, 3 ) ) as Cheeses,

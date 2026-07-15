@@ -33,11 +33,11 @@ define view entity ZI_PackedStockCube
       pldate           as PackingListDate,
       // measures
       @DefaultAggregation: #SUM
-      grosswt          as GrossWeight,
+      cast( grosswt as abap.dec( 15, 3 ) ) as GrossWeight,
       @DefaultAggregation: #SUM
-      tarewt           as TareWeight,
+      cast( tarewt as abap.dec( 15, 3 ) ) as TareWeight,
       @DefaultAggregation: #SUM
-      netwt            as NetWeight,
+      cast( netwt as abap.dec( 15, 3 ) ) as NetWeight,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

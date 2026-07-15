@@ -17,12 +17,10 @@ define view entity ZI_WipBatchCube
       assigned         as Assigned,
       closed           as Closed,
       @DefaultAggregation: #SUM
-      @Semantics.quantity.unitOfMeasure: 'BatchUnit'
-      qty              as Quantity,
-      @Semantics.unitOfMeasure: true
+      cast( qty as abap.dec( 15, 3 ) ) as Quantity,
       vrkme            as BatchUnit,
       @DefaultAggregation: #SUM
-      cheeses          as Cheeses,
+      cast( cheeses as abap.dec( 15, 3 ) ) as Cheeses,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

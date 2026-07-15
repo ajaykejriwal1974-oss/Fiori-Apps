@@ -19,9 +19,7 @@ define view entity ZI_PENDING_CONTRACT
       schdt            as ScheduleDate,
       dyedt            as DyeingDate,
       @DefaultAggregation: #SUM
-      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
-      sch_qty          as ScheduleQuantity,
-      @Semantics.unitOfMeasure: true
+      cast( sch_qty as abap.dec( 15, 3 ) ) as ScheduleQuantity,
       vrkme            as SalesUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
