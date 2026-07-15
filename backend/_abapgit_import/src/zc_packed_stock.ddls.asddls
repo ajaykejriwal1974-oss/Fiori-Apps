@@ -22,7 +22,7 @@ define view entity ZC_PACKED_STOCK
       @AnalyticsDetails.query.axis: #FREE
       PackingType,
       @AnalyticsDetails.query.axis: #FREE
-      Size,
+      PackingSize,
       @AnalyticsDetails.query.axis: #FREE
       MergeNumber,
       @AnalyticsDetails.query.axis: #FREE

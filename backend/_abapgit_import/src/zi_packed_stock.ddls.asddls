@@ -19,7 +19,7 @@ define view entity ZI_PACKED_STOCK
       grade            as Grade,
       enduse           as EndUse,
       ptype            as PackingType,
-      psize            as Size,
+      psize            as PackingSize,
       mergno           as MergeNumber,
       arbpl            as WorkCenter,
       pltyp            as ProductType,
