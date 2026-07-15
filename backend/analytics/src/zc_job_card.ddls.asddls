@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_JobCardQuery
-  as projection on ZI_JobCardCube
+  as select from ZI_JobCardCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       JobNumber,

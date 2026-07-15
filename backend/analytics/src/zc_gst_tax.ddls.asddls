@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_GstTaxQuery
-  as projection on ZI_GstTaxCube
+  as select from ZI_GstTaxCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Plant,

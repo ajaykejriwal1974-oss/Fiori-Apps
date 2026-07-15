@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_PackedStockQuery
-  as projection on ZI_PackedStockCube
+  as select from ZI_PackedStockCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Box,

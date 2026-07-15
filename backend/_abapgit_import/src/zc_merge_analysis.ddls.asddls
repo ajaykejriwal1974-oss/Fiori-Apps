@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_MERGE_ANALYSIS
-  as projection on ZI_MERGE_ANALYSIS
+  as select from ZI_MERGE_ANALYSIS
 {
       @AnalyticsDetails.query.axis: #ROWS
       ProductionOrder,

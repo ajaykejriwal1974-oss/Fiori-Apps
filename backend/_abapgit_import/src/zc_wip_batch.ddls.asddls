@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_WIP_BATCH
-  as projection on ZI_WIP_BATCH
+  as select from ZI_WIP_BATCH
 {
       @AnalyticsDetails.query.axis: #ROWS
       Batch,

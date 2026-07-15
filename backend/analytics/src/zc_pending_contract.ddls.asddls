@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_PendingContractQuery
-  as projection on ZI_PendingContractCube
+  as select from ZI_PendingContractCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       ScheduleNumber,

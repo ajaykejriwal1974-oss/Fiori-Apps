@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_ExportRegisterQuery
-  as projection on ZI_ExportRegisterCube
+  as select from ZI_ExportRegisterCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       BillingDocument,

@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_DISPATCH_REGISTER
-  as projection on ZI_DISPATCH_REGISTER
+  as select from ZI_DISPATCH_REGISTER
 {
       @AnalyticsDetails.query.axis: #ROWS
       Box,

@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_HuInventoryQuery
-  as projection on ZI_HuInventoryCube
+  as select from ZI_HuInventoryCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       PhysInvDocument,

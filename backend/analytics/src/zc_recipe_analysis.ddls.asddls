@@ -3,7 +3,7 @@
 @Analytics.query: true
 @Metadata.allowExtensions: true
 define view entity ZC_RecipeAnalysisQuery
-  as projection on ZI_RecipeAnalysisCube
+  as select from ZI_RecipeAnalysisCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Plant,
