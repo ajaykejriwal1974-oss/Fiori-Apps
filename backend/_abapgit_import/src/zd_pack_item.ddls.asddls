@@ -5,4 +5,5 @@ define abstract entity ZD_PACK_ITEM
   Batch : abap.char(10);
   Quantity : abap.dec(13,3);
   Unit : abap.unit(3);
+  _Parent : association to parent ZD_PACK;
 }
