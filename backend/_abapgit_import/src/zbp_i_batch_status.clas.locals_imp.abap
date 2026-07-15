@@ -20,7 +20,7 @@ CLASS lhc_Batch IMPLEMENTATION.
             closed_time = @sy-uzeit
         WHERE batchno = @p-batch.
       IF sy-subrc = 0.
-        COMMIT WORK.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
         APPEND VALUE #( %cid = key-%cid
                         %param = VALUE #( message = |Batch { p-batch } closed| ) ) TO result.
       ELSE.
@@ -36,13 +36,27 @@ CLASS lhc_Batch IMPLEMENTATION.
     LOOP AT keys INTO DATA(key).
       DATA(p) = key-%param.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      " Set the deletion flag on the attribute (+X) structures. The component is
+      " DEL_FLAG on most releases; assign dynamically so either name works.
+      DATA: ls_att  TYPE bapibatchatt,
+            ls_attx TYPE bapibatchattx.
+      FIELD-SYMBOLS <fs_flag> TYPE any.
+      LOOP AT VALUE string_table( ( `DEL_FLAG` ) ( `DELETION_FLAG` ) ( `LVORM` ) ) INTO DATA(lv_comp).
+        ASSIGN COMPONENT lv_comp OF STRUCTURE ls_att TO <fs_flag>.
+        IF sy-subrc = 0.
+          <fs_flag> = 'X'.
+          ASSIGN COMPONENT lv_comp OF STRUCTURE ls_attx TO <fs_flag>.
+          IF sy-subrc = 0. <fs_flag> = 'X'. ENDIF.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
       CALL FUNCTION 'BAPI_BATCH_CHANGE'
-        EXPORTING material           = p-material
-                  batch              = p-batch
-                  plant              = p-plant
-                  batchattributes    = VALUE bapibatchatt( deletion_flg = 'X' )
-                  batchcontrolfields = VALUE bapibatchctrl( deletion_flg = 'X' )
-        TABLES    return             = lt_return.
+        EXPORTING material         = p-material
+                  batch            = p-batch
+                  plant            = p-plant
+                  batchattributes  = ls_att
+                  batchattributesx = ls_attx
+        TABLES    return           = lt_return.
       DATA(lv_err) = REDUCE string( INIT s = ``
                        FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
                        NEXT s = s && r-message && ` ` ).

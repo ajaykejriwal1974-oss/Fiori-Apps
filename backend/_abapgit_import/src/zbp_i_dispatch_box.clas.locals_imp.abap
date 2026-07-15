@@ -48,7 +48,7 @@ CLASS lhc_DispatchBox IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
       IF lv_count > 0.
-        COMMIT WORK.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
       ENDIF.
 
       APPEND VALUE #( %cid  = key-%cid
