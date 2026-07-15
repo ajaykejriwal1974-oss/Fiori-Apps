@@ -63,10 +63,21 @@ CLASS lhc_MtosStock IMPLEMENTATION.
   METHOD createPhysInvDoc.
     " VERIFY: BAPI_MATPHYSINV_CREATE_MULT head/item structure names and the
     " head<->item linkage (here one head for all items) for your release.
+    " Items travel in the flat ItemList parameter as 'MATERIAL=BATCH;MATERIAL=BATCH'.
     LOOP AT keys INTO DATA(key).
-      DATA(h)        = key-%param.
-      DATA(lt_items) = key-%param-_item.
-      IF lt_items IS INITIAL.
+      DATA(h) = key-%param.
+
+      DATA lt_phys_items TYPE STANDARD TABLE OF bapi_physinv_create_items.
+      CLEAR lt_phys_items.
+      SPLIT h-itemlist AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS INITIAL. CONTINUE. ENDIF.
+        SPLIT lv_tok AT '=' INTO DATA(lv_mat) DATA(lv_batch).
+        APPEND VALUE #( material = lv_mat batch = lv_batch ) TO lt_phys_items.
+      ENDLOOP.
+
+      IF lt_phys_items IS INITIAL.
         APPEND VALUE #( %cid = key-%cid
                         %param = VALUE #( message = 'No items for the physical-inventory document' ) ) TO result.
         CONTINUE.
@@ -76,8 +87,6 @@ CLASS lhc_MtosStock IMPLEMENTATION.
       DATA lt_head TYPE STANDARD TABLE OF bapi_physinv_create_head.
       lt_head = VALUE #( ( plant = h-plant stge_loc = h-storagelocation
                            doc_date = lv_today plan_date = lv_today fisc_year = h-fiscalyear ) ).
-      DATA lt_phys_items TYPE STANDARD TABLE OF bapi_physinv_create_items.
-      lt_phys_items = VALUE #( FOR it IN lt_items ( material = it-material batch = it-batch ) ).
 
       DATA lt_docs   TYPE STANDARD TABLE OF bapi_physinv_create_docs.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.

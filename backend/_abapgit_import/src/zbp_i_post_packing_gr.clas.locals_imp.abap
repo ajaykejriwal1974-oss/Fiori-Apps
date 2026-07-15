@@ -1,3 +1,8 @@
+*"* Unmanaged behavior for ZI_POST_PACKING_GR.
+*"* postPackingAndGr: post one goods receipt for the contents of the selected
+*"* HUs. The HUs travel in the flat HandlingUnitList parameter as 'HU1;HU2' -
+*"* contents are read from VEPO on the server.
+
 CLASS lhc_PostPackGr DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS postPackingAndGr FOR MODIFY
@@ -7,17 +12,25 @@ ENDCLASS.
 CLASS lhc_PostPackGr IMPLEMENTATION.
   METHOD postPackingAndGr.
     LOOP AT keys INTO DATA(key).
-      DATA(h)        = key-%param.
-      DATA(lt_hu)    = key-%param-_item.
+      DATA(h) = key-%param.
 
-      IF lt_hu IS INITIAL.
+      DATA lt_exidv TYPE rseloption.
+      CLEAR lt_exidv.
+      SPLIT h-handlingunitlist AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS NOT INITIAL.
+          APPEND VALUE #( sign = 'I' option = 'EQ' low = lv_tok ) TO lt_exidv.
+        ENDIF.
+      ENDLOOP.
+
+      IF lt_exidv IS INITIAL.
         APPEND VALUE #( %cid = key-%cid %param-message = 'No handling units to post' ) TO result.
         CONTINUE.
       ENDIF.
 
       " Read the contents of the selected HUs from the standard HU tables
       " (VEKP header / VEPO items) and post one goods receipt for them all.
-      DATA(lt_exidv) = VALUE rseloption( FOR hu IN lt_hu ( sign = 'I' option = 'EQ' low = hu-handlingunit ) ).
       SELECT i~matnr, i~charg, i~vemng, i~vemeh
         FROM vepo AS i
         INNER JOIN vekp AS k ON k~venum = i~venum

@@ -1,6 +1,8 @@
 *"* Unmanaged behavior for ZI_HU_ITEM.
-*"* postGoodsMovement: build one BAPI_GOODSMVT_CREATE call from the header +
-*"* scanned items and return the material document number.
+*"* postGoodsMovement: build one BAPI_GOODSMVT_CREATE call for the selected HUs
+*"* and return the material document number. The HUs travel in the flat
+*"* HandlingUnitList parameter as 'HU1;HU2;HU3' - the HU contents
+*"* (material/batch/quantity) are read from VEPO on the server.
 
 CLASS lhc_HuItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
@@ -13,11 +15,33 @@ CLASS lhc_HuItem IMPLEMENTATION.
   METHOD postGoodsMovement.
     LOOP AT keys INTO DATA(key).
       DATA(ls_header) = key-%param.
-      DATA(lt_items)  = key-%param-_item.
 
-      IF lt_items IS INITIAL.
+      DATA lt_exidv TYPE rseloption.
+      CLEAR lt_exidv.
+      SPLIT ls_header-handlingunitlist AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS NOT INITIAL.
+          APPEND VALUE #( sign = 'I' option = 'EQ' low = lv_tok ) TO lt_exidv.
+        ENDIF.
+      ENDLOOP.
+
+      IF lt_exidv IS INITIAL.
         APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'No items to post' ) TO result.
+                        %param-message = 'No handling units to post' ) TO result.
+        CONTINUE.
+      ENDIF.
+
+      " Read the HU contents from the standard HU tables (VEKP header / VEPO items).
+      SELECT i~matnr, i~charg, i~vemng, i~vemeh
+        FROM vepo AS i
+        INNER JOIN vekp AS k ON k~venum = i~venum
+        WHERE k~exidv IN @lt_exidv
+        INTO TABLE @DATA(lt_cont).
+
+      IF lt_cont IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid
+                        %param-message = 'Selected HUs have no items' ) TO result.
         CONTINUE.
       ENDIF.
 
@@ -33,15 +57,15 @@ CLASS lhc_HuItem IMPLEMENTATION.
       DATA(ls_gm_code) = VALUE bapi2017_gm_code( gm_code = '04' ).
 
       DATA lt_gm_item TYPE STANDARD TABLE OF bapi2017_gm_item_create.
-      lt_gm_item = VALUE #( FOR it IN lt_items (
-                     material   = it-material
+      lt_gm_item = VALUE #( FOR c IN lt_cont (
+                     material   = c-matnr
                      plant      = ls_header-plant
                      stge_loc   = ls_header-storagelocation
                      move_stloc = ls_header-receivingstoragelocation
-                     batch      = it-batch
+                     batch      = c-charg
                      move_type  = ls_header-movementtype
-                     entry_qnt  = it-quantity
-                     entry_uom  = it-unit ) ).
+                     entry_qnt  = c-vemng
+                     entry_uom  = c-vemeh ) ).
 
       DATA: lv_matdoc  TYPE bapi2017_gm_head_ret-mat_doc,
             lv_matyear TYPE bapi2017_gm_head_ret-doc_year.
@@ -64,8 +88,6 @@ CLASS lhc_HuItem IMPLEMENTATION.
         APPEND VALUE #( %cid  = key-%cid
                         %param = VALUE #( message = lv_errors ) ) TO result.
       ELSE.
-        " Posting from the action is acceptable here - the service has no managed
-        " persistence; for strict RAP, move the BAPI to the saver (save_modified).
         CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
         APPEND VALUE #( %cid  = key-%cid
                         %param = VALUE #( materialdocument     = lv_matdoc

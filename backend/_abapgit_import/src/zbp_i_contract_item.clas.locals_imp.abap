@@ -1,6 +1,7 @@
 *"* Unmanaged behavior for ZI_CONTRACT_ITEM.
 *"* updateBatches: change the batch on the given contract items in one call via
-*"* the standard sales-document change API.
+*"* the standard sales-document change API. The items travel in the flat
+*"* ItemBatchList parameter as 'ITEM=BATCH;ITEM=BATCH' (e.g. '000010=B123').
 
 CLASS lhc_ContractItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
@@ -13,19 +14,25 @@ CLASS lhc_ContractItem IMPLEMENTATION.
   METHOD updateBatches.
     LOOP AT keys INTO DATA(key).
       DATA(lv_contract) = key-%param-salescontract.
-      DATA(lt_items)    = key-%param-_item.
+      DATA(lv_list)     = key-%param-itembatchlist.
 
-      IF lv_contract IS INITIAL OR lt_items IS INITIAL.
+      DATA lt_in  TYPE STANDARD TABLE OF bapisditm.
+      DATA lt_inx TYPE STANDARD TABLE OF bapisditmx.
+      CLEAR: lt_in, lt_inx.
+      SPLIT lv_list AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS INITIAL. CONTINUE. ENDIF.
+        SPLIT lv_tok AT '=' INTO DATA(lv_item) DATA(lv_batch).
+        APPEND VALUE #( itm_number = lv_item batch = lv_batch ) TO lt_in.
+        APPEND VALUE #( itm_number = lv_item updateflag = 'U' batch = 'X' ) TO lt_inx.
+      ENDLOOP.
+
+      IF lv_contract IS INITIAL OR lt_in IS INITIAL.
         APPEND VALUE #( %cid = key-%cid
                         %param-message = 'No contract / items provided' ) TO result.
         CONTINUE.
       ENDIF.
-
-      " Change the batch on each contract item via the sales-document change API.
-      DATA lt_in  TYPE STANDARD TABLE OF bapisditm.
-      DATA lt_inx TYPE STANDARD TABLE OF bapisditmx.
-      lt_in  = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem batch = it-newbatch ) ).
-      lt_inx = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem updateflag = 'U' batch = 'X' ) ).
 
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
       CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
@@ -44,8 +51,8 @@ CLASS lhc_ContractItem IMPLEMENTATION.
       ELSE.
         CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
         APPEND VALUE #( %cid = key-%cid
-                        %param = VALUE #( itemsupdated = lines( lt_items )
-                                          message = |{ lines( lt_items ) } item(s) updated on contract { lv_contract }| ) ) TO result.
+                        %param = VALUE #( itemsupdated = lines( lt_in )
+                                          message = |{ lines( lt_in ) } item(s) updated on contract { lv_contract }| ) ) TO result.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.

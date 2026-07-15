@@ -1,6 +1,7 @@
 *"* Unmanaged behavior for ZI_PACKING_UNIT.
 *"* createHandlingUnits: build the cone -> carton -> pallet HU hierarchy for the
-*"* reference and pack it via the standard HU API.
+*"* reference and pack it via the standard HU API. The levels travel bottom-up
+*"* in the flat UnitList parameter as 'PACKMAT=QTY;PACKMAT=QTY'.
 
 CLASS lhc_PackingUnit DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
@@ -13,13 +14,6 @@ CLASS lhc_PackingUnit IMPLEMENTATION.
   METHOD createHandlingUnits.
     LOOP AT keys INTO DATA(key).
       DATA(ls_header) = key-%param.
-      DATA(lt_units)  = key-%param-_unit.
-
-      IF lt_units IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'No packing units provided' ) TO result.
-        CONTINUE.
-      ENDIF.
 
       " Build the Cone -> Carton -> Pallet HU hierarchy. VERIFY the BAPI_HU_CREATE /
       " BAPI_HU_PACK parameter names against your release.
@@ -27,11 +21,20 @@ CLASS lhc_PackingUnit IMPLEMENTATION.
       DATA: lv_prev_hu TYPE exidv,
             lv_top_hu  TYPE exidv,
             lv_count   TYPE i.
-      LOOP AT lt_units INTO DATA(u).
+      CLEAR: lv_prev_hu, lv_top_hu, lv_count.
+
+      SPLIT ls_header-unitlist AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS INITIAL. CONTINUE. ENDIF.
+        SPLIT lv_tok AT '=' INTO DATA(lv_packmat) DATA(lv_qty_c).
+        DATA lv_qty TYPE vemng.
+        lv_qty = lv_qty_c.
+
         DATA lv_hu TYPE exidv.
         CALL FUNCTION 'BAPI_HU_CREATE'
           EXPORTING hukey_ref     = ls_header-reference
-                    packing_matnr = u-packingmaterial
+                    packing_matnr = lv_packmat
           IMPORTING huexid        = lv_hu
           TABLES    return        = lt_return.
         IF lv_prev_hu IS INITIAL.
@@ -40,7 +43,7 @@ CLASS lhc_PackingUnit IMPLEMENTATION.
             EXPORTING hukey      = lv_hu
                       materialnr = ls_header-material
                       batch      = ls_header-batch
-                      pack_qty   = u-quantity
+                      pack_qty   = lv_qty
             TABLES    return     = lt_return.
         ELSE.
           " pack the lower-level HU into this one
@@ -53,6 +56,12 @@ CLASS lhc_PackingUnit IMPLEMENTATION.
         lv_top_hu  = lv_hu.
         lv_count  += 1.
       ENDLOOP.
+
+      IF lv_count = 0.
+        APPEND VALUE #( %cid = key-%cid
+                        %param-message = 'No packing units provided' ) TO result.
+        CONTINUE.
+      ENDIF.
 
       DATA(lv_err) = REDUCE string( INIT s = ``
                        FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )

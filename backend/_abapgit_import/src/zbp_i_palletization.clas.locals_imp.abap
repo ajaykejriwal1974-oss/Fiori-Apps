@@ -1,3 +1,7 @@
+*"* Unmanaged behavior for ZI_PALLETIZATION.
+*"* packPallet: create the pallet HU and pack the box HUs onto it. The boxes
+*"* travel in the flat BoxHuList parameter as 'HU1;HU2;HU3'.
+
 CLASS lhc_Pallet DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS packPallet FOR MODIFY
@@ -8,8 +12,18 @@ CLASS lhc_Pallet IMPLEMENTATION.
   METHOD packPallet.
     " VERIFY: BAPI_HU_CREATE / BAPI_HU_PACK parameter names vary by release.
     LOOP AT keys INTO DATA(key).
-      DATA(h)        = key-%param.
-      DATA(lt_boxes) = key-%param-_item.
+      DATA(h) = key-%param.
+
+      DATA lt_boxes TYPE STANDARD TABLE OF exidv.
+      CLEAR lt_boxes.
+      SPLIT h-boxhulist AT ';' INTO TABLE DATA(lt_tok).
+      LOOP AT lt_tok INTO DATA(lv_tok).
+        CONDENSE lv_tok NO-GAPS.
+        IF lv_tok IS NOT INITIAL.
+          APPEND CONV exidv( lv_tok ) TO lt_boxes.
+        ENDIF.
+      ENDLOOP.
+
       IF lt_boxes IS INITIAL.
         APPEND VALUE #( %cid = key-%cid %param-message = 'No boxes to palletize' ) TO result.
         CONTINUE.
@@ -25,10 +39,10 @@ CLASS lhc_Pallet IMPLEMENTATION.
         TABLES    return        = lt_return.
 
       " 2) pack each box HU onto the pallet as a lower-level HU
-      LOOP AT lt_boxes INTO DATA(box).
+      LOOP AT lt_boxes INTO DATA(lv_box).
         CALL FUNCTION 'BAPI_HU_PACK'
           EXPORTING hukey    = lv_pallet
-                    lower_hu = box-handlingunit
+                    lower_hu = lv_box
           TABLES    return   = lt_return.
       ENDLOOP.
 
