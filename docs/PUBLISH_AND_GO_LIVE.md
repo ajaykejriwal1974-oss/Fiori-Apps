@@ -1,76 +1,138 @@
-# Publish & Go-Live — KGPL master-data Fiori backends (KSD)
+# Publish & Go-Live — KGPL Fiori backends (KSD)
 
-Status as of the abapGit import: **10 master-data apps + Shade fully built and active**
-on KSD in package `ZKGPL_FIORI` — CDS views, metadata extensions, class-free managed
-behavior definitions, service definitions, and OData V4 - UI service bindings.
+Status: **ALL 26 backends built, activated, and bound** on KSD in package
+`ZKGPL_FIORI` — 13 master-data apps (class-free managed RAP) and 13 custom
+apps (unmanaged RAP with `ZBP_I_*` behavior classes calling standard BAPIs),
+plus the 2 background automation classes (`ZCL_PO_AUTOMATION`,
+`ZCL_OBD_AUTOMATION`). Every service has an **OData V4 - UI** binding
+(transport `KSDK906624`).
 
-Everything is built and activated. The **only** remaining step to make the apps live is
-publishing the OData endpoints, which is gated by one one-time Basis task.
+The only step left to make the endpoints live is **Publish**, gated by one
+one-time Basis task.
 
 ## 1. Basis: enable OData V4 local publishing (one-time, system-wide)
 
-The bindings currently show **Local Service Endpoint: Unpublished**. On this fresh
-Initial-Shipment system the OData V4 local-publishing infrastructure isn't configured yet,
-so **Publish** fails with *"Local Publish failed"*.
+All bindings show **Local Service Endpoint: Unpublished**; Publish fails with
+*"Local Publish failed"* until the local OData publishing infrastructure is
+configured on this fresh Initial-Shipment system.
 
-**Action (Basis):** run task list **`SAP_GATEWAY_BASIC_CONFIG`** via transaction **`STC01`**.
-This is a standard one-time activity that configures the local OData grouping/publishing
-infrastructure. (Reference: SAP Gateway basic configuration.)
+**Action (Basis):** run task list **`SAP_GATEWAY_BASIC_CONFIG`** via
+transaction **`STC01`**. If Publish still fails afterwards, check the ICF node
+`/sap/opu/odata4` (SICF) is active and re-run the failing task step — then send
+the "Details" text of the publish error.
 
-## 2. Publish all 11 bindings
+## 2. Basis: delete the corrupt old Gate Pass objects (unblocks mass activation)
 
-After step 1, in ADT open each service binding and click **Publish** (or re-publish),
-until each shows **Published**:
+The original Gate Pass import left **corrupt, undeletable** objects that abort
+EVERY mass activation ("Activation cancelled") — which forced all of the above
+to be activated object-by-object:
 
-| # | Service Binding | Service Definition |
-|---|-----------------|--------------------|
-| 1  | `ZUI_DD_SHADE_04`            | `ZUI_DD_SHADE`            |
-| 2  | `ZUI_RECIPE_O4`             | `ZUI_RECIPE`             |
-| 3  | `ZUI_SCHEDULE_O4`          | `ZUI_SCHEDULE`           |
-| 4  | `ZUI_JOB_O4`               | `ZUI_JOB`                |
-| 5  | `ZUI_MERGE_O4`             | `ZUI_MERGE`              |
-| 6  | `ZUI_PACKING_MATERIAL_O4`  | `ZUI_PACKING_MATERIAL`   |
-| 7  | `ZUI_TRUCK_O4`             | `ZUI_TRUCK`              |
-| 8  | `ZUI_CFORM_O4`             | `ZUI_CFORM`              |
-| 9  | `ZUI_CHECKED_BY_O4`        | `ZUI_CHECKED_BY`         |
-| 10 | `ZUI_DIGITAL_SIGNATURE_O4` | `ZUI_DIGITAL_SIGNATURE`  |
-| 11 | `ZUI_EXPORT_DETAIL_04`     | `ZUI_EXPORT_DETAIL`      |
-| 12 | `ZUI_TRANSPORT_O4`         | `ZUI_TRANSPORT`          |
-| 13 | `ZUI_GTPASS_O4`           | `ZUI_GTPASS`             |
+- `ZC_GATEPASS`, `ZC_GATEPASS_ITEM` (metadata extensions / DDLX — "resource not
+  locked" on every touch)
+- `ZUI_GATEPASS` (old service), plus any remaining `ZI_GATEPASS*` /
+  `ZC_GATEPASS*` views and behaviors
 
-Once published, each app previews from the binding ("Preview" / the service URL) and can be
-added to the Fiori Launchpad.
+**Action (Basis):** clear the inconsistent runtime versions (SE14 / delete
+inactive versions) and delete the objects. The replacement app is `*GTPASS*`
+and is fully active. Until this cleanup, use single-object activation only.
 
-## 3. Make GitHub SSL trust permanent (for future pulls)
+## 3. Basis: make GitHub SSL trust permanent
 
-The abapGit online pull needed GitHub's certificate chain in **STRUST → SSL Client (Standard)**.
-The trust dropped after an ICM restart during setup. **Basis:** import the GitHub cert chain
-into `SSL Client (Standard)`, **Save**, restart ICM, and confirm it persists across restarts —
-so future abapGit pulls (and the Gate Pass / Transport re-add below) work without re-fixing.
+The abapGit pulls need GitHub's certificate chain in **STRUST → SSL Client
+(Standard)**; the trust dropped once after an ICM restart. Import the chain,
+save, restart ICM, and confirm it survives restarts.
 
-## Gate Pass + Transport — imported (all 13 apps now live)
+## 4. Publish all 26 bindings
 
-Both are now active on KSD:
+After step 1, open each binding in ADT and click **Publish** until each shows
+**Published**:
 
-- **Transport** — managed BO on base table **`ZTRCKMSTR`** (keys `ZZTRCODE` / `ZZTRCKNO`);
-  the `ZTRANS` view was not usable as a managed-BO persistence table. Description (`ZTRPTMSTR`)
-  omitted; add via a read-only association if needed.
-- **Gate Pass** — re-modelled as **two flat independent managed BOs** (header + item, no
-  composition), and **renamed `GATEPASS` → `GTPASS`** (`ZI_GTPASS` / `ZC_GTPASS` /
-  `ZI_GTPASS_ITEM` / `ZC_GTPASS_ITEM` / `ZUI_GTPASS`). The composition kept producing a
-  corrupted runtime object that could neither activate nor be deleted; fresh names sidestep it.
-  Create bindings `ZUI_GTPASS_O4` (header service).
+### Master data (13)
+| Binding | Service Definition |
+|---|---|
+| `ZUI_DD_SHADE_04` | `ZUI_DD_SHADE` |
+| `ZUI_RECIPE_O4` | `ZUI_RECIPE` |
+| `ZUI_SCHEDULE_O4` | `ZUI_SCHEDULE` |
+| `ZUI_JOB_O4` | `ZUI_JOB` |
+| `ZUI_MERGE_O4` | `ZUI_MERGE` |
+| `ZUI_PACKING_MATERIAL_O4` | `ZUI_PACKING_MATERIAL` |
+| `ZUI_TRUCK_O4` | `ZUI_TRUCK` |
+| `ZUI_CFORM_O4` | `ZUI_CFORM` |
+| `ZUI_CHECKED_BY_O4` | `ZUI_CHECKED_BY` |
+| `ZUI_DIGITAL_SIGNATURE_O4` | `ZUI_DIGITAL_SIGNATURE` |
+| `ZUI_EXPORT_DETAIL_04` | `ZUI_EXPORT_DETAIL` |
+| `ZUI_TRANSPORT_O4` | `ZUI_TRANSPORT` |
+| `ZUI_GTPASS_O4` | `ZUI_GTPASS` |
 
-### Cleanup — old corrupt Gate Pass objects
-The original `ZC_GATEPASS` / `ZI_GATEPASS` / `ZC_GATEPASS_ITEM` / `ZI_GATEPASS_PART` etc. remain
-on KSD as inactive, corrupted objects (they blocked both activation and deletion). They are
-harmless and unused. To remove them, Basis can clear the inconsistent runtime via **SE14**
-(Database Utility) → object → Activate and adjust database / Delete, then delete the ABAP objects.
+### Custom apps (13)
+| Binding | Service Definition | Actions (behavior class) |
+|---|---|---|
+| `ZUI_BATCH_STATUS_O4` | `ZUI_BATCH_STATUS` | closeBatch, deleteBatch |
+| `ZUI_SALES_DOC_STATUS_O4` | `ZUI_SALES_DOC_STATUS` | close/complete/release contract, updatePendingRate, close order/program |
+| `ZUI_CONTRACT_BATCH_O4` | `ZUI_CONTRACT_BATCH` | updateBatches |
+| `ZUI_DISPATCH_CORRECTION_O4` | `ZUI_DISPATCH_CORRECTION` | correctDispatch |
+| `ZUI_HU_UNPACK_O4` | `ZUI_HU_UNPACK` | unpackItems |
+| `ZUI_PACKING_O4` | `ZUI_PACKING` | createHandlingUnits |
+| `ZUI_PALLETIZATION_O4` | `ZUI_PALLETIZATION` | packPallet |
+| `ZUI_PACKING_DETAIL_O4` | `ZUI_PACKING_DETAIL` | packItems, repackItems |
+| `ZUI_HU_INBOUND_O4` | `ZUI_HU_INBOUND` | postInboundGr |
+| `ZUI_QM_INSPECTIONCHAR_O4` | `ZUI_QM_INSPECTIONCHAR` | update (mass result entry) |
+| `ZUI_POST_PACKING_GR_O4` | `ZUI_POST_PACKING_GR` | postPackingAndGr |
+| `ZUI_HU_GOODS_MOVEMENT_O4` | `ZUI_HU_GOODS_MOVEMENT` | postGoodsMovement |
+| `ZUI_MTOS_PROCESS_O4` | `ZUI_MTOS_PROCESS` | convertToMts, createPhysInvDoc |
+
+## 5. Test plan (after publish) — custom-app actions
+
+Test in this order (green → red risk), one action at a time, on TEST data.
+The behavior classes carry VERIFY-tagged assumptions (BAPI parameter shapes,
+movement types, status codes) that are confirmed only by a real call — expect
+to iterate on the first run of each action.
+
+1. **Batch Status** — closeBatch on a test batch (sets CLOSED on `ZPP_BATCHN`
+   only); then deleteBatch on a dummy batch (deletion flag via
+   `BAPI_BATCH_CHANGE`).
+2. **Sales Doc Status / Contract Batch** — on a test contract/order
+   (`BAPI_SALESDOCUMENT_CHANGE`).
+3. **HU cluster** (packing, palletization, unpack, packing-detail) — needs a
+   test delivery/HU (`BAPI_HU_CREATE/PACK/UNPACK/REPACK_ITM`).
+4. **HU Inbound** — a test inbound delivery (`BAPI_INB_DELIVERY_CONFIRM_DEC`).
+5. **QM Mass Results** — a live inspection lot. NOTE: the "open
+   characteristics only" filter was removed to activate; re-add once the
+   correct QALS status flag is confirmed.
+6. **Goods movements** (post-packing-GR, HU goods movement, MTOS) — LAST;
+   these post inventory (`BAPI_GOODSMVT_CREATE`,
+   `BAPI_MATPHYSINV_CREATE_MULT`). Verify movement types/GM codes on a test
+   plant first.
+
+### Flat action-parameter formats (UI contract)
+
+Deep (header+items) parameters were flattened to delimited strings (composition
+abstract entities do not activate on this system). The UI5 apps must send:
+
+| Action | Field | Format |
+|---|---|---|
+| updateBatches | `ItemBatchList` | `000010=BATCH1;000020=BATCH2` |
+| correctDispatch | `BoxList` | `BOX1;BOX2` |
+| postGoodsMovement | `HandlingUnitList` | `HU1;HU2` (contents read from VEPO) |
+| unpackItems | `HuItemList` | `HU1=0001;HU1=0002` (detail read from VEPO) |
+| packItems | `ItemList` | `MAT=BATCH=10.500=KG` |
+| createHandlingUnits | `UnitList` | `PACKMAT=QTY;...` (bottom-up levels) |
+| packPallet | `BoxHuList` | `HU1;HU2` |
+| createPhysInvDoc | `ItemList` | `MAT=BATCH;MAT=BATCH` |
+| postPackingAndGr | `HandlingUnitList` | `HU1;HU2` (contents read from VEPO) |
+| repackItems | `ItemList` | `HUITEM=QTY;...` |
 
 ## What was done (summary)
 
-- abapGit standalone installed on KSD; GitHub SSL trust established (STRUST).
-- Pulled 10 master-data apps + Shade from `backend/_abapgit_import/` into `ZKGPL_FIORI`.
-- Fixes applied during activation: entity/DDL-source name alignment; cast CURR/QUAN and
-  EXCRT-conversion-exit fields to plain decimals; class-free managed behavior definitions.
-- All CDS, behaviors, service definitions, and 11 OData V4 - UI bindings **activated**.
+- abapGit standalone on KSD; GitHub SSL trust (STRUST); pulls from branch
+  `claude/fiori-apps-ui5-completeness-4bvlmp`, package `ZKGPL_FIORI`.
+- Master data: entity/DDL-source name alignment; CURR/QUAN/EXCRT casts to
+  plain decimals; class-free managed behaviors; Gate Pass re-modelled flat as
+  GTPASS; Transport re-based on `ZTRCKMSTR`.
+- Custom apps: unmanaged RAP + behavior classes; strict() removed; deep action
+  params flattened; COMMIT WORK → BAPI_TRANSACTION_COMMIT; batch deletion flag
+  set dynamically; QM view without QAPO (unsupported) and with fltp_to_dec;
+  MTOS on NSDM_E_MSKA with BaseUnit from MARA; defaultSearchElement added to
+  8 projections.
+- All 26 services and bindings **activated** (bindings on transport
+  `KSDK906624`).
