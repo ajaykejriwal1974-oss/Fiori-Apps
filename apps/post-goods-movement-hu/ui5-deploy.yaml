@@ -12,7 +12,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_HUGMVT
+          name: ZPOST_GM_HU
           package: ZKGPL_FIORI
           transport: KSDK906624
           description: "KGPL Post Goods Movement HU"

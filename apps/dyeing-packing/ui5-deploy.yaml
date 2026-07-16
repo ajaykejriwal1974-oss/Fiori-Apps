@@ -12,7 +12,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_PACKING
+          name: ZDYEING_PACK
           package: ZKGPL_FIORI
           transport: KSDK906624
           description: "KGPL Dyeing/Packing"

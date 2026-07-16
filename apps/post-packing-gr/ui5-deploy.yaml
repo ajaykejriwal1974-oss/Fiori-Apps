@@ -12,7 +12,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_POSTGR
+          name: ZPOST_PACK_GR
           package: ZKGPL_FIORI
           transport: KSDK906624
           description: "KGPL Post Packing GR"

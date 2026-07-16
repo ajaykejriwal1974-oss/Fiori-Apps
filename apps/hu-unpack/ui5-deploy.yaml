@@ -12,7 +12,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_HUUNPACK
+          name: ZHU_UNPACK
           package: ZKGPL_FIORI
           transport: KSDK906624
           description: "KGPL HU Unpack"
