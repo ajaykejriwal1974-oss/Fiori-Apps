@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/REPLACE_WITH_PALLETIZATION_SERVICE/srvd/sap/REPLACE_WITH_PALLETIZATION_SERVICE/0001/",
+        "uri": "/sap/opu/odata4/sap/zui_palletization_04/srvd/sap/zui_palletization/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
