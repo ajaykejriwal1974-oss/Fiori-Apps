@@ -42,44 +42,61 @@ The abapGit pulls need GitHub's certificate chain in **STRUST → SSL Client
 (Standard)**; the trust dropped once after an ICM restart. Import the chain,
 save, restart ICM, and confirm it survives restarts.
 
-## 4. Publish all 26 bindings
+## 4. Create the missing bindings, then publish all 26
 
-After step 1, open each binding in ADT and click **Publish** until each shows
-**Published**:
+> **Corrected 16.07.2026 against the live system** (TADIR + SRVB_HEAD /
+> SRVB_SERVICES on KSD client 500). Earlier versions of this list showed the
+> intended names (`_O4` suffix) and claimed all 26 bindings existed. Actual
+> state: only the **13 custom-app bindings are fully created and active**
+> (mostly named `_04` — zero four — with two name typos). The **11 master-data
+> bindings exist only as empty repository (TADIR) entries with no binding
+> content** — the ADT wizard entry was created but never saved with data —
+> and the bindings for `ZUI_TRANSPORT` and `ZUI_GTPASS` were **never created**.
 
-### Master data (13)
-| Binding | Service Definition |
-|---|---|
-| `ZUI_DD_SHADE_04` | `ZUI_DD_SHADE` |
-| `ZUI_RECIPE_O4` | `ZUI_RECIPE` |
-| `ZUI_SCHEDULE_O4` | `ZUI_SCHEDULE` |
-| `ZUI_JOB_O4` | `ZUI_JOB` |
-| `ZUI_MERGE_O4` | `ZUI_MERGE` |
-| `ZUI_PACKING_MATERIAL_O4` | `ZUI_PACKING_MATERIAL` |
-| `ZUI_TRUCK_O4` | `ZUI_TRUCK` |
-| `ZUI_CFORM_O4` | `ZUI_CFORM` |
-| `ZUI_CHECKED_BY_O4` | `ZUI_CHECKED_BY` |
-| `ZUI_DIGITAL_SIGNATURE_O4` | `ZUI_DIGITAL_SIGNATURE` |
-| `ZUI_EXPORT_DETAIL_04` | `ZUI_EXPORT_DETAIL` |
-| `ZUI_TRANSPORT_O4` | `ZUI_TRANSPORT` |
-| `ZUI_GTPASS_O4` | `ZUI_GTPASS` |
+### Master data (13) — all 13 must be (re)created before publishing
 
-### Custom apps (13)
+The 11 shell entries cannot be published; open each in ADT — if it opens
+empty or errors, delete the shell and create the binding fresh (right-click
+the service definition → *New Service Binding*, type **OData V4 - UI**,
+package `ZKGPL_FIORI`). Then create the two that never existed.
+
+| Binding (TADIR entry) | Service Definition | Actual state on KSD |
+|---|---|---|
+| `ZUI_DD_SHADE_04` | `ZUI_DD_SHADE` | shell only — no binding content |
+| `ZUI_RECIPE_04` | `ZUI_RECIPE` | shell only — no binding content |
+| `ZUI_SCHEDULE_04` | `ZUI_SCHEDULE` | shell only — no binding content |
+| `ZUI_JOB_04` | `ZUI_JOB` | shell only — no binding content |
+| `ZUI_MERGE_04` | `ZUI_MERGE` | shell only — no binding content |
+| `ZUI_PACKING_MATERIAL_04` | `ZUI_PACKING_MATERIAL` | shell only — no binding content |
+| `ZUI_TRUCK_04` | `ZUI_TRUCK` | shell only — no binding content |
+| `ZUI_CFORM_04` | `ZUI_CFORM` | shell only — no binding content |
+| `ZUI_CHECKEDE_BY_04` (sic) | `ZUI_CHECKED_BY` | shell only — no binding content |
+| `ZUI_DIGITAL_SIGNATURE_04` | `ZUI_DIGITAL_SIGNATURE` | shell only — no binding content |
+| `ZUI_EXPORT_DETAIL_04` | `ZUI_EXPORT_DETAIL` | shell only — no binding content |
+| — (create, e.g. `ZUI_TRANSPORT_04`) | `ZUI_TRANSPORT` | binding never created |
+| — (create, e.g. `ZUI_GTPASS_04`) | `ZUI_GTPASS` | binding never created |
+
+### Custom apps (13) — created and active, publish after step 1
+
+Binding names below are the **verified names on the system** (from
+`SRVB_SERVICES`); note `ZUI_BATCH_STATUS_O4` is the only one with the
+letter-O suffix, and two carry typos.
+
 | Binding | Service Definition | Actions (behavior class) |
 |---|---|---|
 | `ZUI_BATCH_STATUS_O4` | `ZUI_BATCH_STATUS` | closeBatch, deleteBatch |
-| `ZUI_SALES_DOC_STATUS_O4` | `ZUI_SALES_DOC_STATUS` | close/complete/release contract, updatePendingRate, close order/program |
-| `ZUI_CONTRACT_BATCH_O4` | `ZUI_CONTRACT_BATCH` | updateBatches |
-| `ZUI_DISPATCH_CORRECTION_O4` | `ZUI_DISPATCH_CORRECTION` | correctDispatch |
-| `ZUI_HU_UNPACK_O4` | `ZUI_HU_UNPACK` | unpackItems |
-| `ZUI_PACKING_O4` | `ZUI_PACKING` | createHandlingUnits |
-| `ZUI_PALLETIZATION_O4` | `ZUI_PALLETIZATION` | packPallet |
-| `ZUI_PACKING_DETAIL_O4` | `ZUI_PACKING_DETAIL` | packItems, repackItems |
-| `ZUI_HU_INBOUND_O4` | `ZUI_HU_INBOUND` | postInboundGr |
-| `ZUI_QM_INSPECTIONCHAR_O4` | `ZUI_QM_INSPECTIONCHAR` | update (mass result entry) |
-| `ZUI_POST_PACKING_GR_O4` | `ZUI_POST_PACKING_GR` | postPackingAndGr |
-| `ZUI_HU_GOODS_MOVEMENT_O4` | `ZUI_HU_GOODS_MOVEMENT` | postGoodsMovement |
-| `ZUI_MTOS_PROCESS_O4` | `ZUI_MTOS_PROCESS` | convertToMts, createPhysInvDoc |
+| `ZUI_SALES_DOC_STATUS_04` | `ZUI_SALES_DOC_STATUS` | close/complete/release contract, updatePendingRate, close order/program |
+| `ZUI_CONTRACT_BATCH_04` | `ZUI_CONTRACT_BATCH` | updateBatches |
+| `ZUI_DISPATCH_04` | `ZUI_DISPATCH_CORRECTION` | correctDispatch |
+| `ZUI_HU_UNPACK_04` | `ZUI_HU_UNPACK` | unpackItems |
+| `ZUI_PACKING_04` | `ZUI_PACKING` | createHandlingUnits |
+| `ZUI_PALLETIZATION_04` | `ZUI_PALLETIZATION` | packPallet |
+| `ZUI_PACKING_DETAIL_04` | `ZUI_PACKING_DETAIL` | packItems, repackItems |
+| `ZUI_HU_INBOND_04` (sic) | `ZUI_HU_INBOUND` | postInboundGr |
+| `ZUI_QM_INSPECTIONCHAR_04` | `ZUI_QM_INSPECTIONCHAR` | update (mass result entry) |
+| `ZUI_POST_PACKING_GR_04` | `ZUI_POST_PACKING_GR` | postPackingAndGr |
+| `ZUI_HU_GOODS_MOVEMENT_04` | `ZUI_HU_GOODS_MOVEMENT` | postGoodsMovement |
+| `ZUI_MTOS_PROCESS_04` | `ZUI_MTOS_PROCESS` | convertToMts, createPhysInvDoc |
 
 ## 5. Test plan (after publish) — custom-app actions
 
