@@ -9,7 +9,7 @@
 // GSTIN/state master derivation (ZSOL_GST_DET) and the CGST/SGST/IGST condition split
 // (tax conditions) are not modelled here. Old report variants are now dimensions;
 // aggregate in the query.
-define view entity ZI_GstTaxCube
+define view entity ZI_GST_TAX
   as select from vbrk
 {
   key bukrs            as CompanyCode,
