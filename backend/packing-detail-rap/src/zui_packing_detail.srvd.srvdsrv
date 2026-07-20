@@ -1,4 +1,4 @@
 @EndUserText.label: 'Packing Details Service'
 define service ZUI_PACKING_DETAIL {
-  expose ZC_PackingItem as PackingItem;
+  expose ZC_PACKING_DETAIL as PackingItem;
 }

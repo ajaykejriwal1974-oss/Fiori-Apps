@@ -2,9 +2,9 @@
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
-define root view entity ZC_Pallet
+define root view entity ZC_PALLETIZATION
   provider contract transactional_query
-  as projection on ZI_Pallet
+  as projection on ZI_PALLETIZATION
 {
   key Pallet,
       PackagingMaterial,

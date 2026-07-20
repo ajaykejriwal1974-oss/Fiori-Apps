@@ -1,35 +1,46 @@
-CLASS lhc_InboundHu DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_zi_hu_inbound DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS postInboundGr FOR MODIFY
+    METHODS postinboundgr FOR MODIFY
       IMPORTING keys FOR ACTION InboundHu~postInboundGr RESULT result.
 ENDCLASS.
 
-CLASS lhc_InboundHu IMPLEMENTATION.
-  METHOD postInboundGr.
-    " VERIFY: BAPI_INB_DELIVERY_CONFIRM_DEC header/control structure names vary by
-    " release; post_gi_flg drives the goods-receipt posting for the inbound delivery.
-    LOOP AT keys INTO DATA(key).
-      DATA(h) = key-%param.
-      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+CLASS lhc_zi_hu_inbound IMPLEMENTATION.
+  METHOD postinboundgr.
+    DATA: ls_hdr_data TYPE bapiibdlvhdrchg,
+          ls_hdr_ctrl TYPE bapiibdlvhdrctrlchg,
+          lv_delivery TYPE bapiibdlvhdrchg-deliv_numb,
+          lt_return   TYPE STANDARD TABLE OF bapiret2.
+
+    LOOP AT keys INTO DATA(ls_key).
+      CLEAR: lt_return, ls_hdr_data, ls_hdr_ctrl.
+      lv_delivery = |{ ls_key-%param-InboundDelivery ALPHA = IN }|.
+      ls_hdr_data-deliv_numb = lv_delivery.
+      ls_hdr_ctrl-deliv_numb = lv_delivery.
 
       CALL FUNCTION 'BAPI_INB_DELIVERY_CONFIRM_DEC'
-        EXPORTING header_data    = VALUE bapiibdlvhdrcon( deliv_numb = h-inbounddelivery )
-                  header_control = VALUE bapiibdlvhdrctrlcon( deliv_numb = h-inbounddelivery
-                                                              post_gi_flg = 'X' )
-                  delivery       = h-inbounddelivery
-        TABLES    return         = lt_return.
+        EXPORTING  header_data    = ls_hdr_data
+                   header_control = ls_hdr_ctrl
+                   delivery       = lv_delivery
+        TABLES     return         = lt_return.
 
-      DATA(lv_err) = REDUCE string( INIT s = ``
-                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
-                       NEXT s = s && r-message && ` ` ).
-      IF lv_err IS NOT INITIAL.
-        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
-        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
+      IF sy-subrc = 0.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
-        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-        APPEND VALUE #( %cid = key-%cid
-                        %param = VALUE #( message = |Inbound GR posted for delivery { h-inbounddelivery }| ) ) TO result.
+        INSERT VALUE #( %cid = ls_key-%cid
+          %param-message = |Goods receipt posted for inbound delivery { ls_key-%param-InboundDelivery }.| )
+          INTO TABLE result.
       ENDIF.
     ENDLOOP.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS lsc_zi_hu_inbound DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+    METHODS save REDEFINITION.
+ENDCLASS.
+
+CLASS lsc_zi_hu_inbound IMPLEMENTATION.
+  METHOD save.
   ENDMETHOD.
 ENDCLASS.

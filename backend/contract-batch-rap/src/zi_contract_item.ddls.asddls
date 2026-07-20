@@ -10,7 +10,7 @@
 //  VERIFY vbak/vbap fields + the contract document-category filter for your
 //  release. Prefer the released I_SalesContract* CDS interfaces where available.
 //
-define root view entity ZI_Contract_Item
+define root view entity ZI_CONTRACT_ITEM
   as select from vbap as item
     inner join vbak as hdr on hdr.vbeln = item.vbeln
 {

@@ -3,9 +3,9 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['InspectionLot', 'InspectionOperation', 'InspectionCharacteristic']
-define root view entity ZC_QM_InspectionChar
+define root view entity ZC_QM_INSPECTIONCHAR
   provider contract transactional_query
-  as projection on ZI_QM_InspectionChar
+  as projection on ZI_QM_INSPECTIONCHAR
 {
   key InspectionLot,
   key InspectionOperation,
@@ -14,7 +14,6 @@ define root view entity ZC_QM_InspectionChar
       CharacteristicDescription,
       Material,
       Plant,
-      WorkCenter,
       Unit,
       ResultValue,
       Valuation,

@@ -1,10 +1,10 @@
 @EndUserText.label: 'convertToMts - import'
-define abstract entity ZD_MtoMts
+define abstract entity ZD_MTO_MTS
 {
   Material : abap.char(40);
   Plant : abap.char(4);
   SalesOrder : abap.char(10);
   SalesOrderItem : abap.numc(6);
-  Quantity : abap.quan(13,3);
+  Quantity : abap.dec(13,3);
   BaseUnit : abap.unit(3);
 }

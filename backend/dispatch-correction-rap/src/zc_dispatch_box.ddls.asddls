@@ -3,9 +3,9 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['BoxNumber']
-define root view entity ZC_DispatchBox
+define root view entity ZC_DISPATCH_BOX
   provider contract transactional_query
-  as projection on ZI_DispatchBox
+  as projection on ZI_DISPATCH_BOX
 {
       @Search.defaultSearchElement: true
   key BoxNumber,

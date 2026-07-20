@@ -1,53 +1,66 @@
-*"* Unmanaged behavior for ZI_Contract_Item.
-*"* updateBatches: change the batch on the given contract items in one call via
-*"* the standard sales-document change API.
-
-CLASS lhc_ContractItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_zi_contract_item DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS updateBatches FOR MODIFY
+    METHODS updatebatches FOR MODIFY
       IMPORTING keys FOR ACTION ContractItem~updateBatches RESULT result.
 ENDCLASS.
 
-CLASS lhc_ContractItem IMPLEMENTATION.
+CLASS lhc_zi_contract_item IMPLEMENTATION.
+  METHOD updatebatches.
+    DATA: lv_doc     TYPE bapivbeln-vbeln,
+          ls_hdrx    TYPE bapisdh1x,
+          lt_itm_in  TYPE STANDARD TABLE OF bapisditm,
+          lt_itm_inx TYPE STANDARD TABLE OF bapisditmx,
+          lt_return  TYPE STANDARD TABLE OF bapiret2,
+          lv_posnr   TYPE posnr_va,
+          lv_count   TYPE i.
 
-  METHOD updateBatches.
-    LOOP AT keys INTO DATA(key).
-      DATA(lv_contract) = key-%param-salescontract.
-      DATA(lt_items)    = key-%param-_item.
+    LOOP AT keys INTO DATA(ls_key).
+      CLEAR: lt_itm_in, lt_itm_inx, lt_return, lv_count, ls_hdrx.
+      lv_doc = |{ ls_key-%param-SalesContract ALPHA = IN }|.
+      ls_hdrx-updateflag = 'U'.
 
-      IF lv_contract IS INITIAL OR lt_items IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'No contract / items provided' ) TO result.
+      SPLIT ls_key-%param-ItemBatchList AT ';' INTO TABLE DATA(lt_pairs).
+      LOOP AT lt_pairs INTO DATA(lv_pair).
+        CONDENSE lv_pair.
+        CHECK lv_pair IS NOT INITIAL.
+        SPLIT lv_pair AT '=' INTO DATA(lv_item) DATA(lv_batch).
+        lv_posnr = lv_item.
+        APPEND VALUE #( itm_number = lv_posnr batch = lv_batch ) TO lt_itm_in.
+        APPEND VALUE #( itm_number = lv_posnr updateflag = 'U' batch = 'X' ) TO lt_itm_inx.
+        lv_count = lv_count + 1.
+      ENDLOOP.
+
+      IF lt_itm_in IS INITIAL.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = |No item/batch pairs.| ) INTO TABLE result.
         CONTINUE.
       ENDIF.
 
-      " Change the batch on each contract item via the sales-document change API.
-      DATA lt_in  TYPE STANDARD TABLE OF bapisditm.
-      DATA lt_inx TYPE STANDARD TABLE OF bapisditmx.
-      lt_in  = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem batch = it-newbatch ) ).
-      lt_inx = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem updateflag = 'U' batch = 'X' ) ).
-
-      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
-      CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
-        EXPORTING salesdocument    = lv_contract
-                  order_header_inx = VALUE bapisdh1x( updateflag = 'U' )
+      CALL FUNCTION 'BAPI_SD_SALESDOCUMENT_CHANGE'
+        EXPORTING salesdocument    = lv_doc
+                  order_header_inx = ls_hdrx
         TABLES    return           = lt_return
-                  order_item_in    = lt_in
-                  order_item_inx   = lt_inx.
+                  order_item_in    = lt_itm_in
+                  order_item_inx   = lt_itm_inx.
 
-      DATA(lv_err) = REDUCE string( INIT s = ``
-                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
-                       NEXT s = s && r-message && ` ` ).
-      IF lv_err IS NOT INITIAL.
-        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
-        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
+      IF sy-subrc = 0.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
-        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-        APPEND VALUE #( %cid = key-%cid
-                        %param = VALUE #( itemsupdated = lines( lt_items )
-                                          message = |{ lines( lt_items ) } item(s) updated on contract { lv_contract }| ) ) TO result.
+        INSERT VALUE #( %cid = ls_key-%cid
+          %param-itemsupdated = lv_count
+          %param-message = |{ lv_count } contract item(s) updated on { ls_key-%param-SalesContract }.| )
+          INTO TABLE result.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
+ENDCLASS.
 
+CLASS lsc_zi_contract_item DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+    METHODS save REDEFINITION.
+ENDCLASS.
+
+CLASS lsc_zi_contract_item IMPLEMENTATION.
+  METHOD save.
+  ENDMETHOD.
 ENDCLASS.

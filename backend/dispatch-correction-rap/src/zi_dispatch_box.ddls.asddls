@@ -12,7 +12,7 @@
 //  NOTE: ZPP_PACK is keyed by BOXNO + GJAHR; the join below may need the year
 //  predicate (or "latest GJAHR") for your data - VERIFY before activating.
 //
-define root view entity ZI_DispatchBox
+define root view entity ZI_DISPATCH_BOX
   as select from zsol_hudispatch as disp
     left outer join zpp_pack as pack on pack.boxno = disp.boxno
 {
@@ -25,5 +25,5 @@ define root view entity ZI_DispatchBox
       disp.time                                   as CreatedAtTime,
       pack.matnr                                  as Material,
       pack.grade                                  as Grade,
-      cast( pack.netwt as abap.quan( 13, 3 ) )    as NetWeight
+      cast( pack.netwt as abap.dec( 13, 3 ) )    as NetWeight
 }
