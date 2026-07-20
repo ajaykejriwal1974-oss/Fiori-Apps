@@ -2,8 +2,8 @@
 @EndUserText.label: 'HU Inventory Analysis'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_HuInventoryQuery
-  as select from ZI_HuInventoryCube
+define view entity ZC_HU_INVENTORY
+  as select from ZI_HU_INVENTORY
 {
       @AnalyticsDetails.query.axis: #ROWS
       PhysInvDocument,

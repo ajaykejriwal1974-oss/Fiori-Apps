@@ -2,8 +2,8 @@
 @EndUserText.label: 'GST Tax Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_GstTaxQuery
-  as select from ZI_GstTaxCube
+define view entity ZC_GST_TAX
+  as select from ZI_GST_TAX
 {
       @AnalyticsDetails.query.axis: #ROWS
       CompanyCode,

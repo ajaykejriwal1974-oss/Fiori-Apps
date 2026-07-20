@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_RECEIPE. Replaces: ZRECPM.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_RecipeAnalysisCube
+define view entity ZI_RECIPE_ANALYSIS
   as select from zpp_receipe
 {
   key werks            as Plant,

@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_MERGE. Replaces: merge slice of ZBOXSTOCK / ZSSTOCK.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_MergeAnalysisCube
+define view entity ZI_MERGE_ANALYSIS
   as select from zpp_merge
 {
   key aurnr            as ProductionOrder,

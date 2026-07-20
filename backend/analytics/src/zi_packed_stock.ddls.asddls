@@ -7,7 +7,7 @@
 // Replaces the stock reports (ZBOXSTOCK, ZGSTOCK, ZPRP1, ZSSTOCK, ZDSTOCK, ZSTOCK,
 // ZPRP, ZPRPSZ) AND the packing-list family (ZPLIST01..03(+A/T/N/D), ZPACKLIST*).
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_PackedStockCube
+define view entity ZI_PACKED_STOCK
   as select from zpp_pack
 {
   key boxno            as Box,

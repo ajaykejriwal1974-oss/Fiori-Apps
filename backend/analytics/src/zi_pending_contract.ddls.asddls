@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_SCHEDULEN. Replaces: ZPCON, ZPCOND, ZPCONS (ZPCON_CP dropped).
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_PendingContractCube
+define view entity ZI_PENDING_CONTRACT
   as select from zpp_schedulen
 {
   key schno            as ScheduleNumber,

@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZSOL_HUDISPATCH. Replaces: ZPWDIS, ZDISPATCH, ZPDESP (box-level).
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_DispatchRegisterCube
+define view entity ZI_DISPATCH_REGISTER
   as select from zsol_hudispatch
 {
   key boxno            as Box,

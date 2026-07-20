@@ -2,8 +2,8 @@
 @EndUserText.label: 'Merge Analysis'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_MergeAnalysisQuery
-  as select from ZI_MergeAnalysisCube
+define view entity ZC_MERGE_ANALYSIS
+  as select from ZI_MERGE_ANALYSIS
 {
       @AnalyticsDetails.query.axis: #ROWS
       ProductionOrder,

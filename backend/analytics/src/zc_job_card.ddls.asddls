@@ -2,8 +2,8 @@
 @EndUserText.label: 'Job Card Report'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_JobCardQuery
-  as select from ZI_JobCardCube
+define view entity ZC_JOB_CARD
+  as select from ZI_JOB_CARD
 {
       @AnalyticsDetails.query.axis: #ROWS
       JobNumber,

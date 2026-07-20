@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZEXP. Replaces: ZGCUDB (DEPB), export side of ZBRC/ZEXP.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_ExportRegisterCube
+define view entity ZI_EXPORT_REGISTER
   as select from zexp
 {
   key vbeln            as BillingDocument,

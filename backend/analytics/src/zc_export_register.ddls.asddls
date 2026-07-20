@@ -2,8 +2,8 @@
 @EndUserText.label: 'Export / Incentive Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_ExportRegisterQuery
-  as select from ZI_ExportRegisterCube
+define view entity ZC_EXPORT_REGISTER
+  as select from ZI_EXPORT_REGISTER
 {
       @AnalyticsDetails.query.axis: #ROWS
       BillingDocument,

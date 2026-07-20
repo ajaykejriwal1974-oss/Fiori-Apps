@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZHUINV_ITEM. Replaces: ZHUINV_CLS, ZHUMO, ZHUREC.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_HuInventoryCube
+define view entity ZI_HU_INVENTORY
   as select from zhuinv_item
 {
   key huinv_nr         as PhysInvDocument,
