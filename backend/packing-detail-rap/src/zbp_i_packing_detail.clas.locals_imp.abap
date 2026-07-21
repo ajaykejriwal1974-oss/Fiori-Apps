@@ -116,6 +116,11 @@ CLASS lhc_zi_packing_detail IMPLEMENTATION.
 
       READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
       IF sy-subrc = 0.
+        IF ls_err-message IS INITIAL AND ls_err-id IS NOT INITIAL.
+          MESSAGE ID ls_err-id TYPE 'E' NUMBER ls_err-number
+            WITH ls_err-message_v1 ls_err-message_v2 ls_err-message_v3 ls_err-message_v4
+            INTO ls_err-message.
+        ENDIF.
         INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
         INSERT VALUE #( %cid = ls_key-%cid
