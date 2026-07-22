@@ -6,12 +6,16 @@
     "i18n": "i18n/i18n.properties",
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "dataSources": {
       "mainService": {
         "uri": "/sap/opu/odata4/sap/zui_job_04/srvd/sap/zui_job/0001/",
         "type": "OData",
-        "settings": { "odataVersion": "4.0" }
+        "settings": {
+          "odataVersion": "4.0"
+        }
       }
     },
     "crossNavigation": {
@@ -22,25 +26,41 @@
           "icon": "sap-icon://task",
           "title": "{{flpTitle}}",
           "subTitle": "{{flpSubtitle}}",
-          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
   },
   "sap.ui": {
     "technology": "UI5",
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.ui5": {
     "dependencies": {
-      "minUI5Version": "1.120.0",
-      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+      "minUI5Version": "1.128.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
     },
-    "contentDensities": { "compact": true, "cozy": true },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "kejriwal.pp.jobmaster.i18n.i18n" }
+        "settings": {
+          "bundleName": "kejriwal.pp.jobmaster.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -55,20 +75,46 @@
     },
     "routing": {
       "routes": [
-        { "pattern": ":?query:", "name": "JobList", "target": "JobList" },
-        { "pattern": "Job({key}):?query:", "name": "JobObjectPage", "target": "JobObjectPage" }
+        {
+          "pattern": ":?query:",
+          "name": "JobList",
+          "target": "JobList"
+        },
+        {
+          "pattern": "Job({key}):?query:",
+          "name": "JobObjectPage",
+          "target": "JobObjectPage"
+        }
       ],
       "targets": {
         "JobList": {
-          "type": "Component", "id": "JobList", "name": "sap.fe.templates.ListReport",
-          "options": { "settings": {
-            "contextPath": "/Job", "variantManagement": "Page", "initialLoad": "Enabled",
-            "navigation": { "Job": { "detail": { "route": "JobObjectPage" } } }
-          } }
+          "type": "Component",
+          "id": "JobList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Job",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "Job": {
+                  "detail": {
+                    "route": "JobObjectPage"
+                  }
+                }
+              }
+            }
+          }
         },
         "JobObjectPage": {
-          "type": "Component", "id": "JobObjectPage", "name": "sap.fe.templates.ObjectPage",
-          "options": { "settings": { "contextPath": "/Job" } }
+          "type": "Component",
+          "id": "JobObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/Job"
+            }
+          }
         }
       }
     }
