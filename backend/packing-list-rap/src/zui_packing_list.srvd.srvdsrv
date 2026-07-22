@@ -1,0 +1,4 @@
+@EndUserText.label: 'Packing List Service'
+define service ZUI_PACKING_LIST {
+  expose ZC_PACKING_LIST as PackingList;
+}
