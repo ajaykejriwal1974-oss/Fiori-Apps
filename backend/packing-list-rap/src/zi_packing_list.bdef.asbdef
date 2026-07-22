@@ -1,11 +1,12 @@
 unmanaged implementation in class zbp_i_packing_list unique;
-strict ( 2 );
+
+// NOTE: no 'strict ( 2 )' — this behavior exposes only static (factory) actions
+// over a read view (no instance lock/persistence), so strict mode's
+// "lock master / lock dependent" requirement (error +BDL(167)) does not apply.
+// Add strict back if/when instance CRUD with a lock is introduced.
 
 define behavior for ZI_PACKING_LIST alias PackingList
 {
-  //  Create / change build or re-assign a packing list from a set of boxes;
-  //  delete soft-deletes the packing list rows into ZPLISTD. All three are
-  //  static actions taking the flat import (BoxList = 'BOX1;BOX2;...').
   static action createPackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
   static action changePackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
   static action deletePackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;

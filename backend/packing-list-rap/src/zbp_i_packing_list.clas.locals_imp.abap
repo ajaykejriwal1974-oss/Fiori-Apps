@@ -1,10 +1,15 @@
 *"* Local implementation for the Packing List behavior (unmanaged).
-*"* Scaffold — the three static actions are stubbed. Fill each VERIFY/TODO spot
-*"* against the real tables (ZSOL_HUDISPATCH / ZPP_PACK / ZPLISTD) before release,
-*"* the same way the dispatch-correction behavior pool is completed.
+*"* Scaffold — the three static actions are stubbed. Fill each TODO spot against
+*"* the real tables (ZSOL_HUDISPATCH / ZPP_PACK / ZPLISTD) before release, the
+*"* same way the dispatch-correction behavior pool is completed.
+*"* LIVE: activated on KSD (client 500) via ADT, package ZKGPL_FIORI.
 
 CLASS lhc_packing_list DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
+
+    "  Concrete table type — a generic STANDARD TABLE is not allowed in a
+    "  RETURNING parameter (error: generic types cannot be RETURNING).
+    TYPES tt_boxes TYPE STANDARD TABLE OF zboxno WITH EMPTY KEY.
 
     METHODS createPackingList FOR MODIFY
       IMPORTING keys FOR ACTION PackingList~createPackingList RESULT result.
@@ -15,9 +20,9 @@ CLASS lhc_packing_list DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS deletePackingList FOR MODIFY
       IMPORTING keys FOR ACTION PackingList~deletePackingList RESULT result.
 
-    "  Helper: split 'BOX1;BOX2;BOX3' into a box-number range table.
+    "  Helper: split 'BOX1;BOX2;BOX3' into a box-number table.
     METHODS split_boxes IMPORTING iv_list         TYPE string
-                        RETURNING VALUE(rt_boxes) TYPE STANDARD TABLE OF zboxno WITH EMPTY KEY.
+                        RETURNING VALUE(rt_boxes) TYPE tt_boxes.
 
 ENDCLASS.
 
@@ -41,8 +46,7 @@ CLASS lhc_packing_list IMPLEMENTATION.
 
       APPEND VALUE #( %param-BoxesAffected = lines( lt_boxes )
                       %param-PackListItem  = key-%param-PackListItem
-                      %param-Message       = |Packing list created (scaffold — wire ZSOL_HUDISPATCH insert).| )
-             TO result.
+                      %param-Message       = |Packing list created (scaffold).| ) TO result.
     ENDLOOP.
   ENDMETHOD.
 
@@ -56,8 +60,7 @@ CLASS lhc_packing_list IMPLEMENTATION.
 
       APPEND VALUE #( %param-BoxesAffected = lines( lt_boxes )
                       %param-PackListItem  = key-%param-PackListItem
-                      %param-Message       = |Packing list changed (scaffold — wire ZSOL_HUDISPATCH update).| )
-             TO result.
+                      %param-Message       = |Packing list changed (scaffold).| ) TO result.
     ENDLOOP.
   ENDMETHOD.
 
@@ -71,8 +74,7 @@ CLASS lhc_packing_list IMPLEMENTATION.
 
       APPEND VALUE #( %param-BoxesAffected = lines( lt_boxes )
                       %param-PackListItem  = key-%param-PackListItem
-                      %param-Message       = |Packing list deleted (scaffold — wire ZPLISTD move + delete).| )
-             TO result.
+                      %param-Message       = |Packing list deleted (scaffold).| ) TO result.
     ENDLOOP.
   ENDMETHOD.
 

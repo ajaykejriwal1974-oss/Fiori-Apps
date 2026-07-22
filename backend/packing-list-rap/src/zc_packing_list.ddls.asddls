@@ -16,7 +16,6 @@ define root view entity ZC_PACKING_LIST
       Status,
       CreatedOnDate,
       CreatedAtTime,
-      Plant,
       Material,
       Grade,
       NetWeight
