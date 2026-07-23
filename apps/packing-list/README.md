@@ -17,20 +17,29 @@ Binds to the OData V4 service of [`backend/packing-list-rap`](../../backend/pack
 `SalesOrder`, `SalesOrderItem`, `PackListItem`, `BoxNumber`, `Plant`, `Material`,
 `Grade`, `NetWeight`, `Status`
 
-> The **Plant** column renders blank: `ZVBAP` is not a CDS-selectable transparent
-> table on KSD, so the Plant field was dropped from the read model (see backend
-> README). The column is harmless but cosmetic — remove it from `Worklist.view.xml`
-> (and re-source Plant from the confirmed field) on the next redeploy.
+> The read model now sources the box table **`ZPP_PACK`** directly (was an early
+> `ZVBAP`-based draft), so `Plant` (`pack.werks`), `Material`, `Grade`, `NetWeight`,
+> `PackListDate` and `Status` (`'P'` when `PKLST` assigned, else `'O'`) all populate
+> from the one table — no join to a non-CDS-selectable table.
 
 ## Actions — real logic (ported from ZSD_PACKING_LIST_01)
+Actions are **instance-bound** (not static): the selected box(es) arrive in the
+handler's `keys` (`BoxNumber` + `BoxYear` = the `ZPP_PACK` primary key), so each
+UPDATE hits exactly the selected row — no `SELECT SINGLE gjahr` guess.
 - `createPackingList` / `changePackingList` — `UPDATE zpp_pack SET vbeln/posnr/pklst/pldate` per box (the packing list is the PKLST assignment on the box table)
 - `deletePackingList` — `INSERT zplistd` (soft-delete log) then clear the assignment
 
-> **⚠️ Write path unverified.** The behavior is *unmanaged* and activation flagged
-> "SAVER not implemented" — the actions run direct SQL and rely on the OData action
-> request's implicit commit. **Before end users use the buttons on live orders:**
-> select one throwaway box → Create → confirm in SE16 that `ZPP_PACK-PKLST` updated
-> and persisted. If it reverts, a saver class is needed (small, known fix).
+The frontend invokes each action **once per selected row's context**
+(`oModel.bindContext(SERVICE_NS + ".createPackingList(...)", oContext)`); Create/Change
+open a small dialog to enter `SalesOrder` / `SalesOrderItem` / `PackListItem`.
+
+> **✅ Write path VERIFIED — 23 Jul 2026.** Test on throwaway box `992000000/2020`:
+> `createPackingList` set `PackListItem 0→999999`, `PackListDate null→2026-07-23`,
+> `Status O→P` and it **persisted** across a fresh read. Restore ran clean
+> (`deletePackingList` → `BoxesAffected:1`, box unassigned). No saver class needed —
+> the unmanaged actions run direct SQL and the OData action request's LUW commits.
+> (Earlier static-action attempt reported `BoxesAffected:0` because `keys` was empty;
+> the instance-action refactor fixed it.) No `COMMIT WORK` in handlers (forbidden in RAP).
 
 ## Live objects on KSD (package ZKGPL_FIORI, transport KSDK906624)
 | Object | Type |
