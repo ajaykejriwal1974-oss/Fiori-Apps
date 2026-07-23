@@ -1,13 +1,9 @@
-@EndUserText.label: 'Packing List action - import'
-// Flat action parameter for create / change. BoxList carries the box numbers as
-// 'BOX1;BOX2;BOX3' (same convention as ZD_DISPATCH_CORRECT). For deletePackingList
-// only SalesOrder + PackListItem are read.
+@EndUserText.label: 'Packing List assign - import'
+// Instance-action parameter: the box(es) come from the selected instance keys
+// (BoxNumber + BoxYear), so only the new assignment values are parameters.
 define abstract entity ZD_PACKING_LIST_IMPORT
 {
   SalesOrder     : abap.char(10);
   SalesOrderItem : abap.numc(6);
   PackListItem   : abap.numc(6);
-  Plant          : abap.char(4);
-  Status         : abap.char(4);
-  BoxList        : abap.char(1333);
 }

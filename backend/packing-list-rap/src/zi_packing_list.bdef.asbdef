@@ -1,13 +1,13 @@
 unmanaged implementation in class zbp_i_packing_list unique;
 
-// NOTE: no 'strict ( 2 )' — this behavior exposes only static (factory) actions
-// over a read view (no instance lock/persistence), so strict mode's
-// "lock master / lock dependent" requirement (error +BDL(167)) does not apply.
-// Add strict back if/when instance CRUD with a lock is introduced.
+// INSTANCE actions (not static): the RAP runtime populates the handler's `keys`
+// with the selected instances (BoxNumber + BoxYear), so the action updates exactly
+// the boxes the user selected — and the box year is the instance key (no
+// SELECT SINGLE gjahr guess). Static actions left `keys` empty (BoxesAffected 0).
 
 define behavior for ZI_PACKING_LIST alias PackingList
 {
-  static action createPackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
-  static action changePackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
-  static action deletePackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
+  action createPackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
+  action changePackingList parameter ZD_PACKING_LIST_IMPORT result [1] ZD_PACKING_LIST_RESULT;
+  action deletePackingList result [1] ZD_PACKING_LIST_RESULT;
 }
