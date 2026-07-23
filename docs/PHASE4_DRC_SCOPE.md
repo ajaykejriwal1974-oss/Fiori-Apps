@@ -102,6 +102,71 @@ Company Code** = the live switch) and the **interface/web-service** to the GSP/I
 > (GSP contract + API credentials, or SAP Localization Hub) is the external
 > prerequisite for step A3/interface — without it, nothing transmits.
 
+## Configured on KSD (DEV) — 23 Jul 2026, transport KSDK906643
+
+Decision confirmed: **on-prem full solution + GSP (customer's "API 18")** → interface
+type **`AIF proxy (for web services)`** (not DRC Cloud Edition).
+
+**Done (in transport `KSDK906643` "India E-Invoice DRC Activation"):**
+- **Define Interface Type for eDocument** — `IN_EINV` (India eInvoice) + `IN_EWB`
+  (India eWay Bill) for **all 6 company codes** (1000/2000/5000/6000/7000/8000),
+  interface type `AIF proxy (for web services)`.
+- **Map State Codes for India** — supplier state: SAP region **06** → GST state code
+  **24** (Gujarat). NOTE: SAP region codes are alphabetical and DO NOT equal GST
+  codes (e.g. SAP region 24 = Uttar Pradesh, GST 24 = Gujarat) — every row needs the
+  correct pair.
+
+**Company GSTINs (all Gujarat, state 24) — for business-place registration + GSP creds:**
+| Entity | GSTIN |
+|---|---|
+| GEE Filaments Pvt Ltd | 24AAECG2557P1Z9 |
+| JIMBH Industries Pvt Ltd | 24AAECJ6721A1Z3 |
+| Mango Filaments Pvt Ltd | 24AAPCM2337N1Z2 |
+| Kejriwal Geotech Pvt Ltd | 24AADCK7366F1ZI |
+| Kejriwal Industries Pvt Ltd | 24AACCP3636Q1Z2 |
+
+## SAP Region → GST State Code (DRAFT — verify vs SAP Note 2884058 before PROD)
+Statutory data. Confirm every row, especially the flagged ones, against the note's
+delivered content. From KSD's region list (T005S, country IN):
+
+| SAP Rg | State | GST | | SAP Rg | State | GST |
+|---|---|---|---|---|---|---|
+| 01 | Andhra Pradesh | **37 ⚠** | | 18 | Orissa | 21 |
+| 02 | Arunachal Pradesh | 12 | | 19 | Punjab | 03 |
+| 03 | Assam | 18 | | 20 | Rajasthan | 08 |
+| 04 | Bihar | 10 | | 21 | Sikkim | 11 |
+| 05 | Goa | 30 | | 22 | Tamil Nadu | 33 |
+| 06 | Gujarat | **24** ✅ | | 23 | Tripura | 16 |
+| 07 | Haryana | 06 | | 24 | Uttar Pradesh | 09 |
+| 08 | Himachal Pradesh | 02 | | 25 | West Bengal | 19 |
+| 09 | Jammu & Kashmir | 01 | | 26 | Andaman & Nicobar | 35 |
+| 10 | Karnataka | 29 | | 27 | Chandigarh | 04 |
+| 11 | Kerala | 32 | | 28 | Dadra & Nagar Haveli | 26 ⚠ |
+| 12 | Madhya Pradesh | 23 | | 29 | Daman & Diu | 26 ⚠ (was 25) |
+| 13 | Maharashtra | 27 | | 30 | Delhi | 07 |
+| 14 | Manipur | 14 | | 31 | Lakshadweep | 31 |
+| 15 | Meghalaya | 17 | | 32 | Puducherry | 34 |
+| 16 | Mizoram | 15 | | 33 | Chhattisgarh | 22 |
+| 17 | Nagaland | 13 | | 34 | Jharkhand | 20 |
+
+Rows 35+ (confirm region codes on KSD): Uttarakhand → 05, Telangana → 36, Ladakh →
+38, Other Territory → 97.
+
+## Remaining steps (to finish activation)
+1. **Map Unit Quantity Codes** — SAP UoM → govt UQC (from Note 2884058).
+2. **Define SOA Services for Communication** + **Assign to interfaces** — the GSP
+   (API 18) **sandbox WSDL/endpoint + credentials (per GSTIN)**. External dependency.
+3. **Business-place GSTIN registration** — each company code's business place carries
+   its GSTIN (5 GSTINs above).
+4. **Settings for Electronic Invoicing / Way Bill** — output, GSTIN, IRN/eWay params.
+5. **Activate Source Type Documents for Company Code** — THE go-live switch (last).
+6. **QC test** against the IRP sandbox, tax sign-off, then transport to PROD + cutover.
+
+## External dependencies (must come from outside SAP)
+- **GSP (API 18)** sandbox endpoint + per-GSTIN credentials — for steps 2 above.
+- **SAP Note 2884058** (GST India e-Invoicing) — authoritative statutory values (state
+  codes, UoM, eDocument process specifics).
+
 ## Effort & ownership
 Separate **compliance project** (weeks, tax-team-led config + testing), not part of
 the app-build track. No ABAP. Companion: this doc + the Phase-3 `ZC_AUDIT_LOG` query
