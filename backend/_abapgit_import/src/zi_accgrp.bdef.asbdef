@@ -1,20 +1,19 @@
-// Managed, NON-DRAFT BO over the existing legacy tables ZSOL_ACCGRP (group master)
-// and ZSOL_ACC_GRP (G/L account -> group assignment). Clean-core replacement for
-// transaction ZSOL_ACCGRP (program SAPLZSOL_DASH).
+// Managed, NON-DRAFT, CLASS-FREE BO over the existing legacy tables ZSOL_ACCGRP
+// (group master) and ZSOL_ACC_GRP (G/L account -> group assignment). Clean-core
+// replacement for transaction ZSOL_ACCGRP (program SAPLZSOL_DASH).
 //
-// The legacy tables have NO admin/ETag columns, so there is no `etag master` and no
-// audit fields — managed non-draft relies on the pessimistic `lock master`. Adding
-// admin columns would be a DDIC change to live tables and is deliberately avoided.
-//
-// CLASS-FREE: no determinations/validations/actions, so no behavior class is needed
-// (same pattern as the other master-data BOs, e.g. ZI_RECIPE).
+// Notes:
+//  - No `strict` : the composition child trips a strict(2) rule; the proven
+//    class-free masters on KSD (e.g. ZI_RECIPE) are non-strict. Kept consistent.
+//  - No `authorization` : instance authorization needs a behavior class; this BO
+//    is class-free, so authorization is omitted (as the other class-free masters).
+//  - No `etag master`/admin fields : the legacy tables have none; concurrency is
+//    handled by the pessimistic `lock master`. No DDIC change to live data.
 managed;
-strict ( 2 );
 
 define behavior for ZI_ACCGRP alias AccountGroup
 persistent table zsol_accgrp
 lock master
-authorization master ( instance )
 {
   create;
   update;
@@ -34,7 +33,6 @@ authorization master ( instance )
 define behavior for ZI_ACCGRP_ACC alias AccountAssignment
 persistent table zsol_acc_grp
 lock dependent by _Group
-authorization dependent by _Group
 {
   update;
   delete;
