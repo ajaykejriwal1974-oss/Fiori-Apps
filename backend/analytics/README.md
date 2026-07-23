@@ -23,6 +23,7 @@ Design Studio, or expose it through the external BI tool.
 | `ZC_JobCardQuery` | `ZPP_JOBN` | ZJOBREPTN (ZJOBREPORT retired) |
 | `ZC_DispatchRegisterQuery` | `ZSOL_HUDISPATCH` | ZPWDIS, ZDISPATCH, ZPDESP |
 | `ZC_GstTaxQuery` | `VBRK` | ZGST, ZGST1, ZGST2, ZGSTCR (or standard GST/DRC) |
+| `ZC_CRDR_NOTE` | `ACDOCA` (ledger 0L) | ZCRDRNOTE, ZCRDRPN, ZCDQD — Phase 1 |
 
 > `ZC_PackedStockQuery` and `ZC_PackingRegisterQuery` share **one** cube
 > `ZI_PackedStockCube` (both over `ZPP_PACK` — audit P4, one cube many queries),
