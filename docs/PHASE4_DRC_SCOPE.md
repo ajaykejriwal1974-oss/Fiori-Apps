@@ -71,6 +71,37 @@ through **DRC (Document & Reporting Compliance)** in S/4HANA 2025:
    - Sign-off → switch off `ZEINV*` tcodes; keep the custom tables read-only for the
      statutory retention period, then archive.
 
+## Verified IMG sequence on KSD (23 Jul 2026)
+
+Confirmed live: eDocument framework installed, India eInvoice solution present
+(`CL_EDOCUMENT_IN_EINV`), but **nothing activated** (EDOC_COCKPIT → "no active source
+types in EDOCOMPANYACTIV"). The standard India DRC IMG is fully delivered at:
+
+**SPRO → Cross-Application Components → General Application Functions → Document and
+Reporting Compliance → Country/Region-Specific Settings → India**
+
+**A. Electronic Document Processing** (eInvoice + eWay — do in this order)
+1. `General Settings`
+2. `Settings for Electronic Invoicing` (IRN)
+3. `Settings for Electronic Way Bill`
+4. `Settings for Source Reference for GST Reporting`
+5. `Consistency Check Settings`
+Plus the framework-level activation under **Set Up Document and Reporting Compliance**
+(eDocument type → assign to source type SD billing → **Activate Source Type for
+Company Code** = the live switch) and the **interface/web-service** to the GSP/IRP.
+
+**B. Statutory Reporting** (GST returns + TDS)
+- `GSTR 1 Report`, `GSTR 3B Report`, `GSTR 6 Report`
+- `Withholding Tax Report` (replaces ZFI_TDS/ZQTDS; supersedes the Phase-3 ZC_TDS query)
+- `FORM GST ANX1 Report`, `FORM GST ANX2 Report`
+
+> **Execution rule (client 500 = PRODUCTION):** build/validate this config on a
+> non-prod/sandbox client with the IRP **sandbox** endpoint, get tax sign-off, then
+> transport to 500 and do "Activate Source Type for Company Code" at a planned
+> cutover. Do NOT configure/activate directly in 500. The **GSP/IRP connectivity**
+> (GSP contract + API credentials, or SAP Localization Hub) is the external
+> prerequisite for step A3/interface — without it, nothing transmits.
+
 ## Effort & ownership
 Separate **compliance project** (weeks, tax-team-led config + testing), not part of
 the app-build track. No ABAP. Companion: this doc + the Phase-3 `ZC_AUDIT_LOG` query
