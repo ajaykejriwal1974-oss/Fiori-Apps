@@ -42,4 +42,16 @@ Staged in [`backend/_abapgit_import/src/`](../_abapgit_import). Pull the repo in
 `ZVFORM`, `ZVFORMS` (2 tcodes). `ZVK11` routes to standard condition upload — see
 [`docs/PHASE2_SCOPE.md`](../../docs/PHASE2_SCOPE.md).
 
-Status: **scaffolded + staged for abapGit pull, not yet deployed.**
+Status: **LIVE on KSD (client 500), 23 Jul 2026.** Pulled via abapGit, activated
+(behaviors class-free/non-strict), `ZUI_VFORM_04` published, FE app deployed and
+rendering the List Report in the FLP.
+
+> **Activation notes (KSD):**
+> - `ZVFORM2`'s CURR amount fields reference an *external* currency (`rbkp.waers`)
+>   and `qty` an external unit (`rseg.bstme`) — not columns of `ZVFORM2` — so the
+>   view supplies a constant `Currency` (`'INR'`) that the amounts reference, and
+>   exposes `qty` as a plain (read-only, calculated) number. VERIFY 'INR' for
+>   multi-currency vendors (join RBKP for real `waers`).
+> - Because `Quantity` and `Currency` are calculated, they are NOT in the behavior
+>   mapping (only persistable table columns are mapped).
+> - Behaviors are `managed;` non-strict, no `authorization` (class-free fleet shape).

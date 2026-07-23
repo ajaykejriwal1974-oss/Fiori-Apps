@@ -1,6 +1,9 @@
 # Vendor Invoice Allocation (ZVFORM/ZVFORMS) — custom Fiori Elements app
 
-**Status: SCAFFOLDED (not yet deployed)** — Phase 2 build, 23 Jul 2026.
+**Status: LIVE on KSD (client 500)** — Phase 2, 23 Jul 2026. Backend RAP active,
+`ZUI_VFORM_04` published, app deployed, renders the List Report in the FLP.
+(`ZVFORM2` is currently empty — 0 rows — so the list shows "No data found"; the
+app is fully functional, awaiting data / Create.)
 
 Fiori Elements List Report + Object Page app, the clean-core replacement for
 transactions **`ZVFORM`** (vendor invoice) and **`ZVFORMS`** (allocate vendor
