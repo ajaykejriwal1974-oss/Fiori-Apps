@@ -1,7 +1,7 @@
 // Managed, NON-DRAFT, CLASS-FREE BO over the existing legacy table ZVFORM2.
-// No `strict` and no `authorization` - same proven shape as the class-free master
-// fleet (ZI_RECIPE, ZI_ACCGRP). No admin/ETag columns on the legacy table, so
-// concurrency is the pessimistic `lock master`; no DDIC change to live data.
+// No `strict`, no `authorization` - same proven shape as the class-free master fleet.
+// Quantity and Currency are CALCULATED fields in ZI_VFORM (cast expressions), so they
+// are read-only and are NOT in the mapping (only persistable table columns are mapped).
 managed;
 
 define behavior for ZI_VFORM alias VendorInvoice
@@ -30,7 +30,6 @@ lock master
     FormNumber         = form_no;
     FormDate           = form_dt;
     FormValue          = form_val;
-    Quantity           = qty;
     CourierName        = currier_name;
     CourierDetail      = currier_detail;
   }
