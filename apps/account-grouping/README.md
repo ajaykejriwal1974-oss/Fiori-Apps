@@ -1,6 +1,8 @@
 # Account Grouping (ZSOL_ACCGRP) — custom Fiori Elements app
 
-**Status: SCAFFOLDED (not yet deployed)** — Phase 1 build, 23 Jul 2026.
+**Status: LIVE on KSD (client 500)** — Phase 1, 23 Jul 2026. Backend RAP (11 objects)
+active, `ZUI_ACCGRP_04` published, app deployed, renders in FLP with live data
+(91 account groups from `ZSOL_ACCGRP`).
 
 Freestyle-free **Fiori Elements** List Report + Object Page master-data app, the
 clean-core replacement for transaction **`ZSOL_ACCGRP`** ("Maintain Account

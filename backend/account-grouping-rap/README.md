@@ -51,4 +51,12 @@ REST needed.
 3. Deploy the FE app [`apps/account-grouping`](../../apps/account-grouping) and add the
    FLP tile (semantic object `AccountGroup`, action `manage`).
 
-Status: **scaffolded + staged for abapGit pull, not yet deployed.**
+Status: **LIVE on KSD (client 500), 23 Jul 2026.** Pulled via abapGit, activated
+(behaviors made class-free/non-strict, no authorization — see below), `ZUI_ACCGRP_04`
+published via `/IWFND/V4_ADMIN`, FE app deployed and rendering 91 groups from
+`ZSOL_ACCGRP` in the FLP.
+
+> **Activation notes (KSD):** the behaviors are `managed;` with **no `strict`** (the
+> composition child tripped a strict(2) rule) and **no `authorization`** (instance
+> auth needs a behavior class; this BO is class-free). This matches the other
+> class-free masters (e.g. `ZI_RECIPE`).
