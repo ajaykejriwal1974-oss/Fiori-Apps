@@ -24,6 +24,10 @@ Design Studio, or expose it through the external BI tool.
 | `ZC_DispatchRegisterQuery` | `ZSOL_HUDISPATCH` | ZPWDIS, ZDISPATCH, ZPDESP |
 | `ZC_GstTaxQuery` | `VBRK` | ZGST, ZGST1, ZGST2, ZGSTCR (or standard GST/DRC) |
 | `ZC_CRDR_NOTE` | `ACDOCA` (ledger 0L) | ZCRDRNOTE, ZCRDRPN, ZCDQD — Phase 1 |
+| `ZC_SALES_REGISTER` | `VBRK`+`VBRP` | ZSALES, ZSALESN, ZSALESB, ZSOREG — Phase 3 |
+| `ZC_TDS` | `WITH_ITEM` | ZFI_TDS, ZQTDS — Phase 3 |
+| `ZC_AUDIT_LOG` | `ZEINV_AUDITLOG` | ZAUDIT_LOG — Phase 3 |
+| `ZC_JOBWORK_CHALLAN` | `ZCTA_MM_JOB`+`MSEG` | ZJWCHLN — Phase 3 |
 
 > `ZC_PackedStockQuery` and `ZC_PackingRegisterQuery` share **one** cube
 > `ZI_PackedStockCube` (both over `ZPP_PACK` — audit P4, one cube many queries),
