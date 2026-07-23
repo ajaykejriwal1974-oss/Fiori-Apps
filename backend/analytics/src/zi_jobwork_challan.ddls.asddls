@@ -23,7 +23,6 @@ define view entity ZI_JOBWORK_CHALLAN
       mseg.lgort                         as StorageLocation,
       mseg.lifnr                         as Supplier,
       mseg.budat_mkpf                    as PostingDate,
-      @Semantics.unitOfMeasure: true
       mseg.meins                         as BaseUnit,
       @DefaultAggregation: #SUM
       cast( mseg.menge as abap.dec( 15, 3 ) ) as Quantity,

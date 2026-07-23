@@ -25,7 +25,6 @@ define view entity ZI_SALES_REGISTER
       vbrp.arktx                          as MaterialText,
       vbrp.werks                          as Plant,
       vbrp.aubel                          as SalesOrder,
-      @Semantics.unitOfMeasure: true
       vbrp.vrkme                          as SalesUnit,
       @DefaultAggregation: #SUM
       cast( vbrp.fkimg as abap.dec( 15, 3 ) ) as BilledQuantity,
