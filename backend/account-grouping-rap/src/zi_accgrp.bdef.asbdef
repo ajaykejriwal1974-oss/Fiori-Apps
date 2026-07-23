@@ -1,0 +1,47 @@
+// Managed, NON-DRAFT BO over the existing legacy tables ZSOL_ACCGRP (group master)
+// and ZSOL_ACC_GRP (G/L account -> group assignment). Clean-core replacement for
+// transaction ZSOL_ACCGRP (program SAPLZSOL_DASH).
+//
+// The legacy tables have NO admin/ETag columns, so there is no `etag master` and no
+// audit fields — managed non-draft relies on the pessimistic `lock master`. Adding
+// admin columns would be a DDIC change to live tables and is deliberately avoided.
+managed implementation in class zbp_i_accgrp unique;
+strict ( 2 );
+
+define behavior for ZI_ACCGRP alias AccountGroup
+persistent table zsol_accgrp
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+  association _Accounts { create; }
+
+  field ( mandatory : create ) GroupCode;
+
+  mapping for zsol_accgrp
+  {
+    GroupCode    = zzsol_grp;
+    GroupText    = text50;
+    SignReversal = zsign_rev;
+  }
+}
+
+define behavior for ZI_ACCGRP_ACC alias AccountAssignment
+persistent table zsol_acc_grp
+lock dependent by _Group
+authorization dependent by _Group
+{
+  update;
+  delete;
+  field ( readonly ) GroupCode;
+  field ( mandatory : create ) GLAccount;
+  association _Group;
+
+  mapping for zsol_acc_grp
+  {
+    GroupCode = zzsol_grp;
+    GLAccount = racct;
+  }
+}
