@@ -2,21 +2,21 @@
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
-@ObjectModel.semanticKey: ['SalesOrder', 'SalesOrderItem', 'PackListItem', 'BoxNumber']
+@ObjectModel.semanticKey: ['BoxNumber']
 define root view entity ZC_PACKING_LIST
   provider contract transactional_query
   as projection on ZI_PACKING_LIST
 {
       @Search.defaultSearchElement: true
-  key SalesOrder,
-  key SalesOrderItem,
-  key PackListItem,
-      @Search.defaultSearchElement: true
   key BoxNumber,
-      Status,
-      CreatedOnDate,
-      CreatedAtTime,
+  key BoxYear,
+      SalesOrder,
+      SalesOrderItem,
+      PackListItem,
+      Plant,
       Material,
       Grade,
-      NetWeight
+      NetWeight,
+      PackListDate,
+      Status
 }
