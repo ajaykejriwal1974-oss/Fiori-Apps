@@ -27,5 +27,6 @@ define root view entity ZC_VFORM
       FormValue,
       Quantity,
       CourierName,
-      CourierDetail
+      CourierDetail,
+      Currency
 }
