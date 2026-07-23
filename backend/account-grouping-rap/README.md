@@ -23,27 +23,32 @@ assigned G/L accounts you can add / remove.
 |---|---|
 | `ZI_ACCGRP` / `ZI_ACCGRP_ACC` | CDS interface root + composition child |
 | `ZC_ACCGRP` / `ZC_ACCGRP_ACC` | CDS projections |
-| `ZI_ACCGRP` behavior + `ZBP_I_ACCGRP` | managed behavior + (empty) pool class |
-| `ZC_ACCGRP` behavior | projection behavior |
+| `ZI_ACCGRP` / `ZC_ACCGRP` behavior | managed (class-free) + projection behavior |
 | `ZC_ACCGRP` / `ZC_ACCGRP_ACC` metadata ext | UI annotations |
 | `ZUI_ACCGRP` | service definition |
 | `ZUI_ACCGRP_04` | OData V4 UI service binding (publish via /IWFND/V4_ADMIN) |
 
+**9 objects, no ABAP class** — same class-free shape as the 13 master-data BOs.
+
 ## Design notes
-- **Managed, non-draft.** The legacy tables have no admin/ETag columns, so there is
-  no `etag master` and no audit fields — concurrency is handled by the pessimistic
-  `lock master`. This avoids any DDIC change to live data. See [`src/tables.spec.md`](src/tables.spec.md).
-- **No behavior-class logic.** Pure managed CRUD; `ZBP_I_ACCGRP` is an empty abstract
-  pool (no determinations/validations/actions).
+- **Managed, non-draft, CLASS-FREE.** The BO has no determinations/validations/actions,
+  so `managed;` needs no behavior class. The legacy tables have no admin/ETag columns,
+  so there is no `etag master` and no audit fields — concurrency is handled by the
+  pessimistic `lock master`. This avoids any DDIC change to live data. See
+  [`src/tables.spec.md`](src/tables.spec.md).
 - `ZSOL_PRDPLAN` (Daily Production Plan) is intentionally excluded — separate object.
 
-## Deploy (ADT, package ZKGPL_FIORI, client 500)
-1. Create the 4 DDLS, 2 DDLX, 2 BDEF, 1 class, 1 SRVD in ADT (or import this src/).
-2. Activate in dependency order: interfaces → projections → behaviors → class → service def.
-3. Create OData V4 service binding `ZUI_ACCGRP_04` on `ZUI_ACCGRP`, **publish via
-   `/IWFND/V4_ADMIN` → Publish Service Groups** (client 500 is Customizing-role, so
-   Eclipse local publish is blocked — same as packing-list).
-4. Bind the FE app [`apps/account-grouping`](../../apps/account-grouping) and add the
+## Deploy — via abapGit (same as the master-data fleet)
+The 9 objects are staged in [`backend/_abapgit_import/src/`](../_abapgit_import) (source
++ abapGit `.xml` wrappers), so they come in with the existing repo pull — no raw ADT
+REST needed.
+1. **abapGit → Pull** the repo (branch `claude/fiori-apps-ui5-completeness-4bvlmp`) into
+   package `ZKGPL_FIORI`. abapGit resolves order and activates (interface → projection →
+   metadata ext → behavior). Pull/activate twice if a first pass leaves any inactive.
+2. Create OData V4 service binding `ZUI_ACCGRP_04` on `ZUI_ACCGRP` (ADT → New Service
+   Binding → OData V4 - UI → Activate), then **publish** (via `/IWFND/V4_ADMIN` →
+   Publish Service Groups if Eclipse local publish is blocked by client role).
+3. Deploy the FE app [`apps/account-grouping`](../../apps/account-grouping) and add the
    FLP tile (semantic object `AccountGroup`, action `manage`).
 
-Status: **scaffolded, not yet deployed.**
+Status: **scaffolded + staged for abapGit pull, not yet deployed.**
