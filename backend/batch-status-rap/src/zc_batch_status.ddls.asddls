@@ -2,9 +2,9 @@
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
-define root view entity ZC_BatchStatus
+define root view entity ZC_BATCH_STATUS
   provider contract transactional_query
-  as projection on ZI_BatchStatus
+  as projection on ZI_BATCH_STATUS
 {
   key Material,
   key Plant,

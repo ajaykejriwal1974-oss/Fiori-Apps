@@ -1,0 +1,122 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "kejriwal.fi.cform",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_cform_04/srvd/sap/zui_cform/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "CFormMaster-manage": {
+          "semanticObject": "CFormMaster",
+          "action": "manage",
+          "icon": "sap-icon://form",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.128.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "kejriwal.fi.cform.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$auto"
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "CFormList",
+          "target": "CFormList"
+        },
+        {
+          "pattern": "CForm({key}):?query:",
+          "name": "CFormObjectPage",
+          "target": "CFormObjectPage"
+        }
+      ],
+      "targets": {
+        "CFormList": {
+          "type": "Component",
+          "id": "CFormList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/CForm",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "CForm": {
+                  "detail": {
+                    "route": "CFormObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "CFormObjectPage": {
+          "type": "Component",
+          "id": "CFormObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/CForm"
+            }
+          }
+        }
+      }
+    }
+  }
+}

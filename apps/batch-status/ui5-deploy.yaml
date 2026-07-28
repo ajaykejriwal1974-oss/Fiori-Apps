@@ -1,0 +1,25 @@
+# Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here —
+# fiori deploy prompts for them, or set env UI5_TASK_ABAP_USER / _PASSWORD.
+specVersion: "3.0"
+metadata:
+  name: kejriwal.pp.batchstatus
+type: application
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZBATCH_STATUS
+          package: ZKGPL_FIORI
+          transport: KSDK906624
+          description: "KGPL Batch Status (Fiori)"
+        exclude:
+          - "/test/"

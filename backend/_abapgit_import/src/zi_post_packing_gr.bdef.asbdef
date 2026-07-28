@@ -1,0 +1,5 @@
+unmanaged implementation in class zbp_i_post_packing_gr unique;
+define behavior for ZI_POST_PACKING_GR alias PostPackGr
+{
+  static action postPackingAndGr parameter ZD_POST_PACK_GR result [1] ZD_POST_PACK_GR_RESULT;
+}

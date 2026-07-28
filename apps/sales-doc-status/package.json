@@ -1,0 +1,1 @@
+{"name":"kejriwal-sales-doc-status","version":"1.0.0","private":true,"description":"FE app for Sales Document Status over zui_sales_doc_status_04.","scripts":{"build":"ui5 build --clean-dest","deploy":"npm run build && fiori deploy"},"devDependencies":{"@sap/ux-ui5-tooling":"1","@ui5/cli":"^3"},"ui5":{"dependencies":["@sap/ux-ui5-tooling"]}}

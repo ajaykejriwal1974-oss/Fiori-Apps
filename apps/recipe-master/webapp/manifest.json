@@ -1,0 +1,122 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "kejriwal.pp.recipemaster",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_recipe_04/srvd/sap/zui_recipe/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "RecipeMaster-manage": {
+          "semanticObject": "RecipeMaster",
+          "action": "manage",
+          "icon": "sap-icon://formula",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.128.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "kejriwal.pp.recipemaster.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$auto"
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "RecipeList",
+          "target": "RecipeList"
+        },
+        {
+          "pattern": "Recipe({key}):?query:",
+          "name": "RecipeObjectPage",
+          "target": "RecipeObjectPage"
+        }
+      ],
+      "targets": {
+        "RecipeList": {
+          "type": "Component",
+          "id": "RecipeList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Recipe",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "Recipe": {
+                  "detail": {
+                    "route": "RecipeObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "RecipeObjectPage": {
+          "type": "Component",
+          "id": "RecipeObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/Recipe"
+            }
+          }
+        }
+      }
+    }
+  }
+}

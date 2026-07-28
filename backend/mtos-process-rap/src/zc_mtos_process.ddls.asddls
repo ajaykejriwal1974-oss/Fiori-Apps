@@ -3,9 +3,9 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['Material', 'Plant', 'SalesOrder', 'SalesOrderItem']
-define root view entity ZC_MtosStock
+define root view entity ZC_MTOS_PROCESS
   provider contract transactional_query
-  as projection on ZI_MtosStock
+  as projection on ZI_MTOS_PROCESS
 {
   key Material,
   key Plant,

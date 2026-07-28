@@ -1,0 +1,6 @@
+projection;
+define behavior for ZC_PACKING_DETAIL alias PackingItem
+{
+  use action packItems;
+  use action repackItems;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "kejriwal-packing-material-master",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fiori Elements master-data app for Packing Material Master over service binding zui_packing_material_04.",
+  "keywords": ["ui5", "fiori-elements", "sap-fiori", "s4hana-onpremise"],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": { "@sap/ux-ui5-tooling": "1", "@ui5/cli": "^3" },
+  "ui5": { "dependencies": ["@sap/ux-ui5-tooling"] }
+}

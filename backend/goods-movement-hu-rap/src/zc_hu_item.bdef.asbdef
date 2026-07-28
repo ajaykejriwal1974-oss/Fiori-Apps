@@ -1,7 +1,7 @@
 projection;
 strict ( 2 );
 
-define behavior for ZC_HU_Item alias HuItem
+define behavior for ZC_HU_ITEM alias HuItem
 {
   use action postGoodsMovement;
 }

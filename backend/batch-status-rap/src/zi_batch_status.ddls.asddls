@@ -2,9 +2,9 @@
 @EndUserText.label: 'Batch Status - Interface'
 @Metadata.allowExtensions: true
 // Custom transactional service (Route 7) - unmanaged RAP over standard SAP.
-// The action(s) call standard BAPIs (see the behavior class TODO).
+// The action(s) call standard BAPIs (see the behavior class).
 // VERIFY mcha fields/filters against your release before activating.
-define root view entity ZI_BatchStatus
+define root view entity ZI_BATCH_STATUS
   as select from mcha
 {
   key matnr  as Material,

@@ -1,7 +1,7 @@
 projection;
 strict ( 2 );
 
-define behavior for ZC_PackingItem alias PackingItem
+define behavior for ZC_PACKING_DETAIL alias PackingItem
 {
   use action packItems;
   use action repackItems;

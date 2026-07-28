@@ -1,0 +1,18 @@
+managed;
+
+define behavior for ZI_Truck alias Truck
+persistent table ztb_truck_mstr
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TruckNumber;
+
+  mapping for ztb_truck_mstr
+  {
+    TruckNumber          = truckno;
+    CarrierName          = carrier_name;
+  }
+}

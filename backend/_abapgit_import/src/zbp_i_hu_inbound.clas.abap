@@ -1,0 +1,9 @@
+CLASS zbp_i_hu_inbound DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_hu_inbound.
+ENDCLASS.
+
+CLASS zbp_i_hu_inbound IMPLEMENTATION.
+ENDCLASS.

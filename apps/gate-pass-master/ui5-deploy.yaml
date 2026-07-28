@@ -1,0 +1,24 @@
+# Deploy config for on-premise S/4HANA (KSD). fiori deploy prompts for credentials.
+specVersion: "3.0"
+metadata:
+  name: kejriwal.sd.gatepass
+type: application
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZGTPASS_APP
+          package: ZKGPL_FIORI
+          transport: KSDK906624
+          description: "KGPL Gate Pass (Fiori Elements)"
+        exclude:
+          - "/test/"

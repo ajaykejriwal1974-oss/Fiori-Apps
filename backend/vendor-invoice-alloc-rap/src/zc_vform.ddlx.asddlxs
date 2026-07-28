@@ -1,0 +1,84 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName:       'Vendor Invoice',
+    typeNamePlural: 'Vendor Invoices',
+    title:       { type: #STANDARD, value: 'InvoiceNumber' },
+    description: { type: #STANDARD, value: 'SupplierName' }
+  }
+}
+annotate view ZC_VFORM with
+{
+  @UI.facet: [ {
+    id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE,
+    label: 'Invoice & Allocation', position: 10
+  } ]
+
+  @UI: { lineItem: [ { position: 10, importance: #HIGH } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Invoice No.'
+  InvoiceNumber;
+
+  @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Supplier'
+  Supplier;
+
+  @UI: { lineItem: [ { position: 30, importance: #HIGH } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Supplier Name'
+  SupplierName;
+
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Purchasing Doc'
+  PurchasingDocument;
+
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Reference'
+  ReferenceNumber;
+
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Invoice Date'
+  InvoiceDate;
+
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Invoice Value'
+  InvoiceValue;
+
+  @UI: { lineItem: [ { position: 80 } ], identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Allocated Value'
+  AllocatedValue;
+
+  @UI: { lineItem: [ { position: 90 } ], identification: [ { position: 90 } ] }
+  @EndUserText.label: 'Unallocated Value'
+  UnallocatedValue;
+
+  @UI: { lineItem: [ { position: 100 } ], identification: [ { position: 100 } ], selectionField: [ { position: 100 } ] }
+  @EndUserText.label: 'Allocated'
+  AllocatedFlag;
+
+  @UI: { identification: [ { position: 110 } ] }
+  @EndUserText.label: 'Form Type'
+  FormType;
+
+  @UI: { identification: [ { position: 120 } ] }
+  @EndUserText.label: 'Form No.'
+  FormNumber;
+
+  @UI: { identification: [ { position: 130 } ] }
+  @EndUserText.label: 'Form Date'
+  FormDate;
+
+  @UI: { identification: [ { position: 140 } ] }
+  @EndUserText.label: 'Form Value'
+  FormValue;
+
+  @UI: { identification: [ { position: 150 } ] }
+  @EndUserText.label: 'Quantity'
+  Quantity;
+
+  @UI: { identification: [ { position: 160 } ] }
+  @EndUserText.label: 'Courier'
+  CourierName;
+
+  @UI: { identification: [ { position: 170 } ] }
+  @EndUserText.label: 'Courier Detail'
+  CourierDetail;
+}

@@ -2,9 +2,9 @@
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
-define root view entity ZC_InboundHu
+define root view entity ZC_HU_INBOUND
   provider contract transactional_query
-  as projection on ZI_InboundHu
+  as projection on ZI_HU_INBOUND
 {
   key HandlingUnit,
       InboundDelivery,

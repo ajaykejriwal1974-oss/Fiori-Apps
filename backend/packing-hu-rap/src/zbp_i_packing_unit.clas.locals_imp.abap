@@ -1,73 +1,82 @@
-*"* Unmanaged behavior for ZI_Packing_Unit.
-*"* createHandlingUnits: build the cone -> carton -> pallet HU hierarchy for the
-*"* reference and pack it via the standard HU API.
-
-CLASS lhc_PackingUnit DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_zi_packing_unit DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS createHandlingUnits FOR MODIFY
+    METHODS createhandlingunits FOR MODIFY
       IMPORTING keys FOR ACTION PackingUnit~createHandlingUnits RESULT result.
 ENDCLASS.
 
-CLASS lhc_PackingUnit IMPLEMENTATION.
+CLASS lhc_zi_packing_unit IMPLEMENTATION.
+  METHOD createhandlingunits.
+    DATA: ls_hdrprop  TYPE bapihuhdrproposal,
+          ls_huheader TYPE bapihuheader,
+          lv_hukey    TYPE bapihukey-hu_exid,
+          lv_prev     TYPE bapihukey-hu_exid,
+          ls_itemprop TYPE bapihuitmproposal,
+          lt_return   TYPE STANDARD TABLE OF bapiret2,
+          lv_meins    TYPE meins,
+          lv_idx      TYPE i,
+          lv_failed   TYPE abap_bool.
 
-  METHOD createHandlingUnits.
-    LOOP AT keys INTO DATA(key).
-      DATA(ls_header) = key-%param.
-      DATA(lt_units)  = key-%param-_unit.
+    LOOP AT keys INTO DATA(ls_key).
+      CLEAR: lv_prev, lv_hukey, lv_idx, lv_failed.
+      SELECT SINGLE meins FROM mara
+        WHERE matnr = @ls_key-%param-Material INTO @lv_meins.
 
-      IF lt_units IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'No packing units provided' ) TO result.
-        CONTINUE.
-      ENDIF.
+      SPLIT ls_key-%param-UnitList AT ';' INTO TABLE DATA(lt_levels).
+      LOOP AT lt_levels INTO DATA(lv_level).
+        CONDENSE lv_level.
+        CHECK lv_level IS NOT INITIAL.
+        lv_idx = lv_idx + 1.
+        SPLIT lv_level AT '=' INTO DATA(lv_packmat) DATA(lv_qty).
 
-      " Build the Cone -> Carton -> Pallet HU hierarchy. VERIFY the BAPI_HU_CREATE /
-      " BAPI_HU_PACK parameter names against your release.
-      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
-      DATA: lv_prev_hu TYPE exidv,
-            lv_top_hu  TYPE exidv,
-            lv_count   TYPE i.
-      LOOP AT lt_units INTO DATA(u).
-        DATA lv_hu TYPE exidv.
+        CLEAR: ls_hdrprop, ls_huheader, lv_hukey, lt_return.
+        ls_hdrprop-pack_mat = lv_packmat.
+        ls_hdrprop-content  = |{ ls_key-%param-Reference } { ls_key-%param-Shade }|.
         CALL FUNCTION 'BAPI_HU_CREATE'
-          EXPORTING hukey_ref     = ls_header-reference
-                    packing_matnr = u-packingmaterial
-          IMPORTING huexid        = lv_hu
-          TABLES    return        = lt_return.
-        IF lv_prev_hu IS INITIAL.
-          " lowest level (Cone): pack the material content
-          CALL FUNCTION 'BAPI_HU_PACK'
-            EXPORTING hukey      = lv_hu
-                      materialnr = ls_header-material
-                      batch      = ls_header-batch
-                      pack_qty   = u-quantity
-            TABLES    return     = lt_return.
-        ELSE.
-          " pack the lower-level HU into this one
-          CALL FUNCTION 'BAPI_HU_PACK'
-            EXPORTING hukey    = lv_hu
-                      lower_hu = lv_prev_hu
-            TABLES    return   = lt_return.
+          EXPORTING headerproposal = ls_hdrprop
+          IMPORTING huheader       = ls_huheader
+                    hukey          = lv_hukey
+          TABLES    return         = lt_return.
+        READ TABLE lt_return INTO DATA(ls_cerr) WITH KEY type = 'E'.
+        IF sy-subrc = 0.
+          INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_cerr-message ) INTO TABLE result.
+          lv_failed = abap_true.
+          EXIT.
         ENDIF.
-        lv_prev_hu = lv_hu.
-        lv_top_hu  = lv_hu.
-        lv_count  += 1.
+
+        CLEAR: ls_itemprop, lt_return.
+        IF lv_idx = 1.
+          ls_itemprop-hu_item_type  = '1'.
+          ls_itemprop-material_long = ls_key-%param-Material.
+          ls_itemprop-batch         = ls_key-%param-Batch.
+          ls_itemprop-pack_qty      = lv_qty.
+          ls_itemprop-base_unit_qty = lv_meins.
+        ELSE.
+          ls_itemprop-hu_item_type     = '3'.
+          ls_itemprop-lower_level_exid = lv_prev.
+        ENDIF.
+        CALL FUNCTION 'BAPI_HU_PACK'
+          EXPORTING hukey        = lv_hukey
+                    itemproposal = ls_itemprop
+          TABLES    return       = lt_return.
+
+        lv_prev = lv_hukey.
       ENDLOOP.
 
-      DATA(lv_err) = REDUCE string( INIT s = ``
-                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
-                       NEXT s = s && r-message && ` ` ).
-      IF lv_err IS NOT INITIAL.
-        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
-        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
-      ELSE.
-        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-        APPEND VALUE #( %cid = key-%cid
-                        %param = VALUE #( handlingunitscreated = lv_count
-                                          tophandlingunit      = lv_top_hu
-                                          message              = |Created { lv_count } HU level(s); top HU { lv_top_hu }| ) ) TO result.
+      IF lv_failed = abap_false AND lv_hukey IS NOT INITIAL.
+        INSERT VALUE #( %cid = ls_key-%cid
+          %param-handlingunit = lv_hukey
+          %param-message      = |Top HU { lv_hukey } created ({ lv_idx } level(s)).| ) INTO TABLE result.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
+ENDCLASS.
 
+CLASS lsc_zi_packing_unit DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+    METHODS save REDEFINITION.
+ENDCLASS.
+
+CLASS lsc_zi_packing_unit IMPLEMENTATION.
+  METHOD save.
+  ENDMETHOD.
 ENDCLASS.

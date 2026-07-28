@@ -1,0 +1,33 @@
+managed;
+
+define behavior for ZI_GTPASS alias GatePass
+persistent table zgp_hdr
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, CreatedByUser;
+  field ( readonly : update ) GpNumber, FiscalYear;
+  field ( mandatory : create ) DocumentType, Plant;
+
+  mapping for zgp_hdr
+  {
+    GpNumber       = gpnum;
+    FiscalYear     = mjahr;
+    DocumentType   = dtype;
+    Plant          = werks;
+    Department     = dept;
+    VehicleNumber  = vhnum;
+    InDate         = gindat;
+    InTime         = gintme;
+    OutDate        = gotdat;
+    OutTime        = gottme;
+    Remarks        = remks;
+    CreatedByUser  = cre_user;
+    CreatedBy      = ernam;
+    CreatedOnDate  = erdat;
+    CreatedAtTime  = erzet;
+  }
+}
