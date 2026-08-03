@@ -15,8 +15,16 @@ CLASS lhc_HuUnpack IMPLEMENTATION.
         APPEND VALUE #( %cid = key-%cid %param-message = 'No items to unpack' ) TO result.
         CONTINUE.
       ENDIF.
+      " lt_return is CLEARed before every BAPI call (a TABLES return may be appended to
+      " or refreshed by the FM, and the method-scoped table otherwise carries messages
+      " across items and across action keys); E/A messages are harvested into lt_errs so
+      " no item's error is lost or double-counted.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      DATA lt_errs   TYPE STANDARD TABLE OF bapiret2.
+      DATA ls_ret    TYPE bapiret2.
+      CLEAR: lt_return, lt_errs.
       LOOP AT lt_items INTO DATA(it).
+        CLEAR lt_return.
         CALL FUNCTION 'BAPI_HU_UNPACK'
           EXPORTING hukey      = it-handlingunit
                     materialnr = it-material
@@ -25,9 +33,12 @@ CLASS lhc_HuUnpack IMPLEMENTATION.
                     unit       = it-unit
                     dest_stloc = h-targetstoragelocation
           TABLES    return     = lt_return.
+        LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+          APPEND ls_ret TO lt_errs.
+        ENDLOOP.
       ENDLOOP.
       DATA(lv_err) = REDUCE string( INIT s = ``
-                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
+                       FOR r IN lt_errs
                        NEXT s = s && r-message && ` ` ).
       IF lv_err IS NOT INITIAL.
         CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.

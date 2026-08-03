@@ -1,7 +1,6 @@
 @EndUserText.label: 'deleteBatch - import'
+//  Composition parameter (was flat) - see ZD_BatchClose.
 define abstract entity ZD_BatchDelete
 {
-  Material : abap.char(40);
-  Plant : abap.char(4);
-  Batch : abap.char(10);
+  _Item : composition [0..*] of ZD_BatchDeleteItem;
 }

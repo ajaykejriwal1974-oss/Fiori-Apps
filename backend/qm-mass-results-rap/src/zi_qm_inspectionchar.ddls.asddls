@@ -33,6 +33,10 @@ define root view entity ZI_QM_InspectionChar
       char.kurztext                                  as CharacteristicDescription,
       lot.matnr                                      as Material,
       lot.werk                                       as Plant,
+      // Base-table work-center id: lets a filter hit oper.arbid directly instead of
+      // being applied through the _WorkCenter association (a view stack over CRHD that
+      // must pre-join the WHOLE open-characteristics set before the filter can bite).
+      oper.arbid                                     as WorkCenterInternalID,
       _WorkCenter.WorkCenter                         as WorkCenter,
       char.maeinheit                                 as Unit,
       cast( _Result.mittelwert as abap.dec( 16, 3 ) ) as ResultValue,

@@ -55,9 +55,9 @@
                 <t:columns>
                     <t:Column width="9rem"><Label text="{i18n>level}" /><t:template><Text text="{ui>level}" /></t:template></t:Column>
                     <t:Column width="11rem"><Label text="{i18n>packingMaterial}" /><t:template><Input value="{ui>packingMaterial}" /></t:template></t:Column>
-                    <t:Column width="7rem" hAlign="End"><Label text="{i18n>quantity}" /><t:template><Input value="{ui>quantity}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
-                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>netWeight}" /><t:template><Input value="{ui>netWeight}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
-                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>grossWeight}" /><t:template><Input value="{ui>grossWeight}" type="Number" textAlign="End" liveChange=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="7rem" hAlign="End"><Label text="{i18n>quantity}" /><t:template><Input value="{ui>quantity}" type="Number" textAlign="End" change=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>netWeight}" /><t:template><Input value="{ui>netWeight}" type="Number" textAlign="End" change=".onWeightChange" /></t:template></t:Column>
+                    <t:Column width="8rem" hAlign="End"><Label text="{i18n>grossWeight}" /><t:template><Input value="{ui>grossWeight}" type="Number" textAlign="End" change=".onWeightChange" /></t:template></t:Column>
                     <t:Column width="4rem" hAlign="Center"><Label text="" /><t:template><Button icon="sap-icon://decline" type="Transparent" press=".onRemoveUnit" /></t:template></t:Column>
                 </t:columns>
             </t:Table>

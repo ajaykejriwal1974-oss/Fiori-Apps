@@ -6,8 +6,10 @@ sap.ui.define([
     "sap/m/Button",
     "sap/m/Input",
     "sap/m/Label",
-    "sap/ui/layout/form/SimpleForm"
-], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm) {
+    "sap/ui/layout/form/SimpleForm",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm, Filter, FilterOperator) {
     "use strict";
 
     // Fully-qualified action namespace from the activated OData V4 service
@@ -15,6 +17,15 @@ sap.ui.define([
     // value once the service binding is created in ADT.
     var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
     var ENTITY_SET = "HuUnpack";
+
+    // Project selected rows down to the action's _Item contract (ZD_HuUnpackItem) —
+    // getObject() ships every column + OData annotations otherwise.
+    var ITEM_PROJECT = {
+        unpackItems: function (o) { return { HandlingUnit: o.HandlingUnit, Material: o.Material,
+            Batch: o.Batch, Quantity: o.Quantity, Unit: o.Unit }; }
+    };
+
+    var FILTER_FIELDS = [{ name: "HandlingUnit", op: "Contains" }, { name: "Material", op: "Contains" }];
 
     return Controller.extend("kejriwal.mm.huunpack.controller.Worklist", {
 
@@ -26,6 +37,19 @@ sap.ui.define([
             this._runAction("unpackItems", [{ name: "TargetStorageLocation", label: "Target Storage Location" }]);
         },
 
+        /** Apply the filter-bar values and resume the (suspended) table binding — the
+         *  worklist no longer downloads the whole entity set on first paint. */
+        onFilterSearch: function () {
+            var aFilters = [];
+            FILTER_FIELDS.forEach(function (f) {
+                var v = (this.byId("inp" + f.name).getValue() || "").trim();
+                if (v) aFilters.push(new Filter(f.name, FilterOperator[f.op], v));
+            }, this);
+            var oBinding = this.byId("table").getBinding("items");
+            oBinding.filter(aFilters);
+            if (oBinding.isSuspended()) { oBinding.resume(); }
+        },
+
         /** Read the selection, collect any header params, then invoke the action. */
         _runAction: function (sAction, aParamDefs) {
             var aItems = this.byId("table").getSelectedItems();
@@ -33,8 +57,10 @@ sap.ui.define([
                 MessageToast.show(this.oBundle.getText("selectAtLeastOne"));
                 return;
             }
+            var fnProj = ITEM_PROJECT[sAction];
             var aRows = aItems.map(function (oItem) {
-                return oItem.getBindingContext().getObject();
+                var o = oItem.getBindingContext().getObject();
+                return fnProj ? fnProj(o) : o;
             });
             if (aParamDefs.length) {
                 this._promptParams(sAction, aParamDefs, aRows);

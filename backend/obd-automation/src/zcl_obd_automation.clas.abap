@@ -37,41 +37,53 @@ ENDCLASS.
 CLASS zcl_obd_automation IMPLEMENTATION.
 
   METHOD run.
-    " 1) dispatch-ready boxes grouped by sales order (ZSOL_HUDISPATCH).
-    SELECT so AS salesorder, COUNT( * ) AS boxes
+    " 1) ALL dispatch-ready boxes in ONE read, grouped in memory per sales order.
+    "    (Was: a per-sales-order SELECT inside the loop below — the classic N+1,
+    "    one DB round trip per order on every job run.)
+    SELECT so AS salesorder, boxno, so_item, pck_lst
       FROM zsol_hudispatch
       WHERE status = @c_status_ready
-      GROUP BY so
-      INTO TABLE @DATA(lt_so).
+      ORDER BY so, boxno
+      INTO TABLE @DATA(lt_box_all).
 
-    IF lt_so IS INITIAL.
+    IF lt_box_all IS INITIAL.
       APPEND |No dispatch-ready handling units (status { c_status_ready })| TO rt_log.
       RETURN.
     ENDIF.
 
+    " ZSOL_HUDISPATCH carries no plant column, so iv_werks cannot filter this read.
+    " Wire the plant restriction into the delivery-creation step (sales-order plant)
+    " when the API TODO below is implemented; until then say so in the log, so a job
+    " scheduled with a plant restriction is never SILENTLY unrestricted.
+    IF iv_werks IS NOT INITIAL.
+      APPEND |NOTE: plant restriction { iv_werks } not yet applied - | &&
+             |pending the delivery-API implementation| TO rt_log.
+    ENDIF.
+
+    DATA lt_box LIKE lt_box_all.
+
     " 2) one outbound delivery per sales order. API calls marked TODO.
-    LOOP AT lt_so INTO DATA(ls_so).
+    LOOP AT lt_box_all INTO DATA(ls_box)
+         GROUP BY ( salesorder = ls_box-salesorder size = GROUP SIZE )
+         INTO DATA(lg_so).
       " The boxes that make up this delivery (also gives item/HU detail for the API).
-      SELECT boxno, so_item, pck_lst
-        FROM zsol_hudispatch
-        WHERE so = @ls_so-salesorder
-          AND status = @c_status_ready
-        INTO TABLE @DATA(lt_box).
+      lt_box = VALUE #( FOR ls_m IN GROUP lg_so ( ls_m ) ).
 
       IF iv_test = abap_false.
         " TODO: create the outbound delivery via the Outbound Delivery API /
-        "   BAPI_OUTB_DELIVERY_CREATE_SLS for sales order ls_so-salesorder with the
+        "   BAPI_OUTB_DELIVERY_CREATE_SLS for sales order lg_so-salesorder with the
         "   handling units in lt_box, then post goods issue
         "   (BAPI_OUTB_DELIVERY_CONFIRM_DEC). On success:
         "     UPDATE zsol_hudispatch SET status = 'DLV'
-        "       WHERE so = ls_so-salesorder AND status = c_status_ready.
-        "   COMMIT via BAPI_TRANSACTION_COMMIT. Reuse the existing
-        "   ZSOL_OBD_AUTOMATION logic / 621-movement messages where applicable.
+        "       WHERE so = lg_so-salesorder AND status = c_status_ready.
+        "   COMMIT via BAPI_TRANSACTION_COMMIT (ONCE per delivery, after both steps).
+        "   Reuse the existing ZSOL_OBD_AUTOMATION logic / 621-movement messages
+        "   where applicable.
       ENDIF.
 
       APPEND |{ COND #( WHEN iv_test = abap_true THEN 'SIMULATE' ELSE 'CREATE' ) }| &&
-             | OBD for sales order { ls_so-salesorder } | &&
-             |({ ls_so-boxes } box(es))| TO rt_log.
+             | OBD for sales order { lg_so-salesorder } | &&
+             |({ lg_so-size } box(es))| TO rt_log.
     ENDLOOP.
   ENDMETHOD.
 
