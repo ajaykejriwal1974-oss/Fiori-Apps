@@ -20,12 +20,16 @@ CLASS zcl_po_automation DEFINITION
     TYPES tt_log TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
     "! Create back-to-back POs for one sales organization.
-    "! @parameter iv_vkorg | sales organization (the consolidation parameter)
-    "! @parameter iv_test  | true = simulate only (no PO, no ZMM_AUTOPO insert)
-    "! @parameter rt_log   | per-item processing log
+    "! @parameter iv_vkorg    | sales organization (the consolidation parameter)
+    "! @parameter iv_test     | true = simulate only (no PO, no ZMM_AUTOPO insert)
+    "! @parameter iv_lookback | billing-date window in days (default 90) — bounds the
+    "!                          VBRK/VBRP scan; unprocessed items older than this are
+    "!                          reported in the log, never silently re-scanned forever
+    "! @parameter rt_log      | per-item processing log
     METHODS run
       IMPORTING iv_vkorg      TYPE vkorg
                 iv_test       TYPE abap_bool DEFAULT abap_true
+                iv_lookback   TYPE i DEFAULT 90
       RETURNING VALUE(rt_log) TYPE tt_log.
 
   PRIVATE SECTION.
@@ -48,11 +52,15 @@ CLASS zcl_po_automation IMPLEMENTATION.
     " 2) billing items in this sales org not yet auto-processed (absent from ZMM_AUTOPO).
     "    Read the STANDARD billing tables (clean core) - the legacy ZKIL_VBRK log is
     "    not required once we key off ZMM_AUTOPO.
+    "    Bounded by billing date: without the cutoff this scanned (and materialised) the
+    "    ENTIRE billing history of the sales org on every job run, growing forever.
+    DATA(lv_cutoff) = cl_abap_context_info=>get_system_date( ) - iv_lookback.
     SELECT k~vbeln, p~posnr, p~matnr, p~fkimg, p~meins, p~werks
       FROM vbrk AS k
       INNER JOIN vbrp AS p ON p~vbeln = k~vbeln
       WHERE k~vkorg = @iv_vkorg
         AND k~fksto = @abap_false                      " not cancelled
+        AND k~fkdat >= @lv_cutoff                      " billing-date window (iv_lookback days)
         AND NOT EXISTS ( SELECT 1 FROM zmm_autopo AS a
                            WHERE a~vbeln = p~vbeln
                              AND a~posnr = p~posnr )

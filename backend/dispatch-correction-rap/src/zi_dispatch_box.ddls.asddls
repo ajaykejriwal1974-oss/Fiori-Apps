@@ -9,12 +9,16 @@
 //  The correction itself is applied by the static action correctDispatch (see
 //  the behavior) - it re-assigns the box's sales order / item / status.
 //
-//  NOTE: ZPP_PACK is keyed by BOXNO + GJAHR; the join below may need the year
-//  predicate (or "latest GJAHR") for your data - VERIFY before activating.
+//  NOTE: ZPP_PACK is keyed by BOXNO + GJAHR and the dispatch table has no year, so
+//  the pack join goes through ZI_PackLatestYear (latest GJAHR per box) — a bare BOXNO
+//  join would fan each dispatch row out once per fiscal year and collide the
+//  declared "key boxno". VERIFY "latest year" is the right pick for your data.
 //
 define root view entity ZI_DispatchBox
   as select from zsol_hudispatch as disp
-    left outer join zpp_pack as pack on pack.boxno = disp.boxno
+    left outer join ZI_PackLatestYear as latest on latest.boxno = disp.boxno
+    left outer join zpp_pack as pack on  pack.boxno = disp.boxno
+                                     and pack.gjahr = latest.LatestYear
 {
   key disp.boxno                                  as BoxNumber,
       disp.so                                     as SalesOrder,

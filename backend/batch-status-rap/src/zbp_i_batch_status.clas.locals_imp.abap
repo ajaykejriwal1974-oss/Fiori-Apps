@@ -36,6 +36,7 @@ CLASS lhc_Batch IMPLEMENTATION.
     LOOP AT keys INTO DATA(key).
       DATA(p) = key-%param.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR lt_return.   " method-scoped — must not carry the previous key's messages
       CALL FUNCTION 'BAPI_BATCH_CHANGE'
         EXPORTING material           = p-material
                   batch              = p-batch

@@ -48,6 +48,7 @@ CLASS lhc_PostPackGr IMPLEMENTATION.
       DATA: lv_matdoc  TYPE bapi2017_gm_head_ret-mat_doc,
             lv_matyear TYPE bapi2017_gm_head_ret-doc_year.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR lt_return.   " method-scoped — must not carry the previous key's messages
 
       CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
         EXPORTING goodsmvt_header  = ls_gm_header
