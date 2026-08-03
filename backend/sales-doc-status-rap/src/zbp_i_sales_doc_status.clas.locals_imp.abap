@@ -83,6 +83,7 @@ CLASS lhc_SalesDoc IMPLEMENTATION.
     LOOP AT keys INTO DATA(key).
       DATA(p) = key-%param.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR lt_return.   " method-scoped — must not carry the previous key's messages
       CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
         EXPORTING salesdocument    = p-SalesContract
                   order_header_in  = VALUE bapisdh1( dlv_block = '' bill_block = '' )
@@ -112,6 +113,9 @@ CLASS lhc_SalesDoc IMPLEMENTATION.
         INTO TABLE @DATA(lt_pos).
       DATA lt_cond  TYPE STANDARD TABLE OF bapicond.
       DATA lt_condx TYPE STANDARD TABLE OF bapicondx.
+      " method-scoped — without the CLEAR a SECOND key would resend the previous
+      " contract's price conditions on top of its own (a real pricing bug)
+      CLEAR: lt_cond, lt_condx.
       LOOP AT lt_pos INTO DATA(ls_pos).
         IF p-SalesContractItem IS NOT INITIAL AND ls_pos-posnr <> p-SalesContractItem.
           CONTINUE.
@@ -122,6 +126,7 @@ CLASS lhc_SalesDoc IMPLEMENTATION.
                         updateflag = 'U' cond_value = 'X' currency = 'X' ) TO lt_condx.
       ENDLOOP.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR lt_return.   " method-scoped — must not carry the previous key's messages
       CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
         EXPORTING salesdocument    = p-SalesContract
                   order_header_inx = VALUE bapisdh1x( updateflag = 'U' )

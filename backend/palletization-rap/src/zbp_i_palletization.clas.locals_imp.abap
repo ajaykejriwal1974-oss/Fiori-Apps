@@ -14,7 +14,14 @@ CLASS lhc_Pallet IMPLEMENTATION.
         APPEND VALUE #( %cid = key-%cid %param-message = 'No boxes to palletize' ) TO result.
         CONTINUE.
       ENDIF.
+      " lt_return is CLEARed before every BAPI call (a TABLES return may be appended to
+      " or refreshed by the FM, and the method-scoped table otherwise carries messages
+      " across boxes and across action keys); E/A messages are harvested into lt_errs so
+      " no step's error is lost or double-counted.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      DATA lt_errs   TYPE STANDARD TABLE OF bapiret2.
+      DATA ls_ret    TYPE bapiret2.
+      CLEAR: lt_return, lt_errs.
 
       " 1) create the pallet HU
       DATA lv_pallet TYPE exidv.
@@ -23,17 +30,24 @@ CLASS lhc_Pallet IMPLEMENTATION.
                   packing_matnr = h-palletpackagingmaterial
         IMPORTING huexid        = lv_pallet
         TABLES    return        = lt_return.
+      LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+        APPEND ls_ret TO lt_errs.
+      ENDLOOP.
 
       " 2) pack each box HU onto the pallet as a lower-level HU
       LOOP AT lt_boxes INTO DATA(box).
+        CLEAR lt_return.
         CALL FUNCTION 'BAPI_HU_PACK'
           EXPORTING hukey    = lv_pallet
                     lower_hu = box-handlingunit
           TABLES    return   = lt_return.
+        LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+          APPEND ls_ret TO lt_errs.
+        ENDLOOP.
       ENDLOOP.
 
       DATA(lv_err) = REDUCE string( INIT s = ``
-                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
+                       FOR r IN lt_errs
                        NEXT s = s && r-message && ` ` ).
       IF lv_err IS NOT INITIAL.
         CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.

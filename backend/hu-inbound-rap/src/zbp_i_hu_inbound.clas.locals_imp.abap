@@ -11,6 +11,7 @@ CLASS lhc_InboundHu IMPLEMENTATION.
     LOOP AT keys INTO DATA(key).
       DATA(h) = key-%param.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR lt_return.   " method-scoped — must not carry the previous key's messages
 
       CALL FUNCTION 'BAPI_INB_DELIVERY_CONFIRM_DEC'
         EXPORTING header_data    = VALUE bapiibdlvhdrcon( deliv_numb = h-inbounddelivery )

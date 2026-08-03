@@ -34,6 +34,28 @@ rendering and one round trip per user action — never one request per row/cell/
 6. **`earlyRequests: true` added to the 3 manifests missing it** — removes a serialized
    `$metadata` round trip at startup (the other 9 apps already had it).
 
+## Fixed in batch 3 (ABAP)
+
+- **F3 — `zcl_obd_automation`**: the per-sales-order `SELECT` inside the loop (classic N+1)
+  is now ONE read grouped in memory (`GROUP BY` loop). The unused `iv_werks` is surfaced in
+  the job log (the dispatch table has no plant column — the restriction must be wired into
+  the delivery-API step when implemented, and until then a plant-restricted job is never
+  SILENTLY unrestricted).
+- **F8 — `zcl_po_automation`**: the VBRK⋈VBRP scan is bounded by a billing-date window
+  (`iv_lookback`, default 90 days) — it previously scanned and materialised the sales org's
+  ENTIRE billing history on every run, growing forever.
+- **F9 — `zi_dispatch_box`**: the `zpp_pack` join now goes through a new
+  `ZI_PackLatestYear` helper (latest GJAHR per box) — a bare BOXNO join fanned each dispatch
+  row out once per fiscal year and collided the declared `key boxno` (OData key collision).
+- **F5 (correctness) — `lt_return` hygiene across ALL BAPI loops**: `CLEAR` before every
+  call + an explicit error accumulator where calls repeat per item
+  (`packing-detail` ×2, `hu-unpack`, `palletization`, `packing-hu`), and one-line CLEARs in
+  `batch-status`, `hu-inbound`, `post-packing-gr`, `sales-doc-status`. Without this, item
+  1's error poisoned every later item's check — and in `updatePendingRate` a second key
+  would have RESENT the previous contract's price conditions (`lt_cond`/`lt_condx` also
+  cleared). `packing-hu` additionally cleared its `lv_prev_hu` chain state, which carried
+  the HU hierarchy across action keys.
+
 ## Remaining findings (ranked, not yet implemented — ABAP/design changes)
 
 - **F2 — Flat action parameters force one call per selected row** (`batch-status`,
@@ -41,10 +63,6 @@ rendering and one round trip per user action — never one request per row/cell/
   the worklists' mass actions become N HTTP calls — each hitting a
   `BAPI_TRANSACTION_COMMIT wait = abap_true` **inside `LOOP AT keys`**. Add `_Item`
   compositions (the palletization pattern) and commit once after the loop.
-- **F3 — `SELECT` inside `LOOP` in `zcl_obd_automation`** (lines ~53–59): one DB round trip
-  per sales order per job run — hoist to a single `SELECT … ORDER BY so` + `GROUP BY`.
-  Bonus bug: the `iv_werks` parameter is never used in the WHERE clause (job scans every
-  plant).
 - **F4 — `SELECT`/commit inside `LOOP AT keys` in `zbp_i_sales_doc_status`** (the documented
   "mass close" path): hoist with `FOR ALL ENTRIES`, commit once.
 - **F5 — Per-item BAPI calls where table interfaces exist** (`packing-detail`, `hu-unpack`,
@@ -54,10 +72,6 @@ rendering and one round trip per user action — never one request per row/cell/
   `/Pallet`→VEKP, …) with `$count` on first paint and no FilterBar anywhere. Add filter bars
   with suspended bindings + mandatory plant/date selection parameters on the CDS views.
   This decides whether the apps are usable against production-sized tables at all.
-- **F8 — `zcl_po_automation` unbounded VBRK⋈VBRP scan**: add a date cutoff +
-  `PACKAGE SIZE`.
-- **F9 — `zi_dispatch_box` joins `zpp_pack` without its GJAHR key** (flagged in the file's
-  own comment): row fan-out per fiscal year + OData key collision. Add the year predicate.
 - **F10 — Filtering on `_WorkCenter` association** forces a pre-join of the whole open-
   characteristics set; expose `arbid` and filter on it, resolve the name for display only.
 - **F14 — Worklist actions ship whole `getObject()` rows** (incl. `@odata.etag`/`@$ui5.*`)
