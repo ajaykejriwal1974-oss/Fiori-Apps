@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MTOS Process</title>
+    <!-- Full height chain: #content -> ComponentContainer -> UIArea -> View ->
+         Page. If any link is auto-height the Page content collapses (~32px) and
+         the tables clip to blank (seen on iOS Safari). -->
+    <style>
+        html, body, #content { height: 100%; margin: 0; }
+        #content > .sapUiComponentContainer,
+        [id$="-uiarea"],
+        [id$="-uiarea"] > .sapUiView,
+        [id$="-uiarea"] > .sapUiView > .sapMPage { height: 100%; }
+        .sapMPageScroll, .sapMScrollCont, .sapMListUl, .sapMPageEnableScrolling {
+            -webkit-overflow-scrolling: auto !important;
+        }
+        #demoBar { font:12px/1.4 -apple-system,Segoe UI,Roboto,sans-serif;
+            background:#eaf3fb; color:#0a3d62; padding:4px 10px; border-bottom:1px solid #c7ddef; }
+        #demoBar a { color:#0a6ed1; text-decoration:none; }
+    </style>
+    <script
+        id="sap-ui-bootstrap"
+        src="../resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{"kejriwal.pp.mtosprocess": "./"}'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true">
+    </script>
+</head>
+<body class="sapUiBody" style="display:flex;flex-direction:column">
+    <div id="demoBar">&#9432; Demo &mdash; mock data, no backend. <a href="../index.html">&#8592; All apps</a></div>
+    <div
+        id="content"
+        style="flex:1 1 auto;min-height:0"
+        data-sap-ui-component
+        data-name="kejriwal.pp.mtosprocess"
+        data-id="container"
+        data-settings='{"id": "mtosprocess", "height": "100%", "width": "100%"}'></div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<mvc:View
+    controllerName="kejriwal.mm.goodsmovementhu.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}" showHeader="true">
+        <content>
+            <Panel id="headerPanel" headerText="{i18n>movementHeader}" expandable="false">
+                <f:SimpleForm
+                    id="headerForm"
+                    layout="ResponsiveGridLayout"
+                    editable="true"
+                    labelSpanXL="3" labelSpanL="3" labelSpanM="4" labelSpanS="12"
+                    columnsXL="2" columnsL="2" columnsM="1">
+                    <f:content>
+                        <Label text="{i18n>movementType}" required="true" />
+                        <Input id="inpMovementType" value="{ui>/header/movementType}" maxLength="3" />
+
+                        <Label text="{i18n>plant}" required="true" />
+                        <Input id="inpPlant" value="{ui>/header/plant}" />
+
+                        <Label text="{i18n>storageLocation}" />
+                        <Input id="inpStorageLocation" value="{ui>/header/storageLocation}" />
+
+                        <Label text="{i18n>moveStorageLocation}" />
+                        <Input id="inpMoveStorageLocation" value="{ui>/header/moveStorageLocation}" />
+                    </f:content>
+                </f:SimpleForm>
+            </Panel>
+
+            <Panel id="scanPanel" headerText="{i18n>scanHeader}" expandable="false">
+                <Toolbar id="scanToolbar">
+                    <Label text="{i18n>huNumber}" />
+                    <Input
+                        id="inpHu"
+                        width="20rem"
+                        placeholder="{i18n>scanPlaceholder}"
+                        value="{ui>/scan/huNumber}"
+                        submit=".onScanHu" />
+                    <Button id="btnAddHu" text="{i18n>addHu}" type="Emphasized" icon="sap-icon://add" press=".onScanHu" />
+                    <ToolbarSpacer />
+                    <Button id="btnClear" text="{i18n>clearAll}" icon="sap-icon://clear-all" press=".onClearAll" />
+                </Toolbar>
+            </Panel>
+
+            <Table
+                id="itemsTable"
+                items="{ui>/items}"
+                growing="true"
+                growingThreshold="200"
+                sticky="ColumnHeaders">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>itemsTitle} ({= ${ui>/items}.length })" level="H2" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column width="9rem"><Text text="{i18n>huBox}" /></Column>
+                    <Column width="9rem"><Text text="{i18n>material}" /></Column>
+                    <Column><Text text="{i18n>description}" /></Column>
+                    <Column width="9rem"><Text text="{i18n>batch}" /></Column>
+                    <Column width="8rem" hAlign="End"><Text text="{i18n>quantity}" /></Column>
+                    <Column width="5rem"><Text text="{i18n>unit}" /></Column>
+                    <Column width="3rem" hAlign="Center"><Text text="" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{ui>HandlingUnit}" />
+                            <Text text="{ui>Material}" />
+                            <Text text="{ui>MaterialDescription}" />
+                            <Text text="{ui>Batch}" />
+                            <ObjectNumber number="{ui>Quantity}" />
+                            <Text text="{ui>Unit}" />
+                            <Button icon="sap-icon://decline" type="Transparent" tooltip="{i18n>remove}" press=".onRemoveItem" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="btnPost"
+                    text="{i18n>postMovement}"
+                    type="Emphasized"
+                    icon="sap-icon://shipping-status"
+                    enabled="{= ${ui>/items}.length &gt; 0 }"
+                    press=".onPostMovement" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

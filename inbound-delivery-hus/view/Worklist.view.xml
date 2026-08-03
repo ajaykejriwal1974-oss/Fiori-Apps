@@ -1,0 +1,52 @@
+<mvc:View
+    controllerName="kejriwal.mm.inboundhus.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}">
+        <subHeader>
+            <!-- Filter-first worklist: the binding below starts SUSPENDED, so the app no
+                 longer loads (and $count-s) the ENTIRE entity set on first paint - rows
+                 appear when the user presses Go with a filter (or none, explicitly). -->
+            <OverflowToolbar id="filterBar">
+                <Label text="{i18n>colInboundDelivery}"/>
+                <Input id="inpInboundDelivery" width="10rem" submit=".onFilterSearch"/>
+                <Label text="{i18n>colHandlingUnit}"/>
+                <Input id="inpHandlingUnit" width="10rem" submit=".onFilterSearch"/>
+                <ToolbarSpacer/>
+                <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
+            </OverflowToolbar>
+        </subHeader>
+        <content>
+            <Table
+                id="table"
+                items="{ path: '/InboundHu', suspended: true }"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="50">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>actpostInboundGr}" press=".onPostInboundGr" type="Emphasized"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                        <Column><Text text="{i18n>colHandlingUnit}"/></Column>
+                        <Column><Text text="{i18n>colInboundDelivery}"/></Column>
+                        <Column><Text text="{i18n>colPackagingMaterial}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{HandlingUnit}"/>
+                            <Text text="{InboundDelivery}"/>
+                            <Text text="{PackagingMaterial}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
