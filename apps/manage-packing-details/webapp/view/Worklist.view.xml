@@ -5,10 +5,23 @@
     xmlns:core="sap.ui.core"
     displayBlock="true">
     <Page id="page" title="{i18n>appTitle}">
+        <subHeader>
+            <!-- Filter-first worklist: the binding below starts SUSPENDED, so the app no
+                 longer loads (and $count-s) the ENTIRE entity set on first paint - rows
+                 appear when the user presses Go with a filter (or none, explicitly). -->
+            <OverflowToolbar id="filterBar">
+                <Label text="{i18n>colHandlingUnit}"/>
+                <Input id="inpHandlingUnit" width="10rem" submit=".onFilterSearch"/>
+                <Label text="{i18n>colMaterial}"/>
+                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch"/>
+                <ToolbarSpacer/>
+                <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
+            </OverflowToolbar>
+        </subHeader>
         <content>
             <Table
                 id="table"
-                items="{/PackingItem}"
+                items="{ path: '/PackingItem', suspended: true }"
                 mode="MultiSelect"
                 growing="true"
                 growingThreshold="50">
