@@ -79,6 +79,15 @@ rendering and one round trip per user action — never one request per row/cell/
 - **mtos-process `lt_return`/`lt_docs` CLEARs** (missed by the batch-3 sweep — same
   carry-across-keys class of bug).
 
+## Fixed in batch 5
+
+- **F6 — Filter-first worklists**: all eight full-entity-set worklists (`/Batch`→MCHA,
+  `/Pallet`→VEKP, `/PackingItem`, `/DispatchBox`, `/HuUnpack`, `/InboundHu`, `/PostPackGr`,
+  `/MtosStock`) now open with a filter toolbar and a SUSPENDED table binding — no more
+  loading (and `$count`-ing) the entire backing table on first paint. Rows appear when the
+  user presses Go with their plant/key filters (or explicitly with none). Per-app filter
+  fields chosen from each entity's keys; labels reuse the existing i18n column keys.
+
 ## Remaining findings (ranked, not yet implemented — ABAP/design changes)
 
 - **F4 — `SELECT`/commit inside `LOOP AT keys` in `zbp_i_sales_doc_status`** (the documented
@@ -86,7 +95,3 @@ rendering and one round trip per user action — never one request per row/cell/
 - **F5 (rest) — Per-item BAPI calls where table interfaces exist** (`packing-detail`,
   `hu-unpack`, `palletization`, `packing-hu`, `qm-mass-results`) — batch into one call where
   the FM accepts a table. (The lt_return correctness half of this finding is fixed above.)
-- **F6 — Eight worklists bind an entire entity set unfiltered** (`/Batch`→MCHA,
-  `/Pallet`→VEKP, …) with `$count` on first paint and no FilterBar anywhere. Add filter bars
-  with suspended bindings + mandatory plant/date selection parameters on the CDS views.
-  This decides whether the apps are usable against production-sized tables at all.

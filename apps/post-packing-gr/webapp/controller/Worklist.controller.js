@@ -6,8 +6,10 @@ sap.ui.define([
     "sap/m/Button",
     "sap/m/Input",
     "sap/m/Label",
-    "sap/ui/layout/form/SimpleForm"
-], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm) {
+    "sap/ui/layout/form/SimpleForm",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm, Filter, FilterOperator) {
     "use strict";
 
     // Fully-qualified action namespace from the activated OData V4 service
@@ -22,6 +24,8 @@ sap.ui.define([
         postPackingAndGr: function (o) { return { HandlingUnit: o.HandlingUnit }; }
     };
 
+    var FILTER_FIELDS = [{ name: "HandlingUnit", op: "Contains" }, { name: "Reference", op: "Contains" }];
+
     return Controller.extend("kejriwal.pp.postpackinggr.controller.Worklist", {
 
         onInit: function () {
@@ -30,6 +34,19 @@ sap.ui.define([
 
         onPostPackingAndGr: function () {
             this._runAction("postPackingAndGr", []);
+        },
+
+        /** Apply the filter-bar values and resume the (suspended) table binding — the
+         *  worklist no longer downloads the whole entity set on first paint. */
+        onFilterSearch: function () {
+            var aFilters = [];
+            FILTER_FIELDS.forEach(function (f) {
+                var v = (this.byId("inp" + f.name).getValue() || "").trim();
+                if (v) aFilters.push(new Filter(f.name, FilterOperator[f.op], v));
+            }, this);
+            var oBinding = this.byId("table").getBinding("items");
+            oBinding.filter(aFilters);
+            if (oBinding.isSuspended()) { oBinding.resume(); }
         },
 
         /** Read the selection, collect any header params, then invoke the action. */
