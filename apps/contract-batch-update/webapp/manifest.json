@@ -70,6 +70,7 @@
           "synchronizationMode": "None",
           "operationMode": "Server",
           "autoExpandSelect": true,
+          "earlyRequests": true,
           "groupId": "$auto"
         }
       }

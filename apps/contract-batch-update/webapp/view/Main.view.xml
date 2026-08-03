@@ -45,7 +45,7 @@
                             <Text text="{ui>Material}" />
                             <Text text="{ui>MaterialDescription}" />
                             <Text text="{ui>CurrentBatch}" />
-                            <Input value="{ui>NewBatch}" liveChange=".onBatchChange" />
+                            <Input value="{ui>NewBatch}" change=".onBatchChange" />
                         </cells>
                     </ColumnListItem>
                 </items>

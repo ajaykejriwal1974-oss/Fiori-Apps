@@ -53,8 +53,7 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.layout": {},
-        "sap.f": {}
+        "sap.ui.layout": {}
       }
     },
     "handleValidation": true,
@@ -71,6 +70,7 @@
           "synchronizationMode": "None",
           "operationMode": "Server",
           "autoExpandSelect": true,
+          "earlyRequests": true,
           "groupId": "$auto"
         }
       }
