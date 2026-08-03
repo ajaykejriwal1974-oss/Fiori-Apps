@@ -16,6 +16,14 @@ sap.ui.define([
     var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
     var ENTITY_SET = "Batch";
 
+    // Project selected rows down to the _Item contracts (ZD_BatchCloseItem /
+    // ZD_BatchDeleteItem: Material, Plant, Batch) — getObject() ships every column
+    // + OData annotations otherwise.
+    var ITEM_PROJECT = {
+        closeBatch: function (o) { return { Material: o.Material, Plant: o.Plant, Batch: o.Batch }; },
+        deleteBatch: function (o) { return { Material: o.Material, Plant: o.Plant, Batch: o.Batch }; }
+    };
+
     return Controller.extend("kejriwal.pp.batchstatus.controller.Worklist", {
 
         onInit: function () {
@@ -37,8 +45,10 @@ sap.ui.define([
                 MessageToast.show(this.oBundle.getText("selectAtLeastOne"));
                 return;
             }
+            var fnProj = ITEM_PROJECT[sAction];
             var aRows = aItems.map(function (oItem) {
-                return oItem.getBindingContext().getObject();
+                var o = oItem.getBindingContext().getObject();
+                return fnProj ? fnProj(o) : o;
             });
             if (aParamDefs.length) {
                 this._promptParams(sAction, aParamDefs, aRows);

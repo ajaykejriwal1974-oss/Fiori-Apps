@@ -16,6 +16,17 @@ sap.ui.define([
     var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
     var ENTITY_SET = "MtosStock";
 
+    // Project selected rows down to EACH action's _Item contract — convertToMts takes
+    // ZD_MtoMtsItem (the full stock line), createPhysInvDoc takes ZD_PhysInvItem
+    // (material; batch/HU are not carried by this worklist's rows and post as initial,
+    // exactly as before). getObject() ships every column + OData annotations otherwise.
+    var ITEM_PROJECT = {
+        convertToMts: function (o) { return { Material: o.Material, Plant: o.Plant,
+            SalesOrder: o.SalesOrder, SalesOrderItem: o.SalesOrderItem,
+            Quantity: o.Quantity, BaseUnit: o.BaseUnit }; },
+        createPhysInvDoc: function (o) { return { Material: o.Material }; }
+    };
+
     return Controller.extend("kejriwal.pp.mtosprocess.controller.Worklist", {
 
         onInit: function () {
@@ -37,8 +48,10 @@ sap.ui.define([
                 MessageToast.show(this.oBundle.getText("selectAtLeastOne"));
                 return;
             }
+            var fnProj = ITEM_PROJECT[sAction];
             var aRows = aItems.map(function (oItem) {
-                return oItem.getBindingContext().getObject();
+                var o = oItem.getBindingContext().getObject();
+                return fnProj ? fnProj(o) : o;
             });
             if (aParamDefs.length) {
                 this._promptParams(sAction, aParamDefs, aRows);

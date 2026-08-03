@@ -16,6 +16,12 @@ sap.ui.define([
     var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
     var ENTITY_SET = "InboundHu";
 
+    // Project selected rows down to the action's _Item contract (ZD_InbGrHu:
+    // HandlingUnit only) — getObject() ships every column + OData annotations otherwise.
+    var ITEM_PROJECT = {
+        postInboundGr: function (o) { return { HandlingUnit: o.HandlingUnit }; }
+    };
+
     return Controller.extend("kejriwal.mm.inboundhus.controller.Worklist", {
 
         onInit: function () {
@@ -33,8 +39,10 @@ sap.ui.define([
                 MessageToast.show(this.oBundle.getText("selectAtLeastOne"));
                 return;
             }
+            var fnProj = ITEM_PROJECT[sAction];
             var aRows = aItems.map(function (oItem) {
-                return oItem.getBindingContext().getObject();
+                var o = oItem.getBindingContext().getObject();
+                return fnProj ? fnProj(o) : o;
             });
             if (aParamDefs.length) {
                 this._promptParams(sAction, aParamDefs, aRows);

@@ -56,13 +56,31 @@ rendering and one round trip per user action — never one request per row/cell/
   cleared). `packing-hu` additionally cleared its `lv_prev_hu` chain state, which carried
   the HU hierarchy across action keys.
 
+## Fixed in batch 4
+
+- **F2 — `_Item` compositions for the flat mass actions** (`batch-status`: closeBatch /
+  deleteBatch via new `ZD_BatchCloseItem`/`ZD_BatchDeleteItem`; `mtos-process`:
+  convertToMts via new `ZD_MtoMtsItem`). The worklists' whole selection now travels in ONE
+  call with ONE commit — closeBatch counts successes and names not-found batches;
+  deleteBatch is all-or-nothing; convertToMts puts every stock line into ONE
+  `BAPI_GOODSMVT_CREATE` → one 411-E material document. (Was: one HTTP round trip + one
+  synchronous `COMMIT WORK` per selected row.)
+- **F14 — Action payloads projected to contract fields** in all eight worklist controllers
+  (`ITEM_PROJECT` per action): no more `@odata.etag`/`@$ui5.*` annotations or unused
+  columns in `_Item` — and the palletization mapping sends `HandlingUnit` (the contract
+  field) instead of the row key `Pallet`, fixing a guaranteed 400 on activation.
+- **F10 — `WorkCenterInternalID` exposed** (`zi/zc_qm_inspectionchar` ← `oper.arbid`); a
+  numeric filter entry hits the base-table column directly instead of pre-joining the whole
+  open-characteristics set through the `_WorkCenter` association (name entry still filters
+  by name for usability).
+- **F15 — UI5 bootstrap is relative** (`resources/sap-ui-core.js`) in all 12 apps — served
+  by the ABAP system / ui5 tooling instead of a cross-origin public-CDN fetch that fails
+  behind an on-prem firewall.
+- **mtos-process `lt_return`/`lt_docs` CLEARs** (missed by the batch-3 sweep — same
+  carry-across-keys class of bug).
+
 ## Remaining findings (ranked, not yet implemented — ABAP/design changes)
 
-- **F2 — Flat action parameters force one call per selected row** (`batch-status`,
-  `mtos-process`). `ZD_Batch_Close/Delete` and `ZD_Mto_Mts` have no `_Item` composition, so
-  the worklists' mass actions become N HTTP calls — each hitting a
-  `BAPI_TRANSACTION_COMMIT wait = abap_true` **inside `LOOP AT keys`**. Add `_Item`
-  compositions (the palletization pattern) and commit once after the loop.
 - **F4 — `SELECT`/commit inside `LOOP AT keys` in `zbp_i_sales_doc_status`** (the documented
   "mass close" path): hoist with `FOR ALL ENTRIES`, commit once.
 - **F5 (rest) — Per-item BAPI calls where table interfaces exist** (`packing-detail`,
@@ -72,10 +90,3 @@ rendering and one round trip per user action — never one request per row/cell/
   `/Pallet`→VEKP, …) with `$count` on first paint and no FilterBar anywhere. Add filter bars
   with suspended bindings + mandatory plant/date selection parameters on the CDS views.
   This decides whether the apps are usable against production-sized tables at all.
-- **F10 — Filtering on `_WorkCenter` association** forces a pre-join of the whole open-
-  characteristics set; expose `arbid` and filter on it, resolve the name for display only.
-- **F14 — Worklist actions ship whole `getObject()` rows** (incl. `@odata.etag`/`@$ui5.*`)
-  where the contract wants one field — and palletization sends `Pallet` where the action
-  expects `HandlingUnit` (a guaranteed 400 once activated). Project down to contract fields.
-- **F15 — Public-CDN UI5 bootstrap** (`https://ui5.sap.com/...`) in an on-prem landscape:
-  use the ABAP-served runtime.

@@ -16,6 +16,14 @@ sap.ui.define([
     var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
     var ENTITY_SET = "Pallet";
 
+    // Project selected rows down to the action's _Item contract fields. getObject()
+    // carries @odata.etag/@$ui5.* annotations and every column, while the composition
+    // parameter wants exactly its declared fields — and the contract field is
+    // HandlingUnit, NOT the row's key "Pallet" (sending Pallet was a guaranteed 400).
+    var ITEM_PROJECT = {
+        packPallet: function (o) { return { HandlingUnit: o.Pallet }; }
+    };
+
     return Controller.extend("kejriwal.pp.palletization.controller.Worklist", {
 
         onInit: function () {
@@ -33,8 +41,10 @@ sap.ui.define([
                 MessageToast.show(this.oBundle.getText("selectAtLeastOne"));
                 return;
             }
+            var fnProj = ITEM_PROJECT[sAction];
             var aRows = aItems.map(function (oItem) {
-                return oItem.getBindingContext().getObject();
+                var o = oItem.getBindingContext().getObject();
+                return fnProj ? fnProj(o) : o;
             });
             if (aParamDefs.length) {
                 this._promptParams(sAction, aParamDefs, aRows);

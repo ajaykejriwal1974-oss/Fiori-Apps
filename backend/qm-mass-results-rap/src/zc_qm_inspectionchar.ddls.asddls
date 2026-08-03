@@ -14,6 +14,7 @@ define root view entity ZC_QM_InspectionChar
       CharacteristicDescription,
       Material,
       Plant,
+      WorkCenterInternalID,
       WorkCenter,
       Unit,
       ResultValue,
