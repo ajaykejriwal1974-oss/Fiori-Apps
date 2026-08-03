@@ -31,7 +31,15 @@ sap.ui.define([
                 aFilters.push(new Filter("Plant", FilterOperator.EQ, oUi.filter.plant));
             }
             if (oUi.filter.workCenter) {
-                aFilters.push(new Filter("WorkCenter", FilterOperator.EQ, oUi.filter.workCenter));
+                // A purely-numeric entry is treated as the INTERNAL work-center id and
+                // filtered on the base-table column (oper.arbid) — no pre-join of the
+                // whole open-characteristics set through the _WorkCenter association.
+                // A name still filters on WorkCenter for usability.
+                if (/^\d+$/.test(oUi.filter.workCenter)) {
+                    aFilters.push(new Filter("WorkCenterInternalID", FilterOperator.EQ, oUi.filter.workCenter));
+                } else {
+                    aFilters.push(new Filter("WorkCenter", FilterOperator.EQ, oUi.filter.workCenter));
+                }
             }
             if (oUi.filter.inspectionLot) {
                 aFilters.push(new Filter("InspectionLot", FilterOperator.EQ, oUi.filter.inspectionLot));

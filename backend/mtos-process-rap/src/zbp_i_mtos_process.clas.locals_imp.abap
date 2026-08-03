@@ -13,8 +13,16 @@ ENDCLASS.
 CLASS lhc_MtosStock IMPLEMENTATION.
 
   METHOD convertToMts.
+    " COMPOSITION action (ZD_MtoMts._Item): every selected stock line goes into ONE
+    " BAPI_GOODSMVT_CREATE call - one 411-E material document, one commit - instead of
+    " one HTTP round trip + BAPI + COMMIT WORK per selected row.
     LOOP AT keys INTO DATA(key).
-      DATA(p) = key-%param.
+      DATA(lt_items) = key-%param-_item.
+      IF lt_items IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( message = 'No stock lines selected' ) ) TO result.
+        CONTINUE.
+      ENDIF.
 
       DATA(lv_today) = cl_abap_context_info=>get_system_date( ).
       DATA(ls_gm_header) = VALUE bapi2017_gm_head_01(
@@ -23,18 +31,20 @@ CLASS lhc_MtosStock IMPLEMENTATION.
 
       " Movement type 411 E: transfer sales-order (special stock 'E') to own stock.
       DATA lt_gm_item TYPE STANDARD TABLE OF bapi2017_gm_item_create.
-      lt_gm_item = VALUE #( ( material       = p-material
-                              plant          = p-plant
+      lt_gm_item = VALUE #( FOR it IN lt_items
+                            ( material       = it-material
+                              plant          = it-plant
                               move_type      = '411'
                               spec_stock     = 'E'
-                              val_sales_ord  = p-salesorder
-                              val_s_ord_item = p-salesorderitem
-                              entry_qnt      = p-quantity
-                              entry_uom      = p-baseunit ) ).
+                              val_sales_ord  = it-salesorder
+                              val_s_ord_item = it-salesorderitem
+                              entry_qnt      = it-quantity
+                              entry_uom      = it-baseunit ) ).
 
       DATA: lv_matdoc  TYPE bapi2017_gm_head_ret-mat_doc,
             lv_matyear TYPE bapi2017_gm_head_ret-doc_year.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR: lt_return, lv_matdoc, lv_matyear.   " method-scoped — no carry across keys
 
       CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
         EXPORTING goodsmvt_header  = ls_gm_header
@@ -81,6 +91,7 @@ CLASS lhc_MtosStock IMPLEMENTATION.
 
       DATA lt_docs   TYPE STANDARD TABLE OF bapi_physinv_create_docs.
       DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CLEAR: lt_docs, lt_return.   " method-scoped — no carry across keys
       CALL FUNCTION 'BAPI_MATPHYSINV_CREATE_MULT'
         TABLES head                   = lt_head
                items                  = lt_phys_items
