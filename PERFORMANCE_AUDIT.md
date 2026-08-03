@@ -65,9 +65,9 @@ rendering and one round trip per user action — never one request per row/cell/
   compositions (the palletization pattern) and commit once after the loop.
 - **F4 — `SELECT`/commit inside `LOOP AT keys` in `zbp_i_sales_doc_status`** (the documented
   "mass close" path): hoist with `FOR ALL ENTRIES`, commit once.
-- **F5 — Per-item BAPI calls where table interfaces exist** (`packing-detail`, `hu-unpack`,
-  `palletization`, `packing-hu`, `qm-mass-results`). Also a correctness bug: `lt_return` is
-  never CLEARed between iterations, so item 1's error poisons every later item's check.
+- **F5 (rest) — Per-item BAPI calls where table interfaces exist** (`packing-detail`,
+  `hu-unpack`, `palletization`, `packing-hu`, `qm-mass-results`) — batch into one call where
+  the FM accepts a table. (The lt_return correctness half of this finding is fixed above.)
 - **F6 — Eight worklists bind an entire entity set unfiltered** (`/Batch`→MCHA,
   `/Pallet`→VEKP, …) with `$count` on first paint and no FilterBar anywhere. Add filter bars
   with suspended bindings + mandatory plant/date selection parameters on the CDS views.
