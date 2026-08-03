@@ -43,9 +43,11 @@ sap.ui.define([
 
             var that = this;
             var oODataModel = this.getView().getModel();   // OData V4 default model
+            // Explicit $select: autoExpandSelect can't derive one for a control-less binding,
+            // so without it the request returns EVERY property of every item row.
             var oList = oODataModel.bindList(ENTITY_SET, undefined, undefined, [
                 new Filter("SalesContract", FilterOperator.EQ, sContract)
-            ]);
+            ], { $select: "SalesContract,ContractItem,Material,MaterialDescription,CurrentBatch,Plant" });
             oList.requestContexts(0, 1000).then(function (aContexts) {
                 if (!aContexts.length) {
                     MessageToast.show(that._text("contractEmpty", [sContract]));
