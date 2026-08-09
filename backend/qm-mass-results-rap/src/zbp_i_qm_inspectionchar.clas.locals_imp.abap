@@ -1,64 +1,85 @@
-CLASS lcl_buffer DEFINITION.
+**********************************************************************
+* Unmanaged behavior for ZI_QM_INSPECTIONCHAR
+*
+* UI edits ResultValue / Valuation per characteristic (UPDATE) and submits.
+* Each filled-in characteristic is recorded via the standard QM API
+* BAPI_INSPCHAR_SETRESULT (CLOSED = 'X' also closes it - there is no
+* BAPI_INSPCHAR_CLOSE on this release). The QM BAPI posts on the update
+* task, so nothing persists until the saver COMMITs.
+*
+* Per-row validation: any characteristic the BAPI rejects is reported
+* against its own key (failed + reported), which aborts the whole submit
+* before COMMIT - the user sees exactly which rows failed, and nothing posts.
+*
+* VERIFY on a live lot before go-live: QM valuation/close behaviour.
+**********************************************************************
+CLASS lsc_InspectionChar DEFINITION INHERITING FROM cl_abap_behavior_saver.
   PUBLIC SECTION.
-    TYPES: BEGIN OF ty_row,
-             insplot    TYPE qals-prueflos,
-             inspchar   TYPE qamv-merknr,
-             mean_value TYPE bapi2045d2-mean_value,
-             evaluation TYPE bapi2045d2-evaluation,
-           END OF ty_row.
-    CLASS-DATA gt_buffer TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
-ENDCLASS.
-
-CLASS lhc_zi_qm_inspectionchar DEFINITION INHERITING FROM cl_abap_behavior_handler.
-  PRIVATE SECTION.
-    METHODS update FOR MODIFY
-      IMPORTING entities FOR UPDATE InspectionChar.
-ENDCLASS.
-
-CLASS lhc_zi_qm_inspectionchar IMPLEMENTATION.
-  METHOD update.
-    LOOP AT entities INTO DATA(ls_ent).
-      APPEND VALUE #(
-        insplot    = ls_ent-InspectionLot
-        inspchar   = ls_ent-InspectionCharacteristic
-        mean_value = ls_ent-ResultValue
-        evaluation = ls_ent-Valuation ) TO lcl_buffer=>gt_buffer.
-    ENDLOOP.
-  ENDMETHOD.
-ENDCLASS.
-
-CLASS lsc_zi_qm_inspectionchar DEFINITION INHERITING FROM cl_abap_behavior_saver.
+    CLASS-DATA gv_posted TYPE abap_bool.
+    CLASS-DATA gv_error  TYPE abap_bool.
   PROTECTED SECTION.
     METHODS save REDEFINITION.
 ENDCLASS.
 
-CLASS lsc_zi_qm_inspectionchar IMPLEMENTATION.
-  METHOD save.
-    DATA: lt_char   TYPE STANDARD TABLE OF bapi2045d2,
-          lt_sample TYPE STANDARD TABLE OF bapi2045d3,
-          lt_single TYPE STANDARD TABLE OF bapi2045d4,
-          lt_rettab TYPE STANDARD TABLE OF bapiret2,
-          ls_return TYPE bapiret2.
+CLASS lhc_InspectionChar DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+    METHODS update FOR MODIFY IMPORTING entities FOR UPDATE InspectionChar.
+ENDCLASS.
 
-    LOOP AT lcl_buffer=>gt_buffer INTO DATA(ls_row).
-      CLEAR: lt_char, lt_sample, lt_single, lt_rettab, ls_return.
-      APPEND VALUE #(
-        insplot    = ls_row-insplot
-        inspoper   = '0010'
-        inspchar   = ls_row-inspchar
-        mean_value = ls_row-mean_value
-        evaluation = ls_row-evaluation
-        closed     = 'X' ) TO lt_char.
+CLASS lhc_InspectionChar IMPLEMENTATION.
+  METHOD update.
+    DATA ls_return TYPE bapireturn1.
 
-      CALL FUNCTION 'BAPI_INSPOPER_RECORDRESULTS'
-        EXPORTING  insplot        = ls_row-insplot
-                   inspoper       = '0010'
-        IMPORTING  return         = ls_return
-        TABLES     char_results   = lt_char
-                   sample_results = lt_sample
-                   single_results = lt_single
-                   returntable    = lt_rettab.
+    CLEAR: lsc_InspectionChar=>gv_posted, lsc_InspectionChar=>gv_error.
+
+    LOOP AT entities INTO DATA(ls_char).
+      " Only post characteristics the user actually filled in.
+      IF ls_char-ResultValue IS INITIAL AND ls_char-Valuation IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      DATA(ls_result) = VALUE bapi2045d2(
+        insplot    = ls_char-InspectionLot
+        inspoper   = ls_char-InspectionOperation
+        inspchar   = ls_char-InspectionCharacteristic
+        mean_value = ls_char-ResultValue
+        evaluation = ls_char-Valuation
+        closed     = 'X' ).
+
+      CLEAR ls_return.
+      CALL FUNCTION 'BAPI_INSPCHAR_SETRESULT'
+        EXPORTING
+          insplot     = ls_char-InspectionLot
+          inspoper    = ls_char-InspectionOperation
+          inspchar    = ls_char-InspectionCharacteristic
+          char_result = ls_result
+        IMPORTING
+          return      = ls_return.
+
+      IF ls_return-type CA 'EA'.
+        " Surface the QM message against this exact characteristic.
+        APPEND VALUE #( %tky = ls_char-%tky ) TO failed-inspectionchar.
+        APPEND VALUE #( %tky = ls_char-%tky
+                        %msg = new_message_with_text(
+                                 severity = if_abap_behv_message=>severity-error
+                                 text     = ls_return-message ) )
+               TO reported-inspectionchar.
+        lsc_InspectionChar=>gv_error = abap_true.
+      ELSE.
+        lsc_InspectionChar=>gv_posted = abap_true.
+      ENDIF.
     ENDLOOP.
-    CLEAR lcl_buffer=>gt_buffer.
+  ENDMETHOD.
+ENDCLASS.
+
+CLASS lsc_InspectionChar IMPLEMENTATION.
+  METHOD save.
+    " Commit only when every filled-in characteristic posted cleanly.
+    IF gv_error = abap_true.
+      CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+    ELSEIF gv_posted = abap_true.
+      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+    ENDIF.
+    CLEAR: gv_posted, gv_error.
   ENDMETHOD.
 ENDCLASS.

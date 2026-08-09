@@ -10,11 +10,12 @@
   title: { type: #STANDARD, value: 'SalesDocument' },
   description: { type: #STANDARD, value: 'OverallProcessingStatus' }
 }
-define root view entity ZC_SalesDocStatus
+define root view entity ZC_SALES_DOC_STATUS
   provider contract transactional_query
-  as projection on ZI_SalesDocStatus
+  as projection on ZI_SALES_DOC_STATUS
 {
       @Search.defaultSearchElement: true
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrder', element: 'SalesOrder' } }]
       @UI: { lineItem:       [ { position: 10 } ],
              identification: [ { position: 10 } ],
              selectionField: [ { position: 10 } ] }
@@ -29,11 +30,13 @@ define root view entity ZC_SalesDocStatus
              selectionField: [ { position: 20 } ] }
       SalesDocumentType,
 
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_SALESORG', element: 'SalesOrganization' } }]
       @UI: { lineItem:       [ { position: 40 } ],
              identification: [ { position: 40 } ],
              selectionField: [ { position: 30 } ] }
       SalesOrganization,
 
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_Customer', element: 'Customer' } }]
       @UI: { lineItem:       [ { position: 50 } ],
              identification: [ { position: 50 } ],
              selectionField: [ { position: 40 } ] }
