@@ -1,0 +1,146 @@
+{
+  "pickers": {
+    "companyCodes": [
+      {"code":"1000","name":"Kejriwal Geotech Pvt Ltd"},
+      {"code":"2000","name":"Kejriwal Ind. Pvt Ltd"},
+      {"code":"3000","name":"Ronak Paper Products"},
+      {"code":"4000","name":"Kejriwal Int. Textile Park"},
+      {"code":"5000","name":"Shekhawati Geotech Pvt Ltd"},
+      {"code":"6000","name":"Gee Filaments Pvt Ltd"},
+      {"code":"7000","name":"Jimbh Industries Pvt Ltd"},
+      {"code":"8000","name":"Mango Filaments Pvt Ltd"}
+    ],
+    "plants": [
+      {"code":"1000","name":"Kejriwal Geotech"},
+      {"code":"1001","name":"KGPL-Jobwork"},
+      {"code":"1002","name":"Kejriwal Geotech U-2"},
+      {"code":"2001","name":"KIPL Texturising"},
+      {"code":"2002","name":"KIPL Dyeing"},
+      {"code":"2004","name":"KIPL Dyed Jobwork"},
+      {"code":"3000","name":"Ronak Paper Product"},
+      {"code":"5000","name":"Shekhawati Geotech"},
+      {"code":"6000","name":"Gee Filaments"},
+      {"code":"7000","name":"Jimbh Industries"},
+      {"code":"8001","name":"Mango Filaments (KNT)"},
+      {"code":"8002","name":"Mango Filaments (TEX)"},
+      {"code":"8003","name":"Mango Filaments (KNT)"}
+    ]
+  },
+  "entities": {
+    "companyCodes": {
+      "title": "Company Codes", "note": "T001 — 8 KGPL group companies",
+      "columns": [{"label":"Company Code","prop":"bukrs","w":"10rem"},{"label":"Name","prop":"butxt"},{"label":"City","prop":"ort01","w":"9rem"},{"label":"Currency","prop":"waers","w":"7rem"}],
+      "rows": [
+        {"bukrs":"1000","butxt":"KEJRIWAL GEOTECH PVT LTD","ort01":"Surat","waers":"INR"},
+        {"bukrs":"2000","butxt":"KEJRIWAL IND. PVT LTD","ort01":"Surat","waers":"INR"},
+        {"bukrs":"3000","butxt":"RONAK PAPER PRODUCTS","ort01":"Surat","waers":"INR"},
+        {"bukrs":"4000","butxt":"KEJRIWAL INT. TEXTILE PARK","ort01":"Surat","waers":"INR"},
+        {"bukrs":"5000","butxt":"Shekhawati Geotech Pvt Ltd","ort01":"Surat","waers":"INR"},
+        {"bukrs":"6000","butxt":"Gee Filaments Pvt Ltd","ort01":"Surat","waers":"INR"},
+        {"bukrs":"7000","butxt":"Jimbh Industries Pvt Ltd","ort01":"Surat","waers":"INR"},
+        {"bukrs":"8000","butxt":"MANGO FILAMENTS PVT. LTD.","ort01":"Surat","waers":"INR"}
+      ]
+    },
+    "plants": {
+      "title": "Plants", "note": "T001W — 18 plants",
+      "columns": [{"label":"Plant","prop":"werks","w":"7rem"},{"label":"Name","prop":"name1"},{"label":"City","prop":"ort01","w":"9rem"}],
+      "rows": [
+        {"werks":"1000","name1":"Kejriwal Geotech Pvt. Ltd.","ort01":"Surat"},
+        {"werks":"1001","name1":"KGPL-Jobwork","ort01":"Surat"},
+        {"werks":"1002","name1":"Kejriwal Geotech Pvt. Ltd. U-2","ort01":"Surat"},
+        {"werks":"2001","name1":"Kejriwal Ind. Pvt. Ltd.-Text.","ort01":"Surat"},
+        {"werks":"2002","name1":"Kejriwal Ind. Pvt. Ltd.-Dyeing","ort01":"Surat"},
+        {"werks":"2004","name1":"Kejriwal Ind. Pvt. Ltd-Dyed JW","ort01":"Surat"},
+        {"werks":"3000","name1":"Ronak Paper Product","ort01":"Surat"},
+        {"werks":"5000","name1":"Shekhawati Geotech Pvt Ltd","ort01":"Surat"},
+        {"werks":"6000","name1":"Gee Filaments Private Limited","ort01":"Surat"},
+        {"werks":"7000","name1":"Jimbh Industries Pvt Ltd","ort01":"Surat"},
+        {"werks":"8001","name1":"MANGO FILAMENTS PVT. LTD.(KNT)","ort01":"Surat"},
+        {"werks":"8002","name1":"MANGO FILAMENTS PVT. LTD.(TEX)","ort01":"Surat"},
+        {"werks":"8003","name1":"MANGO FILAMENTS PVT. LTD.(KNT)","ort01":"Surat"}
+      ]
+    },
+    "salesOrgs": {
+      "title": "Sales Organizations", "note": "TVKO — 14",
+      "columns": [{"label":"Sales Org","prop":"vkorg","w":"9rem"},{"label":"Name","prop":"name"}],
+      "rows": [
+        {"vkorg":"1000","name":"Kejriwal GeoTech"},{"vkorg":"1001","name":"KGPL-Jobwork"},{"vkorg":"1002","name":"KGPL-Chips"},{"vkorg":"1003","name":"KGPL - PR"},{"vkorg":"2001","name":"KIPL Texturising"},{"vkorg":"2002","name":"KIPL Dyeing"},{"vkorg":"2004","name":"KIPL Dyeing Jobwork"},{"vkorg":"3000","name":"Ronak Paper Products"},{"vkorg":"5000","name":"Shekhawati Geotech"},{"vkorg":"6000","name":"Gee Filaments Pvt Lt"},{"vkorg":"7000","name":"Jimbh Industries"},{"vkorg":"8000","name":"Mango Filaments Tex"}
+      ]
+    },
+    "divisions": {
+      "title": "Divisions (Product)", "note": "TSPA — 13",
+      "columns": [{"label":"Division","prop":"spart","w":"8rem"},{"label":"Name","prop":"name"}],
+      "rows": [
+        {"spart":"00","name":"Common"},{"spart":"CB","name":"Ronak Corru. Box"},{"spart":"CP","name":"Chips"},{"spart":"CS","name":"Crushed bottle"},{"spart":"DT","name":"DTY"},{"spart":"DY","name":"Dyed Yarn"},{"spart":"FB","name":"Fabric"},{"spart":"FY","name":"FDY"},{"spart":"PY","name":"POY"},{"spart":"RM","name":"Raw Material"},{"spart":"SC","name":"Scrap"},{"spart":"TW","name":"Twist"},{"spart":"TX","name":"Tex"}
+      ]
+    },
+    "distChannels": {
+      "title": "Distribution Channels", "note": "TVTW — 6",
+      "columns": [{"label":"Channel","prop":"vtweg","w":"8rem"},{"label":"Name","prop":"name"}],
+      "rows": [
+        {"vtweg":"10","name":"Domestic Sales"},{"vtweg":"20","name":"Exports"},{"vtweg":"30","name":"Job Work"},{"vtweg":"40","name":"Trading"},{"vtweg":"50","name":"High Seas"},{"vtweg":"60","name":"Fabric"}
+      ]
+    },
+    "billingTypes": {
+      "title": "Billing Types", "note": "TVFK (key types)",
+      "columns": [{"label":"Type","prop":"fkart","w":"7rem"},{"label":"Description","prop":"name"}],
+      "rows": [
+        {"fkart":"F2","name":"Kejriwal Invoice"},{"fkart":"F1","name":"Invoice (F1)"},{"fkart":"G2","name":"Credit Memo"},{"fkart":"L2","name":"Debit Memo"},{"fkart":"BV","name":"Cash Sales"},{"fkart":"F5","name":"Pro Forma for Order"},{"fkart":"F8","name":"Pro Forma Inv f Dlv"},{"fkart":"RE","name":"Credit for Returns"},{"fkart":"FR","name":"Invoice Repair"},{"fkart":"FV","name":"Invoice Contract"}
+      ]
+    },
+    "grades": {
+      "title": "Grades", "note": "ZPP_PACK distinct grades",
+      "columns": [{"label":"Grade","prop":"grade","w":"8rem"}],
+      "rows": [{"grade":"1"},{"grade":"2"},{"grade":"3"},{"grade":"A"},{"grade":"B"},{"grade":"C"},{"grade":"D"},{"grade":"I"},{"grade":"J"},{"grade":"L"},{"grade":"M"},{"grade":"N"},{"grade":"O"},{"grade":"P"},{"grade":"R"},{"grade":"S"},{"grade":"T"},{"grade":"V"}]
+    },
+    "materials": {
+      "title": "Yarn Material Master", "note": "MAKT — dyed-yarn materials (D*)",
+      "columns": [{"label":"Material","prop":"matnr","w":"16rem"},{"label":"Description","prop":"maktx"}],
+      "rows": [
+        {"matnr":"D0000000000040SPUN","maktx":"40'S SPUN"},{"matnr":"D000000000BRFXXX01","maktx":"BORNFIL"},{"matnr":"D0150R0XXXXXXXXX01","maktx":"150/R HOSIERY YARN"},{"matnr":"D0301000DOPDYEDXX","maktx":"30/1000 DOPE DYED"},{"matnr":"D050BRT600XXXXXXX1","maktx":"50 BRT/600"},{"matnr":"D07001Z80ZZZXTPN01","maktx":"70/1 Z TWIST 80 TPM NYLON DYED"},{"matnr":"D070200XXXXXXSKL03","maktx":"70/2 Silkolite HOSIERY YARN"},{"matnr":"D07024180XXXXTPN01","maktx":"70/24-1 80 TPM DYED YARN"},{"matnr":"D07024280XXXXTPN01","maktx":"70/24/2 80 TPM NYLON DYED YARN"},{"matnr":"D0750341NMXXXXXXX2","maktx":"75/34-1 NIM SD DYED YARN"},{"matnr":"D075036NIMXXXXXXX1","maktx":"75/36 NIM PTY DYED"},{"matnr":"D075048HIMXXXXXXX1","maktx":"75/48 HIM PTY DYED"},{"matnr":"D075072HIMXXXXXXX1","maktx":"75/72 SD HIM DYED YARN"},{"matnr":"D075072SMXXXXDYRN1","maktx":"75/72 SIM DYED YARN"},{"matnr":"D080000HOSXXXXXX01","maktx":"80/0 HOSIERY YARN"},{"matnr":"D080000XXXXXPLYR01","maktx":"80/0 POLY YARN"}
+      ]
+    },
+    "customers": {
+      "title": "Customers", "note": "KNA1 — 19,115 total (sample)",
+      "columns": [{"label":"Customer","prop":"kunnr","w":"11rem"},{"label":"Name","prop":"name1"},{"label":"City","prop":"ort01","w":"11rem"},{"label":"Region","prop":"regio","w":"7rem"}],
+      "rows": [
+        {"kunnr":"0000000003","name1":"RAJASHREE POLYFIL","ort01":"BHARUCH","regio":"06"},{"kunnr":"0000000013","name1":"SHREE SIDDHI CHEMODYES PVT LTD","ort01":"SURAT","regio":"06"},{"kunnr":"0000000014","name1":"REMIK TRADING COMPANY PVT LTD","ort01":"AHMEDABAD","regio":"06"},{"kunnr":"0000000016","name1":"VACMET INDIA LTD","ort01":"INDIA","regio":"24"},{"kunnr":"AA00001","name1":"ABHINANDAN SYNTHETICS","ort01":"SURAT","regio":"06"},{"kunnr":"AA00003","name1":"AGARWAL RAYON (VINAYBHAI)","ort01":"","regio":"06"},{"kunnr":"AA00006","name1":"AMI SALES","ort01":"","regio":"06"},{"kunnr":"AA00007","name1":"AMJAY ASSOCIATES.","ort01":"","regio":"06"},{"kunnr":"AA00010","name1":"ANIL SINGHI","ort01":"Surat","regio":"06"},{"kunnr":"AA00012","name1":"ASHOK JAIN","ort01":"Surat","regio":"06"},{"kunnr":"AA00014","name1":"AMIT SYNTHETICS","ort01":"Surat","regio":"06"}
+      ]
+    },
+    "suppliers": {
+      "title": "Suppliers (Vendors)", "note": "LFA1 — 5,041 total (sample)",
+      "columns": [{"label":"Supplier","prop":"lifnr","w":"11rem"},{"label":"Name","prop":"name1"},{"label":"City","prop":"ort01","w":"11rem"}],
+      "rows": [
+        {"lifnr":"0000000006","name1":"SAMATEX GMBH","ort01":""},{"lifnr":"0000000026","name1":"UNIQUE ORGANICS LIMITED","ort01":""},{"lifnr":"0000000027","name1":"VISHNU ENTERPRISES","ort01":"KOCHI"},{"lifnr":"0000000031","name1":"OZA & CO.","ort01":"MUMBAI"},{"lifnr":"0000000036","name1":"SANA CORPORATION","ort01":"SURAT"},{"lifnr":"0000000038","name1":"DIAMOND CARPETS","ort01":"AGRA"},{"lifnr":"0000000039","name1":"M M FORGINGS LIMITED","ort01":"CHENNAI"},{"lifnr":"0000000046","name1":"ABHITEX INTERNATIONAL","ort01":"PANIPAT"},{"lifnr":"0000000051","name1":"KAKA OVERSEAS LIMITED","ort01":"UTTAR PRADESH"},{"lifnr":"0000000064","name1":"SERA EXPORTS","ort01":"ALIGARH"}
+      ]
+    },
+    "jobs": {
+      "title": "Dyeing Jobs (Job Master)", "note": "ZPP_JOBN — 131,340 total (sample)",
+      "columns": [{"label":"Job No","prop":"JOBNO","w":"12rem"},{"label":"Batch","prop":"BATCHNO","w":"12rem"},{"label":"Schedule","prop":"SCHNO","w":"12rem"},{"label":"Plant","prop":"werks","w":"7rem"},{"label":"Dye WC","prop":"DYE_ARBPL","w":"9rem"},{"label":"Created On","prop":"ERDAT","w":"10rem"}],
+      "rows": [
+        {"JOBNO":"1510001081","BATCHNO":"1510001081","SCHNO":"1110000924","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"},{"JOBNO":"1510001082","BATCHNO":"1510001082","SCHNO":"1110000348","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"},{"JOBNO":"1510001083","BATCHNO":"1510001083","SCHNO":"1110000780","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"},{"JOBNO":"1510001084","BATCHNO":"1510001084","SCHNO":"1110000923","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"},{"JOBNO":"1510001102","BATCHNO":"1510001102","SCHNO":"1110000964","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"},{"JOBNO":"1510001106","BATCHNO":"1510001106","SCHNO":"1110000876","werks":"2002","DYE_ARBPL":"DYG00003","ERDAT":"2012-07-07"}
+      ]
+    },
+    "schedules": {
+      "title": "Dyeing Schedules (Schedule Master)", "note": "ZPP_SCHEDULEN — 84,813 total (sample)",
+      "columns": [{"label":"Sched No","prop":"SCHNO","w":"12rem"},{"label":"Plant","prop":"werks","w":"7rem"},{"label":"Sales Order","prop":"VBELN","w":"11rem"},{"label":"Material","prop":"MATNR","w":"15rem"},{"label":"Description","prop":"MAKTX"},{"label":"Qty","prop":"SCH_QTY","w":"8rem","num":true},{"label":"UoM","prop":"VRKME","w":"5rem"}],
+      "rows": [
+        {"SCHNO":"1510006755","werks":"2002","VBELN":"6016005103","MATNR":"D155072BTXXXXXXX01","MAKTX":"POLYESTER YARN 155/BRIGHT","SCH_QTY":"300.000","VRKME":"KG"},{"SCHNO":"1510007300","werks":"2002","VBELN":"6016006042","MATNR":"D155072BTXXXXXXX01","MAKTX":"POLYESTER YARN 155/BRIGHT","SCH_QTY":"300.000","VRKME":"KG"},{"SCHNO":"1510007791","werks":"2002","VBELN":"6016006648","MATNR":"D155072BTXXXXXXX01","MAKTX":"POLYESTER YARN 155/BRIGHT","SCH_QTY":"300.000","VRKME":"KG"},{"SCHNO":"1510008119","werks":"2002","VBELN":"6016007223","MATNR":"D155072BTXXXXXXX01","MAKTX":"POLYESTER YARN 155/BRIGHT","SCH_QTY":"300.000","VRKME":"KG"},{"SCHNO":"1510008325","werks":"2002","VBELN":"6016007582","MATNR":"D155072BTXXXXXXX01","MAKTX":"POLYESTER YARN 155/BRIGHT","SCH_QTY":"300.000","VRKME":"KG"}
+      ]
+    },
+    "merge": {
+      "title": "Merge Details", "note": "ZPP_MERGE — 4,146 total (sample)",
+      "columns": [{"label":"Order","prop":"AURNR","w":"13rem"},{"label":"Grade","prop":"GRADE","w":"7rem"},{"label":"End Use","prop":"ENDUSE","w":"8rem"},{"label":"Batch","prop":"CHARG","w":"12rem"}],
+      "rows": [
+        {"AURNR":"000001000114","GRADE":"I","ENDUSE":"N","CHARG":"10-4025"},{"AURNR":"000001000121","GRADE":"I","ENDUSE":"N","CHARG":"AT/2-5024"},{"AURNR":"000001000123","GRADE":"I","ENDUSE":"N","CHARG":"12-4026"},{"AURNR":"000001000124","GRADE":"I","ENDUSE":"N","CHARG":"SU18-3692"},{"AURNR":"000001000125","GRADE":"I","ENDUSE":"N","CHARG":"1/A-5023SL"},{"AURNR":"000001000127","GRADE":"I","ENDUSE":"N","CHARG":"2/B-5030"},{"AURNR":"000001000128","GRADE":"I","ENDUSE":"N","CHARG":"SU11-2297"}
+      ]
+    },
+    "packing": {
+      "title": "Packing Boxes", "note": "ZPP_PACK — 4.26M total (sample, latest)",
+      "columns": [{"label":"Box No","prop":"boxno","w":"11rem"},{"label":"Material","prop":"matnr","w":"15rem"},{"label":"Grade","prop":"grade","w":"6rem"},{"label":"Size","prop":"psize","w":"6rem"},{"label":"Plant","prop":"werks","w":"6rem"},{"label":"Net Wt","prop":"netwt","w":"8rem","num":true},{"label":"Sales Order","prop":"vbeln","w":"11rem"}],
+      "rows": [
+        {"boxno":"9970000101","matnr":"KCZURICHXXMFK001","grade":"A","psize":"00","werks":"8003","netwt":"21.940","vbeln":""},{"boxno":"9970000098","matnr":"KCZURICHXXMFK001","grade":"A","psize":"00","werks":"8003","netwt":"10.470","vbeln":"5125000143"},{"boxno":"9970000097","matnr":"KCZURICHXXMFK001","grade":"A","psize":"00","werks":"8003","netwt":"10.010","vbeln":"5125000116"},{"boxno":"9970000095","matnr":"KCZURICHXXMFK001","grade":"A","psize":"00","werks":"8003","netwt":"10.000","vbeln":"5125000115"},{"boxno":"9970000092","matnr":"T110072BCSSNXXXXXX","grade":"A","psize":"UE","werks":"8002","netwt":"26.760","vbeln":""},{"boxno":"9970000091","matnr":"T110072BCSSNXXXXXX","grade":"A","psize":"UE","werks":"8002","netwt":"17.360","vbeln":"5125000113"},{"boxno":"9970000088","matnr":"KC15048064100A1","grade":"A","psize":"00","werks":"8001","netwt":"34.694","vbeln":""},{"boxno":"9970000085","matnr":"KC15048064100A1","grade":"A","psize":"00","werks":"8001","netwt":"34.836","vbeln":""}
+      ]
+    }
+  }
+}

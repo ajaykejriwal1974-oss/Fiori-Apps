@@ -1,0 +1,32 @@
+<mvc:View controllerName="kgpl.viewer.controller.App"
+  xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core"
+  displayBlock="true" height="100%">
+  <Page id="page" title="{/title}" showNavButton="false">
+    <subHeader>
+      <OverflowToolbar>
+        <Label id="ccLbl" text="Company Code"/>
+        <Select id="ccSel" width="14rem" forceSelection="false"
+                items="{/pickers/companyCodes}" change=".onFilterChange">
+          <core:Item key="{code}" text="{code} — {name}"/>
+        </Select>
+        <Label id="plLbl" text="Plant"/>
+        <Select id="plSel" width="14rem" forceSelection="false"
+                items="{/pickers/plants}" change=".onFilterChange">
+          <core:Item key="{code}" text="{code} — {name}"/>
+        </Select>
+        <ToolbarSpacer/>
+        <SearchField id="sf" width="18rem" liveChange=".onSearch" search=".onSearch"/>
+      </OverflowToolbar>
+    </subHeader>
+    <Table id="tbl" growing="true" growingThreshold="100" growingScrollToLoad="true"
+           sticky="ColumnHeaders" alternateRowColors="true">
+      <headerToolbar>
+        <OverflowToolbar>
+          <Title text="{/subtitle}"/>
+          <ToolbarSpacer/>
+          <ObjectStatus text="{/count} rows" state="Information"/>
+        </OverflowToolbar>
+      </headerToolbar>
+    </Table>
+  </Page>
+</mvc:View>

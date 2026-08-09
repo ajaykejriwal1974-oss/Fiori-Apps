@@ -142,6 +142,31 @@ LIVE_REF = [
     ("Audit Log",                   "STAT",  "AnalyticQuery &middot; XQUERY=2CZC_AUDIT_LOG"),
 ]
 
+# Runnable data-viewer tiles: the generic kgpl-viewer app rendering REAL KSD
+# reference / master data (pulled live from KSD, bundled as demo/mock/kgpl-catalog.json).
+# Every entry is clickable and shows actual rows with working Company-Code / Plant
+# pickers. (title, space, entity_key)
+VIEWER = [
+    ("Company Codes",             "MAST",  "companyCodes"),
+    ("Plants",                    "MAST",  "plants"),
+    ("Sales Organizations",       "MAST",  "salesOrgs"),
+    ("Divisions (Product)",       "MAST",  "divisions"),
+    ("Distribution Channels",     "MAST",  "distChannels"),
+    ("Billing Types",             "MAST",  "billingTypes"),
+    ("Grades",                    "MAST",  "grades"),
+    ("Yarn Material Master",      "MAST",  "materials"),
+    ("Customers",                 "SALES", "customers"),
+    ("Suppliers (Vendors)",       "PURCH", "suppliers"),
+    ("Dyeing Jobs (Job Master)",  "PROD",  "jobs"),
+    ("Dyeing Schedules",          "PROD",  "schedules"),
+    ("Merge Details",             "PROD",  "merge"),
+    ("Packing Boxes",             "PACK",  "packing"),
+]
+
+# Master-data reference tiles superseded by a runnable VIEWER tile (real data now
+# loads live), so we don't list them twice.
+VIEWER_SUPERSEDES = {"Job Master", "Schedule Master", "Merge Details"}
+
 
 def read(path):
     with open(path, encoding="utf-8") as fh:
@@ -274,6 +299,25 @@ def build_app(app, dest):
     return title
 
 
+def build_viewer(dest):
+    """Copy the generic kgpl-viewer app + bundle the real-KSD catalog beside it."""
+    app = "kgpl-viewer"
+    src_webapp = os.path.join(APPS_DIR, app, "webapp")
+    dest_app = os.path.join(dest, app)
+    if os.path.exists(dest_app):
+        shutil.rmtree(dest_app)
+    shutil.copytree(src_webapp, dest_app)
+    # bundle the live-KSD data catalog the controller fetches at runtime
+    catalog = read(os.path.join(MOCK_DIR, "kgpl-catalog.json"))
+    write(os.path.join(dest_app, "catalog.json"), catalog)
+    manifest = json.loads(read(os.path.join(dest_app, "manifest.json")))
+    namespace = manifest["sap.app"]["id"]
+    write(os.path.join(dest_app, "index.html"),
+          demo_index_html(namespace, "viewer", "KGPL Data Viewer"))
+    n = len(json.loads(catalog).get("entities", {}))
+    print(f"  built {app}  [+{n} live-KSD entities]")
+
+
 def portal_html(sections_html):
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -330,6 +374,11 @@ def portal_html(sections_html):
   .tile.bi {{ background:#f8f6fc; border-style:dashed; border-color:#ddd3ee; }}
   .tile.bi .ico {{ background:#eae6f7; color:#5b3a9e; }}
   .tile.bi .badge {{ color:#5b3a9e; background:#e7dffa; }}
+  .tile.data {{ background:#f2fbf4; border-color:#c3e6cd; }}
+  .tile.data .ico {{ background:#dcf3e3; color:#1a7f37; }}
+  .tile.data .badge {{ color:#1a7f37; background:#d6f0de; }}
+  .badge.data {{ color:#1a7f37; background:#d6f0de; }}
+  .sw-data {{ background:#d6f0de; }}
   footer {{ text-align:center; color:#9a9d9f; font-size:12px; padding:24px; }}
 </style>
 </head>
@@ -340,11 +389,13 @@ def portal_html(sections_html):
 </header>
 <main>
   <div class="note"><b>Arranged by FLP Space.</b> <b>Custom</b> apps (blue) run live
-  on <b>mock data</b> &mdash; click to open and test. <b>Adaptation</b>,
-  <b>Master-data</b>, <b>Analytics</b> and other <b>Live</b> tiles are reference
-  cards: they run on the S/4HANA FES, not in this mock demo.</div>
+  on <b>mock data</b>, and <b>Live KSD data</b> tiles (green) open a viewer over
+  <b>real rows pulled from KSD</b> &mdash; click either to open and test.
+  <b>Adaptation</b>, <b>Master-data</b>, <b>Analytics</b> and other <b>Live</b>
+  tiles are reference cards: they run on the S/4HANA FES, not in this mock demo.</div>
   <div class="legend">
     <span><i class="sw-cust"></i>Custom (live demo)</span>
+    <span><i class="sw-data"></i>Live KSD data (viewer)</span>
     <span><i class="sw-live"></i>Live on FES (register / FE)</span>
     <span><i class="sw-ext"></i>Adaptation (ext)</span>
     <span><i class="sw-mas"></i>Master data</span>
@@ -366,6 +417,19 @@ def tile(app, space, title):
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">{app}</div>'
         f'<div class="meta"><span class="badge cust">CUSTOM &middot; LIVE DEMO</span></div>'
+        f'</div></a>'
+    )
+
+
+def tile_viewer(space, title, entity_key):
+    """Runnable tile: opens the kgpl-viewer on a real-KSD entity."""
+    return (
+        f'<a class="tile data" href="kgpl-viewer/index.html?e={entity_key}" '
+        f'title="Live KSD data — real rows pulled from the S/4HANA database">'
+        f'<div class="ico">{BADGE[space]}</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">kgpl-viewer &middot; {entity_key}</div>'
+        f'<div class="meta"><span class="badge data">LIVE KSD DATA</span></div>'
         f'</div></a>'
     )
 
@@ -456,11 +520,16 @@ def main():
         title = build_app(app, dest)
         by_space[space].append((0, title, tile(app, space, title)))
         print(f"  built {app}  [{space}]")
+    build_viewer(dest)
+    for title, space, entity_key in VIEWER:
+        by_space[space].append((0, title, tile_viewer(space, title, entity_key)))
     for title, space, launch in LIVE_REF:
         by_space[space].append((1, title, live_tile(space, title, launch)))
     for folder, space, title, fiori, replaces in ADAPTATION:
         by_space[space].append((2, title, info_tile(folder, space, title, fiori, replaces)))
     for title, space, table, replaces in MASTER_DATA:
+        if title in VIEWER_SUPERSEDES:
+            continue  # now runnable via a VIEWER tile with real data
         by_space[space].append((3, title, master_tile(space, title, table, replaces)))
     for title, space, query, replaces in BI_QUERIES:
         by_space[space].append((4, title, bi_tile(space, title, query, replaces)))
