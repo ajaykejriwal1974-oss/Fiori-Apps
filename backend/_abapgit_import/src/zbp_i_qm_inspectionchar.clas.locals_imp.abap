@@ -1,6 +1,5 @@
 CLASS lsc_InspectionChar DEFINITION INHERITING FROM cl_abap_behavior_saver.
   PUBLIC SECTION.
-    " Rows the UI submitted, handed from the interaction phase to the save phase.
     CLASS-DATA gt_buffer TYPE TABLE FOR UPDATE ZI_QM_InspectionChar.
   PROTECTED SECTION.
     METHODS save REDEFINITION.
@@ -13,8 +12,6 @@ ENDCLASS.
 
 CLASS lhc_InspectionChar IMPLEMENTATION.
   METHOD update.
-    " Interaction phase: buffer only. The QM API registers update-task work AND the
-    " QM results engine (SAPLQEEM) self-commits - both forbidden here. Post in save().
     APPEND LINES OF entities TO lsc_InspectionChar=>gt_buffer.
   ENDMETHOD.
 ENDCLASS.
@@ -23,18 +20,15 @@ CLASS lsc_InspectionChar IMPLEMENTATION.
   METHOD save.
     DATA ls_return   TYPE bapireturn1.
     DATA lv_rfcmsg   TYPE c LENGTH 200.
-    DATA lv_insplot  TYPE bapi2045d4-insplot.   " NUMC 12
-    DATA lv_inspoper TYPE bapi2045d4-inspoper.  " CHAR 4 (operation NUMBER / VORNR)
-    DATA lv_inspchar TYPE bapi2045d4-inspchar.  " NUMC 4
+    DATA lv_insplot  TYPE bapi2045d4-insplot.
+    DATA lv_inspoper TYPE bapi2045d4-inspoper.
+    DATA lv_inspchar TYPE bapi2045d4-inspchar.
 
     LOOP AT gt_buffer INTO DATA(ls_char).
-      " Only post characteristics the user actually filled in.
       IF ls_char-ResultValue IS INITIAL AND ls_char-Valuation IS INITIAL.
         CONTINUE.
       ENDIF.
 
-      " The CDS exposes InspectionOperation = QAMV-VORGLFNR (internal op reference,
-      " e.g. 00000001). BAPI_INSPCHAR_SETRESULT needs the operation NUMBER (VORNR).
       SELECT SINGLE inspectionoperation FROM i_inspectionoperation
         WHERE inspectionlot               = @ls_char-InspectionLot
           AND inspplanoperationinternalid = @ls_char-InspectionOperation
