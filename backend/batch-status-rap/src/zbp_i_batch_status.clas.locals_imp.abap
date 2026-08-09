@@ -1,68 +1,89 @@
-CLASS lcl_batch_buffer DEFINITION.
-  PUBLIC SECTION.
-    TYPES: BEGIN OF ty_batch,
-             material TYPE matnr,
-             batch    TYPE charg_d,
-             plant    TYPE werks_d,
-             mode     TYPE c LENGTH 1,        " 'R' restrict, 'D' delete
-           END OF ty_batch.
-    CLASS-DATA gt_batches TYPE STANDARD TABLE OF ty_batch WITH EMPTY KEY.
-ENDCLASS.
-
-CLASS lhc_zi_batch_status DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_Batch DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS closebatch  FOR MODIFY IMPORTING keys FOR ACTION Batch~closeBatch  RESULT result.
-    METHODS deletebatch FOR MODIFY IMPORTING keys FOR ACTION Batch~deleteBatch RESULT result.
+    METHODS closeBatch FOR MODIFY
+      IMPORTING keys FOR ACTION Batch~closeBatch RESULT result.
+    METHODS deleteBatch FOR MODIFY
+      IMPORTING keys FOR ACTION Batch~deleteBatch RESULT result.
 ENDCLASS.
 
-CLASS lhc_zi_batch_status IMPLEMENTATION.
-  " The batch-maintenance BAPIs (BAPI_BATCH_CHANGE) do an internal COMMIT WORK,
-  " illegal in a RAP action. So the action only BUFFERS the request; save()
-  " registers it as a tRFC unit (CALL FUNCTION ... IN BACKGROUND TASK
-  " DESTINATION 'NONE'), and the wrapper FM Z_KGPL_BATCH_MAINTAIN runs
-  " BAPI_BATCH_CHANGE + commit in its OWN LUW after the RAP COMMIT WORK - so
-  " proper batch change-docs / status management / stock reclassification apply.
-  METHOD closebatch.
-    LOOP AT keys INTO DATA(ls_key).
-      APPEND VALUE #( material = ls_key-%param-Material
-                      batch    = ls_key-%param-Batch
-                      plant    = ls_key-%param-Plant
-                      mode     = 'R' ) TO lcl_batch_buffer=>gt_batches.
-      INSERT VALUE #( %cid = ls_key-%cid
-        %param-message = |Batch { ls_key-%param-Batch } queued to be restricted (on commit).| )
-        INTO TABLE result.
+CLASS lhc_Batch IMPLEMENTATION.
+  METHOD closeBatch.
+    " Close the WIP batches on the custom table (replaces ZSOL_WIP_BATCH_CLOSE):
+    " set CLOSED + who/when. ZPP_BATCHN is keyed by BATCHNO (+ GJAHR) - VERIFY the
+    " year predicate for your data; here we close by batch number.
+    " COMPOSITION action (ZD_BatchClose._Item): the worklist's whole selection arrives
+    " in ONE call and commits ONCE - previously one HTTP round trip + one synchronous
+    " COMMIT WORK per selected batch.
+    LOOP AT keys INTO DATA(key).
+      DATA(lt_items) = key-%param-_item.
+      IF lt_items IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid %param-message = 'No batches selected' ) TO result.
+        CONTINUE.
+      ENDIF.
+      DATA lv_ok   TYPE i.
+      DATA lt_miss TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+      CLEAR: lv_ok, lt_miss.
+      LOOP AT lt_items INTO DATA(it).
+        UPDATE zpp_batchn
+          SET closed      = 'X',
+              closed_by   = @sy-uname,
+              closed_on   = @sy-datum,
+              closed_time = @sy-uzeit
+          WHERE batchno = @it-batch.
+        IF sy-subrc = 0.
+          lv_ok += 1.
+        ELSE.
+          APPEND |{ it-batch }| TO lt_miss.
+        ENDIF.
+      ENDLOOP.
+      COMMIT WORK.   " once per action call, not per batch
+      APPEND VALUE #( %cid = key-%cid
+                      %param = VALUE #( message = |{ lv_ok } batch(es) closed| &&
+                        COND #( WHEN lt_miss IS NOT INITIAL
+                                THEN |; not found in ZPP_BATCHN: { concat_lines_of( table = lt_miss sep = `, ` ) }|
+                                ELSE `` ) ) ) TO result.
     ENDLOOP.
   ENDMETHOD.
 
-  METHOD deletebatch.
-    LOOP AT keys INTO DATA(ls_key).
-      APPEND VALUE #( material = ls_key-%param-Material
-                      batch    = ls_key-%param-Batch
-                      plant    = ls_key-%param-Plant
-                      mode     = 'D' ) TO lcl_batch_buffer=>gt_batches.
-      INSERT VALUE #( %cid = ls_key-%cid
-        %param-message = |Batch { ls_key-%param-Batch } queued for deletion (on commit).| )
-        INTO TABLE result.
+  METHOD deleteBatch.
+    " Set the standard batch deletion flag via BAPI_BATCH_CHANGE.
+    " VERIFY: MATERIAL (18 char) vs MATERIAL_LONG (40) for your release.
+    " COMPOSITION action (ZD_BatchDelete._Item): all selected batches in ONE call,
+    " all-or-nothing - any error rolls the whole selection back, else ONE commit.
+    LOOP AT keys INTO DATA(key).
+      DATA(lt_del) = key-%param-_item.
+      IF lt_del IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid %param-message = 'No batches selected' ) TO result.
+        CONTINUE.
+      ENDIF.
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      DATA lt_errs   TYPE STANDARD TABLE OF bapiret2.
+      DATA ls_ret    TYPE bapiret2.
+      CLEAR: lt_return, lt_errs.
+      LOOP AT lt_del INTO DATA(ld).
+        CLEAR lt_return.
+        CALL FUNCTION 'BAPI_BATCH_CHANGE'
+          EXPORTING material           = ld-material
+                    batch              = ld-batch
+                    plant              = ld-plant
+                    batchattributes    = VALUE bapibatchatt( deletion_flg = 'X' )
+                    batchcontrolfields = VALUE bapibatchctrl( deletion_flg = 'X' )
+          TABLES    return             = lt_return.
+        LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+          APPEND ls_ret TO lt_errs.
+        ENDLOOP.
+      ENDLOOP.
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_errs
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( message = |{ lines( lt_del ) } batch(es): deletion flag set| ) ) TO result.
+      ENDIF.
     ENDLOOP.
-  ENDMETHOD.
-ENDCLASS.
-
-CLASS lsc_zi_batch_status DEFINITION INHERITING FROM cl_abap_behavior_saver.
-  PROTECTED SECTION.
-    METHODS save REDEFINITION.
-ENDCLASS.
-
-CLASS lsc_zi_batch_status IMPLEMENTATION.
-  METHOD save.
-    LOOP AT lcl_batch_buffer=>gt_batches INTO DATA(ls_b).
-      CALL FUNCTION 'Z_KGPL_BATCH_MAINTAIN'
-        IN BACKGROUND TASK
-        DESTINATION 'NONE'
-        EXPORTING iv_material = ls_b-material
-                  iv_batch    = ls_b-batch
-                  iv_plant    = ls_b-plant
-                  iv_mode     = ls_b-mode.
-    ENDLOOP.
-    CLEAR lcl_batch_buffer=>gt_batches.
   ENDMETHOD.
 ENDCLASS.

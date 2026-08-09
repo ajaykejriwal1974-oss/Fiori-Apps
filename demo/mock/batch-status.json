@@ -1,0 +1,5 @@
+{"Batch":[
+ {"Material":"FG-YARN-3040","Plant":"1000","Batch":"B0001","LastGoodsReceiptDate":"2026-06-20"},
+ {"Material":"FG-YARN-3041","Plant":"1000","Batch":"B0002","LastGoodsReceiptDate":"2026-06-22"},
+ {"Material":"FG-FABRIC-220","Plant":"2000","Batch":"B0107","LastGoodsReceiptDate":"2026-06-25"},
+ {"Material":"RM-COTTON-01","Plant":"1000","Batch":"B0210","LastGoodsReceiptDate":"2026-06-18"}]}

@@ -1,7 +1,8 @@
 @EndUserText.label: 'closeBatch - import'
-define abstract entity ZD_BATCH_CLOSE
+//  Composition parameter (was flat Material/Plant/Batch): the worklist's mass action
+//  now sends ALL selected batches in ONE call with ONE commit, instead of one HTTP
+//  round trip + one synchronous COMMIT WORK per selected row.
+define abstract entity ZD_BatchClose
 {
-  Material : abap.char(40);
-  Plant : abap.char(4);
-  Batch : abap.char(10);
+  _Item : composition [0..*] of ZD_BatchCloseItem;
 }

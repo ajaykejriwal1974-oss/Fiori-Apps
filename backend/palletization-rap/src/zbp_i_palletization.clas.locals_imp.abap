@@ -1,69 +1,64 @@
-CLASS lhc_zi_palletization DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_Pallet DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS packpallet FOR MODIFY
+    METHODS packPallet FOR MODIFY
       IMPORTING keys FOR ACTION Pallet~packPallet RESULT result.
 ENDCLASS.
 
-CLASS lhc_zi_palletization IMPLEMENTATION.
-  METHOD packpallet.
-    DATA: ls_hdrprop  TYPE bapihuhdrproposal,
-          ls_huheader TYPE bapihuheader,
-          lv_hukey    TYPE bapihukey-hu_exid,
-          ls_itemprop TYPE bapihuitmproposal,
-          lt_return   TYPE STANDARD TABLE OF bapiret2,
-          lv_exidv    TYPE exidv,
-          lv_count    TYPE i.
-
-    LOOP AT keys INTO DATA(ls_key).
-      CLEAR: ls_hdrprop, ls_huheader, lv_hukey, lt_return, lv_count.
-
-      ls_hdrprop-pack_mat = ls_key-%param-PalletPackagingMaterial.
-      ls_hdrprop-content  = ls_key-%param-Reference.
-
-      CALL FUNCTION 'BAPI_HU_CREATE'
-        EXPORTING headerproposal = ls_hdrprop
-        IMPORTING huheader       = ls_huheader
-                  hukey          = lv_hukey
-        TABLES    return         = lt_return.
-
-      READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
-      IF sy-subrc = 0.
-        INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
+CLASS lhc_Pallet IMPLEMENTATION.
+  METHOD packPallet.
+    " VERIFY: BAPI_HU_CREATE / BAPI_HU_PACK parameter names vary by release.
+    LOOP AT keys INTO DATA(key).
+      DATA(h)        = key-%param.
+      DATA(lt_boxes) = key-%param-_item.
+      IF lt_boxes IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid %param-message = 'No boxes to palletize' ) TO result.
         CONTINUE.
       ENDIF.
+      " lt_return is CLEARed before every BAPI call (a TABLES return may be appended to
+      " or refreshed by the FM, and the method-scoped table otherwise carries messages
+      " across boxes and across action keys); E/A messages are harvested into lt_errs so
+      " no step's error is lost or double-counted.
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      DATA lt_errs   TYPE STANDARD TABLE OF bapiret2.
+      DATA ls_ret    TYPE bapiret2.
+      CLEAR: lt_return, lt_errs.
 
-      SPLIT ls_key-%param-BoxHuList AT ';' INTO TABLE DATA(lt_boxes).
-      LOOP AT lt_boxes INTO DATA(lv_box).
-        CONDENSE lv_box.
-        CHECK lv_box IS NOT INITIAL.
-        lv_exidv = |{ lv_box ALPHA = IN }|.
-        CLEAR: ls_itemprop, lt_return.
-        ls_itemprop-hu_item_type     = '3'.
-        ls_itemprop-lower_level_exid = lv_exidv.
-        CALL FUNCTION 'BAPI_HU_PACK'
-          EXPORTING hukey        = lv_hukey
-                    itemproposal = ls_itemprop
-          TABLES    return       = lt_return.
-        READ TABLE lt_return TRANSPORTING NO FIELDS WITH KEY type = 'E'.
-        IF sy-subrc <> 0.
-          lv_count = lv_count + 1.
-        ENDIF.
+      " 1) create the pallet HU
+      DATA lv_pallet TYPE exidv.
+      CALL FUNCTION 'BAPI_HU_CREATE'
+        EXPORTING hukey_ref     = h-reference
+                  packing_matnr = h-palletpackagingmaterial
+        IMPORTING huexid        = lv_pallet
+        TABLES    return        = lt_return.
+      LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+        APPEND ls_ret TO lt_errs.
       ENDLOOP.
 
-      INSERT VALUE #( %cid = ls_key-%cid
-        %param-pallet      = lv_hukey
-        %param-boxespacked = lv_count
-        %param-message     = |Pallet { lv_hukey } created, { lv_count } box(es) packed.| ) INTO TABLE result.
+      " 2) pack each box HU onto the pallet as a lower-level HU
+      LOOP AT lt_boxes INTO DATA(box).
+        CLEAR lt_return.
+        CALL FUNCTION 'BAPI_HU_PACK'
+          EXPORTING hukey    = lv_pallet
+                    lower_hu = box-handlingunit
+          TABLES    return   = lt_return.
+        LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+          APPEND ls_ret TO lt_errs.
+        ENDLOOP.
+      ENDLOOP.
+
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_errs
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( pallet = lv_pallet
+                                          boxespacked = lines( lt_boxes )
+                                          message = |Pallet { lv_pallet } packed with { lines( lt_boxes ) } box(es)| ) ) TO result.
+      ENDIF.
     ENDLOOP.
-  ENDMETHOD.
-ENDCLASS.
-
-CLASS lsc_zi_palletization DEFINITION INHERITING FROM cl_abap_behavior_saver.
-  PROTECTED SECTION.
-    METHODS save REDEFINITION.
-ENDCLASS.
-
-CLASS lsc_zi_palletization IMPLEMENTATION.
-  METHOD save.
   ENDMETHOD.
 ENDCLASS.

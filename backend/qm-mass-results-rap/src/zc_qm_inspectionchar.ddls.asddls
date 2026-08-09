@@ -22,6 +22,8 @@ define root view entity ZC_QM_INSPECTIONCHAR
       @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_PLANT', element: 'Plant' } }]
       @UI: { lineItem: [ { position: 60 } ], selectionField: [ { position: 30 } ] }
       Plant,
+      WorkCenterInternalID,
+      WorkCenter,
       @UI: { lineItem: [ { position: 70 } ] }
       Unit,
       @UI: { lineItem: [ { position: 80 } ] }

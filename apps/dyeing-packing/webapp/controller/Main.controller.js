@@ -78,9 +78,11 @@ sap.ui.define([
                     oUiModel.setProperty("/units", []);
                     that._recalcTotals();
                     var oModel = that.getView().getModel();   // OData V4 default model
+                    // Explicit $select — a control-less binding gets no autoExpandSelect,
+                    // so it would otherwise fetch every property of every unit.
                     var oList = oModel.bindList(ENTITY_SET, undefined, undefined, [
                         new Filter("Reference", FilterOperator.EQ, sRef)
-                    ]);
+                    ], { $select: "HandlingUnit,PackingGroup,PackagingMaterial,NetWeight,GrossWeight" });
                     oList.requestContexts(0, 500).then(function (aContexts) {
                         var aUnits = [];
                         aContexts.forEach(function (oCtx) {

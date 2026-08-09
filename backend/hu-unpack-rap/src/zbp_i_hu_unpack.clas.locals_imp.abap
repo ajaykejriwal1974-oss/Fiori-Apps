@@ -1,82 +1,53 @@
-CLASS lhc_zi_hu_unpack DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_HuUnpack DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS unpackitems FOR MODIFY
+    METHODS unpackItems FOR MODIFY
       IMPORTING keys FOR ACTION HuUnpack~unpackItems RESULT result.
 ENDCLASS.
 
-CLASS lhc_zi_hu_unpack IMPLEMENTATION.
-  METHOD unpackitems.
-    DATA: lv_msg    TYPE string,
-          lv_exidv  TYPE exidv,
-          lv_hukey  TYPE bapihukey-hu_exid,
-          ls_item   TYPE bapihuitmunpack,
-          lt_return TYPE STANDARD TABLE OF bapiret2,
-          ls_return TYPE bapiret2.
-
-    LOOP AT keys INTO DATA(ls_key).
-      CLEAR lv_msg.
-      SPLIT ls_key-%param-huitemlist AT ';' INTO TABLE DATA(lt_pairs).
-
-      LOOP AT lt_pairs INTO DATA(lv_pair).
-        CONDENSE lv_pair.
-        IF lv_pair IS INITIAL.
-          CONTINUE.
-        ENDIF.
-        SPLIT lv_pair AT '=' INTO DATA(lv_hu) DATA(lv_item).
-        CONDENSE: lv_hu, lv_item.
-        lv_exidv = |{ lv_hu ALPHA = IN }|.
-        DATA(lv_vepos) = CONV vepos( lv_item ).
-
-        SELECT SINGLE venum FROM vekp
-          WHERE exidv = @lv_exidv INTO @DATA(lv_venum).
-        IF sy-subrc <> 0.
-          lv_msg = |{ lv_msg }{ lv_hu }: HU not found. |.
-          CONTINUE.
-        ENDIF.
-
-        SELECT SINGLE vepos, matnr, charg, vemng, werks FROM vepo
-          WHERE venum = @lv_venum AND vepos = @lv_vepos INTO @DATA(ls_vepo).
-        IF sy-subrc <> 0.
-          lv_msg = |{ lv_msg }{ lv_hu }/{ lv_item }: item not found. |.
-          CONTINUE.
-        ENDIF.
-
-        lv_hukey = lv_exidv.
-        CLEAR ls_item.
-        ls_item-hu_item_type   = '1'.
-        ls_item-hu_item_number = ls_vepo-vepos.
-        ls_item-material       = ls_vepo-matnr.
-        ls_item-batch          = ls_vepo-charg.
-        ls_item-pack_qty       = ls_vepo-vemng.
-        ls_item-plant          = ls_vepo-werks.
-
+CLASS lhc_HuUnpack IMPLEMENTATION.
+  METHOD unpackItems.
+    " VERIFY: BAPI_HU_UNPACK parameter names vary by release; the target storage
+    " location move may be a separate goods movement (BAPI_GOODSMVT_CREATE).
+    LOOP AT keys INTO DATA(key).
+      DATA(h)        = key-%param.
+      DATA(lt_items) = key-%param-_item.
+      IF lt_items IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid %param-message = 'No items to unpack' ) TO result.
+        CONTINUE.
+      ENDIF.
+      " lt_return is CLEARed before every BAPI call (a TABLES return may be appended to
+      " or refreshed by the FM, and the method-scoped table otherwise carries messages
+      " across items and across action keys); E/A messages are harvested into lt_errs so
+      " no item's error is lost or double-counted.
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      DATA lt_errs   TYPE STANDARD TABLE OF bapiret2.
+      DATA ls_ret    TYPE bapiret2.
+      CLEAR: lt_return, lt_errs.
+      LOOP AT lt_items INTO DATA(it).
         CLEAR lt_return.
         CALL FUNCTION 'BAPI_HU_UNPACK'
-          EXPORTING hukey = lv_hukey itemunpack = ls_item
-          TABLES    return = lt_return.
-
-        READ TABLE lt_return INTO ls_return WITH KEY type = 'E'.
-        IF sy-subrc = 0.
-          lv_msg = |{ lv_msg }{ lv_hu }/{ lv_item }: { ls_return-message }. |.
-        ELSE.
-          lv_msg = |{ lv_msg }{ lv_hu }/{ lv_item }: Handling Unit item emptied. |.
-        ENDIF.
+          EXPORTING hukey      = it-handlingunit
+                    materialnr = it-material
+                    batch      = it-batch
+                    pack_qty   = it-quantity
+                    unit       = it-unit
+                    dest_stloc = h-targetstoragelocation
+          TABLES    return     = lt_return.
+        LOOP AT lt_return INTO ls_ret WHERE type = 'E' OR type = 'A'.
+          APPEND ls_ret TO lt_errs.
+        ENDLOOP.
       ENDLOOP.
-
-      IF lv_msg IS INITIAL.
-        lv_msg = |No HU / item supplied.|.
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_errs
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( message = |Unpacked { lines( lt_items ) } item(s) to { h-targetstoragelocation }| ) ) TO result.
       ENDIF.
-      INSERT VALUE #( %cid = ls_key-%cid %param-message = lv_msg ) INTO TABLE result.
     ENDLOOP.
-  ENDMETHOD.
-ENDCLASS.
-
-CLASS lsc_zi_hu_unpack DEFINITION INHERITING FROM cl_abap_behavior_saver.
-  PROTECTED SECTION.
-    METHODS save REDEFINITION.
-ENDCLASS.
-
-CLASS lsc_zi_hu_unpack IMPLEMENTATION.
-  METHOD save.
   ENDMETHOD.
 ENDCLASS.

@@ -22,6 +22,9 @@ sap.ui.define([
                 scan: { huNumber: "" },
                 items: []
             }), "ui");
+            // O(1) duplicate-scan lookup. /items holds one row per HU *item*, so a shift
+            // scanning hundreds of HUs makes a per-scan array scan O(n²) on the scan-gun path.
+            this._mScannedHus = Object.create(null);
         },
 
         /**
@@ -47,9 +50,11 @@ sap.ui.define([
             }
 
             var oModel = this.getView().getModel();   // OData V4 default model
+            // Explicit $select (control-less binding — autoExpandSelect can't infer one).
+            // MaterialDescription is deliberately absent: ZC_HU_Item does not expose it.
             var oList = oModel.bindList(ENTITY_SET, undefined, undefined, [
                 new Filter("HandlingUnit", FilterOperator.EQ, sHu)
-            ]);
+            ], { $select: "HandlingUnit,HandlingUnitItem,Material,Batch,Quantity,Unit" });
             var that = this;
             oList.requestContexts(0, 200).then(function (aContexts) {
                 if (!aContexts.length) {
@@ -70,6 +75,7 @@ sap.ui.define([
                     });
                 });
                 oUiModel.setProperty("/items", aItems);
+                that._mScannedHus[sHu] = true;
                 that._resetScan();
                 MessageToast.show(that._text("huAdded", [sHu]));
             }).catch(function (oErr) {
@@ -83,12 +89,19 @@ sap.ui.define([
             var iIndex = parseInt(sPath.split("/").pop(), 10);
             var oUiModel = this.getView().getModel("ui");
             var aItems = oUiModel.getProperty("/items");
+            var sHu = aItems[iIndex] && aItems[iIndex].HandlingUnit;
             aItems.splice(iIndex, 1);
             oUiModel.setProperty("/items", aItems);
+            // Removing one ITEM row may leave sibling rows of the same HU — only forget the
+            // HU (allowing a re-scan) once none of its rows remain.
+            if (sHu && !aItems.some(function (o) { return o.HandlingUnit === sHu; })) {
+                delete this._mScannedHus[sHu];
+            }
         },
 
         onClearAll: function () {
             this.getView().getModel("ui").setProperty("/items", []);
+            this._mScannedHus = Object.create(null);
         },
 
         /**
@@ -132,15 +145,14 @@ sap.ui.define([
                     (oResult && oResult.Message) || ""
                 ]));
                 that.getView().getModel("ui").setProperty("/items", []);
+                that._mScannedHus = Object.create(null);
             }).catch(function (oErr) {
                 MessageBox.error(that._text("postFailed", [(oErr && oErr.message) || ""]));
             });
         },
 
         _huAlreadyAdded: function (sHu) {
-            return this.getView().getModel("ui").getProperty("/items").some(function (o) {
-                return o.HandlingUnit === sHu;
-            });
+            return !!this._mScannedHus[sHu];
         },
 
         _resetScan: function () {

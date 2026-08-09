@@ -1,10 +1,8 @@
 @EndUserText.label: 'convertToMts - import'
-define abstract entity ZD_MTO_MTS
+//  Composition parameter (was flat): all selected stock lines convert in ONE
+//  BAPI_GOODSMVT_CREATE call - one 411-E material document, one commit - instead
+//  of one HTTP round trip + BAPI + COMMIT WORK per selected row.
+define abstract entity ZD_MtoMts
 {
-  Material : abap.char(40);
-  Plant : abap.char(4);
-  SalesOrder : abap.char(10);
-  SalesOrderItem : abap.numc(6);
-  Quantity : abap.dec(13,3);
-  BaseUnit : abap.unit(3);
+  _Item : composition [0..*] of ZD_MtoMtsItem;
 }

@@ -1,0 +1,4 @@
+{"MtosStock":[
+ {"Material":"FG-YARN-3040","Plant":"1000","SalesOrder":"0030045671","SalesOrderItem":"10","Quantity":"2000","BaseUnit":"KG"},
+ {"Material":"FG-FABRIC-220","Plant":"2000","SalesOrder":"0030045699","SalesOrderItem":"20","Quantity":"5400","BaseUnit":"M"},
+ {"Material":"FG-YARN-3041","Plant":"1000","SalesOrder":"0030045700","SalesOrderItem":"10","Quantity":"1500","BaseUnit":"KG"}]}

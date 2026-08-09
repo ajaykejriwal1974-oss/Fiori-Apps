@@ -1,0 +1,11 @@
+{
+  "contract": "40000123",
+  "massBatch": "",
+  "dirtyCount": 0,
+  "items": [
+    {"ContractItem": "10", "Material": "FG-YARN-3040", "MaterialDescription": "Combed Yarn 30s", "CurrentBatch": "B0001", "NewBatch": ""},
+    {"ContractItem": "20", "Material": "FG-YARN-3041", "MaterialDescription": "Combed Yarn 30s Slub", "CurrentBatch": "B0002", "NewBatch": ""},
+    {"ContractItem": "30", "Material": "FG-FABRIC-220", "MaterialDescription": "Single Jersey 220 GSM", "CurrentBatch": "B0107", "NewBatch": ""},
+    {"ContractItem": "40", "Material": "FG-FABRIC-180", "MaterialDescription": "Pique 180 GSM", "CurrentBatch": "B0112", "NewBatch": ""}
+  ]
+}

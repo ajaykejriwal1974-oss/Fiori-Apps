@@ -31,13 +31,21 @@ sap.ui.define([
                 aFilters.push(new Filter("Plant", FilterOperator.EQ, oUi.filter.plant));
             }
             if (oUi.filter.workCenter) {
-                aFilters.push(new Filter("WorkCenter", FilterOperator.EQ, oUi.filter.workCenter));
+                // A purely-numeric entry is treated as the INTERNAL work-center id and
+                // filtered on the base-table column (oper.arbid) — no pre-join of the
+                // whole open-characteristics set through the _WorkCenter association.
+                // A name still filters on WorkCenter for usability.
+                if (/^\d+$/.test(oUi.filter.workCenter)) {
+                    aFilters.push(new Filter("WorkCenterInternalID", FilterOperator.EQ, oUi.filter.workCenter));
+                } else {
+                    aFilters.push(new Filter("WorkCenter", FilterOperator.EQ, oUi.filter.workCenter));
+                }
             }
             if (oUi.filter.inspectionLot) {
                 aFilters.push(new Filter("InspectionLot", FilterOperator.EQ, oUi.filter.inspectionLot));
             }
             this.byId("resultsTable").getBinding("items").filter(aFilters);
-            this._resetDirty();
+            this._resetDirty(true);   // discard unsent massEdit changes from the previous result set
         },
 
         /** Track which rows the user has edited so we can post only those. */
@@ -66,7 +74,11 @@ sap.ui.define([
                 return;
             }
 
-            oModel.submitBatch("$auto").then(function () {
+            // "massEdit" is a DEFERRED update group (manifest updateGroupId): edited cells
+            // accumulate client-side and this really is one $batch. With the previous "$auto"
+            // inheritance every cell edit auto-submitted its own PATCH — a 300-characteristic
+            // mass entry became 300 sequential round trips and this submitBatch was a no-op.
+            oModel.submitBatch("massEdit").then(function () {
                 MessageToast.show(this.getText("postSuccess", [iCount]));
                 this._resetDirty();
             }.bind(this)).catch(function (oError) {
@@ -74,7 +86,13 @@ sap.ui.define([
             }.bind(this));
         },
 
-        _resetDirty: function () {
+        _resetDirty: function (bDiscardPending) {
+            // With the deferred "massEdit" group, edits not yet posted are pending on the
+            // model — when the user rebinds (new filters) those stale PATCHes must be
+            // dropped, or they'd ride along with the NEXT post.
+            if (bDiscardPending) {
+                try { this.getView().getModel().resetChanges("massEdit"); } catch (e) { /* none pending */ }
+            }
             this._dirty = {};
             this.getView().getModel("ui").setProperty("/dirtyCount", 0);
         },

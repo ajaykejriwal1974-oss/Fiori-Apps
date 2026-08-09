@@ -1,0 +1,9 @@
+{
+  "header": {"movementType": "311", "plant": "1010", "storageLocation": "0001", "moveStorageLocation": "0005"},
+  "scan": {"huNumber": ""},
+  "items": [
+    {"HandlingUnit": "HU0000045123", "Material": "FG-YARN-3040", "MaterialDescription": "Combed Yarn 30s", "Batch": "B0001", "Quantity": "480", "Unit": "KG"},
+    {"HandlingUnit": "HU0000045124", "Material": "FG-YARN-3041", "MaterialDescription": "Combed Yarn 30s Slub", "Batch": "B0002", "Quantity": "500", "Unit": "KG"},
+    {"HandlingUnit": "HU0000045125", "Material": "FG-FABRIC-220", "MaterialDescription": "Single Jersey 220 GSM", "Batch": "B0107", "Quantity": "320", "Unit": "KG"}
+  ]
+}

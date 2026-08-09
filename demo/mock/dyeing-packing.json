@@ -1,0 +1,9 @@
+{
+  "header": {"reference": "DO-2026-0456", "material": "FG-YARN-3040", "batch": "B0001", "shade": "Indigo 19-4024", "weightUnit": "KG"},
+  "units": [
+    {"levelType": "Cone",   "level": "Cone",   "packingMaterial": "CONE-CORE",  "quantity": "24", "netWeight": "28.8", "grossWeight": "30.0"},
+    {"levelType": "Carton", "level": "Carton", "packingMaterial": "CARTON-L",   "quantity": "4",  "netWeight": "115",  "grossWeight": "118"},
+    {"levelType": "Pallet", "level": "Pallet", "packingMaterial": "PALLET-EUR", "quantity": "1",  "netWeight": "460",  "grossWeight": "475"}
+  ],
+  "totals": {"net": "460.000", "gross": "475.000"}
+}
