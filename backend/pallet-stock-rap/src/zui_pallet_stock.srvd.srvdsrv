@@ -1,0 +1,4 @@
+@EndUserText.label: 'Pallet Stock at Customer'
+define service ZUI_PALLET_STOCK {
+  expose ZI_PALLET_STOCK_LEDGER as PalletStock;
+}

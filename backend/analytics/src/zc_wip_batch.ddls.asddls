@@ -2,8 +2,8 @@
 @EndUserText.label: 'WIP Batch'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_WipBatchQuery
-  as projection on ZI_WipBatchCube
+define view entity ZC_WIP_BATCH
+  as select from ZI_WIP_BATCH
 {
       @AnalyticsDetails.query.axis: #ROWS
       Batch,
@@ -12,7 +12,7 @@ define view entity ZC_WipBatchQuery
       @AnalyticsDetails.query.axis: #ROWS
       Plant,
       @AnalyticsDetails.query.axis: #FREE
-      Order,
+      ProductionOrder,
       @AnalyticsDetails.query.axis: #FREE
       BatchDate,
       @AnalyticsDetails.query.axis: #FREE

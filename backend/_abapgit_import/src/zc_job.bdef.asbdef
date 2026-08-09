@@ -1,0 +1,8 @@
+projection;
+
+define behavior for ZC_Job alias Job
+{
+  use create;
+  use update;
+  use delete;
+}

@@ -1,0 +1,8 @@
+projection;
+
+define behavior for ZC_DIGITAL_SIGNATURE alias DigiSign
+{
+  use create;
+  use update;
+  use delete;
+}

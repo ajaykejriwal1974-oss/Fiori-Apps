@@ -1,0 +1,18 @@
+managed;
+
+define behavior for ZI_TRANSPORT alias Transport
+persistent table ztrckmstr
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) TransportCode, TruckNumber;
+
+  mapping for ztrckmstr
+  {
+    TransportCode = zztrcode;
+    TruckNumber   = zztrckno;
+  }
+}

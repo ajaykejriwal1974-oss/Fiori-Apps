@@ -1,0 +1,4 @@
+@EndUserText.label: 'Dyeing Recipe Master Service'
+define service ZUI_RECIPE {
+  expose ZC_Recipe as Recipe;
+}

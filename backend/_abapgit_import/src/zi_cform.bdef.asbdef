@@ -1,0 +1,26 @@
+managed;
+
+define behavior for ZI_Cform alias CForm
+persistent table zcform1
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) SalesOrganization;
+
+  mapping for zcform1
+  {
+    SalesOrganization    = sale_org;
+    Customer             = cust_code;
+    BillingDocument      = invoice_no;
+    BillingDate          = invoice_dt;
+    InvoiceValue         = invoice_val;
+    FormType             = form_type;
+    FormNumber           = form_no;
+    FormDate             = form_dt;
+    AllocatedValue       = allocated_value;
+    Quantity             = qty;
+  }
+}

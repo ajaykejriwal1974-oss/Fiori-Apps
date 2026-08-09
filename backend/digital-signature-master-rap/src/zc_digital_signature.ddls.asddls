@@ -3,19 +3,22 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['CompanyCode']
-// Value helps reference standard released VH CDS (VERIFY the exact name per
-// release); shade fields use the Shade master ZC_DD_Shade.
-define root view entity ZC_DigitalSignature
+define root view entity ZC_DIGITAL_SIGNATURE
   provider contract transactional_query
-  as projection on ZI_DigitalSignature
+  as projection on ZI_DIGITAL_SIGNATURE
 {
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_CompanyCodeStdVH', element: 'CompanyCode' } }]
-  key CompanyCode,
       @Search.defaultSearchElement: true
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } }]
+      @UI: { lineItem: [ { position: 10, importance: #HIGH } ], selectionField: [ { position: 10 } ] }
+  key CompanyCode,
+      @UI: { lineItem: [ { position: 20 } ] }
       Email,
-      Password,
+      @UI: { lineItem: [ { position: 30 } ] }
       IpAddress,
+      @UI: { lineItem: [ { position: 40 } ] }
       PfxPrefix,
+      @UI: { lineItem: [ { position: 50 } ] }
       SourceFolder,
+      @UI: { lineItem: [ { position: 60 } ] }
       DestinationFolder
 }

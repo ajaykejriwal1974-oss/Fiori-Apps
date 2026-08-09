@@ -1,0 +1,30 @@
+managed;
+
+define behavior for ZI_Job alias Job
+persistent table zpp_jobn
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) JobNumber;
+  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  mapping for zpp_jobn
+  {
+    JobNumber            = jobno;
+    BatchNumber          = batchno;
+    ScheduleNumber       = schno;
+    Plant                = werks;
+    DyeingWorkCenter     = dye_arbpl;
+    WindingWorkCenter    = win_arbpl;
+    DeletionFlag         = delind;
+    CreatedBy            = ernam;
+    CreatedOnDate        = erdat;
+    CreatedAtTime        = erzet;
+    LastChangedBy        = lastuser;
+    LastChangedDate      = lastdate;
+    LastChangedTime      = lasttime;
+  }
+}

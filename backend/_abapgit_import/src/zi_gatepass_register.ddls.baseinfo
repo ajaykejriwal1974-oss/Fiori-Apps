@@ -1,0 +1,8 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZGP_HDR",
+      "ZGP_ITEM"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+managed;
+
+define behavior for ZI_ACCGRP alias AccountGroup
+persistent table zsol_accgrp
+lock master
+{
+  create;
+  update;
+  delete;
+  association _Accounts { create; }
+
+  field ( mandatory : create ) GroupCode;
+
+  mapping for zsol_accgrp
+  {
+    GroupCode    = zzsol_grp;
+    GroupText    = text50;
+    SignReversal = zsign_rev;
+  }
+}
+
+define behavior for ZI_ACCGRP_ACC alias AccountAssignment
+persistent table zsol_acc_grp
+lock dependent by _Group
+{
+  update;
+  delete;
+  field ( readonly ) GroupCode;
+  field ( mandatory : create ) GLAccount;
+  association _Group;
+
+  mapping for zsol_acc_grp
+  {
+    GroupCode = zzsol_grp;
+    GLAccount = racct;
+  }
+}

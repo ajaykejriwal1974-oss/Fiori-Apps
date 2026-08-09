@@ -1,0 +1,16 @@
+projection;
+
+define behavior for ZC_ACCGRP alias AccountGroup
+{
+  use create;
+  use update;
+  use delete;
+  use association _Accounts { create; }
+}
+
+define behavior for ZC_ACCGRP_ACC alias AccountAssignment
+{
+  use update;
+  use delete;
+  use association _Group;
+}

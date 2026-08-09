@@ -1,0 +1,35 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'Gate Pass Item', typeNamePlural: 'Gate Pass Items',
+  title: { type: #STANDARD, value: 'GpNumber' },
+  description: { type: #STANDARD, value: 'Material' } } }
+annotate view ZC_GTPASS_ITEM with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Item', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Gate Pass No.'
+  GpNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  @EndUserText.label: 'Item'
+  ItemNumber;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Fiscal Year'
+  FiscalYear;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Material'
+  Material;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Description'
+  MaterialDescription;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Supplier'
+  Supplier;
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Supplier Name'
+  SupplierName;
+  @UI: { lineItem: [ { position: 80 } ], identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Quantity'
+  Quantity;
+  @UI: { lineItem: [ { position: 90 } ], identification: [ { position: 90 } ] }
+  @EndUserText.label: 'Unit'
+  Unit;
+}

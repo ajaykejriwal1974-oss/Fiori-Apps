@@ -2,8 +2,8 @@
 @EndUserText.label: 'Dispatch Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_DispatchRegisterQuery
-  as projection on ZI_DispatchRegisterCube
+define view entity ZC_DISPATCH_REGISTER
+  as select from ZI_DISPATCH_REGISTER
 {
       @AnalyticsDetails.query.axis: #ROWS
       Box,

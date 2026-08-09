@@ -1,0 +1,20 @@
+# Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here.
+specVersion: "3.0"
+metadata:
+  name: kejriwal.mm.inboundhus
+type: application
+builder:
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZINB_DEL_HUS
+          package: ZKGPL_FIORI
+          transport: KSDK906624
+          description: "KGPL Inbound Delivery HUs"
+        exclude:
+          - "/test/"

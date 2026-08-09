@@ -1,0 +1,122 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "kejriwal.fi.vform",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_vform_04/srvd/sap/zui_vform/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "VendorInvoiceAlloc-manage": {
+          "semanticObject": "VendorInvoiceAlloc",
+          "action": "manage",
+          "icon": "sap-icon://receipt",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.128.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "kejriwal.fi.vform.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$auto"
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "VendorInvoiceList",
+          "target": "VendorInvoiceList"
+        },
+        {
+          "pattern": "VendorInvoice({key}):?query:",
+          "name": "VendorInvoiceObjectPage",
+          "target": "VendorInvoiceObjectPage"
+        }
+      ],
+      "targets": {
+        "VendorInvoiceList": {
+          "type": "Component",
+          "id": "VendorInvoiceList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/VendorInvoice",
+              "variantManagement": "Page",
+              "initialLoad": "Enabled",
+              "navigation": {
+                "VendorInvoice": {
+                  "detail": {
+                    "route": "VendorInvoiceObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "VendorInvoiceObjectPage": {
+          "type": "Component",
+          "id": "VendorInvoiceObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/VendorInvoice"
+            }
+          }
+        }
+      }
+    }
+  }
+}

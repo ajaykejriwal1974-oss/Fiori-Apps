@@ -1,0 +1,4 @@
+@EndUserText.label: 'Schedule Master Service'
+define service ZUI_SCHEDULE {
+  expose ZC_Schedule as Schedule;
+}

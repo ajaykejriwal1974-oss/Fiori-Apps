@@ -7,15 +7,14 @@
 //   - convertToMts    (ZMTOS)  : transfer make-to-order stock to own/MTS stock
 //   - createPhysInvDoc (ZHUINV): create the physical-inventory document
 // Both actions drive standard BAPIs (see the behavior); no custom persistence.
-define root view entity ZI_MtosStock
-  as select from mska
+define root view entity ZI_MTOS_PROCESS
+  as select from nsdm_e_mska as stk
+    inner join   mara        as mat on mat.matnr = stk.matnr
 {
-  key matnr  as Material,
-  key werks  as Plant,
-  key vbeln  as SalesOrder,
-  key posnr  as SalesOrderItem,
-      @Semantics.quantity.unitOfMeasure: 'BaseUnit'
-      cast( kalab as abap.quan( 13, 3 ) ) as Quantity,
-      @Semantics.unitOfMeasure: true
-      meins  as BaseUnit
+  key stk.matnr  as Material,
+  key stk.werks  as Plant,
+  key stk.vbeln  as SalesOrder,
+  key stk.posnr  as SalesOrderItem,
+      cast( stk.kalab as abap.dec( 13, 3 ) ) as Quantity,
+      mat.meins  as BaseUnit
 }

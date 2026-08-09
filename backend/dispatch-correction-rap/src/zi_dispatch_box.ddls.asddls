@@ -14,7 +14,7 @@
 //  join would fan each dispatch row out once per fiscal year and collide the
 //  declared "key boxno". VERIFY "latest year" is the right pick for your data.
 //
-define root view entity ZI_DispatchBox
+define root view entity ZI_DISPATCH_BOX
   as select from zsol_hudispatch as disp
     left outer join ZI_PackLatestYear as latest on latest.boxno = disp.boxno
     left outer join zpp_pack as pack on  pack.boxno = disp.boxno
@@ -29,5 +29,5 @@ define root view entity ZI_DispatchBox
       disp.time                                   as CreatedAtTime,
       pack.matnr                                  as Material,
       pack.grade                                  as Grade,
-      cast( pack.netwt as abap.quan( 13, 3 ) )    as NetWeight
+      cast( pack.netwt as abap.dec( 13, 3 ) )    as NetWeight
 }

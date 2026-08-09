@@ -1,0 +1,7 @@
+specVersion: "3.0"
+metadata:
+  name: kejriwal.sd.salesdocstatus
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
