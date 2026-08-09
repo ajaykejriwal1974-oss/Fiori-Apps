@@ -161,11 +161,24 @@ VIEWER = [
     ("Dyeing Schedules",          "PROD",  "schedules"),
     ("Merge Details",             "PROD",  "merge"),
     ("Packing Boxes",             "PACK",  "packing"),
+    ("Sales Register",            "SALES", "salesRegister"),
+    ("Purchase Register",         "PURCH", "purchaseRegister"),
+    ("Purchase Orders",           "PURCH", "purchaseOrders"),
+    ("Delivery Challan",          "DISP",  "deliveries"),
+    ("Dyeing Recipes",            "PROD",  "recipes"),
+    ("Transport Codes",           "MAST",  "transportCodes"),
+    ("Checked / Packed By",       "PACK",  "checkedPackedBy"),
+    ("Packing Material Master",   "PACK",  "packingMaterials"),
 ]
 
-# Master-data reference tiles superseded by a runnable VIEWER tile (real data now
-# loads live), so we don't list them twice.
-VIEWER_SUPERSEDES = {"Job Master", "Schedule Master", "Merge Details"}
+# Reference tiles (MASTER_DATA or LIVE_REF) superseded by a runnable VIEWER tile
+# with real data now — so we don't list them twice.
+VIEWER_SUPERSEDES = {
+    "Job Master", "Schedule Master", "Merge Details",
+    "Recipe Master", "Transport Code", "Checked / Packed By",
+    "Packing Material Master", "Sales Register", "Purchase Register",
+    "Delivery Challan",
+}
 
 
 def read(path):
@@ -524,6 +537,8 @@ def main():
     for title, space, entity_key in VIEWER:
         by_space[space].append((0, title, tile_viewer(space, title, entity_key)))
     for title, space, launch in LIVE_REF:
+        if title in VIEWER_SUPERSEDES:
+            continue  # now runnable via a VIEWER tile with real data
         by_space[space].append((1, title, live_tile(space, title, launch)))
     for folder, space, title, fiori, replaces in ADAPTATION:
         by_space[space].append((2, title, info_tile(folder, space, title, fiori, replaces)))
