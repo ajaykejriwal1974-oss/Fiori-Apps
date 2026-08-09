@@ -169,6 +169,8 @@ VIEWER = [
     ("Transport Codes",           "MAST",  "transportCodes"),
     ("Checked / Packed By",       "PACK",  "checkedPackedBy"),
     ("Packing Material Master",   "PACK",  "packingMaterials"),
+    ("GST Tax Register",          "STAT",  "gstRegister"),
+    ("TDS Register",              "STAT",  "tdsRegister"),
 ]
 
 # Reference tiles (MASTER_DATA or LIVE_REF) superseded by a runnable VIEWER tile
@@ -177,7 +179,7 @@ VIEWER_SUPERSEDES = {
     "Job Master", "Schedule Master", "Merge Details",
     "Recipe Master", "Transport Code", "Checked / Packed By",
     "Packing Material Master", "Sales Register", "Purchase Register",
-    "Delivery Challan",
+    "Delivery Challan", "GST Tax Register", "TDS Register",
 }
 
 

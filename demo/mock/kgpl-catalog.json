@@ -1993,6 +1993,327 @@
           "SEQ": "01"
         }
       ]
+    },
+    "gstRegister": {
+      "title": "GST Tax Register",
+      "note": "BSET — 812,932 tax lines (recent GST postings)",
+      "columns": [
+        {
+          "label": "FI Doc",
+          "prop": "belnr",
+          "w": "11rem"
+        },
+        {
+          "label": "Year",
+          "prop": "gjahr",
+          "w": "6rem"
+        },
+        {
+          "label": "Co.Code",
+          "prop": "bukrs",
+          "w": "7rem"
+        },
+        {
+          "label": "Bus.Place",
+          "prop": "bupla",
+          "w": "8rem"
+        },
+        {
+          "label": "Tax Code",
+          "prop": "mwskz",
+          "w": "7rem"
+        },
+        {
+          "label": "Component",
+          "prop": "component",
+          "w": "8rem"
+        },
+        {
+          "label": "Taxable Base",
+          "prop": "hwbas",
+          "w": "12rem",
+          "num": true
+        },
+        {
+          "label": "Tax Amount",
+          "prop": "hwste",
+          "w": "11rem",
+          "num": true
+        },
+        {
+          "label": "Rate",
+          "prop": "rate",
+          "w": "7rem",
+          "num": true
+        }
+      ],
+      "rows": [
+        {
+          "belnr": "9100000007",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "CGST",
+          "hwbas": "532,639.36",
+          "hwste": "31,958.36",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000007",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "SGST",
+          "hwbas": "532,639.36",
+          "hwste": "31,958.36",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000006",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "CGST",
+          "hwbas": "156,764.54",
+          "hwste": "9,405.87",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000006",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "SGST",
+          "hwbas": "156,764.54",
+          "hwste": "9,405.87",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000006",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "T0",
+          "component": "TCS",
+          "hwbas": "175,576.28",
+          "hwste": "131.68",
+          "rate": "0.075%"
+        },
+        {
+          "belnr": "9100000005",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "CGST",
+          "hwbas": "287,279.34",
+          "hwste": "17,236.76",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000005",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "SGST",
+          "hwbas": "287,279.34",
+          "hwste": "17,236.76",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000004",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "CGST",
+          "hwbas": "477,862.80",
+          "hwste": "28,671.77",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000004",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "GC",
+          "component": "SGST",
+          "hwbas": "477,862.80",
+          "hwste": "28,671.77",
+          "rate": "6.00%"
+        },
+        {
+          "belnr": "9100000003",
+          "gjahr": "2026",
+          "bukrs": "1000",
+          "bupla": "1000",
+          "mwskz": "T0",
+          "component": "TCS",
+          "hwbas": "89,481.06",
+          "hwste": "67.11",
+          "rate": "0.075%"
+        }
+      ]
+    },
+    "tdsRegister": {
+      "title": "TDS Register",
+      "note": "WITH_ITEM — 10,717 withholding-tax items (recent)",
+      "columns": [
+        {
+          "label": "FI Doc",
+          "prop": "belnr",
+          "w": "11rem"
+        },
+        {
+          "label": "Year",
+          "prop": "gjahr",
+          "w": "6rem"
+        },
+        {
+          "label": "Co.Code",
+          "prop": "bukrs",
+          "w": "7rem"
+        },
+        {
+          "label": "WHT Type",
+          "prop": "witht",
+          "w": "8rem"
+        },
+        {
+          "label": "WHT Code",
+          "prop": "wt_withcd",
+          "w": "8rem"
+        },
+        {
+          "label": "Vendor",
+          "prop": "wt_acco",
+          "w": "11rem"
+        },
+        {
+          "label": "Base Amount",
+          "prop": "wt_qsshh",
+          "w": "12rem",
+          "num": true
+        },
+        {
+          "label": "TDS Amount",
+          "prop": "wt_qbshh",
+          "w": "11rem",
+          "num": true
+        },
+        {
+          "label": "Rate",
+          "prop": "rate",
+          "w": "7rem",
+          "num": true
+        }
+      ],
+      "rows": [
+        {
+          "belnr": "1900000136",
+          "gjahr": "2025",
+          "bukrs": "1000",
+          "witht": "1C",
+          "wt_withcd": "1C",
+          "wt_acco": "L300000416",
+          "wt_qsshh": "1,000,000.00",
+          "wt_qbshh": "20,000.00",
+          "rate": "2.00%"
+        },
+        {
+          "belnr": "1900000097",
+          "gjahr": "2025",
+          "bukrs": "1000",
+          "witht": "1D",
+          "wt_withcd": "1K",
+          "wt_acco": "L500000315",
+          "wt_qsshh": "10,272.00",
+          "wt_qbshh": "205.00",
+          "rate": "2.00%"
+        },
+        {
+          "belnr": "1900000069",
+          "gjahr": "2025",
+          "bukrs": "1000",
+          "witht": "1C",
+          "wt_withcd": "0C",
+          "wt_acco": "L100000234",
+          "wt_qsshh": "20,000.00",
+          "wt_qbshh": "200.00",
+          "rate": "1.00%"
+        },
+        {
+          "belnr": "1900000061",
+          "gjahr": "2025",
+          "bukrs": "1000",
+          "witht": "1J",
+          "wt_withcd": "1J",
+          "wt_acco": "L300000123",
+          "wt_qsshh": "10,000.00",
+          "wt_qbshh": "10.00",
+          "rate": "0.10%"
+        },
+        {
+          "belnr": "1900000060",
+          "gjahr": "2025",
+          "bukrs": "1000",
+          "witht": "1C",
+          "wt_withcd": "0C",
+          "wt_acco": "L300000002",
+          "wt_qsshh": "110,000.00",
+          "wt_qbshh": "1,100.00",
+          "rate": "1.00%"
+        },
+        {
+          "belnr": "1900000025",
+          "gjahr": "2025",
+          "bukrs": "1003",
+          "witht": "1C",
+          "wt_withcd": "0C",
+          "wt_acco": "L300000416",
+          "wt_qsshh": "100,000.00",
+          "wt_qbshh": "1,000.00",
+          "rate": "1.00%"
+        },
+        {
+          "belnr": "1900000010",
+          "gjahr": "2025",
+          "bukrs": "1003",
+          "witht": "1F",
+          "wt_withcd": "1F",
+          "wt_acco": "L100000004",
+          "wt_qsshh": "30,000.00",
+          "wt_qbshh": "3,000.00",
+          "rate": "10.00%"
+        },
+        {
+          "belnr": "1500000002",
+          "gjahr": "2025",
+          "bukrs": "7000",
+          "witht": "J1",
+          "wt_withcd": "J1",
+          "wt_acco": "L200000092",
+          "wt_qsshh": "3,030,000.00",
+          "wt_qbshh": "3,030.00",
+          "rate": "0.10%"
+        },
+        {
+          "belnr": "5100000007",
+          "gjahr": "2024",
+          "bukrs": "1000",
+          "witht": "1J",
+          "wt_withcd": "1J",
+          "wt_acco": "L100000264",
+          "wt_qsshh": "15,000.00",
+          "wt_qbshh": "15.00",
+          "rate": "0.10%"
+        }
+      ]
     }
   }
 }
