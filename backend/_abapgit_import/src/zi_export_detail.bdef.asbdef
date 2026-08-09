@@ -1,0 +1,22 @@
+managed;
+
+define behavior for ZI_EXPORT_DETAIL alias ExportDetail
+persistent table zexp
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) BillingDocument;
+
+  mapping for zexp
+  {
+    BillingDocument      = vbeln;
+    ConditionType        = kschl;
+    NetValue             = netwr;
+    Currency             = waerk;
+    ExchangeRate         = kursk;
+    BillingDate          = fkdat;
+  }
+}

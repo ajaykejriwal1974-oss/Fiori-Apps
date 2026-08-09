@@ -1,0 +1,16 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName:       'G/L Account',
+    typeNamePlural: 'G/L Accounts'
+  }
+}
+annotate view ZC_ACCGRP_ACC with
+{
+  @UI: {
+    lineItem:       [ { position: 10, importance: #HIGH } ],
+    identification: [ { position: 10 } ]
+  }
+  @EndUserText.label: 'G/L Account'
+  GLAccount;
+}

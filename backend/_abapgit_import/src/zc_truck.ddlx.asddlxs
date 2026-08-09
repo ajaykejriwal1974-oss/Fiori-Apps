@@ -1,0 +1,14 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'Truck', typeNamePlural: 'Trucks',
+  title: { type: #STANDARD, value: 'TruckNumber' },
+  description: { type: #STANDARD, value: 'CarrierName' } } }
+annotate view ZC_Truck with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Truck Number'
+  TruckNumber;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ] }
+  @EndUserText.label: 'Carrier Name'
+  CarrierName;
+}

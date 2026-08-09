@@ -1,0 +1,8 @@
+projection;
+
+define behavior for ZC_PACKING_LIST alias PackingList
+{
+  use action createPackingList;
+  use action changePackingList;
+  use action deletePackingList;
+}

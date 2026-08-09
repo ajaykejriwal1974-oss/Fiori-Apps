@@ -1,0 +1,38 @@
+@Metadata.layer: #CORE
+@UI: { headerInfo: { typeName: 'CForm', typeNamePlural: 'CForms',
+  title: { type: #STANDARD, value: 'SalesOrganization' },
+  description: { type: #STANDARD, value: 'BillingDate' } } }
+annotate view ZC_Cform with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 } ]
+  @UI: { lineItem: [ { position: 10 } ], identification: [ { position: 10 } ], selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Sales Org'
+  SalesOrganization;
+  @UI: { lineItem: [ { position: 20 } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Customer'
+  Customer;
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Invoice'
+  BillingDocument;
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Invoice Date'
+  BillingDate;
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Invoice Value'
+  InvoiceValue;
+  @UI: { lineItem: [ { position: 60 } ], identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Form Type'
+  FormType;
+  @UI: { lineItem: [ { position: 70 } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Form Number'
+  FormNumber;
+  @UI: { lineItem: [ { position: 80 } ], identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Form Date'
+  FormDate;
+  @UI: { lineItem: [ { position: 90 } ], identification: [ { position: 90 } ] }
+  @EndUserText.label: 'Allocated Value'
+  AllocatedValue;
+  @UI: { lineItem: [ { position: 100 } ], identification: [ { position: 100 } ] }
+  @EndUserText.label: 'Quantity'
+  Quantity;
+}

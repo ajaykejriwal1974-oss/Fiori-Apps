@@ -1,0 +1,4 @@
+@EndUserText.label: 'Purchase Register - GST'
+define service ZUI_PURCHASE_REGISTER {
+  expose ZI_PURCHASE_REGISTER as PurchaseRegister;
+}

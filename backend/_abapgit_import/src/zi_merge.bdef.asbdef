@@ -1,0 +1,23 @@
+managed;
+
+define behavior for ZI_Merge alias Merge
+persistent table zpp_merge
+lock master
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) OrderNumber;
+
+  mapping for zpp_merge
+  {
+    OrderNumber          = aurnr;
+    Grade                = grade;
+    EndUse               = enduse;
+    Batch                = charg;
+    ShadeCode            = shdcd;
+    Quantity             = menge;
+    ShadeCode2           = shdcd2;
+  }
+}

@@ -1,0 +1,9 @@
+CLASS zbp_i_dispatch_box DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_dispatch_box.
+ENDCLASS.
+
+CLASS zbp_i_dispatch_box IMPLEMENTATION.
+ENDCLASS.

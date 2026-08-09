@@ -1,0 +1,8 @@
+projection;
+
+define behavior for ZC_DD_Shade alias Shade
+{
+  use create;
+  use update;
+  use delete;
+}
