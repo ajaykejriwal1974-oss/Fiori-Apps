@@ -10,12 +10,15 @@ define view entity ZC_PENDING_CONTRACT
       @AnalyticsDetails.query.axis: #ROWS
       FiscalYear,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
       SalesDocument,
       @AnalyticsDetails.query.axis: #FREE
       SalesItem,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       Material,
       @AnalyticsDetails.query.axis: #FREE
       ShadeCode,

@@ -1,0 +1,8 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "MSEG",
+      "ZCTA_MM_JOB"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Return Delivery Box - Unassign'
+define service ZUI_RETURN_BOX {
+  expose ZI_RETURN_BOX as ReturnBox;
+}

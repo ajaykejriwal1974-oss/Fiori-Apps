@@ -6,6 +6,7 @@ define view entity ZC_AUDIT_LOG
   as select from ZI_AUDIT_LOG
 {
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCode', element: 'CompanyCode' } } ]
       CompanyCode,
       @AnalyticsDetails.query.axis: #ROWS
       BusinessPlace,

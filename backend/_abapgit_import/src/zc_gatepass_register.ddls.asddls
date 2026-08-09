@@ -2,15 +2,13 @@
 @EndUserText.label: 'Gate Pass Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-// Consumption query for the gate-pass register. One query covers all the legacy
-// gate-pass report variants: filter/drill by GatePassType (returnable /
-// non-returnable / inward / outward) instead of a separate program per variant.
 define view entity ZC_GATEPASS_REGISTER
   as select from ZI_GATEPASS_REGISTER
 {
       @AnalyticsDetails.query.axis: #ROWS
       GatePassType,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #ROWS
       Department,
@@ -22,8 +20,10 @@ define view entity ZC_GATEPASS_REGISTER
       VehicleNumber,
       GateInDate,
       GateOutDate,
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       Material,
       MaterialDescription,
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Supplier', element: 'Supplier' } } ]
       Supplier,
       SupplierName,
       GatePassUnit,

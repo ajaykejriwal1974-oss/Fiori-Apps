@@ -1,61 +1,41 @@
-*"* Unmanaged behavior for ZI_DISPATCH_BOX.
-*"* correctDispatch: re-assign the selected dispatch boxes to a new sales order /
-*"* item / status, applying the legacy ZSOL_DISPATCH_CORRECTION logic on the
-*"* existing dispatch (ZSOL_HUDISPATCH) and packing (ZPP_PACK) tables.
-*"* The boxes travel in the flat BoxList parameter as 'BOX1;BOX2;BOX3'.
-
-CLASS lhc_DispatchBox DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_zi_dispatch_box DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS correctDispatch FOR MODIFY
+    METHODS correctdispatch FOR MODIFY
       IMPORTING keys FOR ACTION DispatchBox~correctDispatch RESULT result.
 ENDCLASS.
 
-CLASS lhc_DispatchBox IMPLEMENTATION.
-
-  METHOD correctDispatch.
-    LOOP AT keys INTO DATA(key).
-      DATA(ls_header) = key-%param.
-
-      DATA lt_boxes TYPE STANDARD TABLE OF char10.
-      CLEAR lt_boxes.
-      SPLIT ls_header-boxlist AT ';' INTO TABLE DATA(lt_tok).
-      LOOP AT lt_tok INTO DATA(lv_tok).
-        CONDENSE lv_tok NO-GAPS.
-        IF lv_tok IS NOT INITIAL.
-          APPEND CONV char10( lv_tok ) TO lt_boxes.
-        ENDIF.
-      ENDLOOP.
-
-      IF lt_boxes IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param = VALUE #( boxesupdated = 0
-                                          message = 'No boxes selected' ) ) TO result.
-        CONTINUE.
-      ENDIF.
-
-      " Re-assign each box on the dispatch table (replaces ZSOL_DISPATCH_CORRECTION).
-      " VERIFY: if a box is already invoiced/posted the goods movement must be
-      " reversed first, and ZPP_PACK kept in sync when the order drives packing.
+CLASS lhc_zi_dispatch_box IMPLEMENTATION.
+  METHOD correctdispatch.
+    DATA lv_boxno TYPE zsol_hudispatch-boxno.
+    LOOP AT keys INTO DATA(ls_key).
       DATA(lv_count) = 0.
+      DATA(lv_so)   = ls_key-%param-NewSalesOrder.
+      DATA(lv_soi)  = ls_key-%param-NewSalesOrderItem.
+      DATA(lv_stat) = ls_key-%param-NewStatus.
+      SPLIT ls_key-%param-BoxList AT ';' INTO TABLE DATA(lt_boxes).
       LOOP AT lt_boxes INTO DATA(lv_box).
+        CONDENSE lv_box.
+        CHECK lv_box IS NOT INITIAL.
+        lv_boxno = lv_box.
         UPDATE zsol_hudispatch
-          SET so      = @ls_header-newsalesorder,
-              so_item = @ls_header-newsalesorderitem,
-              status  = @ls_header-newstatus
-          WHERE boxno = @lv_box.
-        IF sy-subrc = 0.
-          lv_count += 1.
-        ENDIF.
+           SET so = @lv_so, so_item = @lv_soi, status = @lv_stat
+         WHERE boxno = @lv_boxno.
+        lv_count += sy-dbcnt.
       ENDLOOP.
-      IF lv_count > 0.
-        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-      ENDIF.
-
-      APPEND VALUE #( %cid  = key-%cid
-                      %param = VALUE #( boxesupdated = lv_count
-                                        message = |{ lv_count } of { lines( lt_boxes ) } box(es) re-assigned to SO { ls_header-newsalesorder }| ) )
-             TO result.
+      INSERT VALUE #( %cid = ls_key-%cid
+        %param-boxesupdated = lv_count
+        %param-message = |{ lv_count } box(es) reassigned to SO { lv_so }/{ lv_soi }, status { lv_stat }.| )
+        INTO TABLE result.
     ENDLOOP.
   ENDMETHOD.
+ENDCLASS.
 
+CLASS lsc_zi_dispatch_box DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+    METHODS save REDEFINITION.
+ENDCLASS.
+
+CLASS lsc_zi_dispatch_box IMPLEMENTATION.
+  METHOD save.
+ENDMETHOD.
 ENDCLASS.

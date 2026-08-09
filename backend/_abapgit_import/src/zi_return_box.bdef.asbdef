@@ -1,0 +1,5 @@
+unmanaged implementation in class zbp_i_return_box unique;
+define behavior for ZI_RETURN_BOX alias ReturnBox
+{
+  action unassign;
+}

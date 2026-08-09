@@ -6,6 +6,7 @@ define view entity ZC_TDS
   as select from ZI_TDS
 {
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
       CompanyCode,
       @AnalyticsDetails.query.axis: #ROWS
       WithholdingTaxType,

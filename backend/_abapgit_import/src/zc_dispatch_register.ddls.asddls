@@ -8,6 +8,7 @@ define view entity ZC_DISPATCH_REGISTER
       @AnalyticsDetails.query.axis: #ROWS
       Box,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
       SalesOrder,
       @AnalyticsDetails.query.axis: #ROWS
       SalesOrderItem,

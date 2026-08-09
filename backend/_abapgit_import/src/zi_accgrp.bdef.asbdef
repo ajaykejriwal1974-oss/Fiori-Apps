@@ -1,14 +1,3 @@
-// Managed, NON-DRAFT, CLASS-FREE BO over the existing legacy tables ZSOL_ACCGRP
-// (group master) and ZSOL_ACC_GRP (G/L account -> group assignment). Clean-core
-// replacement for transaction ZSOL_ACCGRP (program SAPLZSOL_DASH).
-//
-// Notes:
-//  - No `strict` : the composition child trips a strict(2) rule; the proven
-//    class-free masters on KSD (e.g. ZI_RECIPE) are non-strict. Kept consistent.
-//  - No `authorization` : instance authorization needs a behavior class; this BO
-//    is class-free, so authorization is omitted (as the other class-free masters).
-//  - No `etag master`/admin fields : the legacy tables have none; concurrency is
-//    handled by the pessimistic `lock master`. No DDIC change to live data.
 managed;
 
 define behavior for ZI_ACCGRP alias AccountGroup

@@ -6,6 +6,7 @@ define view entity ZC_CRDR_NOTE
   as select from ZI_CRDR_NOTE
 {
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCode', element: 'CompanyCode' } } ]
       CompanyCode,
       @AnalyticsDetails.query.axis: #ROWS
       AccountingDocument,
@@ -24,8 +25,10 @@ define view entity ZC_CRDR_NOTE
       @AnalyticsDetails.query.axis: #FREE
       GLAccount,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Customer', element: 'Customer' } } ]
       Customer,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Supplier', element: 'Supplier' } } ]
       Supplier,
       @AnalyticsDetails.query.axis: #FREE
       CompanyCodeCurrency,

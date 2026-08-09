@@ -1,4 +1,5 @@
-@EndUserText.label: 'Dyeing Packing Service'
+@EndUserText.label: 'Packing / Handling Units'
 define service ZUI_PACKING {
   expose ZC_PACKING_UNIT as PackingUnit;
+  expose ZC_HU_ITEM      as HuItem;
 }

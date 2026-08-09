@@ -1,0 +1,10 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZSOL_ACC_GRP"
+    ],
+    "ASSOCIATED": [
+      "ZI_ACCGRP"
+    ]
+  }
+}

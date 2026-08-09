@@ -10,12 +10,14 @@ define view entity ZC_HU_INVENTORY
       @AnalyticsDetails.query.axis: #ROWS
       HandlingUnit,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       Material,
       @AnalyticsDetails.query.axis: #FREE
       Batch,
       @AnalyticsDetails.query.axis: #FREE
       StorageLocation,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       PackagingMaterial,
       @AnalyticsDetails.query.axis: #FREE
       Status,

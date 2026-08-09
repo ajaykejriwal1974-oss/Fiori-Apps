@@ -1,100 +1,81 @@
-*"* Unmanaged behavior for ZI_HU_ITEM.
-*"* postGoodsMovement: build one BAPI_GOODSMVT_CREATE call for the selected HUs
-*"* and return the material document number. The HUs travel in the flat
-*"* HandlingUnitList parameter as 'HU1;HU2;HU3' - the HU contents
-*"* (material/batch/quantity) are read from VEPO on the server.
-
-CLASS lhc_HuItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_zi_hu_item DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS postGoodsMovement FOR MODIFY
+    METHODS postgoodsmovement FOR MODIFY
       IMPORTING keys FOR ACTION HuItem~postGoodsMovement RESULT result.
 ENDCLASS.
 
-CLASS lhc_HuItem IMPLEMENTATION.
+CLASS lhc_zi_hu_item IMPLEMENTATION.
+  METHOD postgoodsmovement.
+    DATA: ls_header TYPE bapi2017_gm_head_01,
+          ls_code   TYPE bapi2017_gm_code,
+          lt_item   TYPE STANDARD TABLE OF bapi2017_gm_item_create,
+          ls_item   TYPE bapi2017_gm_item_create,
+          lt_return TYPE STANDARD TABLE OF bapiret2,
+          lv_matdoc TYPE bapi2017_gm_head_ret-mat_doc,
+          lv_year   TYPE bapi2017_gm_head_ret-doc_year,
+          lv_exidv  TYPE exidv.
 
-  METHOD postGoodsMovement.
-    LOOP AT keys INTO DATA(key).
-      DATA(ls_header) = key-%param.
-
-      DATA lt_exidv TYPE rseloption.
-      CLEAR lt_exidv.
-      SPLIT ls_header-handlingunitlist AT ';' INTO TABLE DATA(lt_tok).
-      LOOP AT lt_tok INTO DATA(lv_tok).
-        CONDENSE lv_tok NO-GAPS.
-        IF lv_tok IS NOT INITIAL.
-          APPEND VALUE #( sign = 'I' option = 'EQ' low = lv_tok ) TO lt_exidv.
-        ENDIF.
+    LOOP AT keys INTO DATA(ls_key).
+      CLEAR: lt_item, lt_return, lv_matdoc, lv_year.
+      SPLIT ls_key-%param-HandlingUnitList AT ';' INTO TABLE DATA(lt_hus).
+      LOOP AT lt_hus INTO DATA(lv_hu).
+        CONDENSE lv_hu.
+        CHECK lv_hu IS NOT INITIAL.
+        lv_exidv = |{ lv_hu ALPHA = IN }|.
+        SELECT SINGLE venum FROM vekp WHERE exidv = @lv_exidv INTO @DATA(lv_venum).
+        CHECK sy-subrc = 0.
+        SELECT matnr, charg, vemng, vemeh FROM vepo
+          WHERE venum = @lv_venum INTO TABLE @DATA(lt_vepo).
+        LOOP AT lt_vepo INTO DATA(ls_vepo).
+          CLEAR ls_item.
+          ls_item-material   = ls_vepo-matnr.
+          ls_item-plant      = ls_key-%param-Plant.
+          ls_item-stge_loc   = ls_key-%param-StorageLocation.
+          ls_item-batch      = ls_vepo-charg.
+          ls_item-move_type  = ls_key-%param-MovementType.
+          ls_item-entry_qnt  = ls_vepo-vemng.
+          ls_item-entry_uom  = ls_vepo-vemeh.
+          ls_item-move_stloc = ls_key-%param-ReceivingStorageLocation.
+          APPEND ls_item TO lt_item.
+        ENDLOOP.
       ENDLOOP.
 
-      IF lt_exidv IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'No handling units to post' ) TO result.
+      IF lt_item IS INITIAL.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = |No HU contents found.| ) INTO TABLE result.
         CONTINUE.
       ENDIF.
 
-      " Read the HU contents from the standard HU tables (VEKP header / VEPO items).
-      SELECT i~matnr, i~charg, i~vemng, i~vemeh
-        FROM vepo AS i
-        INNER JOIN vekp AS k ON k~venum = i~venum
-        WHERE k~exidv IN @lt_exidv
-        INTO TABLE @DATA(lt_cont).
-
-      IF lt_cont IS INITIAL.
-        APPEND VALUE #( %cid = key-%cid
-                        %param-message = 'Selected HUs have no items' ) TO result.
-        CONTINUE.
-      ENDIF.
-
-      DATA(lv_today) = cl_abap_context_info=>get_system_date( ).
-      DATA(ls_gm_header) = VALUE bapi2017_gm_head_01(
-                             pstng_date = lv_today
-                             doc_date   = lv_today
-                             pr_uname   = sy-uname ).
-
-      " GM_CODE selects the transaction. '04' = transfer posting (MB1B); use '03'
-      " for a goods issue (MB1A) or '01' for a receipt - VERIFY against the
-      " movement type the box/HU flow uses.
-      DATA(ls_gm_code) = VALUE bapi2017_gm_code( gm_code = '04' ).
-
-      DATA lt_gm_item TYPE STANDARD TABLE OF bapi2017_gm_item_create.
-      lt_gm_item = VALUE #( FOR c IN lt_cont (
-                     material   = c-matnr
-                     plant      = ls_header-plant
-                     stge_loc   = ls_header-storagelocation
-                     move_stloc = ls_header-receivingstoragelocation
-                     batch      = c-charg
-                     move_type  = ls_header-movementtype
-                     entry_qnt  = c-vemng
-                     entry_uom  = c-vemeh ) ).
-
-      DATA: lv_matdoc  TYPE bapi2017_gm_head_ret-mat_doc,
-            lv_matyear TYPE bapi2017_gm_head_ret-doc_year.
-      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      ls_header-pstng_date = sy-datum.
+      ls_header-doc_date   = sy-datum.
+      ls_code-gm_code      = '04'.   " transfer posting (311)
 
       CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
-        EXPORTING goodsmvt_header  = ls_gm_header
-                  goodsmvt_code    = ls_gm_code
-        IMPORTING materialdocument = lv_matdoc
-                  matdocumentyear  = lv_matyear
-        TABLES    goodsmvt_item    = lt_gm_item
-                  return           = lt_return.
+        EXPORTING  goodsmvt_header  = ls_header
+                   goodsmvt_code    = ls_code
+        IMPORTING  materialdocument = lv_matdoc
+                   matdocumentyear  = lv_year
+        TABLES     goodsmvt_item    = lt_item
+                   return           = lt_return.
 
-      DATA(lv_errors) = REDUCE string( INIT s = ``
-                          FOR ls_ret IN lt_return WHERE ( type = 'E' OR type = 'A' )
-                          NEXT s = s && ls_ret-message && ` ` ).
-
-      IF lv_errors IS NOT INITIAL.
-        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
-        APPEND VALUE #( %cid  = key-%cid
-                        %param = VALUE #( message = lv_errors ) ) TO result.
+      READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
+      IF sy-subrc = 0.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
-        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-        APPEND VALUE #( %cid  = key-%cid
-                        %param = VALUE #( materialdocument     = lv_matdoc
-                                          materialdocumentyear = lv_matyear
-                                          message = |Material document { lv_matdoc } posted| ) ) TO result.
+        INSERT VALUE #( %cid = ls_key-%cid
+          %param-materialdocument = lv_matdoc
+          %param-materialdocumentyear = lv_year
+          %param-message = |Material document { lv_matdoc }/{ lv_year } posted.| ) INTO TABLE result.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
+ENDCLASS.
 
+CLASS lsc_zi_hu_item DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+    METHODS save REDEFINITION.
+ENDCLASS.
+
+CLASS lsc_zi_hu_item IMPLEMENTATION.
+  METHOD save.
+  ENDMETHOD.
 ENDCLASS.

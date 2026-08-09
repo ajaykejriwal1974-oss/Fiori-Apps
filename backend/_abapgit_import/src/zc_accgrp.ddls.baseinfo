@@ -1,0 +1,14 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZI_ACCGRP"
+    ],
+    "ASSOCIATED": [
+      "ZC_ACCGRP_ACC",
+      "ZI_ACCGRP_ACC"
+    ],
+    "BASE": [
+      "ZI_ACCGRP"
+    ]
+  }
+}

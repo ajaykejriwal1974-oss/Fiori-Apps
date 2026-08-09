@@ -1,0 +1,8 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "I_PURCHASEORDER",
+      "I_PURCHASEORDERITEM"
+    ]
+  }
+}
