@@ -1,22 +1,7 @@
-**********************************************************************
-* Unmanaged behavior for ZI_QM_INSPECTIONCHAR
-*
-* UI edits ResultValue / Valuation per characteristic (UPDATE) and submits.
-* Each filled-in characteristic is recorded via the standard QM API
-* BAPI_INSPCHAR_SETRESULT (CLOSED = 'X' also closes it - there is no
-* BAPI_INSPCHAR_CLOSE on this release). The QM BAPI posts on the update
-* task, so nothing persists until the saver COMMITs.
-*
-* Per-row validation: any characteristic the BAPI rejects is reported
-* against its own key (failed + reported), which aborts the whole submit
-* before COMMIT - the user sees exactly which rows failed, and nothing posts.
-*
-* VERIFY on a live lot before go-live: QM valuation/close behaviour.
-**********************************************************************
 CLASS lsc_InspectionChar DEFINITION INHERITING FROM cl_abap_behavior_saver.
   PUBLIC SECTION.
-    CLASS-DATA gv_posted TYPE abap_bool.
-    CLASS-DATA gv_error  TYPE abap_bool.
+    " Rows the UI submitted, handed from the interaction phase to the save phase.
+    CLASS-DATA gt_buffer TYPE TABLE FOR UPDATE ZI_QM_InspectionChar.
   PROTECTED SECTION.
     METHODS save REDEFINITION.
 ENDCLASS.
@@ -28,58 +13,63 @@ ENDCLASS.
 
 CLASS lhc_InspectionChar IMPLEMENTATION.
   METHOD update.
-    DATA ls_return TYPE bapireturn1.
-
-    CLEAR: lsc_InspectionChar=>gv_posted, lsc_InspectionChar=>gv_error.
-
-    LOOP AT entities INTO DATA(ls_char).
-      " Only post characteristics the user actually filled in.
-      IF ls_char-ResultValue IS INITIAL AND ls_char-Valuation IS INITIAL.
-        CONTINUE.
-      ENDIF.
-
-      DATA(ls_result) = VALUE bapi2045d2(
-        insplot    = ls_char-InspectionLot
-        inspoper   = ls_char-InspectionOperation
-        inspchar   = ls_char-InspectionCharacteristic
-        mean_value = ls_char-ResultValue
-        evaluation = ls_char-Valuation
-        closed     = 'X' ).
-
-      CLEAR ls_return.
-      CALL FUNCTION 'BAPI_INSPCHAR_SETRESULT'
-        EXPORTING
-          insplot     = ls_char-InspectionLot
-          inspoper    = ls_char-InspectionOperation
-          inspchar    = ls_char-InspectionCharacteristic
-          char_result = ls_result
-        IMPORTING
-          return      = ls_return.
-
-      IF ls_return-type CA 'EA'.
-        " Surface the QM message against this exact characteristic.
-        APPEND VALUE #( %tky = ls_char-%tky ) TO failed-inspectionchar.
-        APPEND VALUE #( %tky = ls_char-%tky
-                        %msg = new_message_with_text(
-                                 severity = if_abap_behv_message=>severity-error
-                                 text     = ls_return-message ) )
-               TO reported-inspectionchar.
-        lsc_InspectionChar=>gv_error = abap_true.
-      ELSE.
-        lsc_InspectionChar=>gv_posted = abap_true.
-      ENDIF.
-    ENDLOOP.
+    " Interaction phase: buffer only. The QM API registers update-task work AND the
+    " QM results engine (SAPLQEEM) self-commits - both forbidden here. Post in save().
+    APPEND LINES OF entities TO lsc_InspectionChar=>gt_buffer.
   ENDMETHOD.
 ENDCLASS.
 
 CLASS lsc_InspectionChar IMPLEMENTATION.
   METHOD save.
-    " Commit only when every filled-in characteristic posted cleanly.
-    IF gv_error = abap_true.
-      CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
-    ELSEIF gv_posted = abap_true.
-      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
-    ENDIF.
-    CLEAR: gv_posted, gv_error.
+    DATA ls_return   TYPE bapireturn1.
+    DATA lv_rfcmsg   TYPE c LENGTH 200.
+    DATA lv_insplot  TYPE bapi2045d4-insplot.   " NUMC 12
+    DATA lv_inspoper TYPE bapi2045d4-inspoper.  " CHAR 4 (operation NUMBER / VORNR)
+    DATA lv_inspchar TYPE bapi2045d4-inspchar.  " NUMC 4
+
+    LOOP AT gt_buffer INTO DATA(ls_char).
+      " Only post characteristics the user actually filled in.
+      IF ls_char-ResultValue IS INITIAL AND ls_char-Valuation IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      " The CDS exposes InspectionOperation = QAMV-VORGLFNR (internal op reference,
+      " e.g. 00000001). BAPI_INSPCHAR_SETRESULT needs the operation NUMBER (VORNR).
+      SELECT SINGLE inspectionoperation FROM i_inspectionoperation
+        WHERE inspectionlot               = @ls_char-InspectionLot
+          AND inspplanoperationinternalid = @ls_char-InspectionOperation
+        INTO @lv_inspoper.
+
+      lv_insplot  = ls_char-InspectionLot.
+      lv_inspchar = ls_char-InspectionCharacteristic.
+
+      DATA(ls_result) = VALUE bapi2045d2(
+        insplot    = lv_insplot
+        inspoper   = lv_inspoper
+        inspchar   = lv_inspchar
+        mean_value = ls_char-ResultValue
+        evaluation = ls_char-Valuation
+        closed     = 'X' ).
+
+      CLEAR ls_return.
+      " The QM results engine (SAPLQEEM) issues its own COMMIT WORK, which RAP
+      " forbids inside its LUW. Run the BAPI in a separate LUW via aRFC so the
+      " engine commits there; the RAP transaction is untouched. The BAPI is
+      " self-committing, so no BAPI_TRANSACTION_COMMIT is needed.
+      CALL FUNCTION 'BAPI_INSPCHAR_SETRESULT' DESTINATION 'NONE'
+        EXPORTING
+          insplot     = lv_insplot
+          inspoper    = lv_inspoper
+          inspchar    = lv_inspchar
+          char_result = ls_result
+        IMPORTING
+          return      = ls_return
+        EXCEPTIONS
+          system_failure        = 1 MESSAGE lv_rfcmsg
+          communication_failure = 2 MESSAGE lv_rfcmsg
+          OTHERS                = 3.
+    ENDLOOP.
+
+    CLEAR gt_buffer.
   ENDMETHOD.
 ENDCLASS.
