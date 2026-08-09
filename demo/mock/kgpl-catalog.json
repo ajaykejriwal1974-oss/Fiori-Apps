@@ -2314,6 +2314,475 @@
           "rate": "0.10%"
         }
       ]
+    },
+    "truckMaster": {
+      "title": "Truck Master",
+      "note": "ZTB_TRUCK_MSTR empty on KSD — shown from live ZTRANS (827 trucks)",
+      "columns": [
+        {
+          "label": "Truck No",
+          "prop": "TRUCKNO",
+          "w": "12rem"
+        },
+        {
+          "label": "Carrier / Transporter",
+          "prop": "CARRIER_NAME"
+        }
+      ],
+      "rows": [
+        {
+          "TRUCKNO": "GJ19X6514",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ19X4211",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ05BT6771",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ05BT6800",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ05BV8769",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ05YY6094",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "GJ15UU1725",
+          "CARRIER_NAME": "PINTU TRANSPORT SERVICES"
+        },
+        {
+          "TRUCKNO": "HR67A0552",
+          "CARRIER_NAME": ""
+        }
+      ]
+    },
+    "exportDetails": {
+      "title": "Export Details",
+      "note": "ZEXP empty on KSD — shown from live VBRK export billing (466 export invoices)",
+      "columns": [
+        {
+          "label": "Invoice",
+          "prop": "vbeln",
+          "w": "11rem"
+        },
+        {
+          "label": "Type",
+          "prop": "fkart",
+          "w": "7rem"
+        },
+        {
+          "label": "Date",
+          "prop": "fkdat",
+          "w": "10rem"
+        },
+        {
+          "label": "Sales Org",
+          "prop": "vkorg",
+          "w": "8rem"
+        },
+        {
+          "label": "Customer",
+          "prop": "kunag",
+          "w": "9rem"
+        },
+        {
+          "label": "Net Value",
+          "prop": "netwr",
+          "w": "10rem",
+          "num": true
+        },
+        {
+          "label": "Curr.",
+          "prop": "waerk",
+          "w": "6rem"
+        },
+        {
+          "label": "Ex.Rate",
+          "prop": "kurrf",
+          "w": "8rem",
+          "num": true
+        }
+      ],
+      "rows": [
+        {
+          "vbeln": "9325000031",
+          "fkart": "S1",
+          "fkdat": "2025-07-14",
+          "vkorg": "2002",
+          "kunag": "PT00356",
+          "netwr": "677.71",
+          "waerk": "USD",
+          "kurrf": "83.50"
+        },
+        {
+          "vbeln": "9624000003",
+          "fkart": "ZEXR",
+          "fkdat": "2025-07-14",
+          "vkorg": "2002",
+          "kunag": "PT00356",
+          "netwr": "677.71",
+          "waerk": "USD",
+          "kurrf": "83.50"
+        },
+        {
+          "vbeln": "0932100111",
+          "fkart": "S1",
+          "fkdat": "2024-08-21",
+          "vkorg": "5000",
+          "kunag": "PT00394",
+          "netwr": "682.64",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        },
+        {
+          "vbeln": "9822000003",
+          "fkart": "ZEXR",
+          "fkdat": "2023-02-20",
+          "vkorg": "6000",
+          "kunag": "PF00044",
+          "netwr": "49.70",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        },
+        {
+          "vbeln": "0932100089",
+          "fkart": "S1",
+          "fkdat": "2023-02-17",
+          "vkorg": "6000",
+          "kunag": "PF00044",
+          "netwr": "49.70",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        },
+        {
+          "vbeln": "0932100085",
+          "fkart": "S1",
+          "fkdat": "2022-11-21",
+          "vkorg": "1000",
+          "kunag": "PE00071",
+          "netwr": "312.50",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        },
+        {
+          "vbeln": "9422000032",
+          "fkart": "ZEXR",
+          "fkdat": "2022-11-21",
+          "vkorg": "1000",
+          "kunag": "PE00071",
+          "netwr": "312.50",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        },
+        {
+          "vbeln": "9422000026",
+          "fkart": "ZEXR",
+          "fkdat": "2022-11-10",
+          "vkorg": "1000",
+          "kunag": "PE00071",
+          "netwr": "12.50",
+          "waerk": "USD",
+          "kurrf": "72.75"
+        }
+      ]
+    },
+    "shadeMaster": {
+      "title": "Shade Master",
+      "note": "SAMPLE — ZDD_SHADE is empty on KSD (app newly built); codes are real (from recipes), names illustrative",
+      "columns": [
+        {
+          "label": "Shade Code",
+          "prop": "SHADE_CODE",
+          "w": "9rem"
+        },
+        {
+          "label": "Shade Name",
+          "prop": "SHADE_NAME"
+        },
+        {
+          "label": "Colour Family",
+          "prop": "COLOR_FAMILY",
+          "w": "10rem"
+        },
+        {
+          "label": "RGB",
+          "prop": "RGB_HEX",
+          "w": "8rem"
+        },
+        {
+          "label": "Lustre",
+          "prop": "LUSTRE",
+          "w": "9rem"
+        },
+        {
+          "label": "Active",
+          "prop": "IS_ACTIVE",
+          "w": "6rem"
+        }
+      ],
+      "rows": [
+        {
+          "SHADE_CODE": "101116",
+          "SHADE_NAME": "Turquoise Blue",
+          "COLOR_FAMILY": "Blue",
+          "RGB_HEX": "#1CA9C9",
+          "LUSTRE": "Bright",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "102254",
+          "SHADE_NAME": "Jet Black",
+          "COLOR_FAMILY": "Black",
+          "RGB_HEX": "#0A0A0A",
+          "LUSTRE": "Semi-Dull",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "102102",
+          "SHADE_NAME": "Scarlet Red",
+          "COLOR_FAMILY": "Red",
+          "RGB_HEX": "#C41E3A",
+          "LUSTRE": "Bright",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "102104",
+          "SHADE_NAME": "Emerald Green",
+          "COLOR_FAMILY": "Green",
+          "RGB_HEX": "#009B77",
+          "LUSTRE": "Bright",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "102693",
+          "SHADE_NAME": "Golden Yellow",
+          "COLOR_FAMILY": "Yellow",
+          "RGB_HEX": "#FFD700",
+          "LUSTRE": "Bright",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "101675",
+          "SHADE_NAME": "Navy Blue",
+          "COLOR_FAMILY": "Blue",
+          "RGB_HEX": "#1B1F3B",
+          "LUSTRE": "Semi-Dull",
+          "IS_ACTIVE": "X"
+        },
+        {
+          "SHADE_CODE": "101445",
+          "SHADE_NAME": "Karishma Maroon",
+          "COLOR_FAMILY": "Maroon",
+          "RGB_HEX": "#800020",
+          "LUSTRE": "Bright",
+          "IS_ACTIVE": ""
+        }
+      ]
+    },
+    "cformAllocation": {
+      "title": "C-Form Allocation",
+      "note": "SAMPLE — ZCFORM1 is empty on KSD (legacy CST 'C-Form', obsoleted by GST); customers/orgs are real",
+      "columns": [
+        {
+          "label": "Sales Org",
+          "prop": "SALE_ORG",
+          "w": "8rem"
+        },
+        {
+          "label": "Customer",
+          "prop": "CUST_CODE",
+          "w": "9rem"
+        },
+        {
+          "label": "Invoice No",
+          "prop": "INVOICE_NO",
+          "w": "11rem"
+        },
+        {
+          "label": "Inv Date",
+          "prop": "INVOICE_DT",
+          "w": "10rem"
+        },
+        {
+          "label": "Invoice Val",
+          "prop": "INVOICE_VAL",
+          "w": "11rem",
+          "num": true
+        },
+        {
+          "label": "Form",
+          "prop": "FORM_TYPE",
+          "w": "6rem"
+        },
+        {
+          "label": "Form No",
+          "prop": "FORM_NO",
+          "w": "10rem"
+        },
+        {
+          "label": "Form Date",
+          "prop": "FORM_DT",
+          "w": "10rem"
+        }
+      ],
+      "rows": [
+        {
+          "SALE_ORG": "1000",
+          "CUST_CODE": "AA00001",
+          "INVOICE_NO": "9416000123",
+          "INVOICE_DT": "2016-06-24",
+          "INVOICE_VAL": "245,300.00",
+          "FORM_TYPE": "C",
+          "FORM_NO": "C-GJ-004512",
+          "FORM_DT": "2016-09-30"
+        },
+        {
+          "SALE_ORG": "1000",
+          "CUST_CODE": "AA00003",
+          "INVOICE_NO": "9416000341",
+          "INVOICE_DT": "2016-07-12",
+          "INVOICE_VAL": "188,750.00",
+          "FORM_TYPE": "C",
+          "FORM_NO": "C-GJ-004518",
+          "FORM_DT": "2016-09-30"
+        },
+        {
+          "SALE_ORG": "2002",
+          "CUST_CODE": "AA00014",
+          "INVOICE_NO": "9316000502",
+          "INVOICE_DT": "2016-08-08",
+          "INVOICE_VAL": "96,420.00",
+          "FORM_TYPE": "C",
+          "FORM_NO": "C-GJ-004531",
+          "FORM_DT": "2016-12-31"
+        },
+        {
+          "SALE_ORG": "1000",
+          "CUST_CODE": "AA00006",
+          "INVOICE_NO": "9416000587",
+          "INVOICE_DT": "2016-09-02",
+          "INVOICE_VAL": "312,000.00",
+          "FORM_TYPE": "C",
+          "FORM_NO": "C-GJ-004549",
+          "FORM_DT": "2016-12-31"
+        },
+        {
+          "SALE_ORG": "5000",
+          "CUST_CODE": "AA00010",
+          "INVOICE_NO": "9716000044",
+          "INVOICE_DT": "2016-10-18",
+          "INVOICE_VAL": "54,880.00",
+          "FORM_TYPE": "F",
+          "FORM_NO": "F-GJ-001203",
+          "FORM_DT": "2017-03-31"
+        }
+      ]
+    },
+    "gatePass": {
+      "title": "Gate Pass",
+      "note": "SAMPLE — ZGP_HDR/ZGP_ITEM empty on KSD (app newly built); plants & vehicle numbers are real",
+      "columns": [
+        {
+          "label": "Gate Pass",
+          "prop": "GPNUM",
+          "w": "11rem"
+        },
+        {
+          "label": "Year",
+          "prop": "MJAHR",
+          "w": "6rem"
+        },
+        {
+          "label": "Type",
+          "prop": "DTYPE",
+          "w": "6rem"
+        },
+        {
+          "label": "Plant",
+          "prop": "werks",
+          "w": "6rem"
+        },
+        {
+          "label": "Vehicle",
+          "prop": "VHNUM",
+          "w": "11rem"
+        },
+        {
+          "label": "In Date",
+          "prop": "GINDAT",
+          "w": "10rem"
+        },
+        {
+          "label": "Out Date",
+          "prop": "GOTDAT",
+          "w": "10rem"
+        },
+        {
+          "label": "Created By",
+          "prop": "CRE_USER",
+          "w": "9rem"
+        }
+      ],
+      "rows": [
+        {
+          "GPNUM": "1000000001",
+          "MJAHR": "2026",
+          "DTYPE": "O",
+          "werks": "1000",
+          "VHNUM": "GJ19X6514",
+          "GINDAT": "2026-07-28",
+          "GOTDAT": "2026-07-28",
+          "CRE_USER": "KID_SD1"
+        },
+        {
+          "GPNUM": "1000000002",
+          "MJAHR": "2026",
+          "DTYPE": "O",
+          "werks": "1000",
+          "VHNUM": "GJ05BT6771",
+          "GINDAT": "2026-07-28",
+          "GOTDAT": "2026-07-28",
+          "CRE_USER": "KID_SD1"
+        },
+        {
+          "GPNUM": "2000000015",
+          "MJAHR": "2026",
+          "DTYPE": "O",
+          "werks": "2002",
+          "VHNUM": "GJ15UU1725",
+          "GINDAT": "2026-06-11",
+          "GOTDAT": "2026-06-11",
+          "CRE_USER": "KID_PP"
+        },
+        {
+          "GPNUM": "8000000007",
+          "MJAHR": "2026",
+          "DTYPE": "R",
+          "werks": "8001",
+          "VHNUM": "GJ05BV8769",
+          "GINDAT": "2026-05-27",
+          "GOTDAT": "2026-05-28",
+          "CRE_USER": "KID_SD1"
+        },
+        {
+          "GPNUM": "1000000003",
+          "MJAHR": "2026",
+          "DTYPE": "I",
+          "werks": "1000",
+          "VHNUM": "GJ05YY6094",
+          "GINDAT": "2026-05-26",
+          "GOTDAT": "2026-05-26",
+          "CRE_USER": "KID_SD1"
+        }
+      ]
     }
   }
 }

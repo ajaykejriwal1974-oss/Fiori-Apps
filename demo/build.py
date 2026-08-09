@@ -171,6 +171,17 @@ VIEWER = [
     ("Packing Material Master",   "PACK",  "packingMaterials"),
     ("GST Tax Register",          "STAT",  "gstRegister"),
     ("TDS Register",              "STAT",  "tdsRegister"),
+    ("Truck Master",              "MAST",  "truckMaster"),
+    ("Export Details",            "SALES", "exportDetails"),
+]
+
+# Runnable viewer tiles backed by SAMPLE data (source table is empty on KSD, so
+# rows are representative — grounded in real domain values but clearly labelled).
+# (title, space, entity_key)
+VIEWER_SAMPLE = [
+    ("Shade Master",       "MAST",  "shadeMaster"),
+    ("C-Form Allocation",  "SALES", "cformAllocation"),
+    ("Gate Pass",          "DISP",  "gatePass"),
 ]
 
 # Reference tiles (MASTER_DATA or LIVE_REF) superseded by a runnable VIEWER tile
@@ -180,6 +191,8 @@ VIEWER_SUPERSEDES = {
     "Recipe Master", "Transport Code", "Checked / Packed By",
     "Packing Material Master", "Sales Register", "Purchase Register",
     "Delivery Challan", "GST Tax Register", "TDS Register",
+    "Shade Master", "Truck Master", "Export Details",
+    "C-Form Allocation", "Gate Pass",
 }
 
 
@@ -394,6 +407,11 @@ def portal_html(sections_html):
   .tile.data .badge {{ color:#1a7f37; background:#d6f0de; }}
   .badge.data {{ color:#1a7f37; background:#d6f0de; }}
   .sw-data {{ background:#d6f0de; }}
+  .tile.sample {{ background:#fffaf0; border-color:#f0e0b8; }}
+  .tile.sample .ico {{ background:#f7eccf; color:#8a6d00; }}
+  .tile.sample .badge {{ color:#8a6d00; background:#f5e6bf; }}
+  .badge.sample {{ color:#8a6d00; background:#f5e6bf; }}
+  .sw-sample {{ background:#f5e6bf; }}
   footer {{ text-align:center; color:#9a9d9f; font-size:12px; padding:24px; }}
 </style>
 </head>
@@ -406,11 +424,14 @@ def portal_html(sections_html):
   <div class="note"><b>Arranged by FLP Space.</b> <b>Custom</b> apps (blue) run live
   on <b>mock data</b>, and <b>Live KSD data</b> tiles (green) open a viewer over
   <b>real rows pulled from KSD</b> &mdash; click either to open and test.
-  <b>Adaptation</b>, <b>Master-data</b>, <b>Analytics</b> and other <b>Live</b>
-  tiles are reference cards: they run on the S/4HANA FES, not in this mock demo.</div>
+  <b>Sample data</b> tiles (amber) run over representative rows where the source
+  table is still empty on KSD. <b>Adaptation</b>, <b>Master-data</b>,
+  <b>Analytics</b> and other <b>Live</b> tiles are reference cards: they run on
+  the S/4HANA FES, not in this mock demo.</div>
   <div class="legend">
     <span><i class="sw-cust"></i>Custom (live demo)</span>
     <span><i class="sw-data"></i>Live KSD data (viewer)</span>
+    <span><i class="sw-sample"></i>Sample data (table empty on KSD)</span>
     <span><i class="sw-live"></i>Live on FES (register / FE)</span>
     <span><i class="sw-ext"></i>Adaptation (ext)</span>
     <span><i class="sw-mas"></i>Master data</span>
@@ -445,6 +466,19 @@ def tile_viewer(space, title, entity_key):
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">kgpl-viewer &middot; {entity_key}</div>'
         f'<div class="meta"><span class="badge data">LIVE KSD DATA</span></div>'
+        f'</div></a>'
+    )
+
+
+def tile_sample(space, title, entity_key):
+    """Runnable tile backed by representative SAMPLE data (source table empty on KSD)."""
+    return (
+        f'<a class="tile sample" href="kgpl-viewer/index.html?e={entity_key}" '
+        f'title="Sample data — the source table is empty on KSD; rows are representative">'
+        f'<div class="ico">{BADGE[space]}</div>'
+        f'<div><div class="ttl">{title}</div>'
+        f'<div class="sub">kgpl-viewer &middot; {entity_key}</div>'
+        f'<div class="meta"><span class="badge sample">SAMPLE DATA</span></div>'
         f'</div></a>'
     )
 
@@ -538,6 +572,8 @@ def main():
     build_viewer(dest)
     for title, space, entity_key in VIEWER:
         by_space[space].append((0, title, tile_viewer(space, title, entity_key)))
+    for title, space, entity_key in VIEWER_SAMPLE:
+        by_space[space].append((0, title, tile_sample(space, title, entity_key)))
     for title, space, launch in LIVE_REF:
         if title in VIEWER_SUPERSEDES:
             continue  # now runnable via a VIEWER tile with real data
