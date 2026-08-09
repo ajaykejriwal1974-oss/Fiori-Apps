@@ -5,9 +5,7 @@
 // Add an authorization master ( global ) + get_global_authorizations before
 // going live; omitted here to keep the skeleton minimal.
 unmanaged implementation in class zbp_i_qm_inspectionchar unique;
-strict ( 2 );
-
-define behavior for ZI_QM_InspectionChar alias InspectionChar
+define behavior for ZI_QM_INSPECTIONCHAR alias InspectionChar
 {
   update;
 
@@ -16,7 +14,6 @@ define behavior for ZI_QM_InspectionChar alias InspectionChar
     CharacteristicDescription,
     Material,
     Plant,
-    WorkCenter,
     Unit,
     InspectionType,
     Origin;
