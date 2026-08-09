@@ -6,6 +6,7 @@ define view entity ZC_RECIPE_ANALYSIS
   as select from ZI_RECIPE_ANALYSIS
 {
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #ROWS
       GreyCode,

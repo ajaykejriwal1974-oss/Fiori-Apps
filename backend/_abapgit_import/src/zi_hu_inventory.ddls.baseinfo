@@ -1,0 +1,7 @@
+{
+  "BASEINFO": {
+    "FROM": [
+      "ZHUINV_ITEM"
+    ]
+  }
+}

@@ -12,6 +12,7 @@ define view entity ZC_JOB_CARD
       @AnalyticsDetails.query.axis: #ROWS
       ScheduleNumber,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #FREE
       DyeingWorkCenter,

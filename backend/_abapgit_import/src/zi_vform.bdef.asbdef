@@ -1,7 +1,3 @@
-// Managed, NON-DRAFT, CLASS-FREE BO over the existing legacy table ZVFORM2.
-// No `strict`, no `authorization` - same proven shape as the class-free master fleet.
-// Quantity and Currency are CALCULATED fields in ZI_VFORM (cast expressions), so they
-// are read-only and are NOT in the mapping (only persistable table columns are mapped).
 managed;
 
 define behavior for ZI_VFORM alias VendorInvoice

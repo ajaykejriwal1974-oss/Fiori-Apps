@@ -10,10 +10,12 @@ define view entity ZC_PACKED_STOCK
       @AnalyticsDetails.query.axis: #ROWS
       FiscalYear,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #FREE
       StorageLocation,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       Material,
       @AnalyticsDetails.query.axis: #FREE
       Grade,
