@@ -2,8 +2,8 @@
 @EndUserText.label: 'Pending Contract Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_PENDING_CONTRACT
-  as select from ZI_PENDING_CONTRACT
+define view entity ZC_PendingContractQuery
+  as projection on ZI_PendingContractCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       ScheduleNumber,

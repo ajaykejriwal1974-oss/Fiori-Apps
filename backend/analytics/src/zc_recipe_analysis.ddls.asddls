@@ -2,8 +2,8 @@
 @EndUserText.label: 'Recipe Master Report'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_RECIPE_ANALYSIS
-  as select from ZI_RECIPE_ANALYSIS
+define view entity ZC_RecipeAnalysisQuery
+  as projection on ZI_RecipeAnalysisCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Plant,

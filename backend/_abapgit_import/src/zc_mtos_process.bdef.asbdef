@@ -1,6 +1,0 @@
-projection;
-define behavior for ZC_MTOS_PROCESS alias MtosStock
-{
-  use action convertToMts;
-  use action createPhysInvDoc;
-}

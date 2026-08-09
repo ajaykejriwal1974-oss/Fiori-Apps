@@ -1,8 +1,10 @@
 unmanaged implementation in class zbp_i_mtos_process unique;
 strict ( 2 );
 
-define behavior for ZI_MTOS_PROCESS alias MtosStock
+define behavior for ZI_MtosStock alias MtosStock
 {
-  static action convertToMts    parameter ZD_MTO_MTS  result [1] ZD_MTO_MTS_RESULT;
-  static action createPhysInvDoc parameter ZD_PHYS_INV result [1] ZD_PHYS_INV_RESULT;
+  // ZMTOS  - transfer make-to-order stock to own/MTS stock
+  static action convertToMts    parameter ZD_MtoMts  result [1] ZD_MtoMtsResult;
+  // ZHUINV - create the physical-inventory document for the HU/MTO stock
+  static action createPhysInvDoc parameter ZD_PhysInv result [1] ZD_PhysInvResult;
 }

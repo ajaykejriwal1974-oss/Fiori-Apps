@@ -1,5 +1,0 @@
-unmanaged implementation in class zbp_i_hu_unpack unique;
-define behavior for ZI_HU_UNPACK alias HuUnpack
-{
-  static action unpackItems parameter ZD_HU_UNPACK result [1] ZD_HU_UNPACK_RESULT;
-}

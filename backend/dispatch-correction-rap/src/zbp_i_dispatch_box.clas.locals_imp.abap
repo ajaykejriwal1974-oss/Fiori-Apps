@@ -1,41 +1,51 @@
-CLASS lhc_zi_dispatch_box DEFINITION INHERITING FROM cl_abap_behavior_handler.
+*"* Unmanaged behavior for ZI_DispatchBox.
+*"* correctDispatch: re-assign the selected dispatch boxes to a new sales order /
+*"* item / status, applying the legacy ZSOL_DISPATCH_CORRECTION logic on the
+*"* existing dispatch (ZSOL_HUDISPATCH) and packing (ZPP_PACK) tables.
+
+CLASS lhc_DispatchBox DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS correctdispatch FOR MODIFY
+    METHODS correctDispatch FOR MODIFY
       IMPORTING keys FOR ACTION DispatchBox~correctDispatch RESULT result.
 ENDCLASS.
 
-CLASS lhc_zi_dispatch_box IMPLEMENTATION.
-  METHOD correctdispatch.
-    DATA lv_boxno TYPE zsol_hudispatch-boxno.
-    LOOP AT keys INTO DATA(ls_key).
+CLASS lhc_DispatchBox IMPLEMENTATION.
+
+  METHOD correctDispatch.
+    LOOP AT keys INTO DATA(key).
+      DATA(ls_header) = key-%param.
+      DATA(lt_boxes)  = key-%param-_item.
+
+      IF lt_boxes IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( boxesupdated = 0
+                                          message = 'No boxes selected' ) ) TO result.
+        CONTINUE.
+      ENDIF.
+
+      " Re-assign each box on the dispatch table (replaces ZSOL_DISPATCH_CORRECTION).
+      " VERIFY: if a box is already invoiced/posted the goods movement must be
+      " reversed first, and ZPP_PACK kept in sync when the order drives packing.
       DATA(lv_count) = 0.
-      DATA(lv_so)   = ls_key-%param-NewSalesOrder.
-      DATA(lv_soi)  = ls_key-%param-NewSalesOrderItem.
-      DATA(lv_stat) = ls_key-%param-NewStatus.
-      SPLIT ls_key-%param-BoxList AT ';' INTO TABLE DATA(lt_boxes).
-      LOOP AT lt_boxes INTO DATA(lv_box).
-        CONDENSE lv_box.
-        CHECK lv_box IS NOT INITIAL.
-        lv_boxno = lv_box.
+      LOOP AT lt_boxes INTO DATA(box).
         UPDATE zsol_hudispatch
-           SET so = @lv_so, so_item = @lv_soi, status = @lv_stat
-         WHERE boxno = @lv_boxno.
-        lv_count += sy-dbcnt.
+          SET so      = @ls_header-newsalesorder,
+              so_item = @ls_header-newsalesorderitem,
+              status  = @ls_header-newstatus
+          WHERE boxno = @box-boxnumber.
+        IF sy-subrc = 0.
+          lv_count += 1.
+        ENDIF.
       ENDLOOP.
-      INSERT VALUE #( %cid = ls_key-%cid
-        %param-boxesupdated = lv_count
-        %param-message = |{ lv_count } box(es) reassigned to SO { lv_so }/{ lv_soi }, status { lv_stat }.| )
-        INTO TABLE result.
+      IF lv_count > 0.
+        COMMIT WORK.
+      ENDIF.
+
+      APPEND VALUE #( %cid  = key-%cid
+                      %param = VALUE #( boxesupdated = lv_count
+                                        message = |{ lv_count } of { lines( lt_boxes ) } box(es) re-assigned to SO { ls_header-newsalesorder }| ) )
+             TO result.
     ENDLOOP.
   ENDMETHOD.
-ENDCLASS.
 
-CLASS lsc_zi_dispatch_box DEFINITION INHERITING FROM cl_abap_behavior_saver.
-  PROTECTED SECTION.
-    METHODS save REDEFINITION.
-ENDCLASS.
-
-CLASS lsc_zi_dispatch_box IMPLEMENTATION.
-  METHOD save.
-  ENDMETHOD.
 ENDCLASS.

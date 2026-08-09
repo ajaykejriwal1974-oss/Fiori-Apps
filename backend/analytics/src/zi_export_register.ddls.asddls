@@ -4,16 +4,18 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZEXP. Replaces: ZGCUDB (DEPB), export side of ZBRC/ZEXP.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_EXPORT_REGISTER
+define view entity ZI_ExportRegisterCube
   as select from zexp
 {
   key vbeln            as BillingDocument,
   key kschl            as ConditionType,
       fkdat            as BillingDate,
       @DefaultAggregation: #SUM
-      cast( kursk as abap.dec( 15, 3 ) ) as ExchangeRate,
+      kursk            as ExchangeRate,
       @DefaultAggregation: #SUM
-      cast( netwr as abap.dec( 15, 3 ) ) as NetValue,
+      @Semantics.amount.currencyCode: 'Currency'
+      netwr            as NetValue,
+      @Semantics.currencyCode: true
       waerk            as Currency,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

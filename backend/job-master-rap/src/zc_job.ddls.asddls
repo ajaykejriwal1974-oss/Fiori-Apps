@@ -3,25 +3,20 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['JobNumber']
+// Value helps reference standard released VH CDS (VERIFY the exact name per
+// release); shade fields use the Shade master ZC_DD_Shade.
 define root view entity ZC_Job
   provider contract transactional_query
   as projection on ZI_Job
 {
-      @Search.defaultSearchElement: true
-      @UI: { lineItem: [ { position: 10, importance: #HIGH } ], selectionField: [ { position: 10 } ] }
   key JobNumber,
-      @UI: { lineItem: [ { position: 20 } ], selectionField: [ { position: 30 } ] }
+      @Search.defaultSearchElement: true
       BatchNumber,
-      @UI: { lineItem: [ { position: 30 } ], selectionField: [ { position: 40 } ] }
       ScheduleNumber,
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_PLANT', element: 'Plant' } }]
-      @UI: { lineItem: [ { position: 40, importance: #HIGH } ], selectionField: [ { position: 20 } ] }
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_PlantStdVH', element: 'Plant' } }]
       Plant,
-      @UI: { lineItem: [ { position: 50 } ] }
       DyeingWorkCenter,
-      @UI: { lineItem: [ { position: 60 } ] }
       WindingWorkCenter,
-      @UI: { lineItem: [ { position: 70 } ] }
       DeletionFlag,
       CreatedBy,
       CreatedOnDate,

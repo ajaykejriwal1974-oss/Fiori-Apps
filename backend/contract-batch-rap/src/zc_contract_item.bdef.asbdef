@@ -1,7 +1,7 @@
 projection;
 strict ( 2 );
 
-define behavior for ZC_CONTRACT_ITEM alias ContractItem
+define behavior for ZC_Contract_Item alias ContractItem
 {
   use action updateBatches;
 }

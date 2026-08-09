@@ -1,4 +1,0 @@
-@EndUserText.label: 'Delivery Challan'
-define service ZUI_DELIVERY_CHALLAN {
-  expose ZI_DELIVERY_CHALLAN as DeliveryChallan;
-}

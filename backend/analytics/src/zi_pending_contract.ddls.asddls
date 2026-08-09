@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_SCHEDULEN. Replaces: ZPCON, ZPCOND, ZPCONS (ZPCON_CP dropped).
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_PENDING_CONTRACT
+define view entity ZI_PendingContractCube
   as select from zpp_schedulen
 {
   key schno            as ScheduleNumber,
@@ -19,7 +19,9 @@ define view entity ZI_PENDING_CONTRACT
       schdt            as ScheduleDate,
       dyedt            as DyeingDate,
       @DefaultAggregation: #SUM
-      cast( sch_qty as abap.dec( 15, 3 ) ) as ScheduleQuantity,
+      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
+      sch_qty          as ScheduleQuantity,
+      @Semantics.unitOfMeasure: true
       vrkme            as SalesUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

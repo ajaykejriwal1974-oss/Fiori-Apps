@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZHUINV_ITEM. Replaces: ZHUINV_CLS, ZHUMO, ZHUREC.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_HU_INVENTORY
+define view entity ZI_HuInventoryCube
   as select from zhuinv_item
 {
   key huinv_nr         as PhysInvDocument,
@@ -17,7 +17,9 @@ define view entity ZI_HU_INVENTORY
       inv_by           as CountedBy,
       inv_date         as CountDate,
       @DefaultAggregation: #SUM
-      cast( vemng as abap.dec( 15, 3 ) ) as CountedQuantity,
+      @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+      vemng            as CountedQuantity,
+      @Semantics.unitOfMeasure: true
       meins            as BaseUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

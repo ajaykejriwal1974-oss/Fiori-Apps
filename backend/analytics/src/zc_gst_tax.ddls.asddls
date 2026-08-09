@@ -2,45 +2,25 @@
 @EndUserText.label: 'GST Tax Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_GST_TAX
-  as select from ZI_GST_TAX
+define view entity ZC_GstTaxQuery
+  as projection on ZI_GstTaxCube
 {
       @AnalyticsDetails.query.axis: #ROWS
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
-      CompanyCode,
+      Plant,
       @AnalyticsDetails.query.axis: #ROWS
-      BillingDocument,
+      Vendor,
       @AnalyticsDetails.query.axis: #ROWS
-      BusinessPlace,
+      BillToParty,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_SALESORG', element: 'SalesOrganization' } } ]
-      SalesOrg,
+      PlantState,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_BILLINGTYPE', element: 'BillingType' } } ]
-      BillingType,
+      VendorState,
       @AnalyticsDetails.query.axis: #FREE
-      Region,
+      ShipToParty,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Customer', element: 'Customer' } } ]
-      SoldToParty,
+      ShipToState,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Customer', element: 'Customer' } } ]
-      Payer,
-      @AnalyticsDetails.query.axis: #FREE
-      VatRegistration,
-      @AnalyticsDetails.query.axis: #FREE
-      BillingDate,
-      @AnalyticsDetails.query.axis: #FREE
-      Cancelled,
-      @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
-      SalesDocument,
-      @AnalyticsDetails.query.axis: #FREE
-      Currency,
-      @AnalyticsDetails.query.axis: #COLUMNS
-      NetValue,
-      @AnalyticsDetails.query.axis: #COLUMNS
-      TaxAmount,
+      BillToState,
       @AnalyticsDetails.query.axis: #COLUMNS
       RecordCount
 }

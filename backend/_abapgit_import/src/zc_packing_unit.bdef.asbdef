@@ -1,5 +1,0 @@
-projection;
-define behavior for ZC_PACKING_UNIT alias PackingUnit
-{
-  use action createHandlingUnits;
-}

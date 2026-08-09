@@ -1,4 +1,0 @@
-@EndUserText.label: 'Packing Material Master Service'
-define service ZUI_PACKING_MATERIAL {
-  expose ZC_PACKING_MATERIAL as PackMaterial;
-}

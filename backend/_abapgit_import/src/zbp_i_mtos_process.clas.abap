@@ -1,9 +1,0 @@
-CLASS zbp_i_mtos_process DEFINITION
-  PUBLIC
-  ABSTRACT
-  FINAL
-  FOR BEHAVIOR OF zi_mtos_process.
-ENDCLASS.
-
-CLASS zbp_i_mtos_process IMPLEMENTATION.
-ENDCLASS.

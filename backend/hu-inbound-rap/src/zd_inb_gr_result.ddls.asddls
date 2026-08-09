@@ -1,5 +1,5 @@
 @EndUserText.label: 'postInboundGr - result'
-define abstract entity ZD_INB_GR_RESULT
+define abstract entity ZD_InbGrResult
 {
   MaterialDocument : abap.char(10);
   Message : abap.string;

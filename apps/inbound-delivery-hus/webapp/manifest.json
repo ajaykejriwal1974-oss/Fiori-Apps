@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/zui_hu_inbond_04/srvd/sap/zui_hu_inbound/0001/",
+        "uri": "/sap/opu/odata4/sap/REPLACE_WITH_HU_INBOUND_SERVICE/srvd/sap/REPLACE_WITH_HU_INBOUND_SERVICE/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
@@ -46,11 +46,10 @@
     "rootView": {
       "viewName": "kejriwal.mm.inboundhus.view.Worklist",
       "type": "XML",
-      "id": "worklist",
-      "height": "100%"
+      "id": "worklist"
     },
     "dependencies": {
-      "minUI5Version": "1.128.0",
+      "minUI5Version": "1.120.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},

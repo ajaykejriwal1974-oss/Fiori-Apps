@@ -1,1 +1,0 @@
-sap.ui.define(["sap/fe/core/AppComponent"],function(A){"use strict";return A.extend("kejriwal.sd.salesdocstatus.Component",{metadata:{manifest:"json"}});});

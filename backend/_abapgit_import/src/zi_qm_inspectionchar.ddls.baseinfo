@@ -1,9 +1,0 @@
-{
-  "BASEINFO": {
-    "FROM": [
-      "QALS",
-      "QAMR",
-      "QAMV"
-    ]
-  }
-}

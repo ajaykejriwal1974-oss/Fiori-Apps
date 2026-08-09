@@ -1,5 +1,0 @@
-projection;
-define behavior for ZC_HU_ITEM alias HuItem
-{
-  use action postGoodsMovement;
-}

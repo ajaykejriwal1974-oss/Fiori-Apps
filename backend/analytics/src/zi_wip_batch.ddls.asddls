@@ -4,23 +4,25 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_BATCHN. Replaces: ZBATCH_WIP.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_WIP_BATCH
+define view entity ZI_WipBatchCube
   as select from zpp_batchn
 {
   key batchno          as Batch,
   key gjahr            as FiscalYear,
       werks            as Plant,
-      aufnr            as ProductionOrder,
+      aufnr            as Order,
       bchdate          as BatchDate,
       grey_code        as GreyMaterial,
       dye_code         as DyedMaterial,
       assigned         as Assigned,
       closed           as Closed,
       @DefaultAggregation: #SUM
-      cast( qty as abap.dec( 15, 3 ) ) as Quantity,
+      @Semantics.quantity.unitOfMeasure: 'BatchUnit'
+      qty              as Quantity,
+      @Semantics.unitOfMeasure: true
       vrkme            as BatchUnit,
       @DefaultAggregation: #SUM
-      cast( cheeses as abap.dec( 15, 3 ) ) as Cheeses,
+      cheeses          as Cheeses,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

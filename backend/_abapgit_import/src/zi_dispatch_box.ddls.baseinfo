@@ -1,8 +1,0 @@
-{
-  "BASEINFO": {
-    "FROM": [
-      "ZPP_PACK",
-      "ZSOL_HUDISPATCH"
-    ]
-  }
-}

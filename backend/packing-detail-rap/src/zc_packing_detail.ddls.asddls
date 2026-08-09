@@ -2,9 +2,9 @@
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
-define root view entity ZC_PACKING_DETAIL
+define root view entity ZC_PackingItem
   provider contract transactional_query
-  as projection on ZI_PACKING_DETAIL
+  as projection on ZI_PackingItem
 {
   key HandlingUnit,
   key HandlingUnitItem,

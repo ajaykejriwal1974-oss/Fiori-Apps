@@ -1,5 +1,0 @@
-projection;
-define behavior for ZC_DISPATCH_BOX alias DispatchBox
-{
-  use action correctDispatch;
-}

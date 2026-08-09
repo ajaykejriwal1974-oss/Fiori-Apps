@@ -1,2 +1,0 @@
-sap.ui.define(["sap/fe/core/AppComponent"],function(e){"use strict";return e.extend("kejriwal.pp.recipemaster.Component",{metadata:{manifest:"json"}})});                                                                                                      
-//# sourceMappingURL=Component.js.map                                                                                                                                                                                                                          

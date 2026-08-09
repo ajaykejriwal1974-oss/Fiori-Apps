@@ -4,7 +4,7 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_RECEIPE. Replaces: ZRECPM.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_RECIPE_ANALYSIS
+define view entity ZI_RecipeAnalysisCube
   as select from zpp_receipe
 {
   key werks            as Plant,
@@ -15,7 +15,9 @@ define view entity ZI_RECIPE_ANALYSIS
       component        as Component,
       comp_type        as ComponentType,
       @DefaultAggregation: #SUM
-      cast( ratio as abap.dec( 15, 3 ) ) as Ratio,
+      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
+      ratio            as Ratio,
+      @Semantics.unitOfMeasure: true
       vrkme            as SalesUnit,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'

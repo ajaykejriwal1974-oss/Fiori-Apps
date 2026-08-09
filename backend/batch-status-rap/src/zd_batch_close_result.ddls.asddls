@@ -1,5 +1,5 @@
 @EndUserText.label: 'closeBatch - result'
-define abstract entity ZD_BATCH_CLOSE_RESULT
+define abstract entity ZD_BatchCloseResult
 {
   Message : abap.string;
 }

@@ -1,4 +1,0 @@
-@EndUserText.label: 'Vendor Invoice Allocation Service'
-define service ZUI_VFORM {
-  expose ZC_VFORM as VendorInvoice;
-}

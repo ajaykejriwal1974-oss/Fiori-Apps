@@ -2,8 +2,8 @@
 @EndUserText.label: 'Packing / Dispatch Register'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_PACKING_REGISTER
-  as select from ZI_PACKED_STOCK
+define view entity ZC_PackingRegisterQuery
+  as projection on ZI_PackedStockCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Box,
@@ -14,7 +14,7 @@ define view entity ZC_PACKING_REGISTER
       @AnalyticsDetails.query.axis: #FREE
       SalesItem,
       @AnalyticsDetails.query.axis: #FREE
-      ProductionOrder,
+      Order,
       @AnalyticsDetails.query.axis: #FREE
       Material,
       @AnalyticsDetails.query.axis: #FREE

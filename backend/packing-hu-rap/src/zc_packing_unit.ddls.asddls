@@ -3,9 +3,9 @@
 @Metadata.allowExtensions: true
 @Search.searchable: true
 @ObjectModel.semanticKey: ['HandlingUnit']
-define root view entity ZC_PACKING_UNIT
+define root view entity ZC_Packing_Unit
   provider contract transactional_query
-  as projection on ZI_PACKING_UNIT
+  as projection on ZI_Packing_Unit
 {
       @Search.defaultSearchElement: true
   key HandlingUnit,

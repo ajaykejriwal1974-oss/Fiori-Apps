@@ -1,7 +1,0 @@
-{
-  "BASEINFO": {
-    "FROM": [
-      "ZPACK_MAST"
-    ]
-  }
-}

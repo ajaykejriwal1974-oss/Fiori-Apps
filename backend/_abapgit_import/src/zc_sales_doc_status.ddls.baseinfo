@@ -1,7 +1,0 @@
-{
-  "BASEINFO": {
-    "FROM": [
-      "ZI_SALES_DOC_STATUS"
-    ]
-  }
-}

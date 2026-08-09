@@ -1,9 +1,7 @@
 @EndUserText.label: 'repackItems - import'
-// Flat action parameter. ItemList carries 'HUITEM=QTY;HUITEM=QTY'
-// (decimal point in QTY).
-define abstract entity ZD_REPACK
+define abstract entity ZD_Repack
 {
   SourceHandlingUnit : abap.char(20);
   TargetHandlingUnit : abap.char(20);
-  ItemList           : abap.char(1333);
+  _Item : composition [0..*] of ZD_RepackItem;
 }

@@ -2,11 +2,11 @@
 @EndUserText.label: 'Merge Analysis'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_MERGE_ANALYSIS
-  as select from ZI_MERGE_ANALYSIS
+define view entity ZC_MergeAnalysisQuery
+  as projection on ZI_MergeAnalysisCube
 {
       @AnalyticsDetails.query.axis: #ROWS
-      ProductionOrder,
+      Order,
       @AnalyticsDetails.query.axis: #ROWS
       Grade,
       @AnalyticsDetails.query.axis: #ROWS

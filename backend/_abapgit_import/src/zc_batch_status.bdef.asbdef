@@ -1,6 +1,0 @@
-projection;
-define behavior for ZC_BATCH_STATUS alias Batch
-{
-  use action closeBatch;
-  use action deleteBatch;
-}

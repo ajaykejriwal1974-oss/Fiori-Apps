@@ -1,5 +1,0 @@
-unmanaged implementation in class zbp_i_hu_inbound unique;
-define behavior for ZI_HU_INBOUND alias InboundHu
-{
-  static action postInboundGr parameter ZD_INB_GR result [1] ZD_INB_GR_RESULT;
-}

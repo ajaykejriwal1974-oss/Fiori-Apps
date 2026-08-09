@@ -7,7 +7,7 @@
 // Replaces the stock reports (ZBOXSTOCK, ZGSTOCK, ZPRP1, ZSSTOCK, ZDSTOCK, ZSTOCK,
 // ZPRP, ZPRPSZ) AND the packing-list family (ZPLIST01..03(+A/T/N/D), ZPACKLIST*).
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_PACKED_STOCK
+define view entity ZI_PackedStockCube
   as select from zpp_pack
 {
   key boxno            as Box,
@@ -19,7 +19,7 @@ define view entity ZI_PACKED_STOCK
       grade            as Grade,
       enduse           as EndUse,
       ptype            as PackingType,
-      psize            as PackingSize,
+      psize            as Size,
       mergno           as MergeNumber,
       arbpl            as WorkCenter,
       pltyp            as ProductType,
@@ -27,17 +27,17 @@ define view entity ZI_PACKED_STOCK
       // packing / dispatch register dimensions
       vbeln            as SalesDocument,
       posnr            as SalesItem,
-      aufnr            as ProductionOrder,
+      aufnr            as Order,
       plist            as PackingListFlag,
       posted           as Posted,
       pldate           as PackingListDate,
       // measures
       @DefaultAggregation: #SUM
-      cast( grosswt as abap.dec( 15, 3 ) ) as GrossWeight,
+      grosswt          as GrossWeight,
       @DefaultAggregation: #SUM
-      cast( tarewt as abap.dec( 15, 3 ) ) as TareWeight,
+      tarewt           as TareWeight,
       @DefaultAggregation: #SUM
-      cast( netwt as abap.dec( 15, 3 ) ) as NetWeight,
+      netwt            as NetWeight,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

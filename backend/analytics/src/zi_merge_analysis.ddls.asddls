@@ -4,16 +4,16 @@
 @Metadata.allowExtensions: true
 // Analytical cube over ZPP_MERGE. Replaces: merge slice of ZBOXSTOCK / ZSSTOCK.
 // Old report variants are now dimensions; aggregate in the query.
-define view entity ZI_MERGE_ANALYSIS
+define view entity ZI_MergeAnalysisCube
   as select from zpp_merge
 {
-  key aurnr            as ProductionOrder,
+  key aurnr            as Order,
   key grade            as Grade,
   key enduse           as EndUse,
       charg            as Batch,
       shdcd            as ShadeCode,
       @DefaultAggregation: #SUM
-      cast( menge as abap.dec( 15, 3 ) ) as Quantity,
+      menge            as Quantity,
       @DefaultAggregation: #SUM
       @EndUserText.label: 'Record Count'
       cast( 1 as abap.int4 ) as RecordCount

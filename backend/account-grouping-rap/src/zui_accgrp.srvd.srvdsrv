@@ -1,5 +1,0 @@
-@EndUserText.label: 'Account Group Master Service'
-define service ZUI_ACCGRP {
-  expose ZC_ACCGRP     as AccountGroup;
-  expose ZC_ACCGRP_ACC as AccountAssignment;
-}

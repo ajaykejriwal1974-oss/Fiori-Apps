@@ -1,76 +1,53 @@
-CLASS lcl_ctr_buffer DEFINITION.
-  PUBLIC SECTION.
-    TYPES: BEGIN OF ty_item,
-             doc   TYPE vbeln_va,
-             posnr TYPE posnr_va,
-             batch TYPE charg_d,
-           END OF ty_item.
-    CLASS-DATA gt_items TYPE STANDARD TABLE OF ty_item WITH EMPTY KEY.
-ENDCLASS.
+*"* Unmanaged behavior for ZI_Contract_Item.
+*"* updateBatches: change the batch on the given contract items in one call via
+*"* the standard sales-document change API.
 
-CLASS lhc_zi_contract_item DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_ContractItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
-    METHODS updatebatches FOR MODIFY
+    METHODS updateBatches FOR MODIFY
       IMPORTING keys FOR ACTION ContractItem~updateBatches RESULT result.
 ENDCLASS.
 
-CLASS lhc_zi_contract_item IMPLEMENTATION.
-  " BAPI_CUSTOMERCONTRACT_CHANGE registers RV_SALES_DOCUMENT_UPDATE IN UPDATE TASK,
-  " which is illegal in a RAP action but legal in save(). So the action only buffers
-  " the item/batch changes; the BAPI runs in save() and the RAP runtime commits it.
-  METHOD updatebatches.
-    DATA: lv_doc   TYPE vbeln_va,
-          lv_posnr TYPE posnr_va,
-          lv_count TYPE i.
-    LOOP AT keys INTO DATA(ls_key).
-      lv_doc   = |{ ls_key-%param-SalesContract ALPHA = IN }|.
-      lv_count = 0.
-      SPLIT ls_key-%param-ItemBatchList AT ';' INTO TABLE DATA(lt_pairs).
-      LOOP AT lt_pairs INTO DATA(lv_pair).
-        CONDENSE lv_pair.
-        CHECK lv_pair IS NOT INITIAL.
-        SPLIT lv_pair AT '=' INTO DATA(lv_item) DATA(lv_batch).
-        lv_posnr = lv_item.
-        APPEND VALUE #( doc = lv_doc posnr = lv_posnr batch = lv_batch ) TO lcl_ctr_buffer=>gt_items.
-        lv_count = lv_count + 1.
-      ENDLOOP.
-      INSERT VALUE #( %cid = ls_key-%cid
-        %param-itemsupdated = lv_count
-        %param-message = |{ lv_count } contract item(s) queued for batch update on { ls_key-%param-SalesContract }.| )
-        INTO TABLE result.
+CLASS lhc_ContractItem IMPLEMENTATION.
+
+  METHOD updateBatches.
+    LOOP AT keys INTO DATA(key).
+      DATA(lv_contract) = key-%param-salescontract.
+      DATA(lt_items)    = key-%param-_item.
+
+      IF lv_contract IS INITIAL OR lt_items IS INITIAL.
+        APPEND VALUE #( %cid = key-%cid
+                        %param-message = 'No contract / items provided' ) TO result.
+        CONTINUE.
+      ENDIF.
+
+      " Change the batch on each contract item via the sales-document change API.
+      DATA lt_in  TYPE STANDARD TABLE OF bapisditm.
+      DATA lt_inx TYPE STANDARD TABLE OF bapisditmx.
+      lt_in  = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem batch = it-newbatch ) ).
+      lt_inx = VALUE #( FOR it IN lt_items ( itm_number = it-contractitem updateflag = 'U' batch = 'X' ) ).
+
+      DATA lt_return TYPE STANDARD TABLE OF bapiret2.
+      CALL FUNCTION 'BAPI_SALESDOCUMENT_CHANGE'
+        EXPORTING salesdocument    = lv_contract
+                  order_header_inx = VALUE bapisdh1x( updateflag = 'U' )
+        TABLES    return           = lt_return
+                  order_item_in    = lt_in
+                  order_item_inx   = lt_inx.
+
+      DATA(lv_err) = REDUCE string( INIT s = ``
+                       FOR r IN lt_return WHERE ( type = 'E' OR type = 'A' )
+                       NEXT s = s && r-message && ` ` ).
+      IF lv_err IS NOT INITIAL.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK'.
+        APPEND VALUE #( %cid = key-%cid %param = VALUE #( message = lv_err ) ) TO result.
+      ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' EXPORTING wait = abap_true.
+        APPEND VALUE #( %cid = key-%cid
+                        %param = VALUE #( itemsupdated = lines( lt_items )
+                                          message = |{ lines( lt_items ) } item(s) updated on contract { lv_contract }| ) ) TO result.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
-ENDCLASS.
 
-CLASS lsc_zi_contract_item DEFINITION INHERITING FROM cl_abap_behavior_saver.
-  PROTECTED SECTION.
-    METHODS save REDEFINITION.
-ENDCLASS.
-
-CLASS lsc_zi_contract_item IMPLEMENTATION.
-  METHOD save.
-    DATA: ls_hdr     TYPE bapisdh1,
-          ls_hdrx    TYPE bapisdh1x,
-          lt_itm_in  TYPE STANDARD TABLE OF bapisditm,
-          lt_itm_inx TYPE STANDARD TABLE OF bapisditmx,
-          lt_return  TYPE STANDARD TABLE OF bapiret2.
-
-    LOOP AT lcl_ctr_buffer=>gt_items INTO DATA(ls_row)
-         GROUP BY ( doc = ls_row-doc ) INTO DATA(lo_group).
-      CLEAR: lt_itm_in, lt_itm_inx, lt_return, ls_hdrx.
-      ls_hdrx-updateflag = 'U'.
-      LOOP AT GROUP lo_group INTO DATA(ls_it).
-        APPEND VALUE #( itm_number = ls_it-posnr batch = ls_it-batch ) TO lt_itm_in.
-        APPEND VALUE #( itm_number = ls_it-posnr updateflag = 'U' batch = 'X' ) TO lt_itm_inx.
-      ENDLOOP.
-      CALL FUNCTION 'BAPI_CUSTOMERCONTRACT_CHANGE'
-        EXPORTING salesdocument       = CONV bapivbeln-vbeln( lo_group-doc )
-                  contract_header_in  = ls_hdr
-                  contract_header_inx = ls_hdrx
-        TABLES    return              = lt_return
-                  contract_item_in    = lt_itm_in
-                  contract_item_inx   = lt_itm_inx.
-    ENDLOOP.
-    CLEAR lcl_ctr_buffer=>gt_items.
-  ENDMETHOD.
 ENDCLASS.

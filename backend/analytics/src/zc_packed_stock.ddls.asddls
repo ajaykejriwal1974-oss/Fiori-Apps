@@ -2,8 +2,8 @@
 @EndUserText.label: 'Packed-Stock Analysis'
 @Analytics.query: true
 @Metadata.allowExtensions: true
-define view entity ZC_PACKED_STOCK
-  as select from ZI_PACKED_STOCK
+define view entity ZC_PackedStockQuery
+  as projection on ZI_PackedStockCube
 {
       @AnalyticsDetails.query.axis: #ROWS
       Box,
@@ -22,7 +22,7 @@ define view entity ZC_PACKED_STOCK
       @AnalyticsDetails.query.axis: #FREE
       PackingType,
       @AnalyticsDetails.query.axis: #FREE
-      PackingSize,
+      Size,
       @AnalyticsDetails.query.axis: #FREE
       MergeNumber,
       @AnalyticsDetails.query.axis: #FREE
