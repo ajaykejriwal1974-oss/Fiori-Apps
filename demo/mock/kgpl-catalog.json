@@ -1553,121 +1553,6 @@
         }
       ]
     },
-    "deliveries": {
-      "title": "Delivery Challan",
-      "note": "LIKP — 303,314 deliveries (recent)",
-      "columns": [
-        {
-          "label": "Delivery",
-          "prop": "vbeln",
-          "w": "11rem"
-        },
-        {
-          "label": "Type",
-          "prop": "lfart",
-          "w": "6rem"
-        },
-        {
-          "label": "Created",
-          "prop": "erdat",
-          "w": "10rem"
-        },
-        {
-          "label": "Dlv Date",
-          "prop": "lfdat",
-          "w": "10rem"
-        },
-        {
-          "label": "Customer",
-          "prop": "kunnr",
-          "w": "9rem"
-        },
-        {
-          "label": "Sales Org",
-          "prop": "vkorg",
-          "w": "8rem"
-        },
-        {
-          "label": "Ship Pt",
-          "prop": "vstel",
-          "w": "7rem"
-        }
-      ],
-      "rows": [
-        {
-          "vbeln": "8125000166",
-          "lfart": "LF",
-          "erdat": "2026-07-28",
-          "lfdat": "2026-07-28",
-          "kunnr": "PS05605",
-          "vkorg": "1000",
-          "vstel": "1000"
-        },
-        {
-          "vbeln": "8125000165",
-          "lfart": "LF",
-          "erdat": "2026-07-28",
-          "lfdat": "2026-07-28",
-          "kunnr": "PM01259",
-          "vkorg": "1000",
-          "vstel": "1000"
-        },
-        {
-          "vbeln": "8125000163",
-          "lfart": "LF",
-          "erdat": "2026-07-28",
-          "lfdat": "2026-07-28",
-          "kunnr": "PS06103",
-          "vkorg": "1000",
-          "vstel": "1000"
-        },
-        {
-          "vbeln": "8725000006",
-          "lfart": "LF",
-          "erdat": "2026-06-11",
-          "lfdat": "2026-06-11",
-          "kunnr": "PJ01515",
-          "vkorg": "8000",
-          "vstel": "8001"
-        },
-        {
-          "vbeln": "0084182262",
-          "lfart": "LR",
-          "erdat": "2026-06-11",
-          "lfdat": "2026-06-11",
-          "kunnr": "PA00586",
-          "vkorg": "1000",
-          "vstel": "1000"
-        },
-        {
-          "vbeln": "8425000035",
-          "lfart": "LF",
-          "erdat": "2026-05-27",
-          "lfdat": "2026-05-27",
-          "kunnr": "PG00816",
-          "vkorg": "5000",
-          "vstel": "5000"
-        },
-        {
-          "vbeln": "0821601804",
-          "lfart": "EL",
-          "erdat": "2026-03-27",
-          "lfdat": "2026-03-27",
-          "kunnr": "",
-          "vkorg": "",
-          "vstel": "7000"
-        },
-        {
-          "vbeln": "8725000005",
-          "lfart": "LF",
-          "erdat": "2026-03-27",
-          "lfdat": "2026-03-27",
-          "kunnr": "PJ01515",
-          "vkorg": "8000",
-          "vstel": "8001"
-        }
-      ]
-    },
     "recipes": {
       "title": "Dyeing Recipes",
       "note": "ZPP_RECEIPE — 52,513 recipe lines (sample)",
@@ -2781,6 +2666,126 @@
           "GINDAT": "2026-05-26",
           "GOTDAT": "2026-05-26",
           "CRE_USER": "KID_SD1"
+        }
+      ]
+    },
+    "deliveryChallan": {
+      "title": "Delivery Challan",
+      "note": "ZI_DELIVERY_CHALLAN (custom entity + ZCL_DELIVERY_CHALLAN_QUERY) — HU cartons per delivery, VEKP + ZPP_PACK",
+      "columns": [
+        {
+          "label": "Delivery / Challan",
+          "prop": "challan",
+          "w": "12rem"
+        },
+        {
+          "label": "Carton No",
+          "prop": "carton",
+          "w": "11rem"
+        },
+        {
+          "label": "COP No",
+          "prop": "cop",
+          "w": "7rem"
+        },
+        {
+          "label": "Grade",
+          "prop": "grade",
+          "w": "6rem"
+        },
+        {
+          "label": "Size",
+          "prop": "size",
+          "w": "6rem"
+        },
+        {
+          "label": "Net Wt",
+          "prop": "netwt",
+          "w": "8rem",
+          "num": true
+        },
+        {
+          "label": "Unit",
+          "prop": "unit",
+          "w": "5rem"
+        },
+        {
+          "label": "Sales Order",
+          "prop": "so",
+          "w": "11rem"
+        },
+        {
+          "label": "Handling Unit",
+          "prop": "hu",
+          "w": "11rem"
+        }
+      ],
+      "rows": [
+        {
+          "challan": "8725000001",
+          "carton": "9970000091",
+          "cop": "12",
+          "grade": "A",
+          "size": "UE",
+          "netwt": "17.360",
+          "unit": "KG",
+          "so": "5125000113",
+          "hu": "0004292949"
+        },
+        {
+          "challan": "8725000002",
+          "carton": "9970000094",
+          "cop": "1",
+          "grade": "A",
+          "size": "00",
+          "netwt": "9.970",
+          "unit": "KG",
+          "so": "5125000115",
+          "hu": "0004292959"
+        },
+        {
+          "challan": "8725000002",
+          "carton": "9970000095",
+          "cop": "1",
+          "grade": "A",
+          "size": "00",
+          "netwt": "10.000",
+          "unit": "KG",
+          "so": "5125000115",
+          "hu": "0004292958"
+        },
+        {
+          "challan": "8725000003",
+          "carton": "9970000096",
+          "cop": "1",
+          "grade": "A",
+          "size": "00",
+          "netwt": "9.990",
+          "unit": "KG",
+          "so": "5125000116",
+          "hu": "0004292957"
+        },
+        {
+          "challan": "8725000003",
+          "carton": "9970000097",
+          "cop": "1",
+          "grade": "A",
+          "size": "00",
+          "netwt": "10.010",
+          "unit": "KG",
+          "so": "5125000116",
+          "hu": "0004292956"
+        },
+        {
+          "challan": "8725000005",
+          "carton": "9970000098",
+          "cop": "1",
+          "grade": "A",
+          "size": "00",
+          "netwt": "10.470",
+          "unit": "KG",
+          "so": "5125000143",
+          "hu": "0004292955"
         }
       ]
     }

@@ -164,7 +164,7 @@ VIEWER = [
     ("Sales Register",            "SALES", "salesRegister"),
     ("Purchase Register",         "PURCH", "purchaseRegister"),
     ("Purchase Orders",           "PURCH", "purchaseOrders"),
-    ("Delivery Challan",          "DISP",  "deliveries"),
+    ("Delivery Challan",          "DISP",  "deliveryChallan"),
     ("Dyeing Recipes",            "PROD",  "recipes"),
     ("Transport Codes",           "MAST",  "transportCodes"),
     ("Checked / Packed By",       "PACK",  "checkedPackedBy"),
@@ -396,6 +396,7 @@ def portal_html(sections_html):
   .tile.live {{ background:#f6faff; border-style:dashed; border-color:#cddff2; }}
   .tile.live .ico {{ background:#e0ecfa; color:#0a4f8f; }}
   .tile.live .badge {{ color:#0a4f8f; background:#dcebfb; }}
+  .tile.live .badge.std {{ color:#5a5d60; background:#e6e6e6; }}
   .tile.master {{ background:#fdf8f0; border-style:dashed; border-color:#ecdcc0; }}
   .tile.master .ico {{ background:#f6e8cf; color:#8a5a00; }}
   .tile.master .badge {{ color:#8a5a00; background:#f1e2c6; }}
@@ -432,7 +433,7 @@ def portal_html(sections_html):
     <span><i class="sw-cust"></i>Custom (live demo)</span>
     <span><i class="sw-data"></i>Live KSD data (viewer)</span>
     <span><i class="sw-sample"></i>Sample data (table empty on KSD)</span>
-    <span><i class="sw-live"></i>Live on FES (register / FE)</span>
+    <span><i class="sw-live"></i>Custom on FES (Fiori Elements / analytical)</span>
     <span><i class="sw-ext"></i>Adaptation (ext)</span>
     <span><i class="sw-mas"></i>Master data</span>
     <span><i class="sw-bi"></i>Analytics (BI)</span>
@@ -517,13 +518,27 @@ def bi_tile(space, title, query, replaces):
 
 
 def live_tile(space, title, launch):
-    """Reference tile for a live KSD app with no standalone mock webapp here."""
+    """Reference tile for a live KSD app with no standalone mock webapp here.
+
+    The badge distinguishes CUSTOM apps (custom CDS/RAP services rendered by the
+    Fiori Elements framework, or custom analytical queries) from genuinely
+    STANDARD SAP apps. 'Fiori Elements' / 'AnalyticQuery' here name the UI
+    technology — these apps are custom-built, not standard SAP.
+    """
+    if launch.startswith("Fiori Elements"):
+        badge = '<span class="badge cust">CUSTOM &middot; FIORI ELEMENTS</span>'
+    elif launch.startswith("AnalyticQuery"):
+        badge = '<span class="badge cust">CUSTOM &middot; ANALYTICAL QUERY</span>'
+    elif launch.startswith("Std"):
+        badge = '<span class="badge std">STANDARD SAP</span>'
+    else:
+        badge = '<span class="badge">LIVE &middot; FES</span>'
     return (
         f'<div class="tile live" title="Deployed on KSD — runs on the S/4HANA FES, not in this mock demo">'
         f'<div class="ico">{BADGE[space]}</div>'
         f'<div><div class="ttl">{title}</div>'
         f'<div class="sub">on KSD (FES)</div>'
-        f'<div class="meta"><span class="badge">LIVE &middot; FES</span><br>{launch}</div></div></div>'
+        f'<div class="meta">{badge}<br>{launch}</div></div></div>'
     )
 
 
