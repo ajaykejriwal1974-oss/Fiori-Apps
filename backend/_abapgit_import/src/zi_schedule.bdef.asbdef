@@ -1,4 +1,4 @@
-managed;
+managed implementation in class zbp_i_schedule unique;
 
 define behavior for ZI_Schedule alias Schedule
 persistent table zpp_schedulen
@@ -10,6 +10,8 @@ lock master
 
   field ( mandatory : create ) ScheduleNumber;
   field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  determination setAdminData on save { create; update; }
 
   mapping for zpp_schedulen
   {
