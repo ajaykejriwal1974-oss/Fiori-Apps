@@ -72,6 +72,11 @@ sap.ui.define([
             this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product", "ProductExternalID", "Select Material");
         },
 
+        /** F4 value help for the Batch filter (bound to /BatchVH = I_BatchStdVH). */
+        onBatchVH: function (oEvt) {
+            this._openValueHelp(oEvt.getSource(), "/BatchVH", "Batch", "Material", "Select Batch");
+        },
+
         /** Generic F4: open a SelectDialog over a value-help entity set on the app's
          *  OData V4 model, filter by the typed value, write the picked key back. */
         _openValueHelp: function (oInput, sPath, sKeyField, sDescField, sTitle) {

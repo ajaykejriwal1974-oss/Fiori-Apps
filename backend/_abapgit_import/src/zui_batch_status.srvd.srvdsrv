@@ -4,4 +4,5 @@ define service ZUI_BATCH_STATUS {
   expose ZI_VH_PLANT      as PlantVH;
   expose I_ProductStdVH   as ProductVH;
   expose ZI_VH_COMPANYCODE as CompanyVH;
+  expose I_BatchStdVH     as BatchVH;
 }
