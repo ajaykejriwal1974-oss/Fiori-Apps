@@ -15,7 +15,7 @@ sap.ui.define([
     // Fully-qualified action namespace from the activated OData V4 service
     // metadata (e.g. "com.sap.gateway.srvd.mtos_process.v0001"). Fill the
     // value once the service binding is created in ADT.
-    var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
+    var SERVICE_NS = "com.sap.gateway.srvd.zui_mtos_process.v0001";
     var ENTITY_SET = "MtosStock";
 
     // Project selected rows down to EACH action's _Item contract — convertToMts takes

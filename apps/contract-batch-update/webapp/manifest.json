@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/REPLACE_WITH_CONTRACT_BATCH_SERVICE/srvd/sap/REPLACE_WITH_CONTRACT_BATCH_SERVICE/0001/",
+        "uri": "/sap/opu/odata4/sap/zui_contract_batch/srvd/sap/zui_contract_batch/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"

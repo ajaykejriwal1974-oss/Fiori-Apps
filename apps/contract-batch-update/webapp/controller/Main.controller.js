@@ -11,7 +11,7 @@ sap.ui.define([
     // The OData V4 service namespace the bound action is qualified with. After the
     // service binding is created in ADT, set this to the service definition name
     // (e.g. "com.kejriwal.zui_contract_batch") so the action path resolves.
-    var SERVICE_NS = "REPLACE_WITH_SERVICE_NAMESPACE";
+    var SERVICE_NS = "com.sap.gateway.srvd.zui_contract_batch.v0001";
     var ENTITY_SET = "/ContractItem";
 
     return Controller.extend("kejriwal.sd.contractbatchupdate.controller.Main", {
