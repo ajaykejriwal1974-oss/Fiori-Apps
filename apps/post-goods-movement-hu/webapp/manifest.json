@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/REPLACE_WITH_HU_GM_SERVICE/srvd/sap/REPLACE_WITH_HU_GM_SERVICE/0001/",
+        "uri": "/sap/opu/odata4/sap/zui_hu_goods_movement/srvd/sap/zui_hu_goods_movement/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
