@@ -19,6 +19,9 @@ define root view entity ZC_MTOS_PROCESS
   key SalesOrder,
       @UI: { lineItem: [ { position: 40 } ] }
   key SalesOrderItem,
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } }]
+      @UI: { lineItem: [ { position: 5 } ], selectionField: [ { position: 5 } ] }
+      CompanyCode,
       @UI: { lineItem: [ { position: 50 } ] }
       Quantity,
       @UI: { lineItem: [ { position: 60 } ] }
