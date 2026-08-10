@@ -28,7 +28,7 @@ sap.ui.define([
         deleteBatch: function (o) { return { Material: o.Material, Plant: o.Plant, Batch: o.Batch }; }
     };
 
-    var FILTER_FIELDS = [{ name: "Plant", op: "EQ" }, { name: "Material", op: "Contains" }, { name: "Batch", op: "Contains" }];
+    var FILTER_FIELDS = [{ name: "CompanyCode", op: "EQ" }, { name: "Plant", op: "EQ" }, { name: "Material", op: "Contains" }, { name: "Batch", op: "Contains" }];
 
     return Controller.extend("kejriwal.pp.batchstatus.controller.Worklist", {
 
@@ -55,6 +55,11 @@ sap.ui.define([
             var oBinding = this.byId("table").getBinding("items");
             oBinding.filter(aFilters);
             if (oBinding.isSuspended()) { oBinding.resume(); }
+        },
+
+        /** F4 value help for the Company filter (bound to /CompanyVH = ZI_VH_COMPANYCODE). */
+        onCompanyCodeVH: function (oEvt) {
+            this._openValueHelp(oEvt.getSource(), "/CompanyVH", "CompanyCode", "CompanyCodeName", "Select Company");
         },
 
         /** F4 value help for the Plant filter (bound to /PlantVH = ZI_VH_PLANT). */

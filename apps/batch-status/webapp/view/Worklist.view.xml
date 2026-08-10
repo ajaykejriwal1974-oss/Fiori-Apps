@@ -10,6 +10,8 @@
                  longer loads (and $count-s) the ENTIRE entity set on first paint - rows
                  appear when the user presses Go with a filter (or none, explicitly). -->
             <OverflowToolbar id="filterBar">
+                <Label text="Company"/>
+                <Input id="inpCompanyCode" width="9rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCompanyCodeVH"/>
                 <Label text="{i18n>colPlant}"/>
                 <Input id="inpPlant" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
                 <Label text="{i18n>colMaterial}"/>
@@ -36,6 +38,7 @@
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
+                        <Column><Text text="Company"/></Column>
                         <Column><Text text="{i18n>colMaterial}"/></Column>
                         <Column><Text text="{i18n>colPlant}"/></Column>
                         <Column><Text text="{i18n>colBatch}"/></Column>
@@ -44,6 +47,7 @@
                 <items>
                     <ColumnListItem>
                         <cells>
+                            <Text text="{CompanyCode}"/>
                             <Text text="{Material}"/>
                             <Text text="{Plant}"/>
                             <Text text="{Batch}"/>

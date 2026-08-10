@@ -15,6 +15,9 @@ define root view entity ZC_BATCH_STATUS
   key Plant,
       @UI: { lineItem: [ { position: 30 } ], selectionField: [ { position: 30 } ] }
   key Batch,
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } }]
+      @UI: { lineItem: [ { position: 5 } ], selectionField: [ { position: 5 } ] }
+      CompanyCode,
       @UI: { lineItem: [ { position: 40 } ] }
       LastGoodsReceiptDate
 }
