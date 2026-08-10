@@ -46,7 +46,7 @@
     "rootView": {
       "viewName": "kejriwal.pp.dyeingpacking.view.Main",
       "type": "XML",
-      "id": "main"
+      "id": "main", "height": "100%"
     },
     "dependencies": {
       "minUI5Version": "1.120.0",
