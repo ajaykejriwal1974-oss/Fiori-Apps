@@ -4,4 +4,5 @@ define service ZUI_MTOS_PROCESS {
   expose ZI_VH_PLANT      as PlantVH;
   expose I_ProductStdVH   as ProductVH;
   expose I_SalesOrderStdVH as SalesOrderVH;
+  expose ZI_VH_COMPANYCODE as CompanyVH;
 }

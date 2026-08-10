@@ -27,7 +27,7 @@ sap.ui.define([
             Batch: o.Batch, Quantity: o.Quantity, Unit: o.Unit }; }
     };
 
-    var FILTER_FIELDS = [{ name: "HandlingUnit", op: "Contains" }, { name: "Material", op: "Contains" }];
+    var FILTER_FIELDS = [{ name: "CompanyCode", op: "EQ" }, { name: "Plant", op: "EQ" }, { name: "Batch", op: "Contains" }, { name: "HandlingUnit", op: "Contains" }, { name: "Material", op: "Contains" }];
 
     return Controller.extend("kejriwal.mm.huunpack.controller.Worklist", {
 
@@ -53,6 +53,12 @@ sap.ui.define([
         },
 
         /** F4 value help for the Material filter. */
+        onCompanyCodeVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/CompanyVH", "CompanyCode", "CompanyCodeName", "Select Company"); },
+
+        onPlantVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/PlantVH", "Plant", "PlantName", "Select Plant"); },
+
+        onBatchVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/BatchVH", "Batch", "Material", "Select Batch"); },
+
         onMaterialVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product", "ProductExternalID", "Select Material"); },
 
         /** Generic F4: SelectDialog over a value-help entity set on the app's

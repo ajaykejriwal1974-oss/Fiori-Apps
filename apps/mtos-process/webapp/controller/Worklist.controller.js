@@ -31,7 +31,7 @@ sap.ui.define([
         createPhysInvDoc: function (o) { return { Material: o.Material }; }
     };
 
-    var FILTER_FIELDS = [{ name: "Plant", op: "EQ" }, { name: "Material", op: "Contains" }, { name: "SalesOrder", op: "Contains" }];
+    var FILTER_FIELDS = [{ name: "CompanyCode", op: "EQ" }, { name: "Plant", op: "EQ" }, { name: "Material", op: "Contains" }, { name: "SalesOrder", op: "Contains" }];
 
     return Controller.extend("kejriwal.pp.mtosprocess.controller.Worklist", {
 
@@ -61,6 +61,8 @@ sap.ui.define([
         },
 
         /** F4 value help for the Plant filter. */
+        onCompanyCodeVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/CompanyVH", "CompanyCode", "CompanyCodeName", "Select Company"); },
+
         onPlantVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/PlantVH", "Plant", "PlantName", "Select Plant"); },
 
         /** F4 value help for the Material filter. */
