@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_HUUNPACK
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZHU_UNPACK
+          package: "$TMP"
           description: "KGPL HU Unpack"
         exclude:
           - "/test/"

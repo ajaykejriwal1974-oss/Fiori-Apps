@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_CONTRBAT
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZCONTRACT_BATCH
+          package: "$TMP"
           description: "KGPL Contract Batch Update"
         exclude:
           - "/test/"

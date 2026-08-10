@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_POSTGR
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZPOST_PACK_GR
+          package: "$TMP"
           description: "KGPL Post Packing GR"
         exclude:
           - "/test/"

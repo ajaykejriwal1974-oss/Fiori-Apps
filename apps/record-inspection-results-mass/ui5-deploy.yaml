@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_QMRESULT
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZREC_INSP_MASS
+          package: "$TMP"
           description: "KGPL QM Mass Results"
         exclude:
           - "/test/"

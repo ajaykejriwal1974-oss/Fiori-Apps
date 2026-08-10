@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_MTOS
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZMTOS_PROCESS
+          package: "$TMP"
           description: "KGPL MTO-to-MTS Process"
         exclude:
           - "/test/"

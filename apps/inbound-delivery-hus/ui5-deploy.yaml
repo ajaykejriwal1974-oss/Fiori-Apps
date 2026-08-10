@@ -12,9 +12,8 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZKGPL_HUINBND
-          package: ZKGPL_FIORI
-          transport: KSDK906624
+          name: ZINB_DEL_HUS
+          package: "$TMP"
           description: "KGPL Inbound Delivery HUs"
         exclude:
           - "/test/"
