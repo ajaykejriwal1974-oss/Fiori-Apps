@@ -9,8 +9,9 @@
 //  The correction itself is applied by the static action correctDispatch (see
 //  the behavior) - it re-assigns the box's sales order / item / status.
 //
-//  NOTE: ZPP_PACK is keyed by BOXNO + GJAHR; the join below may need the year
-//  predicate (or "latest GJAHR") for your data - VERIFY before activating.
+//  erdat in the legacy data can hold invalid calendar values (rendered as "--"
+//  by OData V4, which breaks the client list parser) - guard with dats_is_valid
+//  so bad dates become null.
 //
 define root view entity ZI_DISPATCH_BOX
   as select from zsol_hudispatch as disp
@@ -21,7 +22,8 @@ define root view entity ZI_DISPATCH_BOX
       disp.so_item                                as SalesOrderItem,
       disp.pck_lst                                as PackListItem,
       disp.status                                 as Status,
-      disp.erdat                                  as CreatedOnDate,
+      case when dats_is_valid( disp.erdat ) = 1 then disp.erdat
+           else cast( '00000000' as abap.dats ) end as CreatedOnDate,
       disp.time                                   as CreatedAtTime,
       pack.matnr                                  as Material,
       pack.grade                                  as Grade,
