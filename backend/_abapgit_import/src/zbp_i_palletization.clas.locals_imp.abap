@@ -20,14 +20,17 @@ CLASS lhc_zi_palletization IMPLEMENTATION.
       ls_hdrprop-pack_mat = ls_key-%param-PalletPackagingMaterial.
       ls_hdrprop-content  = ls_key-%param-Reference.
 
-      CALL FUNCTION 'BAPI_HU_CREATE'
+      " update-task BAPI -> separate LUW via aRFC (create + pack + commit share it).
+      CALL FUNCTION 'BAPI_HU_CREATE' DESTINATION 'NONE'
         EXPORTING headerproposal = ls_hdrprop
         IMPORTING huheader       = ls_huheader
                   hukey          = lv_hukey
-        TABLES    return         = lt_return.
+        TABLES    return         = lt_return
+        EXCEPTIONS OTHERS = 0.
 
       READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
       IF sy-subrc = 0.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK' DESTINATION 'NONE' EXCEPTIONS OTHERS = 0.
         INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
         CONTINUE.
       ENDIF.
@@ -40,15 +43,19 @@ CLASS lhc_zi_palletization IMPLEMENTATION.
         CLEAR: ls_itemprop, lt_return.
         ls_itemprop-hu_item_type     = '3'.          " handling unit
         ls_itemprop-lower_level_exid = lv_exidv.
-        CALL FUNCTION 'BAPI_HU_PACK'
+        CALL FUNCTION 'BAPI_HU_PACK' DESTINATION 'NONE'
           EXPORTING hukey        = lv_hukey
                     itemproposal = ls_itemprop
-          TABLES    return       = lt_return.
+          TABLES    return       = lt_return
+          EXCEPTIONS OTHERS = 0.
         READ TABLE lt_return TRANSPORTING NO FIELDS WITH KEY type = 'E'.
         IF sy-subrc <> 0.
           lv_count = lv_count + 1.
         ENDIF.
       ENDLOOP.
+
+      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' DESTINATION 'NONE'
+        EXPORTING wait = 'X' EXCEPTIONS OTHERS = 0.
 
       INSERT VALUE #( %cid = ls_key-%cid
         %param-pallet      = lv_hukey

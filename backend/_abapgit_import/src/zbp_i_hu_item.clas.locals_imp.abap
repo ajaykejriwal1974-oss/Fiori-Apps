@@ -13,7 +13,8 @@ CLASS lhc_zi_hu_item IMPLEMENTATION.
           lt_return TYPE STANDARD TABLE OF bapiret2,
           lv_matdoc TYPE bapi2017_gm_head_ret-mat_doc,
           lv_year   TYPE bapi2017_gm_head_ret-doc_year,
-          lv_exidv  TYPE exidv.
+          lv_exidv  TYPE exidv,
+          lv_rfcmsg TYPE c LENGTH 200.
 
     LOOP AT keys INTO DATA(ls_key).
       CLEAR: lt_item, lt_return, lv_matdoc, lv_year.
@@ -49,18 +50,29 @@ CLASS lhc_zi_hu_item IMPLEMENTATION.
       ls_header-doc_date   = sy-datum.
       ls_code-gm_code      = '04'.   " transfer posting (311)
 
-      CALL FUNCTION 'BAPI_GOODSMVT_CREATE'
+      " update-task BAPI -> run in a separate LUW via aRFC (RAP forbids it inline).
+      CALL FUNCTION 'BAPI_GOODSMVT_CREATE' DESTINATION 'NONE'
         EXPORTING  goodsmvt_header  = ls_header
                    goodsmvt_code    = ls_code
         IMPORTING  materialdocument = lv_matdoc
                    matdocumentyear  = lv_year
         TABLES     goodsmvt_item    = lt_item
-                   return           = lt_return.
+                   return           = lt_return
+        EXCEPTIONS system_failure        = 1 MESSAGE lv_rfcmsg
+                   communication_failure = 2 MESSAGE lv_rfcmsg
+                   OTHERS                = 3.
+      IF sy-subrc <> 0.
+        INSERT VALUE #( %cid = ls_key-%cid %param-message = |Posting failed: { lv_rfcmsg }| ) INTO TABLE result.
+        CONTINUE.
+      ENDIF.
 
       READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
       IF sy-subrc = 0.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK' DESTINATION 'NONE' EXCEPTIONS OTHERS = 0.
         INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' DESTINATION 'NONE'
+          EXPORTING wait = 'X' EXCEPTIONS OTHERS = 0.
         INSERT VALUE #( %cid = ls_key-%cid
           %param-materialdocument = lv_matdoc
           %param-materialdocumentyear = lv_year

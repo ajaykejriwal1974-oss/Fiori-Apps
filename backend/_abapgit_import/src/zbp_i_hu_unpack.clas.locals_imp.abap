@@ -11,10 +11,11 @@ CLASS lhc_zi_hu_unpack IMPLEMENTATION.
           lv_hukey  TYPE bapihukey-hu_exid,
           ls_item   TYPE bapihuitmunpack,
           lt_return TYPE STANDARD TABLE OF bapiret2,
-          ls_return TYPE bapiret2.
+          ls_return TYPE bapiret2,
+          lv_posted TYPE abap_bool.
 
     LOOP AT keys INTO DATA(ls_key).
-      CLEAR lv_msg.
+      CLEAR: lv_msg, lv_posted.
       SPLIT ls_key-%param-huitemlist AT ';' INTO TABLE DATA(lt_pairs).
 
       LOOP AT lt_pairs INTO DATA(lv_pair).
@@ -51,18 +52,25 @@ CLASS lhc_zi_hu_unpack IMPLEMENTATION.
         ls_item-plant          = ls_vepo-werks.
 
         CLEAR lt_return.
-        CALL FUNCTION 'BAPI_HU_UNPACK'
+        " update-task BAPI -> separate LUW via aRFC.
+        CALL FUNCTION 'BAPI_HU_UNPACK' DESTINATION 'NONE'
           EXPORTING hukey = lv_hukey itemunpack = ls_item
-          TABLES    return = lt_return.
+          TABLES    return = lt_return
+          EXCEPTIONS OTHERS = 0.
 
         READ TABLE lt_return INTO ls_return WITH KEY type = 'E'.
         IF sy-subrc = 0.
           lv_msg = |{ lv_msg }{ lv_hu }/{ lv_item }: { ls_return-message }. |.
         ELSE.
+          lv_posted = abap_true.
           lv_msg = |{ lv_msg }{ lv_hu }/{ lv_item }: Handling Unit item emptied. |.
         ENDIF.
       ENDLOOP.
 
+      IF lv_posted = abap_true.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' DESTINATION 'NONE'
+          EXPORTING wait = 'X' EXCEPTIONS OTHERS = 0.
+      ENDIF.
       IF lv_msg IS INITIAL.
         lv_msg = |No HU / item supplied.|.
       ENDIF.

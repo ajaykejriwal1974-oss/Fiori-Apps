@@ -21,14 +21,18 @@ CLASS lhc_zi_packing_detail IMPLEMENTATION.
       ls_hdrprop-pack_mat = ls_key-%param-PackagingMaterial.
       ls_hdrprop-content  = ls_key-%param-Reference.
 
-      CALL FUNCTION 'BAPI_HU_CREATE'
+      " update-task BAPI -> separate LUW via aRFC. HU_CREATE + HU_PACK + COMMIT
+      " share the same DESTINATION 'NONE' LUW, so packing sees the new HU.
+      CALL FUNCTION 'BAPI_HU_CREATE' DESTINATION 'NONE'
         EXPORTING headerproposal = ls_hdrprop
         IMPORTING huheader       = ls_huheader
                   hukey          = lv_hukey
-        TABLES    return         = lt_return.
+        TABLES    return         = lt_return
+        EXCEPTIONS OTHERS = 0.
 
       READ TABLE lt_return INTO DATA(ls_cerr) WITH KEY type = 'E'.
       IF sy-subrc = 0.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK' DESTINATION 'NONE' EXCEPTIONS OTHERS = 0.
         INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_cerr-message ) INTO TABLE result.
         CONTINUE.
       ENDIF.
@@ -44,15 +48,19 @@ CLASS lhc_zi_packing_detail IMPLEMENTATION.
         ls_itemprop-batch         = lv_batch.
         ls_itemprop-pack_qty      = lv_qty.
         ls_itemprop-base_unit_qty = lv_unit.
-        CALL FUNCTION 'BAPI_HU_PACK'
+        CALL FUNCTION 'BAPI_HU_PACK' DESTINATION 'NONE'
           EXPORTING hukey        = lv_hukey
                     itemproposal = ls_itemprop
-          TABLES    return       = lt_return.
+          TABLES    return       = lt_return
+          EXCEPTIONS OTHERS = 0.
         READ TABLE lt_return INTO DATA(ls_ierr) WITH KEY type = 'E'.
         IF sy-subrc = 0.
           lv_msg = |{ lv_msg } { ls_ierr-message }|.
         ENDIF.
       ENDLOOP.
+
+      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' DESTINATION 'NONE'
+        EXPORTING wait = 'X' EXCEPTIONS OTHERS = 0.
 
       INSERT VALUE #( %cid = ls_key-%cid
         %param-handlingunit = lv_hukey
@@ -108,14 +116,16 @@ CLASS lhc_zi_packing_detail IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      CALL FUNCTION 'BAPI_HU_REPACK'
+      CALL FUNCTION 'BAPI_HU_REPACK' DESTINATION 'NONE'
         EXPORTING hukey  = CONV bapihukey-hu_exid( lv_source )
         TABLES    repack = lt_repack
                   desthu = lt_desthu
-                  return = lt_return.
+                  return = lt_return
+        EXCEPTIONS OTHERS = 0.
 
       READ TABLE lt_return INTO DATA(ls_err) WITH KEY type = 'E'.
       IF sy-subrc = 0.
+        CALL FUNCTION 'BAPI_TRANSACTION_ROLLBACK' DESTINATION 'NONE' EXCEPTIONS OTHERS = 0.
         IF ls_err-message IS INITIAL AND ls_err-id IS NOT INITIAL.
           MESSAGE ID ls_err-id TYPE 'E' NUMBER ls_err-number
             WITH ls_err-message_v1 ls_err-message_v2 ls_err-message_v3 ls_err-message_v4
@@ -123,6 +133,8 @@ CLASS lhc_zi_packing_detail IMPLEMENTATION.
         ENDIF.
         INSERT VALUE #( %cid = ls_key-%cid %param-message = ls_err-message ) INTO TABLE result.
       ELSE.
+        CALL FUNCTION 'BAPI_TRANSACTION_COMMIT' DESTINATION 'NONE'
+          EXPORTING wait = 'X' EXCEPTIONS OTHERS = 0.
         INSERT VALUE #( %cid = ls_key-%cid
           %param-message = |Repacked to HU { ls_key-%param-TargetHandlingUnit }.| ) INTO TABLE result.
       ENDIF.
