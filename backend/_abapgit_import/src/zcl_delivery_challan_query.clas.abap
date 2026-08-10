@@ -18,6 +18,10 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
     DATA lr_so    TYPE RANGE OF vbeln_va.
     DATA lr_erdat TYPE RANGE OF erdat.
     DATA lr_ernam TYPE RANGE OF ernam.
+    DATA lr_werks TYPE RANGE OF werks_d.
+    DATA lr_matnr TYPE RANGE OF matnr.
+    DATA lr_charg TYPE RANGE OF charg_d.
+    DATA lr_bukrs TYPE RANGE OF bukrs.
 
     TRY.
         LOOP AT io_request->get_filter( )->get_as_ranges( ) INTO DATA(ls_r).
@@ -28,6 +32,10 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
             WHEN 'SALESORDER'.      lr_so    = CORRESPONDING #( ls_r-range ).
             WHEN 'CREATEDON'.       lr_erdat = CORRESPONDING #( ls_r-range ).
             WHEN 'CREATEDBY'.       lr_ernam = CORRESPONDING #( ls_r-range ).
+            WHEN 'COMPANYCODE'.     lr_bukrs = CORRESPONDING #( ls_r-range ).
+            WHEN 'PLANT'.           lr_werks = CORRESPONDING #( ls_r-range ).
+            WHEN 'MATERIAL'.        lr_matnr = CORRESPONDING #( ls_r-range ).
+            WHEN 'BATCH'.           lr_charg = CORRESPONDING #( ls_r-range ).
           ENDCASE.
         ENDLOOP.
       CATCH cx_rap_query_filter_no_range.
@@ -66,11 +74,19 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
       ENDLOOP.
       SORT lt_box. DELETE ADJACENT DUPLICATES FROM lt_box.
       IF lt_box IS NOT INITIAL.
-        SELECT boxno, spoolno, grade, psize, netwt, vbeln FROM zpp_pack
+        SELECT boxno, spoolno, grade, psize, netwt, vbeln, werks, matnr, mergno FROM zpp_pack
           FOR ALL ENTRIES IN @lt_box
           WHERE boxno = @lt_box-table_line
           INTO TABLE @DATA(lt_pk).
         SORT lt_pk BY boxno.
+        " plant -> company code (valuation area = plant on this system)
+        IF lt_pk IS NOT INITIAL.
+          SELECT bwkey, bukrs FROM t001k
+            FOR ALL ENTRIES IN @lt_pk
+            WHERE bwkey = @lt_pk-werks
+            INTO TABLE @DATA(lt_cc).
+          SORT lt_cc BY bwkey.
+        ENDIF.
       ENDIF.
 
       " creator full name (ERNAM -> USER_ADDR-NAME_TEXTC)
@@ -101,6 +117,13 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
           ls_out-grade      = ls_pk-grade.
           ls_out-packsize   = ls_pk-psize.
           ls_out-salesorder = ls_pk-vbeln.
+          ls_out-plant      = ls_pk-werks.
+          ls_out-material   = ls_pk-matnr.
+          ls_out-batch      = ls_pk-mergno.
+          READ TABLE lt_cc INTO DATA(ls_cc) WITH KEY bwkey = ls_pk-werks BINARY SEARCH.
+          IF sy-subrc = 0.
+            ls_out-companycode = ls_cc-bukrs.
+          ENDIF.
           ls_out-netweight  = COND #( WHEN ls_pk-netwt IS NOT INITIAL THEN ls_pk-netwt ELSE ls_h-ntgew ).
         ELSE.
           ls_out-netweight  = ls_h-ntgew.
@@ -121,6 +144,18 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
       ENDIF.
       IF lr_ernam IS NOT INITIAL.
         DELETE lt_out WHERE createdby NOT IN lr_ernam.
+      ENDIF.
+      IF lr_bukrs IS NOT INITIAL.
+        DELETE lt_out WHERE companycode NOT IN lr_bukrs.
+      ENDIF.
+      IF lr_werks IS NOT INITIAL.
+        DELETE lt_out WHERE plant NOT IN lr_werks.
+      ENDIF.
+      IF lr_matnr IS NOT INITIAL.
+        DELETE lt_out WHERE material NOT IN lr_matnr.
+      ENDIF.
+      IF lr_charg IS NOT INITIAL.
+        DELETE lt_out WHERE batch NOT IN lr_charg.
       ENDIF.
     ENDIF.
 

@@ -22,6 +22,26 @@ define root custom entity ZI_DELIVERY_CHALLAN
       @UI: { lineItem: [ { position: 70, importance: #MEDIUM } ], selectionField: [ { position: 20 } ],
              identification: [ { position: 70 } ] }
       SalesOrder      : vbeln_va;
+      @EndUserText.label: 'Company Code'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
+      @UI: { lineItem: [ { position: 5, importance: #HIGH } ],
+             selectionField: [ { position: 11 } ], identification: [ { position: 5 } ] }
+      CompanyCode     : bukrs;
+      @EndUserText.label: 'Plant'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_PLANT', element: 'Plant' } } ]
+      @UI: { lineItem: [ { position: 6, importance: #HIGH } ],
+             selectionField: [ { position: 12 } ], identification: [ { position: 6 } ] }
+      Plant           : werks_d;
+      @EndUserText.label: 'Material'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_ProductStdVH', element: 'Product' } } ]
+      @UI: { lineItem: [ { position: 7, importance: #HIGH } ],
+             selectionField: [ { position: 13 } ], identification: [ { position: 7 } ] }
+      Material        : matnr;
+      @EndUserText.label: 'Batch / Merge'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_BatchStdVH', element: 'Batch' } } ]
+      @UI: { lineItem: [ { position: 8, importance: #HIGH } ],
+             selectionField: [ { position: 14 } ], identification: [ { position: 8 } ] }
+      Batch           : charg_d;
       @EndUserText.label: 'Net Weight'
       @Semantics.quantity.unitOfMeasure: 'NetWeightUnit'
       @UI: { lineItem: [ { position: 60, importance: #HIGH } ], identification: [ { position: 60 } ] }
