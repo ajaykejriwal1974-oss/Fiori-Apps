@@ -39,4 +39,16 @@ define root custom entity ZI_DELIVERY_CHALLAN
       @EndUserText.label: 'Size'
       @UI: { lineItem: [ { position: 40, importance: #HIGH } ], identification: [ { position: 40 } ] }
       PackSize        : zde_size;
+      @EndUserText.label: 'Created On'
+      @UI: { lineItem: [ { position: 90, importance: #MEDIUM } ],
+             selectionField: [ { position: 40 } ], identification: [ { position: 90 } ] }
+      CreatedOn       : erdat;
+      @EndUserText.label: 'Created By'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_User', element: 'UserID' } } ]
+      @UI: { lineItem: [ { position: 100, importance: #LOW } ],
+             selectionField: [ { position: 50 } ], identification: [ { position: 100 } ] }
+      CreatedBy       : ernam;
+      @EndUserText.label: 'Created By (Name)'
+      @UI: { lineItem: [ { position: 110, importance: #MEDIUM } ], identification: [ { position: 110 } ] }
+      CreatedByName   : abap.char(80);
 }
