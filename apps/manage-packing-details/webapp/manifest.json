@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/zui_packing_detail/srvd/sap/zui_packing_detail/0001/",
+        "uri": "/sap/opu/odata4/sap/zui_packing_detail_04/srvd/sap/zui_packing_detail/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"

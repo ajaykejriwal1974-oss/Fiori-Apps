@@ -13,7 +13,7 @@ sap.ui.define([
     "use strict";
 
     // Fully-qualified action namespace from the activated OData V4 service
-    // metadata (e.g. "com.sap.gateway.srvd.post_pack_gr.v0001"). Fill the
+    // metadata (e.g. "com.sap.gateway.srvd.zui_post_packing_gr.v0001"). Fill the
     // value once the service binding is created in ADT.
     var SERVICE_NS = "com.sap.gateway.srvd.zui_post_packing_gr.v0001";
     var ENTITY_SET = "PostPackGr";

@@ -11,7 +11,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/zui_qm_inspectionchar/srvd/sap/zui_qm_inspectionchar/0001/",
+        "uri": "/sap/opu/odata4/sap/zui_qm_inspectionchar_04/srvd/sap/zui_qm_inspectionchar/0001/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
