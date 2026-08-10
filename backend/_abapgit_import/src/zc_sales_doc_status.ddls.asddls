@@ -15,7 +15,7 @@ define root view entity ZC_SALES_DOC_STATUS
   as projection on ZI_SALES_DOC_STATUS
 {
       @Search.defaultSearchElement: true
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrder', element: 'SalesOrder' } }]
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } }]
       @UI: { lineItem:       [ { position: 10 } ],
              identification: [ { position: 10 } ],
              selectionField: [ { position: 10 } ] }

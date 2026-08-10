@@ -21,7 +21,7 @@ define root view entity ZC_Schedule
       ScheduleDate,
       @UI: { lineItem: [ { position: 60 } ] }
       ScheduleTime,
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrder', element: 'SalesOrder' } }]
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } }]
       @UI: { lineItem: [ { position: 70 } ], selectionField: [ { position: 40 } ] }
       SalesDocument,
       @UI: { lineItem: [ { position: 80 } ] }

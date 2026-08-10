@@ -34,7 +34,7 @@ define view entity ZC_GST_TAX
       @AnalyticsDetails.query.axis: #FREE
       Cancelled,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } } ]
       SalesDocument,
       @AnalyticsDetails.query.axis: #FREE
       Currency,

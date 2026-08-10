@@ -13,7 +13,7 @@ define view entity ZC_PENDING_CONTRACT
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Plant', element: 'Plant' } } ]
       Plant,
       @AnalyticsDetails.query.axis: #FREE
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } } ]
       SalesDocument,
       @AnalyticsDetails.query.axis: #FREE
       SalesItem,

@@ -10,7 +10,7 @@ define root view entity ZC_DISPATCH_BOX
       @Search.defaultSearchElement: true
       @UI: { lineItem: [ { position: 10, importance: #HIGH } ], selectionField: [ { position: 10 } ] }
   key BoxNumber,
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } } ]
       @UI: { lineItem: [ { position: 20, importance: #HIGH } ], selectionField: [ { position: 20 } ] }
       SalesOrder,
       @UI: { lineItem: [ { position: 30 } ] }

@@ -18,7 +18,7 @@ define root custom entity ZI_DELIVERY_CHALLAN
       @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ] }
       CartonNo        : exidv;
       @EndUserText.label: 'Sales Order'
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } } ]
       @UI: { lineItem: [ { position: 70, importance: #MEDIUM } ], selectionField: [ { position: 20 } ],
              identification: [ { position: 70 } ] }
       SalesOrder      : vbeln_va;

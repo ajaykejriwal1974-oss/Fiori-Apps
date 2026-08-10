@@ -10,7 +10,7 @@ define view entity ZC_PACKING_REGISTER
       @AnalyticsDetails.query.axis: #ROWS
       FiscalYear,
       @AnalyticsDetails.query.axis: #ROWS
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrder', element: 'SalesOrder' } } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } } ]
       SalesDocument,
       @AnalyticsDetails.query.axis: #FREE
       SalesItem,

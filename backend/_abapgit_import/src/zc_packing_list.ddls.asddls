@@ -12,7 +12,7 @@ define root view entity ZC_PACKING_LIST
   key BoxNumber,
       @UI: { lineItem: [ { position: 20 } ] }
   key BoxYear,
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrder', element: 'SalesOrder' } }]
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'I_SalesOrderStdVH', element: 'SalesOrder' } }]
       @UI: { lineItem: [ { position: 30, importance: #HIGH } ], selectionField: [ { position: 20 } ] }
       SalesOrder,
       @UI: { lineItem: [ { position: 40 } ] }
