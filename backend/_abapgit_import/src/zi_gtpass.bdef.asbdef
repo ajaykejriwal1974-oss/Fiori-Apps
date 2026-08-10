@@ -1,4 +1,4 @@
-managed;
+managed implementation in class zbp_i_gtpass unique;
 
 define behavior for ZI_GTPASS alias GatePass
 persistent table zgp_hdr
@@ -9,6 +9,8 @@ lock master
   delete;
 
   field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, CreatedByUser;
+
+  determination setAdminData on save { create; }
   field ( readonly : update ) GpNumber, FiscalYear;
   field ( mandatory : create ) DocumentType, Plant;
 

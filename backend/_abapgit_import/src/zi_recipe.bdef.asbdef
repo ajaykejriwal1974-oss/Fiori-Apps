@@ -1,4 +1,4 @@
-managed;
+managed implementation in class zbp_i_recipe unique;
 
 define behavior for ZI_Recipe alias Recipe
 persistent table zpp_receipe
@@ -10,6 +10,8 @@ lock master
 
   field ( mandatory : create ) Plant;
   field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+
+  determination setAdminData on save { create; update; }
 
   mapping for zpp_receipe
   {
