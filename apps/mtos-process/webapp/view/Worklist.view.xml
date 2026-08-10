@@ -11,11 +11,11 @@
                  appear when the user presses Go with a filter (or none, explicitly). -->
             <OverflowToolbar id="filterBar">
                 <Label text="{i18n>colPlant}"/>
-                <Input id="inpPlant" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpPlant" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
                 <Label text="{i18n>colMaterial}"/>
-                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
                 <Label text="{i18n>colSalesOrder}"/>
-                <Input id="inpSalesOrder" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpSalesOrder" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onSalesOrderVH"/>
                 <ToolbarSpacer/>
                 <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
             </OverflowToolbar>

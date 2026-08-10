@@ -7,9 +7,11 @@ sap.ui.define([
     "sap/m/Input",
     "sap/m/Label",
     "sap/ui/layout/form/SimpleForm",
+    "sap/m/SelectDialog",
+    "sap/m/StandardListItem",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
-], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm, Filter, FilterOperator) {
+], function (Controller, MessageToast, MessageBox, Dialog, Button, Input, Label, SimpleForm, SelectDialog, StandardListItem, Filter, FilterOperator) {
     "use strict";
 
     // Fully-qualified action namespace from the activated OData V4 service
@@ -53,6 +55,53 @@ sap.ui.define([
             var oBinding = this.byId("table").getBinding("items");
             oBinding.filter(aFilters);
             if (oBinding.isSuspended()) { oBinding.resume(); }
+        },
+
+        /** F4 value help for the Plant filter (bound to /PlantVH = ZI_VH_PLANT). */
+        onPlantVH: function (oEvt) {
+            this._openValueHelp(oEvt.getSource(), "/PlantVH", "Plant", "PlantName", "Select Plant");
+        },
+
+        /** F4 value help for the Material filter (bound to /ProductVH = I_ProductStdVH). */
+        onMaterialVH: function (oEvt) {
+            this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product", "ProductExternalID", "Select Material");
+        },
+
+        /** Generic F4: open a SelectDialog over a value-help entity set on the app's
+         *  OData V4 model, filter by the typed value, write the picked key back. */
+        _openValueHelp: function (oInput, sPath, sKeyField, sDescField, sTitle) {
+            var oView = this.getView();
+            var oDialog = new SelectDialog({
+                title: sTitle,
+                growing: true,
+                growingThreshold: 50,
+                rememberSelections: false,
+                items: {
+                    path: sPath,
+                    template: new StandardListItem({
+                        title: "{" + sKeyField + "}",
+                        description: sDescField ? "{" + sDescField + "}" : undefined
+                    })
+                },
+                liveChange: function (oE) {
+                    var sVal = oE.getParameter("value") || "";
+                    oE.getSource().getBinding("items").filter(
+                        sVal ? new Filter(sKeyField, FilterOperator.Contains, sVal) : []);
+                },
+                search: function (oE) {
+                    var sVal = oE.getParameter("value") || "";
+                    oE.getSource().getBinding("items").filter(
+                        sVal ? new Filter(sKeyField, FilterOperator.Contains, sVal) : []);
+                },
+                confirm: function (oE) {
+                    var oItem = oE.getParameter("selectedItem");
+                    if (oItem) { oInput.setValue(oItem.getTitle()); }
+                },
+                cancel: function () { }
+            });
+            oView.addDependent(oDialog);
+            oDialog.setModel(oView.getModel());
+            oDialog.open();
         },
 
         /** Read the selection, collect any header params, then invoke the action. */

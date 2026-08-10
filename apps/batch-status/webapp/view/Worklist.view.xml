@@ -11,9 +11,9 @@
                  appear when the user presses Go with a filter (or none, explicitly). -->
             <OverflowToolbar id="filterBar">
                 <Label text="{i18n>colPlant}"/>
-                <Input id="inpPlant" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpPlant" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
                 <Label text="{i18n>colMaterial}"/>
-                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
                 <Label text="{i18n>colBatch}"/>
                 <Input id="inpBatch" width="10rem" submit=".onFilterSearch"/>
                 <ToolbarSpacer/>

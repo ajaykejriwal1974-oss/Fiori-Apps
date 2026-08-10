@@ -1,4 +1,6 @@
 @EndUserText.label: 'Batch Status Service'
 define service ZUI_BATCH_STATUS {
   expose ZC_BATCH_STATUS as Batch;
+  expose ZI_VH_PLANT     as PlantVH;
+  expose I_ProductStdVH  as ProductVH;
 }

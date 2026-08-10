@@ -13,7 +13,7 @@
                 <Label text="{i18n>colHandlingUnit}"/>
                 <Input id="inpHandlingUnit" width="10rem" submit=".onFilterSearch"/>
                 <Label text="{i18n>colMaterial}"/>
-                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
                 <ToolbarSpacer/>
                 <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
             </OverflowToolbar>

@@ -13,7 +13,7 @@
                 <Label text="{i18n>colBoxNumber}"/>
                 <Input id="inpBoxNumber" width="10rem" submit=".onFilterSearch"/>
                 <Label text="{i18n>colSalesOrder}"/>
-                <Input id="inpSalesOrder" width="10rem" submit=".onFilterSearch"/>
+                <Input id="inpSalesOrder" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onSalesOrderVH"/>
                 <Label text="{i18n>colStatus}"/>
                 <Input id="inpStatus" width="10rem" submit=".onFilterSearch"/>
                 <ToolbarSpacer/>

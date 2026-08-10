@@ -1,4 +1,5 @@
 @EndUserText.label: 'Dispatch Correction Service'
 define service ZUI_DISPATCH_CORRECTION {
-  expose ZC_DISPATCH_BOX as DispatchBox;
+  expose ZC_DISPATCH_BOX   as DispatchBox;
+  expose I_SalesOrderStdVH as SalesOrderVH;
 }

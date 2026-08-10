@@ -1,4 +1,5 @@
 @EndUserText.label: 'Packing Details Service'
 define service ZUI_PACKING_DETAIL {
   expose ZC_PACKING_DETAIL as PackingItem;
+  expose I_ProductStdVH    as ProductVH;
 }
