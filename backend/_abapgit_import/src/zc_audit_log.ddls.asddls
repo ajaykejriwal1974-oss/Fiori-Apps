@@ -19,10 +19,12 @@ define view entity ZC_AUDIT_LOG
       @AnalyticsDetails.query.axis: #FREE
       EWayBillNumber,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       DocumentDate,
       @AnalyticsDetails.query.axis: #FREE
       OfficialDocNumber,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       OfficialDocDate,
       @AnalyticsDetails.query.axis: #FREE
       SellerGSTIN,

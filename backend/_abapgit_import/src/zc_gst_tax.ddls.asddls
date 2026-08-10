@@ -29,6 +29,7 @@ define view entity ZC_GST_TAX
       @AnalyticsDetails.query.axis: #FREE
       VatRegistration,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       BillingDate,
       @AnalyticsDetails.query.axis: #FREE
       Cancelled,

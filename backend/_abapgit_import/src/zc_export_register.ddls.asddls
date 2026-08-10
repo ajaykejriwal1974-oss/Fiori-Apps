@@ -10,6 +10,7 @@ define view entity ZC_EXPORT_REGISTER
       @AnalyticsDetails.query.axis: #ROWS
       ConditionType,
       @AnalyticsDetails.query.axis: #ROWS
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       BillingDate,
       Currency,
       @AnalyticsDetails.query.axis: #COLUMNS

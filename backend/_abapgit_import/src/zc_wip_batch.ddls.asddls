@@ -15,6 +15,7 @@ define view entity ZC_WIP_BATCH
       @AnalyticsDetails.query.axis: #FREE
       ProductionOrder,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       BatchDate,
       @AnalyticsDetails.query.axis: #FREE
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]

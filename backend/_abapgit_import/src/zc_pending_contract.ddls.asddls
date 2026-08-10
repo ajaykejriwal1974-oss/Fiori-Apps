@@ -27,8 +27,10 @@ define view entity ZC_PENDING_CONTRACT
       @AnalyticsDetails.query.axis: #FREE
       DeletionFlag,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       ScheduleDate,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       DyeingDate,
       SalesUnit,
       @AnalyticsDetails.query.axis: #COLUMNS

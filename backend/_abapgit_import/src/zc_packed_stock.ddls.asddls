@@ -32,6 +32,7 @@ define view entity ZC_PACKED_STOCK
       @AnalyticsDetails.query.axis: #FREE
       ProductType,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PackingDate,
       @AnalyticsDetails.query.axis: #COLUMNS
       GrossWeight,

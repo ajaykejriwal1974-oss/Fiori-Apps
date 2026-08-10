@@ -28,6 +28,7 @@ define view entity ZC_JOBWORK_CHALLAN
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Supplier', element: 'Supplier' } } ]
       Supplier,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PostingDate,
       @AnalyticsDetails.query.axis: #FREE
       BaseUnit,

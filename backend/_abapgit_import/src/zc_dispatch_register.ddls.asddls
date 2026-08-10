@@ -17,6 +17,7 @@ define view entity ZC_DISPATCH_REGISTER
       @AnalyticsDetails.query.axis: #FREE
       Status,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       DispatchDate,
       @AnalyticsDetails.query.axis: #COLUMNS
       RecordCount

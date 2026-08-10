@@ -19,8 +19,10 @@ define view entity ZC_CRDR_NOTE
       @AnalyticsDetails.query.axis: #FREE
       DebitCreditCode,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PostingDate,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       DocumentDate,
       @AnalyticsDetails.query.axis: #FREE
       GLAccount,

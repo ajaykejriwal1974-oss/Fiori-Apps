@@ -34,6 +34,7 @@ define view entity ZC_PO_CLOSE
       @AnalyticsDetails.query.axis: #FREE
       Currency,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PoCreationDate,
       @AnalyticsDetails.query.axis: #COLUMNS
       OrderQuantity,

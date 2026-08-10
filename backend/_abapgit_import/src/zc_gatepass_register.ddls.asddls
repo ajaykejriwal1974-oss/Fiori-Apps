@@ -18,7 +18,9 @@ define view entity ZC_GATEPASS_REGISTER
       GatePassYear,
       GatePassItem,
       VehicleNumber,
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       GateInDate,
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       GateOutDate,
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Product', element: 'Product' } } ]
       Material,

@@ -28,6 +28,7 @@ define view entity ZC_PACKING_REGISTER
       @AnalyticsDetails.query.axis: #FREE
       Posted,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PackingListDate,
       @AnalyticsDetails.query.axis: #COLUMNS
       NetWeight,

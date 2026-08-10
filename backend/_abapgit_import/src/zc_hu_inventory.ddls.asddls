@@ -24,6 +24,7 @@ define view entity ZC_HU_INVENTORY
       @AnalyticsDetails.query.axis: #FREE
       CountedBy,
       @AnalyticsDetails.query.axis: #FREE
+      @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       CountDate,
       BaseUnit,
       @AnalyticsDetails.query.axis: #COLUMNS
