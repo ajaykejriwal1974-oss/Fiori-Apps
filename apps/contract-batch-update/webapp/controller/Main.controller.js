@@ -16,6 +16,36 @@ sap.ui.define([
 
     return Controller.extend("kejriwal.sd.contractbatchupdate.controller.Main", {
 
+        /** Export current table rows to Excel (.xlsx). Generic - reads the table's
+         *  columns + cell binding paths and exports the loaded/filtered rows. */
+        onExportExcel: function () {
+            var oTable = this.byId("table") || this.byId("tbl");
+            if (!oTable) { return; }
+            var oInfo = oTable.getBindingInfo("items"), oBinding = oTable.getBinding("items");
+            if (!oInfo || !oBinding) { return; }
+            var aCells = oInfo.template.getCells(), aCols = [];
+            oTable.getColumns().forEach(function (oCol, i) {
+                var oHdr = oCol.getHeader();
+                var sLabel = (oHdr && oHdr.getText) ? oHdr.getText() : ("Column " + (i + 1));
+                var oCell = aCells[i], sPath = "";
+                if (oCell) {
+                    var b = oCell.getBindingInfo("text") || oCell.getBindingInfo("number") || oCell.getBindingInfo("value");
+                    if (b && b.parts && b.parts[0]) { sPath = b.parts[0].path; }
+                }
+                if (sPath) { aCols.push({ label: sLabel, property: sPath, width: 18 }); }
+            });
+            var aData = (oBinding.getContexts() || []).map(function (c) { return c.getObject(); });
+            if (!aData.length) {
+                sap.ui.require(["sap/m/MessageToast"], function (MT) { MT.show("No data to export - run a search first."); });
+                return;
+            }
+            var sName = "Export";
+            try { sName = this.getOwnerComponent().getModel("i18n").getResourceBundle().getText("appTitle") || "Export"; } catch (e) {}
+            var oSheet = new sap.ui.export.Spreadsheet({ workbook: { columns: aCols }, dataSource: aData, fileName: sName + ".xlsx" });
+            oSheet.build().finally(function () { oSheet.destroy(); });
+        },
+
+
         onInit: function () {
             this.getView().setModel(new JSONModel({
                 contract: "",

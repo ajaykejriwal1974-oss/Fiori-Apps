@@ -30,6 +30,7 @@
                         <Title text="{i18n>worklistTitle}"/>
                         <ToolbarSpacer/>
                         <Button text="{i18n>actpostPackingAndGr}" press=".onPostPackingAndGr" type="Emphasized"/>
+                        <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>

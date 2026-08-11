@@ -25,7 +25,8 @@
           <Title text="{/subtitle}"/>
           <ToolbarSpacer/>
           <ObjectStatus text="{/count} rows" state="Information"/>
-        </OverflowToolbar>
+            <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
+                    </OverflowToolbar>
       </headerToolbar>
     </Table>
   </Page>

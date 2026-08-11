@@ -33,6 +33,7 @@
                         <Title text="{i18n>charsToRecord}" level="H2" />
                         <ToolbarSpacer />
                         <ObjectStatus id="dirtyStatus" text="{ui>/dirtyCount} {i18n>edited}" state="Information" visible="{= ${ui>/dirtyCount} &gt; 0 }" />
+                        <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>

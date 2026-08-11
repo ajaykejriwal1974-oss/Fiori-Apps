@@ -4,12 +4,32 @@
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "title": "{{appTitle}}",
-    "applicationVersion": { "version": "1.0.0" }
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
   },
-  "sap.ui": { "technology": "UI5", "deviceTypes": { "desktop": true, "tablet": true, "phone": true } },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
   "sap.ui5": {
-    "rootView": { "viewName": "kgpl.viewer.view.App", "type": "XML", "id": "app" },
-    "dependencies": { "minUI5Version": "1.120.0", "libs": { "sap.m": {}, "sap.ui.core": {} } },
+    "rootView": {
+      "viewName": "kgpl.viewer.view.App",
+      "type": "XML",
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.export": {}
+      }
+    },
     "models": {}
   }
 }

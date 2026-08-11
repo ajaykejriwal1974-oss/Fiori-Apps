@@ -46,14 +46,16 @@
     "rootView": {
       "viewName": "kejriwal.mm.goodsmovementhu.view.Main",
       "type": "XML",
-      "id": "main", "height": "100%"
+      "id": "main",
+      "height": "100%"
     },
     "dependencies": {
       "minUI5Version": "1.120.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.layout": {}
+        "sap.ui.layout": {},
+        "sap.ui.export": {}
       }
     },
     "handleValidation": true,

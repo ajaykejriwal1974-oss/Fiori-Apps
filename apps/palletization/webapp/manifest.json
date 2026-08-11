@@ -46,14 +46,16 @@
     "rootView": {
       "viewName": "kejriwal.pp.palletization.view.Worklist",
       "type": "XML",
-      "id": "worklist", "height": "100%"
+      "id": "worklist",
+      "height": "100%"
     },
     "dependencies": {
       "minUI5Version": "1.120.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.layout": {}
+        "sap.ui.layout": {},
+        "sap.ui.export": {}
       }
     },
     "handleValidation": true,

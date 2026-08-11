@@ -53,6 +53,7 @@
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="{i18n>itemsTitle} ({= ${ui>/items}.length })" level="H2" />
+                        <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
