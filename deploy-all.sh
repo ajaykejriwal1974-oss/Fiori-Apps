@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Deploy the 12 KGPL freestyle UI5 transactional apps to KSD (client 500,
-# package ZKGPL_FIORI, transport KSDK906624). Each app's target lives in its
-# ui5-deploy.yaml.
+# Deploy the 17 KGPL UI5 apps to KSD (client 500). Each app's target (BSP name,
+# package, description) lives in its own ui5-deploy.yaml. Covers the 12 freestyle
+# transactional apps + the Plant Dashboard + 4 Fiori Elements apps.
 #
 #   ./deploy-all.sh --test    # dry run: builds + validates, uploads NOTHING
 #   ./deploy-all.sh           # real deploy
@@ -15,7 +15,9 @@ cd "$(dirname "$0")"
 APPS=(batch-status contract-batch-update dispatch-correction dyeing-packing \
       hu-unpack inbound-delivery-hus manage-packing-details mtos-process \
       palletization post-goods-movement-hu post-packing-gr \
-      record-inspection-results-mass)
+      record-inspection-results-mass \
+      plant-dashboard \
+      batch-status-fe mtos-process-fe packing-details-fe dispatch-correction-fe)
 
 MODE=""
 if [[ "${1:-}" == "--test" ]]; then MODE="--testMode"; echo ">>> TEST MODE — builds only, no upload"; fi
