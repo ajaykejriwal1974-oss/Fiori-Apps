@@ -1,0 +1,87 @@
+<mvc:View
+    controllerName="kejriwal.plant.dashboard.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}">
+        <headerContent>
+            <Button icon="sap-icon://refresh" tooltip="{i18n>refresh}" press=".onRefresh"/>
+        </headerContent>
+        <content>
+            <VBox class="sapUiContentPadding">
+
+                <Title text="{i18n>areaProduction}" level="H2" titleStyle="H4" class="sapUiSmallMarginTop sapUiTinyMarginBottom"/>
+                <FlexBox wrap="Wrap" alignItems="Start">
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiOpenBatches}" subheader="{i18n>areaProduction}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitBatches}">
+                            <NumericContent value="{kpi>/openBatches}" icon="sap-icon://batch-payments" valueColor="Good" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="BatchStatus-manageKejriwal"/></customData>
+                    </GenericTile>
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiPacking}" subheader="{i18n>areaProduction}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitItems}">
+                            <NumericContent value="{kpi>/packingItems}" icon="sap-icon://sales-order" valueColor="Neutral" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="PackingDetail-manageKejriwal"/></customData>
+                    </GenericTile>
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiPallets}" subheader="{i18n>areaProduction}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitPallets}">
+                            <NumericContent value="{kpi>/pallets}" icon="sap-icon://pallet" valueColor="Neutral" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="Palletization-manageKejriwal"/></customData>
+                    </GenericTile>
+                </FlexBox>
+
+                <Title text="{i18n>areaSalesDispatch}" level="H2" titleStyle="H4" class="sapUiMediumMarginTop sapUiTinyMarginBottom"/>
+                <FlexBox wrap="Wrap" alignItems="Start">
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiPendingContracts}" subheader="{i18n>areaSalesDispatch}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitContracts}">
+                            <NumericContent value="{kpi>/pendingContracts}" icon="sap-icon://document-text" valueColor="Neutral" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="SalesContract-updateBatchKejriwal"/></customData>
+                    </GenericTile>
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiDispatchBacklog}" subheader="{i18n>areaSalesDispatch}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitBoxes}">
+                            <NumericContent value="{kpi>/dispatchBacklog}" icon="sap-icon://shipping-status" valueColor="Critical" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="DispatchCorrection-manageKejriwal"/></customData>
+                    </GenericTile>
+                </FlexBox>
+
+                <Title text="{i18n>areaInventory}" level="H2" titleStyle="H4" class="sapUiMediumMarginTop sapUiTinyMarginBottom"/>
+                <FlexBox wrap="Wrap" alignItems="Start">
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiLowStock}" subheader="{i18n>areaInventory}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitItems}">
+                            <NumericContent value="{kpi>/lowStock}" icon="sap-icon://alert" valueColor="Error" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="MtosProcess-manageKejriwal"/></customData>
+                    </GenericTile>
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiHuUnpack}" subheader="{i18n>areaInventory}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitHus}">
+                            <NumericContent value="{kpi>/husToUnpack}" icon="sap-icon://unwired" valueColor="Neutral" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="HuUnpack-manageKejriwal"/></customData>
+                    </GenericTile>
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiInboundHus}" subheader="{i18n>areaInventory}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitHus}">
+                            <NumericContent value="{kpi>/inboundHus}" icon="sap-icon://inbox" valueColor="Neutral" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="InboundDeliveryHu-manageKejriwal"/></customData>
+                    </GenericTile>
+                </FlexBox>
+
+                <Title text="{i18n>areaQuality}" level="H2" titleStyle="H4" class="sapUiMediumMarginTop sapUiTinyMarginBottom"/>
+                <FlexBox wrap="Wrap" alignItems="Start">
+                    <GenericTile class="sapUiTinyMargin" width="13rem" header="{i18n>kpiInspections}" subheader="{i18n>areaQuality}" press=".onOpenApp">
+                        <TileContent unit="{i18n>unitLots}">
+                            <NumericContent value="{kpi>/inspections}" icon="sap-icon://quality-issue" valueColor="Critical" withMargin="false"/>
+                        </TileContent>
+                        <customData><core:CustomData key="intent" value="InspectionResult-recordMassKejriwal"/></customData>
+                    </GenericTile>
+                </FlexBox>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

@@ -1,0 +1,17 @@
+{
+  "name": "kejriwal-plant-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plant Dashboard - KPI landing page across all companies with drill-into apps.",
+  "keywords": ["ui5", "freestyle", "sap-fiori", "s4hana-onpremise", "dashboard"],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3"
+  },
+  "ui5": { "dependencies": ["@sap/ux-ui5-tooling"] }
+}
