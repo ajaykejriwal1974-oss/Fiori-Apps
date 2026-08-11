@@ -37,6 +37,7 @@
                         <ToolbarSpacer/>
                         <Button text="{i18n>actpackItems}" press=".onPackItems" type="Emphasized"/>
                         <Button text="{i18n>actrepackItems}" press=".onRepackItems" type="Emphasized"/>
+                        <SearchField width="14rem" search=".onQuickSearch" placeholder="Search"/>
                         <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
                         <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>

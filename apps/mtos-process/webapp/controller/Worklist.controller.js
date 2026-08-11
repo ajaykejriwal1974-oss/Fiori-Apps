@@ -32,8 +32,22 @@ sap.ui.define([
     };
 
     var FILTER_FIELDS = [{ name: "CompanyCode", op: "EQ" }, { name: "Plant", op: "EQ" }, { name: "Material", op: "Contains" }, { name: "SalesOrder", op: "Contains" }];
+    var SEARCH_FIELDS = ["Material", "SalesOrder"];
 
     return Controller.extend("kejriwal.pp.mtosprocess.controller.Worklist", {
+
+        /** Quick-search: OR-Contains across the app's text fields, applied as a Control
+         *  filter so it narrows WITHIN the filter-bar (Application) filters. */
+        onQuickSearch: function (oEvt) {
+            var sQuery = (oEvt.getParameter("query") || oEvt.getParameter("newValue") || "").trim();
+            var oTable = this.byId("table") || this.byId("tbl");
+            var oBinding = oTable && oTable.getBinding("items");
+            if (!oBinding) { return; }
+            if (!sQuery || !SEARCH_FIELDS.length) { oBinding.filter([], "Control"); return; }
+            var aOr = SEARCH_FIELDS.map(function (f) { return new Filter(f, FilterOperator.Contains, sQuery); });
+            oBinding.filter(new Filter({ filters: aOr, and: false }), "Control");
+        },
+
 
         /** Open a Sort dialog built generically from the table columns. */
         onOpenSort: function () {
