@@ -44,15 +44,16 @@
                 </Toolbar>
             </Panel>
 
-            <Table
+            <Table sticky="ColumnHeaders,HeaderToolbar"
                 id="itemsTable"
                 items="{ui>/items}"
                 growing="true"
                 growingThreshold="200"
-                sticky="ColumnHeaders">
+                >
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="{i18n>itemsTitle} ({= ${ui>/items}.length })" level="H2" />
+                        <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
                         <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>

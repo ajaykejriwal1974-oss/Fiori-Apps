@@ -17,18 +17,19 @@
                 </Toolbar>
             </Panel>
 
-            <Table
+            <Table sticky="ColumnHeaders,HeaderToolbar"
                 id="itemsTable"
                 items="{ui>/items}"
                 mode="MultiSelect"
                 growing="true"
                 growingThreshold="200"
-                sticky="ColumnHeaders">
+                >
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="{i18n>itemsTitle} ({= ${ui>/items}.length })" level="H2" />
                         <ToolbarSpacer />
                         <ObjectStatus id="dirtyStatus" text="{ui>/dirtyCount} {i18n>changed}" state="Information" visible="{= ${ui>/dirtyCount} &gt; 0 }" />
+                        <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
                         <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>

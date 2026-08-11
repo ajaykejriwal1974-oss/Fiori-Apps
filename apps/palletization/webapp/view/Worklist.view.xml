@@ -19,7 +19,7 @@
             </OverflowToolbar>
         </subHeader>
         <content>
-            <Table
+            <Table sticky="ColumnHeaders,HeaderToolbar"
                 id="table"
                 items="{ path: '/Pallet', suspended: true }"
                 mode="MultiSelect"
@@ -30,6 +30,7 @@
                         <Title text="{i18n>worklistTitle}"/>
                         <ToolbarSpacer/>
                         <Button text="{i18n>actpackPallet}" press=".onPackPallet" type="Emphasized"/>
+                        <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
                         <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>

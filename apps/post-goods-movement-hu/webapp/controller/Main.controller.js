@@ -16,6 +16,40 @@ sap.ui.define([
 
     return Controller.extend("kejriwal.mm.goodsmovementhu.controller.Main", {
 
+        /** Open a Sort dialog built generically from the table columns. */
+        onOpenSort: function () {
+            var oTable = this.byId("table") || this.byId("tbl");
+            if (!oTable) { return; }
+            var that = this;
+            sap.ui.require(["sap/m/ViewSettingsDialog", "sap/m/ViewSettingsItem", "sap/ui/model/Sorter"], function (VSD, VSI, Sorter) {
+                if (!that._oSortDialog) {
+                    var oInfo = oTable.getBindingInfo("items");
+                    var aCells = oInfo ? oInfo.template.getCells() : [];
+                    var oVSD = new VSD({
+                        confirm: function (oEvt) {
+                            var oItem = oEvt.getParameter("sortItem"), bDesc = oEvt.getParameter("sortDescending");
+                            var oBinding = oTable.getBinding("items");
+                            if (oItem && oBinding) { oBinding.sort(new Sorter(oItem.getKey(), bDesc)); }
+                        }
+                    });
+                    oTable.getColumns().forEach(function (oCol, i) {
+                        var oHdr = oCol.getHeader();
+                        var sLabel = (oHdr && oHdr.getText) ? oHdr.getText() : ("Column " + (i + 1));
+                        var oCell = aCells[i], sPath = "";
+                        if (oCell) {
+                            var b = oCell.getBindingInfo("text") || oCell.getBindingInfo("number") || oCell.getBindingInfo("value");
+                            if (b && b.parts && b.parts[0]) { sPath = b.parts[0].path; }
+                        }
+                        if (sPath) { oVSD.addSortItem(new VSI({ key: sPath, text: sLabel })); }
+                    });
+                    that._oSortDialog = oVSD;
+                    that.getView().addDependent(oVSD);
+                }
+                that._oSortDialog.open();
+            });
+        },
+
+
         /** Export current table rows to Excel (.xlsx). Generic - reads the table's
          *  columns + cell binding paths and exports the loaded/filtered rows. */
         onExportExcel: function () {

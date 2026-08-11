@@ -18,13 +18,14 @@
         <SearchField id="sf" width="18rem" liveChange=".onSearch" search=".onSearch"/>
       </OverflowToolbar>
     </subHeader>
-    <Table id="tbl" growing="true" growingThreshold="100" growingScrollToLoad="true"
-           sticky="ColumnHeaders" alternateRowColors="true">
+    <Table sticky="ColumnHeaders,HeaderToolbar" id="tbl" growing="true" growingThreshold="100" growingScrollToLoad="true"
+           alternateRowColors="true">
       <headerToolbar>
         <OverflowToolbar>
           <Title text="{/subtitle}"/>
           <ToolbarSpacer/>
           <ObjectStatus text="{/count} rows" state="Information"/>
+            <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
             <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
                     </OverflowToolbar>
       </headerToolbar>
