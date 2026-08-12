@@ -6,9 +6,17 @@
     "i18n": "i18n/i18n.properties",
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "dataSources": {
-      "mainService": { "uri": "/sap/opu/odata4/sap/zui_dispatch_04/srvd/sap/zui_dispatch_correction/0001/", "type": "OData", "settings": { "odataVersion": "4.0" } }
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_dispatch_04/srvd/sap/zui_dispatch_correction/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
     },
     "crossNavigation": {
       "inbounds": {
@@ -18,25 +26,84 @@
           "icon": "sap-icon://shipping-status",
           "title": "{{flpTitle}}",
           "subTitle": "{{flpSubtitle}}",
-          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
   },
-  "sap.ui": { "technology": "UI5", "deviceTypes": { "desktop": true, "tablet": true, "phone": true } },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
   "sap.ui5": {
     "flexEnabled": true,
-    "dependencies": { "minUI5Version": "1.120.0", "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} } },
-    "contentDensities": { "compact": true, "cozy": true },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
     "models": {
-      "i18n": { "type": "sap.ui.model.resource.ResourceModel", "settings": { "bundleName": "kejriwal.pp.dispatchcorrectionfe.i18n.i18n" } },
-      "": { "dataSource": "mainService", "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true } }
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "kejriwal.pp.dispatchcorrectionfe.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
     },
     "routing": {
-      "routes": [ { "pattern": ":?query:", "name": "List", "target": "List" } ],
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "List",
+          "target": "List"
+        }
+      ],
       "targets": {
-        "List": { "type": "Component", "id": "List", "name": "sap.fe.templates.ListReport",
-          "options": { "settings": { "contextPath": "/DispatchBox", "variantManagement": "Page", "initialLoad": "Auto" } } }
+        "List": {
+          "type": "Component",
+          "id": "List",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/DispatchBox",
+              "variantManagement": "Page",
+              "initialLoad": "Auto",
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "actions": {
+                    "correctDispatch": {
+                      "press": "kejriwal.pp.dispatchcorrectionfe.ext.CustomActions.onCorrectDispatch",
+                      "text": "Correct Dispatch",
+                      "requiresSelection": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
