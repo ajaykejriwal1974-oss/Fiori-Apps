@@ -10,5 +10,5 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target: { url: http://192.168.0.19:8000, client: "500" }
-        app: { name: ZMTOS_PROCESS_FE, package: "$TMP", description: "MTOS Process (FE)" }
+        app: { name: ZMTOS_FE, package: "$TMP", description: "MTOS Process (FE)" }
         exclude: [ "/test/" ]

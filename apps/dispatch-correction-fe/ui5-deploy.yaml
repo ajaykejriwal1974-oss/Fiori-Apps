@@ -10,5 +10,5 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target: { url: http://192.168.0.19:8000, client: "500" }
-        app: { name: ZDISPATCH_CORR_FE, package: "$TMP", description: "Dispatch Correction (FE)" }
+        app: { name: ZDISPATCH_FE, package: "$TMP", description: "Dispatch Correction (FE)" }
         exclude: [ "/test/" ]

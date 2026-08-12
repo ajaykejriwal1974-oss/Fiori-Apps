@@ -17,7 +17,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZPLANT_DASHBOARD
+          name: ZPLANT_DASH
           package: "$TMP"
           description: "KGPL Plant Dashboard (Fiori)"
         exclude:

@@ -15,7 +15,7 @@ builder:
           url: http://192.168.0.19:8000
           client: "500"
         app:
-          name: ZBATCH_STATUS_FE
+          name: ZBATCH_FE
           package: "$TMP"
           description: "KGPL Batch Status - Fiori Elements"
         exclude:
