@@ -6,12 +6,16 @@
     "i18n": "i18n/i18n.properties",
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "dataSources": {
       "mainService": {
         "uri": "/sap/opu/odata4/sap/zui_batch_status_o4/srvd/sap/zui_batch_status/0001/",
         "type": "OData",
-        "settings": { "odataVersion": "4.0" }
+        "settings": {
+          "odataVersion": "4.0"
+        }
       }
     },
     "crossNavigation": {
@@ -22,32 +26,59 @@
           "icon": "sap-icon://batch-payments",
           "title": "{{flpTitle}}",
           "subTitle": "{{flpSubtitle}}",
-          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
   },
-  "sap.ui": { "technology": "UI5", "deviceTypes": { "desktop": true, "tablet": true, "phone": true } },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
       "minUI5Version": "1.120.0",
-      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
     },
-    "contentDensities": { "compact": true, "cozy": true },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "kejriwal.pp.batchstatusfe.i18n.i18n" }
+        "settings": {
+          "bundleName": "kejriwal.pp.batchstatusfe.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
-        "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true }
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
       }
     },
     "routing": {
       "routes": [
-        { "pattern": ":?query:", "name": "BatchList", "target": "BatchList" }
+        {
+          "pattern": ":?query:",
+          "name": "BatchList",
+          "target": "BatchList"
+        }
       ],
       "targets": {
         "BatchList": {
@@ -58,7 +89,23 @@
             "settings": {
               "contextPath": "/Batch",
               "variantManagement": "Page",
-              "initialLoad": "Auto"
+              "initialLoad": "Auto",
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "actions": {
+                    "closeBatch": {
+                      "press": "kejriwal.pp.batchstatusfe.ext.CustomActions.onCloseBatch",
+                      "text": "Close Batch",
+                      "requiresSelection": true
+                    },
+                    "deleteBatch": {
+                      "press": "kejriwal.pp.batchstatusfe.ext.CustomActions.onDeleteBatch",
+                      "text": "Delete Batch",
+                      "requiresSelection": true
+                    }
+                  }
+                }
+              }
             }
           }
         }
