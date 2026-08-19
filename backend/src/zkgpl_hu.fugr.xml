@@ -9,11 +9,66 @@
    <FUNCTIONS>
     <item>
      <FUNCNAME>Z_KGPL_BATCH_MAINTAIN</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
      <SHORT_TEXT>KGPL Batch Maintain</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_MATERIAL</PARAMETER>
+       <TYP>MATNR</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_BATCH</PARAMETER>
+       <TYP>CHARG_D</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_PLANT</PARAMETER>
+       <TYP>WERKS_D</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_MODE</PARAMETER>
+       <TYP>CHAR1</TYP>
+      </RSIMP>
+     </IMPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_MATERIAL</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Material Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_BATCH</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Batch Number</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_PLANT</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Plant</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_MODE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Single-Character Flag</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
     </item>
     <item>
      <FUNCNAME>Z_KGPL_INB_DELIVERY_GR</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
      <SHORT_TEXT>Post Inbound Delivery GR</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_DELIVERY</PARAMETER>
+       <TYP>VBELN_VL</TYP>
+      </RSIMP>
+     </IMPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_DELIVERY</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Delivery</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
     </item>
    </FUNCTIONS>
   </asx:values>
