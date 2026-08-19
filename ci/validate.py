@@ -24,19 +24,26 @@ def err(msg): errors.append(msg)
 
 def rel(p): return os.path.relpath(p, ROOT)
 
+# Directories that are never ours to validate. `node_modules` is the important
+# one: after `npm install` each app carries thousands of dependency files, and
+# many ship deliberately-invalid JSON (tsconfig with comments and trailing
+# commas) and XML templates with `{placeholder}` tokens. Scanning them buries
+# real findings under hundreds of false positives. CI never saw this because a
+# fresh checkout has no node_modules — only a developer machine does.
+#
 # There is exactly one backend source tree — backend/src, the abapGit working
 # folder for package ZKGPL_FIORI. The parallel backend/<app>-rap/src tree was
-# removed (see docs/backend-notes/), so nothing needs excluding from the scan.
-MIRROR_DIRS = ()
-def _is_mirror(p):
-    return any(f"{os.sep}{d}{os.sep}" in p for d in MIRROR_DIRS)
+# removed (see docs/backend-notes/), so nothing else needs excluding.
+SKIP_DIRS = ("node_modules", "dist", "webapp/resources", ".git")
+def _is_skipped(p):
+    return any(f"{os.sep}{d}{os.sep}" in p for d in SKIP_DIRS)
 
 # ---------------------------------------------------------------- collect files
 def files(*exts, under="."):
     out = []
     for ext in exts:
         out += glob.glob(os.path.join(ROOT, under, "**", ext), recursive=True)
-    return sorted(p for p in out if not _is_mirror(p))
+    return sorted(p for p in out if not _is_skipped(p))
 
 backend_cds = files("*.asddls", "*.asbdef", "*.ddlx.asddlxs", "*.srvdsrv", under="backend")
 abap        = files("*.clas.abap", under="backend")
