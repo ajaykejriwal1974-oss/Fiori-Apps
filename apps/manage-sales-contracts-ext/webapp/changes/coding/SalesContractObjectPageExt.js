@@ -19,7 +19,7 @@ sap.ui.define([
     "use strict";
 
     // OData V4 binding of the side service that carries the contract lifecycle
-    // actions (backend/sales-doc-status-rap, service def ZUI_SALESDOC_STATUS -
+    // actions (docs/backend-notes/sales-doc-status-rap.md, service def ZUI_SALESDOC_STATUS -
     // consolidated contract + order status). Fill the ADT binding name (e.g.
     // ZUI_SALESDOC_STATUS_O4).
     var SERVICE_URL = "/sap/opu/odata4/sap/REPLACE_WITH_SALESDOC_STATUS_SERVICE/srvd/sap/REPLACE_WITH_SALESDOC_STATUS_SERVICE/0001/";

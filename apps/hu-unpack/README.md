@@ -1,7 +1,7 @@
 # HU Unpack (ZHUPK) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZSOL_INW_HU_UNPACK (RM unpack)**.
-Binds to the OData V4 service of [`backend/hu-unpack-rap`](../../backend/hu-unpack-rap)
+Binds to the OData V4 service of [`docs/backend-notes/hu-unpack-rap.md`](../../docs/backend-notes/hu-unpack-rap.md)
 (`HuUnpack` entity set) and exposes the service's static action(s) as
 table actions.
 

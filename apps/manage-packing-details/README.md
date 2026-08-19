@@ -1,7 +1,7 @@
 # Packing Details (ZPACK01/01N/02/02N/03, ZREPACK) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZPP_PACK_MODULE(_NEW)**.
-Binds to the OData V4 service of [`backend/packing-detail-rap`](../../backend/packing-detail-rap)
+Binds to the OData V4 service of [`docs/backend-notes/packing-detail-rap.md`](../../docs/backend-notes/packing-detail-rap.md)
 (`PackingItem` entity set) and exposes the service's static action(s) as
 table actions.
 

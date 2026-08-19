@@ -55,7 +55,7 @@ There is **no standard SAP gate pass**, so this stays custom — but split it:
 - **Entry** transactions (`ZGPS01/02/03`, `ZGPSI1/2/3`, `ZGP`, `ZGATE`,
   `ZGATEENTRY`) are **data capture**, not print → **✅ built** as a managed RAP
   composition (header → item over `ZGP_HDR`/`ZGP_ITEM`) in
-  [`backend/gate-pass-rap`](../backend/gate-pass-rap); the form is its output.
+  [`backend-notes/gate-pass-rap.md`](backend-notes/gate-pass-rap.md); the form is its output.
 - **Reports** (`ZGATER`, `ZGATERE`, `ZGATENR`, `ZGREPT*`, `ZGATEPASS_REPT`,
   `ZGPASS`) → CDS analytical queries over the gate-pass table (BI layer), not forms.
 
@@ -65,7 +65,7 @@ There is **no standard SAP gate pass**, so this stays custom — but split it:
 | Print / driver | ZGPASS, ZGATEPASS, ZREPASS | Custom Adobe form template (custom OM object) |
 | Reports | ZGATER, ZGATERE, ZGATENR, ZGREPT, ZGREPTNE, ZGREPTRE, ZGATEPASS_REPT | CDS query → analytics (Route BI) |
 
-> **Built:** the entry capture is now [`backend/gate-pass-rap`](../backend/gate-pass-rap)
+> **Built:** the entry capture is now [`backend-notes/gate-pass-rap.md`](backend-notes/gate-pass-rap.md)
 > — a managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (the `ZGPS*`/`ZGPSI*`
 > model). `ZGP_PART` (inward receipts) is associated read-only pending a data-model
 > fix (no `MJAHR` key). The print/driver and report rows above still route to OM /
@@ -103,8 +103,8 @@ label channel (ZPL/direct). Reuse one label template parameterised by type.
 ## 6. Production / QM / MM forms (6)
 | Z tcode | Z program | What | OM target |
 |---|---|---|---|
-| ZRECP / ZRECPN | ZRPT_PP_SSF_RECEIPE | Print recipe master | Adobe template printed from the **Recipe Master** app (`backend/recipe-master-rap`) |
-| ZREJOB / ZREJOBN | ZRPT_PP_REJOB(N) | Print job card | Adobe template printed from the **Job Master** app (`backend/job-master-rap`) |
+| ZRECP / ZRECPN | ZRPT_PP_SSF_RECEIPE | Print recipe master | Adobe template printed from the **Recipe Master** app (`backend-notes/recipe-master-rap.md`) |
+| ZREJOB / ZREJOBN | ZRPT_PP_REJOB(N) | Print job card | Adobe template printed from the **Job Master** app (`backend-notes/job-master-rap.md`) |
 | ZQ_FORM | ZQM_PROGRAM | QM form | Output object **Inspection** / quality certificate template |
 | ZMAT_PRINT | ZSOLS_MM_MAT_ISSUE_SLIP | Material issue slip | Material Document / goods-issue OM template |
 

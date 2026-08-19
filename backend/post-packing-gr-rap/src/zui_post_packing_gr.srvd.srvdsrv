@@ -1,4 +1,0 @@
-@EndUserText.label: 'Post Packing & GR Service'
-define service ZUI_POST_PACK_GR {
-  expose ZC_PostPackGr as PostPackGr;
-}

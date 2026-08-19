@@ -1,4 +1,0 @@
-@EndUserText.label: 'Shade Master (Dope Dyeing) Service'
-define service ZUI_DD_SHADE {
-  expose ZC_DD_Shade as Shade;
-}

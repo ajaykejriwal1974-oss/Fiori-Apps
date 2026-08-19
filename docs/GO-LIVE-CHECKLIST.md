@@ -100,7 +100,7 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 ### Record Inspection Results (Mass) — `apps/record-inspection-results-mass`
 - Intent: `InspectionResult-recordMassKejriwal` · Role: `SAP_BR_QUALITY_TECHNICIAN`
 - [ ] **A** `REPLACE_WITH_QM_MASS_SERVICE` + S2
-- [ ] **B** Build RAP service from the skeleton at `backend/qm-mass-results-rap`
+- [ ] **B** Build RAP service from the skeleton at `backend-notes/qm-mass-results-rap.md`
       (`InspectionCharacteristic` entity, unmanaged update/save over the QM
       result-recording BAPI); complete the QM `TODO`/`VERIFY` items + service
       binding `ZUI_QM_INSPECTIONCHAR`
@@ -109,7 +109,7 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 ### Post Goods Movement (HU / Box) — `apps/post-goods-movement-hu`
 - Intent: `MaterialDocument-postHuKejriwal` · Role: `SAP_BR_INVENTORY_MANAGER`
 - [ ] **A** `REPLACE_WITH_HU_GM_SERVICE` + S2
-- [ ] **B** Build RAP service from the skeleton at `backend/goods-movement-hu-rap`
+- [ ] **B** Build RAP service from the skeleton at `backend-notes/goods-movement-hu-rap.md`
       (HU read + `postGoodsMovement` static action → BAPI_GOODSMVT_CREATE);
       complete the `TODO`/`VERIFY` + binding `ZUI_HU_GOODS_MOVEMENT`; wire
       `onScanHu` + `onPostMovement`
@@ -120,14 +120,14 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 - [ ] **A** `REPLACE_WITH_PACKING_SERVICE` + S2
 - [ ] **B** First check standard **HU Management + packing instructions** can model
       cone/carton/pallet; else build the RAP service from the skeleton at
-      `backend/packing-hu-rap` (`createHandlingUnits` → BAPI_HU_CREATE/PACK,
+      `backend-notes/packing-hu-rap.md` (`createHandlingUnits` → BAPI_HU_CREATE/PACK,
       binding `ZUI_PACKING`); wire `onCreateHus`
 - [ ] **C** S3 · **D** S4 · **E** S5
 
 ### Contract Batch Update — `apps/contract-batch-update`
 - Intent: `SalesContract-updateBatchKejriwal` · Role: `SAP_BR_INTERNAL_SALES_REP`
 - [ ] **A** `REPLACE_WITH_CONTRACT_BATCH_SERVICE` + S2
-- [ ] **B** Build RAP service from the skeleton at `backend/contract-batch-rap`
+- [ ] **B** Build RAP service from the skeleton at `backend-notes/contract-batch-rap.md`
       (contract-items read + `updateBatches` action → BAPI_SALESDOCUMENT_CHANGE,
       binding `ZUI_CONTRACT_BATCH`); wire `onLoadContract` + `onUpdateBatches`
 - [ ] **C** S3 · **D** S4 · **E** S5
@@ -136,7 +136,7 @@ Full steps in [`PUBLISHING.md`](PUBLISHING.md).
 
 ## Backend object
 
-### Shade Master (RAP CBO) — `backend/shade-master-rap`
+### Shade Master (RAP CBO) — `backend-notes/shade-master-rap.md`
 Build this **early** — it provides the shade value help for F1873 & F3069.
 - [ ] Create DB table `zdd_shade` (per `src/zdd_shade.table-spec.md`)
 - [ ] Import `src/` objects into ADT; activate in order: table → `ZI_DD_Shade` →

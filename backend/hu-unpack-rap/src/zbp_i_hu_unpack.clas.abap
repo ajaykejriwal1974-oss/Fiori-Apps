@@ -1,9 +1,0 @@
-CLASS zbp_i_hu_unpack DEFINITION
-  PUBLIC
-  ABSTRACT
-  FINAL
-  FOR BEHAVIOR OF zi_hu_unpack.
-ENDCLASS.
-
-CLASS zbp_i_hu_unpack IMPLEMENTATION.
-ENDCLASS.

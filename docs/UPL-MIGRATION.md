@@ -23,7 +23,7 @@ plus "new" variants: `ZAUTOPO`, `ZAUTOPO8`, `ZAUTOPOG`, `ZAUTOPOJ`, `ZAUTOPOM`,
 → **one** PO-automation interface with **sales org as a parameter**, calling the
 **Purchase Order API** (`BAPI_PO_CREATE1`) off the `ZSOL_AUPO` config +
 `ZMM_AUTOPO` log. **✅ built** as `ZCL_PO_AUTOMATION` in
-[`backend/po-automation`](../backend/po-automation) (job-schedulable class, API
+[`backend-notes/po-automation.md`](backend-notes/po-automation.md) (job-schedulable class, API
 call TODO). **8 retired.**
 
 ## B. FI document posting (F-02) — 4 → 1
@@ -46,7 +46,7 @@ over `ZSOL_HUDISPATCH` / `ZPP_PACK` / delivery.
 
 → **one** OBD-automation service on the **Outbound Delivery API**
 (`API_OUTBOUND_DELIVERY_SRV` + goods-issue), reusing the dispatch tables.
-**✅ built** as `ZCL_OBD_AUTOMATION` in [`backend/obd-automation`](../backend/obd-automation)
+**✅ built** as `ZCL_OBD_AUTOMATION` in [`backend-notes/obd-automation.md`](backend-notes/obd-automation.md)
 (job-schedulable class, API calls TODO). **1 retired.**
 
 ## E. One-off master / data uploads → Migration Cockpit (one object each)
@@ -62,14 +62,14 @@ over `ZSOL_HUDISPATCH` / `ZPP_PACK` / delivery.
 | Z | Program | Replace with |
 |---|---|---|
 | `ZV2` | ZCBDC_SD_VA02_001 (BDC) | **Sales Order API** change (`API_SALES_ORDER_SRV`) — retire BDC |
-| `ZSCANU` | ZRPT_SALES_UPLOAD | Packing-scan upload → the packing apps' **OData** (reuse `backend/packing-detail-rap`) |
+| `ZSCANU` | ZRPT_SALES_UPLOAD | Packing-scan upload → the packing apps' **OData** (reuse `backend-notes/packing-detail-rap.md`) |
 | `ZFIBRC` | ZFI_BANK_CLEAR | **Electronic Bank Statement / Bank Reconciliation** (standard `FF.5`/`FEBAN`) |
 
 ## G. Already covered / excluded (3)
 | Z | Status |
 |---|---|
-| `ZHU_UNPACK` (`ZSOL_BAPI_HU_UNPACK`) | the BAPI behind **`backend/hu-unpack-rap`** (built) |
-| `ZVLMOVE` (`ZSOL_VLMOVE_BAPI`) | goods-movement/delivery move — covered by **`backend/goods-movement-hu-rap`** |
+| `ZHU_UNPACK` (`ZSOL_BAPI_HU_UNPACK`) | the BAPI behind **`backend-notes/hu-unpack-rap.md`** (built) |
+| `ZVLMOVE` (`ZSOL_VLMOVE_BAPI`) | goods-movement/delivery move — covered by **`backend-notes/goods-movement-hu-rap.md`** |
 | `ZEINV_UPLOAD` | **DRC** (excluded — e-invoice IRN upload) |
 
 ## Net result

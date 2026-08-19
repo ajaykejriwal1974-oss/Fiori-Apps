@@ -1,4 +1,0 @@
-@EndUserText.label: 'Inbound Delivery HUs Service'
-define service ZUI_HU_INBOUND {
-  expose ZC_InboundHu as InboundHu;
-}

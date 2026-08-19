@@ -77,7 +77,7 @@ below.
 | `EXT` | 19 | Built / wired into adaptations (sales order & contract status, etc.) | apps/ + backend/ |
 | `STD` | 17 | Standard Fiori app + business role; retire Z | [STD-RETIREMENT.md](docs/STD-RETIREMENT.md) |
 | `PRT` | 61 | Output Management (BRF+ / Adobe templates); gate pass built | [PRT-OUTPUT-MANAGEMENT.md](docs/PRT-OUTPUT-MANAGEMENT.md) |
-| `BI` | 87 | Consolidated to ~31; **13 CDS queries built** | [BI-CONSOLIDATION.md](docs/BI-CONSOLIDATION.md) · [backend/analytics](backend/analytics) |
+| `BI` | 87 | Consolidated to ~31; **13 CDS queries built** | [BI-CONSOLIDATION.md](docs/BI-CONSOLIDATION.md) · [docs/backend-notes/analytics.md](docs/backend-notes/analytics.md) |
 | `UPL` | 28 | Migration Cockpit / public APIs; consolidated to ~11; BDC retired | [UPL-MIGRATION.md](docs/UPL-MIGRATION.md) |
 | `RET` | 1 | Retire | — |
 | **Total** | **285** | | |
@@ -103,10 +103,10 @@ service rather than as adaptation projects.
 
 | App | Replaces (Z) | Why custom | Status |
 |---|---|---|---|
-| [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; RAP skeleton in backend/qm-mass-results-rap |
-| [Post Goods Movement (HU / Box)](apps/post-goods-movement-hu) | ZBOX_MOVE (vs MIGO) | MIGO is a GUI tx; box/HU-wise movement is a scan-driven flow | UI authored; RAP skeleton in backend/goods-movement-hu-rap |
-| [Dyeing Packing](apps/dyeing-packing) | ZPACK01D/02D/03D, ZREPACKD | Textile cone/carton/pallet structure not in standard HU UI | UI authored; RAP skeleton in backend/packing-hu-rap |
-| [Contract Batch Update](apps/contract-batch-update) | ZBATCH_CHANGE | Mass batch assignment across contract items | UI authored; RAP skeleton in backend/contract-batch-rap |
+| [Record Inspection Results (Mass)](apps/record-inspection-results-mass) | ZQA32 (vs F2655) | F2655 records one inspection lot at a time; this does mass / multi-lot entry | UI authored; RAP skeleton in docs/backend-notes/qm-mass-results-rap.md |
+| [Post Goods Movement (HU / Box)](apps/post-goods-movement-hu) | ZBOX_MOVE (vs MIGO) | MIGO is a GUI tx; box/HU-wise movement is a scan-driven flow | UI authored; RAP skeleton in docs/backend-notes/goods-movement-hu-rap.md |
+| [Dyeing Packing](apps/dyeing-packing) | ZPACK01D/02D/03D, ZREPACKD | Textile cone/carton/pallet structure not in standard HU UI | UI authored; RAP skeleton in docs/backend-notes/packing-hu-rap.md |
+| [Contract Batch Update](apps/contract-batch-update) | ZBATCH_CHANGE | Mass batch assignment across contract items | UI authored; RAP skeleton in docs/backend-notes/contract-batch-rap.md |
 
 ### CUS transactional apps (front-ends for the Route 7 services)
 
@@ -117,56 +117,56 @@ List binding + action buttons are wired; the action **invocation** and BAPIs are
 
 | App | Replaces (Z) | Backend service | Actions |
 |---|---|---|---|
-| [Packing Details](apps/manage-packing-details) | ZPACK01/01N/02/02N/03, ZREPACK | backend/packing-detail-rap | Pack, Repack |
-| [Palletization](apps/palletization) | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | backend/palletization-rap | Pack Pallet |
-| [Post Packing & GR](apps/post-packing-gr) | ZPOST01 | backend/post-packing-gr-rap | Post Packing & GR |
-| [Inbound Delivery HUs](apps/inbound-delivery-hus) | ZHUINB | backend/hu-inbound-rap | Post Inbound GR |
-| [HU Unpack](apps/hu-unpack) | ZHUPK | backend/hu-unpack-rap | Unpack |
-| [Batch Status](apps/batch-status) | ZBATCHD, ZBATCH_CLS | backend/batch-status-rap | Close, Delete |
-| [MTOS Process](apps/mtos-process) | ZMTOS, ZHUINV | backend/mtos-process-rap | Convert to MTS, Create Phys. Inv. Doc |
-| [Dispatch Correction](apps/dispatch-correction) | ZDSP_CORR | backend/dispatch-correction-rap | Correct Dispatch |
+| [Packing Details](apps/manage-packing-details) | ZPACK01/01N/02/02N/03, ZREPACK | docs/backend-notes/packing-detail-rap.md | Pack, Repack |
+| [Palletization](apps/palletization) | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | docs/backend-notes/palletization-rap.md | Pack Pallet |
+| [Post Packing & GR](apps/post-packing-gr) | ZPOST01 | docs/backend-notes/post-packing-gr-rap.md | Post Packing & GR |
+| [Inbound Delivery HUs](apps/inbound-delivery-hus) | ZHUINB | docs/backend-notes/hu-inbound-rap.md | Post Inbound GR |
+| [HU Unpack](apps/hu-unpack) | ZHUPK | docs/backend-notes/hu-unpack-rap.md | Unpack |
+| [Batch Status](apps/batch-status) | ZBATCHD, ZBATCH_CLS | docs/backend-notes/batch-status-rap.md | Close, Delete |
+| [MTOS Process](apps/mtos-process) | ZMTOS, ZHUINV | docs/backend-notes/mtos-process-rap.md | Convert to MTS, Create Phys. Inv. Doc |
+| [Dispatch Correction](apps/dispatch-correction) | ZDSP_CORR | docs/backend-notes/dispatch-correction-rap.md | Correct Dispatch |
 
 > **C-Form** (`ZCFORM1`/`ZFORM`/`ZFORMS`/`ZPCFORM`) is a managed master, so its
 > *Manage C-Forms* Fiori Elements app is generated from the service binding (no
-> freestyle app) — see [`backend/cform-master-rap`](backend/cform-master-rap).
+> freestyle app) — see [`docs/backend-notes/cform-master-rap.md`](docs/backend-notes/cform-master-rap.md).
 > Pending vs received = `FormNumber`/`FormDate` empty vs filled.
 
 ## Backend (non-UI) artifacts
 
 | Artifact | Type | Replaces (Z) | Status |
 |---|---|---|---|
-| [Shade Master](backend/shade-master-rap) | RAP Custom Business Object | ZDD_SHADE | Source authored (table + service binding to create in ADT) |
-| [QM Mass Results](backend/qm-mass-results-rap) | Unmanaged RAP service | ZQA32 / `ZQM_MASS_RESULT2` (legacy buffer `ZINSPLOT_QA32`) | Skeleton authored (reads std QM; result API + status filter to complete in ADT) |
-| [HU Goods Movement](backend/goods-movement-hu-rap) | Unmanaged RAP service | ZBOX_MOVE (backend) | Skeleton authored (BAPI_GOODSMVT_CREATE + HU read to complete in ADT) |
-| [Dyeing Packing](backend/packing-hu-rap) | Unmanaged RAP service | ZPACK / ZREPACKD (backend) | Skeleton authored (BAPI_HU_CREATE/PACK to complete in ADT) |
-| [Contract Batch Update](backend/contract-batch-rap) | Unmanaged RAP service | ZBATCH_CHANGE (backend) | Skeleton authored (BAPI_SALESDOCUMENT_CHANGE to complete in ADT) |
-| [Recipe Master](backend/recipe-master-rap) | Managed RAP master (Route 7) | ZRECP01/02/03 | **Refit to real table `ZPP_RECEIPE`** (19 fields, 5-part key) |
-| [Job Master](backend/job-master-rap) | Managed RAP master (Route 7) | ZJOB01/02/03(N) | **Refit to real table `ZPP_JOBN`** (key JOBNO) |
-| [Truck Master](backend/truck-master-rap) | Managed RAP master (Route 7) | ZTRUCK | **Refit to real table `ZTB_TRUCK_MSTR`** (key TRUCKNO) |
-| [Schedule Master](backend/schedule-master-rap) | Managed RAP master (Route 7) | ZSCH01/02/03(N) | **Refit to real table `ZPP_SCHEDULEN`** (keys SCHNO/GJAHR) |
-| [Transport Code](backend/transport-code-master-rap) | Managed RAP master (Route 7) | ZTRANS | **Refit to real table `ZTRANS`** (keys ZZTRCODE/ZZTRCKNO) |
-| [~~Min/Max Levels~~ → reuse standard MRP](backend/minmax-master-rap) | Stub (de-scoped) | ZMINMAX | **Reuse standard** — min/max on `MARC`, no custom table |
-| [Merge Details](backend/merge-master-rap) | Managed RAP master (Route 7) | ZMERGE | **Refit to real table `ZPP_MERGE`** (keys AURNR/GRADE/ENDUSE) |
-| [Checked/Packed By](backend/checked-by-master-rap) | Managed RAP master (Route 7) | ZPCBY | **Refit to real table `ZPP_PCBY`** (keys SR_NO/PC) |
-| [Packing Material Master](backend/packing-material-master-rap) | Managed RAP master (Route 7) | ZPACK_MAST | **Refit to real table `ZPACK_MAST`** (keys PTYPE/ARBPL/MATNR) |
-| [Export Details](backend/export-detail-master-rap) | Managed RAP master (Route 7) | ZMBR2 | **Refit to real table `ZEXP`** (keys VBELN/KSCHL) |
-| [Digital Signature](backend/digital-signature-master-rap) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
-| [C-Form Allocation](backend/cform-master-rap) | Managed RAP master (CUS) | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | Real table `ZCFORM1` (keys SALE_ORG/CUST_CODE/INVOICE_NO; pending↔received) |
-| [Dispatch Correction](backend/dispatch-correction-rap) | Unmanaged RAP service (CUS) | ZDSP_CORR | Real read `ZSOL_HUDISPATCH`⋈`ZPP_PACK`; `correctDispatch` (update to wire) |
-| [Sales Document Status](backend/sales-doc-status-rap) | Unmanaged RAP service (EXT, **merged**) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 + ZSOCLOSE/ZSOCLOSE1 | One `VBAK` read (contracts+orders); all 6 lifecycle actions → both adaptations (audit P2) |
-| [HU shared reads](backend/hu-shared) | Shared CDS interfaces (refactor) | — | `ZI_HU_ItemBase`/`ZI_HU_HeaderBase` reused by 7 HU services (audit P3) |
-| [Gate Pass](backend/gate-pass-rap) | Managed RAP composition (PRT/custom) | ZGPS01/02/03, ZGPSI1/2/3 | Header→item over `ZGP_HDR`/`ZGP_ITEM` (keys GPNUM/MJAHR); `ZGP_PART` associated |
-| [BI Analytical Queries](backend/analytics) | 13 CDS queries over 10 cubes (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
-| [PO Automation](backend/po-automation) | ABAP automation class (UPL) | ZAUTOPO* (9) | `ZCL_PO_AUTOMATION` over `ZSOL_AUPO`/`ZMM_AUTOPO`, sales org param; API call to wire |
-| [OBD Automation](backend/obd-automation) | ABAP automation class (UPL) | ZSDOBD/ZSDOBDN | `ZCL_OBD_AUTOMATION` over `ZSOL_HUDISPATCH`, plant param; API calls to wire |
-| [~~Bill of Exchange~~ → reuse standard FI](backend/bill-of-exchange-std) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
-| [HU Unpack](backend/hu-unpack-rap) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
-| [MTOS Process](backend/mtos-process-rap) | Unmanaged RAP service (Route 7, **merged**) | ZMTOS + ZHUINV | One MSKA read; `convertToMts` + `createPhysInvDoc` (same program ZSOL_MTOS_PROCESS; audit P1) |
-| [Palletization](backend/palletization-rap) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
-| [Batch Status](backend/batch-status-rap) | Unmanaged RAP service (Route 7) | ZBATCHD / ZBATCH_CLS | Skeleton (BAPI_BATCH_CHANGE to wire) |
-| [Packing Details](backend/packing-detail-rap) | Unmanaged RAP service (Route 7) | ZPACK01/02/03(+N), ZREPACK | Skeleton (BAPI_HU_PACK / BAPI_HU_REPACK_ITM to wire) |
-| [Post Packing & GR](backend/post-packing-gr-rap) | Unmanaged RAP service (Route 7) | ZPOST01 | Skeleton (BAPI_HU_PACK + BAPI_GOODSMVT_CREATE to wire) |
-| [Inbound Delivery HUs](backend/hu-inbound-rap) | Unmanaged RAP service (Route 7) | ZHUINB | Skeleton (BAPI_INB_DELIVERY_CONFIRM_DEC to wire) |
+| [Shade Master](docs/backend-notes/shade-master-rap.md) | RAP Custom Business Object | ZDD_SHADE | Source authored (table + service binding to create in ADT) |
+| [QM Mass Results](docs/backend-notes/qm-mass-results-rap.md) | Unmanaged RAP service | ZQA32 / `ZQM_MASS_RESULT2` (legacy buffer `ZINSPLOT_QA32`) | Skeleton authored (reads std QM; result API + status filter to complete in ADT) |
+| [HU Goods Movement](docs/backend-notes/goods-movement-hu-rap.md) | Unmanaged RAP service | ZBOX_MOVE (backend) | Skeleton authored (BAPI_GOODSMVT_CREATE + HU read to complete in ADT) |
+| [Dyeing Packing](docs/backend-notes/packing-hu-rap.md) | Unmanaged RAP service | ZPACK / ZREPACKD (backend) | Skeleton authored (BAPI_HU_CREATE/PACK to complete in ADT) |
+| [Contract Batch Update](docs/backend-notes/contract-batch-rap.md) | Unmanaged RAP service | ZBATCH_CHANGE (backend) | Skeleton authored (BAPI_SALESDOCUMENT_CHANGE to complete in ADT) |
+| [Recipe Master](docs/backend-notes/recipe-master-rap.md) | Managed RAP master (Route 7) | ZRECP01/02/03 | **Refit to real table `ZPP_RECEIPE`** (19 fields, 5-part key) |
+| [Job Master](docs/backend-notes/job-master-rap.md) | Managed RAP master (Route 7) | ZJOB01/02/03(N) | **Refit to real table `ZPP_JOBN`** (key JOBNO) |
+| [Truck Master](docs/backend-notes/truck-master-rap.md) | Managed RAP master (Route 7) | ZTRUCK | **Refit to real table `ZTB_TRUCK_MSTR`** (key TRUCKNO) |
+| [Schedule Master](docs/backend-notes/schedule-master-rap.md) | Managed RAP master (Route 7) | ZSCH01/02/03(N) | **Refit to real table `ZPP_SCHEDULEN`** (keys SCHNO/GJAHR) |
+| [Transport Code](docs/backend-notes/transport-code-master-rap.md) | Managed RAP master (Route 7) | ZTRANS | **Refit to real table `ZTRANS`** (keys ZZTRCODE/ZZTRCKNO) |
+| [~~Min/Max Levels~~ → reuse standard MRP](docs/backend-notes/minmax-master-rap.md) | Stub (de-scoped) | ZMINMAX | **Reuse standard** — min/max on `MARC`, no custom table |
+| [Merge Details](docs/backend-notes/merge-master-rap.md) | Managed RAP master (Route 7) | ZMERGE | **Refit to real table `ZPP_MERGE`** (keys AURNR/GRADE/ENDUSE) |
+| [Checked/Packed By](docs/backend-notes/checked-by-master-rap.md) | Managed RAP master (Route 7) | ZPCBY | **Refit to real table `ZPP_PCBY`** (keys SR_NO/PC) |
+| [Packing Material Master](docs/backend-notes/packing-material-master-rap.md) | Managed RAP master (Route 7) | ZPACK_MAST | **Refit to real table `ZPACK_MAST`** (keys PTYPE/ARBPL/MATNR) |
+| [Export Details](docs/backend-notes/export-detail-master-rap.md) | Managed RAP master (Route 7) | ZMBR2 | **Refit to real table `ZEXP`** (keys VBELN/KSCHL) |
+| [Digital Signature](docs/backend-notes/digital-signature-master-rap.md) | Managed RAP master (Route 7) | ZDIGI | **Refit to real table `ZTDIGI_SIGN`** (key BUKRS) |
+| [C-Form Allocation](docs/backend-notes/cform-master-rap.md) | Managed RAP master (CUS) | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | Real table `ZCFORM1` (keys SALE_ORG/CUST_CODE/INVOICE_NO; pending↔received) |
+| [Dispatch Correction](docs/backend-notes/dispatch-correction-rap.md) | Unmanaged RAP service (CUS) | ZDSP_CORR | Real read `ZSOL_HUDISPATCH`⋈`ZPP_PACK`; `correctDispatch` (update to wire) |
+| [Sales Document Status](docs/backend-notes/sales-doc-status-rap.md) | Unmanaged RAP service (EXT, **merged**) | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 + ZSOCLOSE/ZSOCLOSE1 | One `VBAK` read (contracts+orders); all 6 lifecycle actions → both adaptations (audit P2) |
+| [HU shared reads](docs/backend-notes/hu-shared.md) | Shared CDS interfaces (refactor) | — | `ZI_HU_ItemBase`/`ZI_HU_HeaderBase` reused by 7 HU services (audit P3) |
+| [Gate Pass](docs/backend-notes/gate-pass-rap.md) | Managed RAP composition (PRT/custom) | ZGPS01/02/03, ZGPSI1/2/3 | Header→item over `ZGP_HDR`/`ZGP_ITEM` (keys GPNUM/MJAHR); `ZGP_PART` associated |
+| [BI Analytical Queries](docs/backend-notes/analytics.md) | 13 CDS queries over 10 cubes (BI) | ~40 BI reports consolidated | `ZC_*Query` over real Z-tables; old report variants become dimensions |
+| [PO Automation](docs/backend-notes/po-automation.md) | ABAP automation class (UPL) | ZAUTOPO* (9) | `ZCL_PO_AUTOMATION` over `ZSOL_AUPO`/`ZMM_AUTOPO`, sales org param; API call to wire |
+| [OBD Automation](docs/backend-notes/obd-automation.md) | ABAP automation class (UPL) | ZSDOBD/ZSDOBDN | `ZCL_OBD_AUTOMATION` over `ZSOL_HUDISPATCH`, plant param; API calls to wire |
+| [~~Bill of Exchange~~ → reuse standard FI](docs/backend-notes/bill-of-exchange-std.md) | Stub (de-scoped) | ZBOE | **Reuse standard** — FI Bill of Exchange (`F-36`/`F-33`/`FBW*`), no custom table |
+| [HU Unpack](docs/backend-notes/hu-unpack-rap.md) | Unmanaged RAP service (Route 7) | ZHUPK | Skeleton (BAPI_HU_UNPACK to wire) |
+| [MTOS Process](docs/backend-notes/mtos-process-rap.md) | Unmanaged RAP service (Route 7, **merged**) | ZMTOS + ZHUINV | One MSKA read; `convertToMts` + `createPhysInvDoc` (same program ZSOL_MTOS_PROCESS; audit P1) |
+| [Palletization](docs/backend-notes/palletization-rap.md) | Unmanaged RAP service (Route 7) | ZPALLET / ZPAL_BOX / ZSOL_ASRS | Skeleton (BAPI_HU_PACK to wire) |
+| [Batch Status](docs/backend-notes/batch-status-rap.md) | Unmanaged RAP service (Route 7) | ZBATCHD / ZBATCH_CLS | Skeleton (BAPI_BATCH_CHANGE to wire) |
+| [Packing Details](docs/backend-notes/packing-detail-rap.md) | Unmanaged RAP service (Route 7) | ZPACK01/02/03(+N), ZREPACK | Skeleton (BAPI_HU_PACK / BAPI_HU_REPACK_ITM to wire) |
+| [Post Packing & GR](docs/backend-notes/post-packing-gr-rap.md) | Unmanaged RAP service (Route 7) | ZPOST01 | Skeleton (BAPI_HU_PACK + BAPI_GOODSMVT_CREATE to wire) |
+| [Inbound Delivery HUs](docs/backend-notes/hu-inbound-rap.md) | Unmanaged RAP service (Route 7) | ZHUINB | Skeleton (BAPI_INB_DELIVERY_CONFIRM_DEC to wire) |
 
 The shade master has no standard SAP equivalent, so it's a RAP business object
 (not an adaptation project). It also provides the value-help source for the shade
@@ -187,10 +187,32 @@ apps/
       i18n/
     ui5.yaml
     package.json
+
+backend/
+  src/                          # THE ABAP source tree - abapGit working folder
+                                # for package ZKGPL_FIORI on KSD. One tree, flat,
+                                # mirrors the live system 1:1.
+
+docs/
+  backend-notes/                # per-service design notes (one file per former
+                                # backend/<app>-rap folder)
 ```
 
-Each project's own README lists the `REPLACE_WITH_*` placeholders that must be
-filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
+`backend/src/` is the single source of truth for ABAP. It is the abapGit
+working folder (`STARTING_FOLDER=/backend/src/`, `FOLDER_LOGIC=PREFIX`), so it
+round-trips with package `ZKGPL_FIORI` on KSD and is byte-for-byte what runs
+there. Pull with abapGit before editing; push through abapGit after.
+
+> **History note.** Until Aug 2026 this repo carried a *second* ABAP tree under
+> `backend/<app>-rap/src/` - a parallel design that was only partly deployed and
+> had drifted from the live system on 116 of 160 objects. It was removed; the
+> design prose from each folder now lives in [`docs/backend-notes/`](docs/backend-notes).
+> The sources remain in git history (last present in `29ab372`), and
+> [`docs/KSD-vs-repo-comparison-2026-08-19.md`](docs/KSD-vs-repo-comparison-2026-08-19.md)
+> records exactly what each side contained.
+
+Each app project's own README lists the `REPLACE_WITH_*` placeholders that must
+be filled from the live system and the backend (CDS / RAP / BAdI) prerequisites.
 
 ## Docs
 

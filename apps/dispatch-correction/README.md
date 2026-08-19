@@ -1,7 +1,7 @@
 # Dispatch Correction (ZDSP_CORR) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZSOL_DISPATCH_CORRECTION**.
-Binds to the OData V4 service of [`backend/dispatch-correction-rap`](../../backend/dispatch-correction-rap)
+Binds to the OData V4 service of [`docs/backend-notes/dispatch-correction-rap.md`](../../docs/backend-notes/dispatch-correction-rap.md)
 (`DispatchBox` entity set) and exposes the service's static action(s) as
 table actions.
 

@@ -24,11 +24,10 @@ def err(msg): errors.append(msg)
 
 def rel(p): return os.path.relpath(p, ROOT)
 
-# Directories that are packaging *mirrors* of backend sources (e.g. the
-# abapGit-import bundle) — excluded from the backend scan so their copies are
-# not flagged as duplicate object names. The canonical sources under
-# backend/<app>-rap/src remain fully validated.
-MIRROR_DIRS = ("_abapgit_import",)
+# There is exactly one backend source tree — backend/src, the abapGit working
+# folder for package ZKGPL_FIORI. The parallel backend/<app>-rap/src tree was
+# removed (see docs/backend-notes/), so nothing needs excluding from the scan.
+MIRROR_DIRS = ()
 def _is_mirror(p):
     return any(f"{os.sep}{d}{os.sep}" in p for d in MIRROR_DIRS)
 
@@ -73,7 +72,7 @@ for f in backend_cds:
         err(f"Unbalanced braces in {rel(f)} ({txt.count('{')} '{{' vs {txt.count('}')} '}}')")
     if txt.count("(") != txt.count(")"):
         err(f"Unbalanced parens in {rel(f)}")
-    for m in re.finditer(r'define (?:root )?view entity (Z[A-Za-z_0-9]+)', txt):
+    for m in re.finditer(r'define (?:root )?(?:view entity|custom entity) (Z[A-Za-z_0-9]+)', txt):
         defined_views[m.group(1)] = f; note_name(m.group(1), f)
     for m in re.finditer(r'define abstract entity (Z[A-Za-z_0-9]+)', txt):
         defined_abstract[m.group(1)] = f; note_name(m.group(1), f)

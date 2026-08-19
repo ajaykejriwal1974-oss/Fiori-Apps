@@ -1,9 +1,0 @@
-CLASS zbp_i_gatepass DEFINITION
-  PUBLIC
-  ABSTRACT
-  FINAL
-  FOR BEHAVIOR OF zi_gatepass.
-ENDCLASS.
-
-CLASS zbp_i_gatepass IMPLEMENTATION.
-ENDCLASS.

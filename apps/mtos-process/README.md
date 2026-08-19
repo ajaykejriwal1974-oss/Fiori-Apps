@@ -1,7 +1,7 @@
 # MTOS Process (ZMTOS, ZHUINV) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZSOL_MTOS_PROCESS (MTO->MTS transfer + phys. inv. doc)**.
-Binds to the OData V4 service of [`backend/mtos-process-rap`](../../backend/mtos-process-rap)
+Binds to the OData V4 service of [`docs/backend-notes/mtos-process-rap.md`](../../docs/backend-notes/mtos-process-rap.md)
 (`MtosStock` entity set) and exposes the service's static action(s) as
 table actions.
 

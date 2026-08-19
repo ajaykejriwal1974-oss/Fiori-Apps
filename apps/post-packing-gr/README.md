@@ -1,7 +1,7 @@
 # Post Packing & GR (ZPOST01) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZPP_PACK_POST**.
-Binds to the OData V4 service of [`backend/post-packing-gr-rap`](../../backend/post-packing-gr-rap)
+Binds to the OData V4 service of [`docs/backend-notes/post-packing-gr-rap.md`](../../docs/backend-notes/post-packing-gr-rap.md)
 (`PostPackGr` entity set) and exposes the service's static action(s) as
 table actions.
 

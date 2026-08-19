@@ -1,4 +1,0 @@
-@EndUserText.label: 'HU Goods Movement Service'
-define service ZUI_HU_GOODS_MOVEMENT {
-  expose ZC_HU_Item as HandlingUnitItem;
-}

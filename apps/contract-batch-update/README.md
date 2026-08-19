@@ -43,7 +43,7 @@ and a **mass-update action** (or updatable `NewBatch` + batch submit). The
 `controller/Main.controller.js` mark where to wire it.
 
 > A RAP **skeleton** for this service is authored at
-> [`backend/contract-batch-rap`](../../backend/contract-batch-rap) (contract-items
+> [`docs/backend-notes/contract-batch-rap.md`](../../docs/backend-notes/contract-batch-rap.md) (contract-items
 > read + `updateBatches` static action → BAPI_SALESDOCUMENT_CHANGE). Point
 > `REPLACE_WITH_CONTRACT_BATCH_SERVICE` at its binding `ZUI_CONTRACT_BATCH`.
 

@@ -1,7 +1,7 @@
 # Batch Status (ZBATCHD, ZBATCH_CLS) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZPP_BATCH_DELETE / ZSOL_WIP_BATCH_CLOSE**.
-Binds to the OData V4 service of [`backend/batch-status-rap`](../../backend/batch-status-rap)
+Binds to the OData V4 service of [`docs/backend-notes/batch-status-rap.md`](../../docs/backend-notes/batch-status-rap.md)
 (`Batch` entity set) and exposes the service's static action(s) as
 table actions.
 

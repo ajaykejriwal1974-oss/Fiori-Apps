@@ -1,7 +1,7 @@
 # Palletization (ZPALLET, ZPALLET1, ZPAL_BOX, ZSOL_ASRS) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZPP_HU_CREATE / ZPP_PALLET_POST / ZSOL_PALLETIZATION**.
-Binds to the OData V4 service of [`backend/palletization-rap`](../../backend/palletization-rap)
+Binds to the OData V4 service of [`docs/backend-notes/palletization-rap.md`](../../docs/backend-notes/palletization-rap.md)
 (`Pallet` entity set) and exposes the service's static action(s) as
 table actions.
 

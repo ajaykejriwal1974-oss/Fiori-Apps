@@ -46,7 +46,7 @@ The runbook activates the base app under a business role; this repo provides the
 | Record Inspection Results | F2655 (verify) | `SAP_BR_QUALITY_TECHNICIAN` | [record-inspection-results-mass](../apps/record-inspection-results-mass) |
 | Post Goods Movement | MIGO / verify | `SAP_BR_INVENTORY_MANAGER` | [post-goods-movement-hu](../apps/post-goods-movement-hu) |
 | Pack (Handling Unit Mgmt) | HUMO / VL02N | `SAP_BR_WAREHOUSE_CLERK` | [dyeing-packing](../apps/dyeing-packing) |
-| Shade master (no standard app) | — | — (key-user / RAP) | [backend/shade-master-rap](../backend/shade-master-rap) |
+| Shade master (no standard app) | — | — (key-user / RAP) | [backend-notes/shade-master-rap.md](backend-notes/shade-master-rap.md) |
 
 > Custom apps (inspection results, goods movement, packing, contract batch
 > update) expose **new** OData services — those are activated when the custom RAP

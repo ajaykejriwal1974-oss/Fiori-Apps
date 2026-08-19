@@ -1,4 +1,0 @@
-@EndUserText.label: 'HU Unpack Service'
-define service ZUI_HU_UNPACK {
-  expose ZC_HuUnpackItem as HuUnpack;
-}

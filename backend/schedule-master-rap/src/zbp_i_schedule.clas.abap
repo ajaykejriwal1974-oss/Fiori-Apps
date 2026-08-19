@@ -1,9 +1,0 @@
-CLASS zbp_i_schedule DEFINITION
-  PUBLIC
-  ABSTRACT
-  FINAL
-  FOR BEHAVIOR OF zi_schedule.
-ENDCLASS.
-
-CLASS zbp_i_schedule IMPLEMENTATION.
-ENDCLASS.

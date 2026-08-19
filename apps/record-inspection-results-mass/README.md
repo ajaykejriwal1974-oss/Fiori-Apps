@@ -42,7 +42,7 @@ inspection-lot & characteristic results). The app expects, at minimum, an
 and either updatable properties or a bound **mass-post action**.
 
 > A RAP **skeleton** for this service is authored at
-> [`backend/qm-mass-results-rap`](../../backend/qm-mass-results-rap) (unmanaged
+> [`docs/backend-notes/qm-mass-results-rap.md`](../../docs/backend-notes/qm-mass-results-rap.md) (unmanaged
 > BO: read CDS over QM + `update`/`save` that records via the QM BAPI). Point
 > `REPLACE_WITH_QM_MASS_SERVICE` at its service binding `ZUI_QM_INSPECTIONCHAR`.
 

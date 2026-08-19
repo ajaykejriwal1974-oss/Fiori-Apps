@@ -354,35 +354,35 @@ Obsolete — retire.
 
 | This repo | Class | Tcodes covered | Backed by |
 |---|---|---|---|
-| `backend/recipe-master-rap` | CUS | ZRECP01/02/03 | managed RAP over `ZPP_RECEIPE` |
-| `backend/job-master-rap` | CUS | ZJOB01/02/03(N) | managed RAP over `ZPP_JOBN` |
-| `backend/schedule-master-rap` | CUS | ZSCH01/02/03(N) | managed RAP over `ZPP_SCHEDULEN` |
-| `backend/transport-code-master-rap` | CUS | ZTRANS | managed RAP over `ZTRANS` |
-| `backend/truck-master-rap` | CUS | ZTRUCK | managed RAP over `ZTB_TRUCK_MSTR` |
-| `backend/merge-master-rap` | CUS | ZMERGE | managed RAP over `ZPP_MERGE` |
-| `backend/checked-by-master-rap` | CUS | ZPCBY | managed RAP over `ZPP_PCBY` |
-| `backend/packing-material-master-rap` | CUS | ZPACK_MAST | managed RAP over `ZPACK_MAST` |
-| `backend/export-detail-master-rap` | CUS | ZMBR2 | managed RAP over `ZEXP` |
-| `backend/digital-signature-master-rap` | CUS | ZDIGI | managed RAP over `ZTDIGI_SIGN` |
-| `backend/cform-master-rap` | CUS | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | managed RAP over `ZCFORM1` (C-Form pending↔received) |
-| `backend/dispatch-correction-rap + apps/dispatch-correction` | CUS | ZDSP_CORR | unmanaged RAP over `ZSOL_HUDISPATCH`⋈`ZPP_PACK` → correctDispatch |
-| `backend/minmax-master-rap` | CUS→STD | ZMINMAX | **reuse standard MRP** (`MARC` min/max) — no custom table |
-| `backend/bill-of-exchange-std` | CUS→STD | ZBOE | **reuse standard FI** Bill of Exchange (`F-36`/`F-33`/`FBW*`) — no custom table |
-| `backend/packing-detail-rap` | CUS | ZPACK01/02/03(+N), ZREPACK | unmanaged RAP → BAPI_HU_PACK / reuse `ZSOL_PACK_CDS` |
-| `backend/palletization-rap` | CUS | ZPALLET/ZPALLET1/ZPAL_BOX/ZSOL_ASRS | unmanaged RAP → BAPI_HU_PACK |
-| `backend/post-packing-gr-rap` | CUS | ZPOST01 | unmanaged RAP → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE |
-| `backend/hu-inbound-rap` | CUS | ZHUINB | unmanaged RAP → reuse `ZSOL_INBOUND_HU` |
-| `backend/mtos-process-rap` | CUS | ZHUINV + ZMTOS | unmanaged RAP (same program ZSOL_MTOS_PROCESS): createPhysInvDoc + convertToMts |
-| `backend/hu-unpack-rap` | CUS | ZHUPK | unmanaged RAP → BAPI_HU_UNPACK |
-| `backend/batch-status-rap` | CUS | ZBATCHD, ZBATCH_CLS | unmanaged RAP → BAPI_BATCH_CHANGE / reuse `ZSOL_BATCH_CDS` |
-| `backend/goods-movement-hu-rap` | EXT | ZBOX_MOVE | unmanaged RAP → reuse `ZSOL_POST_GOODS_MOVEMENTS` |
-| `backend/qm-mass-results-rap` | EXT | ZQA32 | read std QM + result API (legacy buffer `ZINSPLOT_QA32`) |
-| `backend/contract-batch-rap` | EXT | ZBATCH_CHANGE | unmanaged RAP → reuse `ZSOL_SALE_ORDER_BATCH_UPDATE` |
-| `backend/shade-master-rap` | EXT | ZDD_SHADE | managed RAP custom CBO (reference pattern) |
-| `apps/manage-sales-contracts-ext + backend/sales-doc-status-rap` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls the merged sales-doc status actions (close/complete/release/updateRate) over VBAK |
-| `apps/manage-sales-orders-ext + backend/sales-doc-status-rap` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + the merged sales-doc close action over VBAK |
+| `backend-notes/recipe-master-rap.md` | CUS | ZRECP01/02/03 | managed RAP over `ZPP_RECEIPE` |
+| `backend-notes/job-master-rap.md` | CUS | ZJOB01/02/03(N) | managed RAP over `ZPP_JOBN` |
+| `backend-notes/schedule-master-rap.md` | CUS | ZSCH01/02/03(N) | managed RAP over `ZPP_SCHEDULEN` |
+| `backend-notes/transport-code-master-rap.md` | CUS | ZTRANS | managed RAP over `ZTRANS` |
+| `backend-notes/truck-master-rap.md` | CUS | ZTRUCK | managed RAP over `ZTB_TRUCK_MSTR` |
+| `backend-notes/merge-master-rap.md` | CUS | ZMERGE | managed RAP over `ZPP_MERGE` |
+| `backend-notes/checked-by-master-rap.md` | CUS | ZPCBY | managed RAP over `ZPP_PCBY` |
+| `backend-notes/packing-material-master-rap.md` | CUS | ZPACK_MAST | managed RAP over `ZPACK_MAST` |
+| `backend-notes/export-detail-master-rap.md` | CUS | ZMBR2 | managed RAP over `ZEXP` |
+| `backend-notes/digital-signature-master-rap.md` | CUS | ZDIGI | managed RAP over `ZTDIGI_SIGN` |
+| `backend-notes/cform-master-rap.md` | CUS | ZCFORM1/ZFORM/ZFORMS/ZPCFORM | managed RAP over `ZCFORM1` (C-Form pending↔received) |
+| `backend-notes/dispatch-correction-rap.md + apps/dispatch-correction` | CUS | ZDSP_CORR | unmanaged RAP over `ZSOL_HUDISPATCH`⋈`ZPP_PACK` → correctDispatch |
+| `backend-notes/minmax-master-rap.md` | CUS→STD | ZMINMAX | **reuse standard MRP** (`MARC` min/max) — no custom table |
+| `backend-notes/bill-of-exchange-std.md` | CUS→STD | ZBOE | **reuse standard FI** Bill of Exchange (`F-36`/`F-33`/`FBW*`) — no custom table |
+| `backend-notes/packing-detail-rap.md` | CUS | ZPACK01/02/03(+N), ZREPACK | unmanaged RAP → BAPI_HU_PACK / reuse `ZSOL_PACK_CDS` |
+| `backend-notes/palletization-rap.md` | CUS | ZPALLET/ZPALLET1/ZPAL_BOX/ZSOL_ASRS | unmanaged RAP → BAPI_HU_PACK |
+| `backend-notes/post-packing-gr-rap.md` | CUS | ZPOST01 | unmanaged RAP → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE |
+| `backend-notes/hu-inbound-rap.md` | CUS | ZHUINB | unmanaged RAP → reuse `ZSOL_INBOUND_HU` |
+| `backend-notes/mtos-process-rap.md` | CUS | ZHUINV + ZMTOS | unmanaged RAP (same program ZSOL_MTOS_PROCESS): createPhysInvDoc + convertToMts |
+| `backend-notes/hu-unpack-rap.md` | CUS | ZHUPK | unmanaged RAP → BAPI_HU_UNPACK |
+| `backend-notes/batch-status-rap.md` | CUS | ZBATCHD, ZBATCH_CLS | unmanaged RAP → BAPI_BATCH_CHANGE / reuse `ZSOL_BATCH_CDS` |
+| `backend-notes/goods-movement-hu-rap.md` | EXT | ZBOX_MOVE | unmanaged RAP → reuse `ZSOL_POST_GOODS_MOVEMENTS` |
+| `backend-notes/qm-mass-results-rap.md` | EXT | ZQA32 | read std QM + result API (legacy buffer `ZINSPLOT_QA32`) |
+| `backend-notes/contract-batch-rap.md` | EXT | ZBATCH_CHANGE | unmanaged RAP → reuse `ZSOL_SALE_ORDER_BATCH_UPDATE` |
+| `backend-notes/shade-master-rap.md` | EXT | ZDD_SHADE | managed RAP custom CBO (reference pattern) |
+| `apps/manage-sales-contracts-ext + backend-notes/sales-doc-status-rap.md` | EXT | ZCON_CLOSE/ZCON_CLOSE1/ZCOREL/ZCON02 | adaptation calls the merged sales-doc status actions (close/complete/release/updateRate) over VBAK |
+| `apps/manage-sales-orders-ext + backend-notes/sales-doc-status-rap.md` | EXT | ZVA01/ZVA01N (fields), ZSOCLOSE/ZSOCLOSE1 (close) | adaptation: textile custom fields + the merged sales-doc close action over VBAK |
 | `apps/manage-outbound-deliveries-ext` | CUS→EXT | ZDELC/ZDEL | Output Management on F0867A |
-| `backend/gate-pass-rap` | PRT→custom | ZGPS01/02/03, ZGPSI1/2/3 | managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (custom object; form via OM) |
+| `backend-notes/gate-pass-rap.md` | PRT→custom | ZGPS01/02/03, ZGPSI1/2/3 | managed RAP composition over `ZGP_HDR`/`ZGP_ITEM` (custom object; form via OM) |
 
 > Items in `EXT` like `ZCON_CLOSE`, `ZCOREL`, `ZSOCLOSE`, `ZVA01(N)` are sales-order/contract *close / release* add-ons — extend the standard Manage Sales Orders / Contracts apps (adaptation), reusing the existing `ZVBAP`-based logic rather than rebuilding the order UI.
 

@@ -1,7 +1,7 @@
 # Inbound Delivery HUs (ZHUINB) — custom Fiori app
 
 Freestyle SAPUI5 worklist app, the clean-core replacement for **ZSOL_INBOUND_HU**.
-Binds to the OData V4 service of [`backend/hu-inbound-rap`](../../backend/hu-inbound-rap)
+Binds to the OData V4 service of [`docs/backend-notes/hu-inbound-rap.md`](../../docs/backend-notes/hu-inbound-rap.md)
 (`InboundHu` entity set) and exposes the service's static action(s) as
 table actions.
 

@@ -28,17 +28,17 @@ persistence).
 
 | Master | Replaces (Z) | Real table | Keys | Folder |
 |---|---|---|---|---|
-| Dyeing Recipe Master (links to Shade) | ZRECP01/02/03 | `ZPP_RECEIPE` | WERKS, GREY_CODE, DYE_CODE, SHDCD, POSNR | `backend/recipe-master-rap` |
-| Job Master | ZJOB01/02/03(N) | `ZPP_JOBN` | JOBNO | `backend/job-master-rap` |
-| Truck Master | ZTRUCK | `ZTB_TRUCK_MSTR` | TRUCKNO | `backend/truck-master-rap` |
-| Schedule Master | ZSCH01/02/03(N) | `ZPP_SCHEDULEN` | SCHNO, GJAHR | `backend/schedule-master-rap` |
-| Transport Code | ZTRANS | `ZTRANS` | ZZTRCODE, ZZTRCKNO | `backend/transport-code-master-rap` |
-| Merge Details | ZMERGE | `ZPP_MERGE` | AURNR, GRADE, ENDUSE | `backend/merge-master-rap` |
-| Checked / Packed By | ZPCBY | `ZPP_PCBY` | SR_NO, PC | `backend/checked-by-master-rap` |
-| Packing Material Master | ZPACK_MAST | `ZPACK_MAST` | PTYPE, ARBPL, MATNR | `backend/packing-material-master-rap` |
-| Export Details | ZMBR2 | `ZEXP` | VBELN, KSCHL | `backend/export-detail-master-rap` |
-| Digital Signature | ZDIGI | `ZTDIGI_SIGN` | BUKRS | `backend/digital-signature-master-rap` |
-| ~~Min/Max Levels~~ → **reuse standard MRP** | ZMINMAX | `MARC` (std) | — | `backend/minmax-master-rap` (stub) |
+| Dyeing Recipe Master (links to Shade) | ZRECP01/02/03 | `ZPP_RECEIPE` | WERKS, GREY_CODE, DYE_CODE, SHDCD, POSNR | `backend-notes/recipe-master-rap.md` |
+| Job Master | ZJOB01/02/03(N) | `ZPP_JOBN` | JOBNO | `backend-notes/job-master-rap.md` |
+| Truck Master | ZTRUCK | `ZTB_TRUCK_MSTR` | TRUCKNO | `backend-notes/truck-master-rap.md` |
+| Schedule Master | ZSCH01/02/03(N) | `ZPP_SCHEDULEN` | SCHNO, GJAHR | `backend-notes/schedule-master-rap.md` |
+| Transport Code | ZTRANS | `ZTRANS` | ZZTRCODE, ZZTRCKNO | `backend-notes/transport-code-master-rap.md` |
+| Merge Details | ZMERGE | `ZPP_MERGE` | AURNR, GRADE, ENDUSE | `backend-notes/merge-master-rap.md` |
+| Checked / Packed By | ZPCBY | `ZPP_PCBY` | SR_NO, PC | `backend-notes/checked-by-master-rap.md` |
+| Packing Material Master | ZPACK_MAST | `ZPACK_MAST` | PTYPE, ARBPL, MATNR | `backend-notes/packing-material-master-rap.md` |
+| Export Details | ZMBR2 | `ZEXP` | VBELN, KSCHL | `backend-notes/export-detail-master-rap.md` |
+| Digital Signature | ZDIGI | `ZTDIGI_SIGN` | BUKRS | `backend-notes/digital-signature-master-rap.md` |
+| ~~Min/Max Levels~~ → **reuse standard MRP** | ZMINMAX | `MARC` (std) | — | `backend-notes/minmax-master-rap.md` (stub) |
 
 > **Correction from the field dictionary:** `ZTRUCK` *does* have a real table
 > (`ZTB_TRUCK_MSTR`); `ZMINMAX` does **not** — it maintains standard MRP min/max
@@ -48,18 +48,18 @@ persistence).
 ## ✅ Built — transactional action services (unmanaged RAP)
 The distinct *transactional* Route 7 items (not masters) — a read model + static
 action(s) over standard SAP, BAPI marked `TODO` (same pattern as
-`backend/goods-movement-hu-rap`):
+`backend-notes/goods-movement-hu-rap.md`):
 
 | Service | Replaces (Z) | Action → BAPI | Folder |
 |---|---|---|---|
-| HU Unpack | ZHUPK | `unpackItems` → BAPI_HU_UNPACK | `backend/hu-unpack-rap` |
-| MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend/mtos-process-rap` |
-| Palletization | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | `packPallet` → BAPI_HU_PACK | `backend/palletization-rap` |
-| Batch Status | ZBATCHD / ZBATCH_CLS | `closeBatch` / `deleteBatch` → BAPI_BATCH_CHANGE | `backend/batch-status-rap` |
-| Packing Details | ZPACK01/02/03(+N), ZREPACK | `packItems` → BAPI_HU_PACK, `repackItems` → BAPI_HU_REPACK_ITM | `backend/packing-detail-rap` |
-| Post Packing & GR | ZPOST01 | `postPackingAndGr` → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE | `backend/post-packing-gr-rap` |
-| Inbound Delivery HUs | ZHUINB | `postInboundGr` → BAPI_INB_DELIVERY_CONFIRM_DEC | `backend/hu-inbound-rap` |
-| HU Physical Inventory | ZHUINV | `createPhysInvDoc` → BAPI_MATPHYSINV_CREATE_MULT | `backend/mtos-process-rap` |
+| HU Unpack | ZHUPK | `unpackItems` → BAPI_HU_UNPACK | `backend-notes/hu-unpack-rap.md` |
+| MTO→MTS Transfer | ZMTOS | `convertToMts` → BAPI_GOODSMVT_CREATE | `backend-notes/mtos-process-rap.md` |
+| Palletization | ZPALLET / ZPALLET1 / ZPAL_BOX / ZSOL_ASRS | `packPallet` → BAPI_HU_PACK | `backend-notes/palletization-rap.md` |
+| Batch Status | ZBATCHD / ZBATCH_CLS | `closeBatch` / `deleteBatch` → BAPI_BATCH_CHANGE | `backend-notes/batch-status-rap.md` |
+| Packing Details | ZPACK01/02/03(+N), ZREPACK | `packItems` → BAPI_HU_PACK, `repackItems` → BAPI_HU_REPACK_ITM | `backend-notes/packing-detail-rap.md` |
+| Post Packing & GR | ZPOST01 | `postPackingAndGr` → BAPI_HU_PACK + BAPI_GOODSMVT_CREATE | `backend-notes/post-packing-gr-rap.md` |
+| Inbound Delivery HUs | ZHUINB | `postInboundGr` → BAPI_INB_DELIVERY_CONFIRM_DEC | `backend-notes/hu-inbound-rap.md` |
+| HU Physical Inventory | ZHUINV | `createPhysInvDoc` → BAPI_MATPHYSINV_CREATE_MULT | `backend-notes/mtos-process-rap.md` |
 
 > The full "Packing / HU / pallet" family is now built (8 services). `ZHUINV`
 > moved here from "assess vs standard" at your request — still **assess standard

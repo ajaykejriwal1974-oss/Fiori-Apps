@@ -46,7 +46,7 @@ exists** — no new persistence is created:
 | Shade (reference) | `ZMM_SHADE` / `ZPP_SHADE` |
 
 Min/Max needs **no** table — it reuses standard MRP fields on `MARC`
-(see `backend/minmax-master-rap`).
+(see `backend-notes/minmax-master-rap.md`).
 
 ## 3. Reuse existing apps in this repo (extend, don't duplicate)
 
@@ -55,7 +55,7 @@ Min/Max needs **no** table — it reuses standard MRP fields on `MARC`
 | `ZDELC` / `ZDEL` delivery challan | `apps/manage-outbound-deliveries-ext` (F0867A) — add the challan output |
 | `ZCON_CLOSE`, `ZCOREL` contract close/release | `apps/manage-sales-contracts-ext` — add the close/release actions |
 | `ZVA01(N)`, `ZSOCLOSE` order create/close | `apps/manage-sales-orders-ext` (F1873) — adaptation extension |
-| `ZINSPLOT`, `ZQAR` inspection | `apps/record-inspection-results-mass` / `backend/qm-mass-results-rap` |
+| `ZINSPLOT`, `ZQAR` inspection | `apps/record-inspection-results-mass` / `backend-notes/qm-mass-results-rap.md` |
 
 ## 4. Standard-app reuse (retire the Z program entirely)
 The 17 `STD` rows in [CLASSIFICATION.md](CLASSIFICATION.md#std--use-standard-fiori-app--retire-the-z-program-17)
@@ -67,8 +67,8 @@ Two `CUS`-classified tcodes are really standard too (no program, no Z-table):
 
 | Z | Reuse standard | Stub |
 |---|---|---|
-| `ZMINMAX` | Material MRP min/max on `MARC` (Manage/Change Material) | `backend/minmax-master-rap` |
-| `ZBOE` | FI Bill of Exchange (`F-36` / `F-33` / `FBW*`, special G/L) | `backend/bill-of-exchange-std` |
+| `ZMINMAX` | Material MRP min/max on `MARC` (Manage/Change Material) | `backend-notes/minmax-master-rap.md` |
+| `ZBOE` | FI Bill of Exchange (`F-36` / `F-33` / `FBW*`, special G/L) | `backend-notes/bill-of-exchange-std.md` |
 
 ## Net effect
 - **Masters:** 10 managed-RAP BOs, each over an **existing** legacy table.

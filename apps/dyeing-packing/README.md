@@ -42,7 +42,7 @@ the standard HU API where possible. The `onCreateHus` / `onRepack` `TODO`s in
 `controller/Main.controller.js` mark where to wire it.
 
 > A RAP **skeleton** for this service is authored at
-> [`backend/packing-hu-rap`](../../backend/packing-hu-rap) (`createHandlingUnits`
+> [`docs/backend-notes/packing-hu-rap.md`](../../docs/backend-notes/packing-hu-rap.md) (`createHandlingUnits`
 > static action → BAPI_HU_CREATE/PACK). Point `REPLACE_WITH_PACKING_SERVICE` at
 > its binding `ZUI_PACKING`.
 

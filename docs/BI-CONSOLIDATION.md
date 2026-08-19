@@ -25,9 +25,9 @@ by the dimension that used to be a separate tcode.
 ## B. Already covered elsewhere — don't rebuild as a report (≈5)
 | Z tcode | Covered by |
 |---|---|
-| `ZMTOS` | transactional **`backend/mtos-process-rap`** (the report is its worklist) |
+| `ZMTOS` | transactional **`backend-notes/mtos-process-rap.md`** (the report is its worklist) |
 | `ZMC46` (slow-moving) | analytics layer already (was routed in ROUTE7-PLAN) |
-| `ZRECPM` (recipe report) | the **Recipe Master** app (`backend/recipe-master-rap`) — add a query |
+| `ZRECPM` (recipe report) | the **Recipe Master** app (`backend-notes/recipe-master-rap.md`) — add a query |
 | `ZJOBREPORT` (old job card) | superseded by `ZJOBREPTN`; both feed the **Job Master** app |
 | `ZTASKLIST` | task-list **create** utility (`STC01`-style), not a report |
 
@@ -40,7 +40,7 @@ of the **same** packing list (programs `ZSD_PACKING_LIST_01` / `_IPL` / `_HSM` /
 `ZPACKLISTN`
 
 → **(1)** a *Packing List* worklist (the create/maintain side already exists as
-`apps/dyeing-packing` + `backend/packing-detail-rap`), and **(2)** one *Packing
+`apps/dyeing-packing` + `backend-notes/packing-detail-rap.md`), and **(2)** one *Packing
 Register* analytical query over `ZPP_PACK` ⋈ delivery, with **division** and
 **create/display** as filters. **15 retired.**
 
@@ -122,7 +122,7 @@ functional coverage is lost.
 
 ## ✅ Built — 11 consolidated analytical queries
 The custom survivors are built as CDS cube+query pairs in
-[`backend/analytics`](../backend/analytics) (read-only, dimensions = old
+[`backend-notes/analytics.md`](backend-notes/analytics.md) (read-only, dimensions = old
 variants): `ZC_PackedStockQuery`, `ZC_PackingRegisterQuery`, `ZC_WipBatchQuery`,
 `ZC_HuInventoryQuery`, `ZC_PendingContractQuery`, `ZC_ExportRegisterQuery`,
 `ZC_MergeAnalysisQuery`, `ZC_RecipeAnalysisQuery`, `ZC_JobCardQuery`,

@@ -1,9 +1,0 @@
-CLASS zbp_i_checked_by DEFINITION
-  PUBLIC
-  ABSTRACT
-  FINAL
-  FOR BEHAVIOR OF zi_checked_by.
-ENDCLASS.
-
-CLASS zbp_i_checked_by IMPLEMENTATION.
-ENDCLASS.

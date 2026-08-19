@@ -4,9 +4,9 @@ A review of everything built in this repo (17 apps + ~28 RAP backends + 11 BI
 queries + 2 automation classes) for overlap. Three real consolidations found;
 the rest is genuinely distinct.
 
-> **✅ All applied.** P1 → `backend/mtos-process-rap` + `apps/mtos-process`
-> (2 services + 2 apps → 1 + 1). P2 → `backend/sales-doc-status-rap`
-> (2 services → 1). P3 → `backend/hu-shared` shared bases consumed by 7 HU
+> **✅ All applied.** P1 → `backend-notes/mtos-process-rap.md` + `apps/mtos-process`
+> (2 services + 2 apps → 1 + 1). P2 → `backend-notes/sales-doc-status-rap.md`
+> (2 services → 1). P3 → `backend-notes/hu-shared.md` shared bases consumed by 7 HU
 > services (8 duplicate reads → 2 shared). **P4** (follow-up scan) → the two BI
 > cubes over `ZPP_PACK` merged into one `ZI_PackedStockCube` feeding both queries
 > (one cube, many queries). Net: **−3 services, −1 app, −1 BI cube, one HU read
@@ -34,7 +34,7 @@ phys-inv document.
 
 | Today | Recommended |
 |---|---|
-| `backend/mto-mts-transfer-rap` (`convertToMts`) | **`backend/mtos-process-rap`** — one service over the MTO-stock read |
+| `backend/mto-mts-transfer-rap` (`convertToMts`) | **`backend-notes/mtos-process-rap.md`** — one service over the MTO-stock read |
 | `backend/hu-phys-inventory-rap` (`createPhysInvDoc`) | model exposing **both** actions `convertToMts` + `createPhysInvDoc` |
 | `apps/mto-mts-transfer` + `apps/hu-physical-inventory` | one *MTOS Process* app with both actions |
 
