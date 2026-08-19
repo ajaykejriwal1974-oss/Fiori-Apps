@@ -1,7 +1,8 @@
 {
   "BASEINFO": {
     "FROM": [
-      "ZI_HU_ITEM_BASE"
+      "ZI_HU_ITEM_BASE",
+      "T001K"
     ]
   }
 }

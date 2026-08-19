@@ -2,7 +2,8 @@
   "BASEINFO": {
     "FROM": [
       "NSDM_E_MSKA",
-      "MARA"
+      "MARA",
+      "T001K"
     ]
   }
 }
