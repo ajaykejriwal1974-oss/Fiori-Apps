@@ -1,0 +1,5 @@
+projection;
+define behavior for ZC_PROD_CONFIRMATION alias ProdConfirmation
+{
+  use action cancelConfirmations;
+}

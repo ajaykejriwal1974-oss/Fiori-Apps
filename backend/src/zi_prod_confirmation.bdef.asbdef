@@ -1,0 +1,5 @@
+unmanaged implementation in class zbp_i_prod_confirmation unique;
+define behavior for ZI_PROD_CONFIRMATION alias ProdConfirmation
+{
+  static action cancelConfirmations parameter ZD_CONF_CANCEL result [1] ZD_CONF_CANCEL_RESULT;
+}

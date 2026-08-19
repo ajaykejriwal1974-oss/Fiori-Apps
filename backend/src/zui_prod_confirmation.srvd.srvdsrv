@@ -1,0 +1,8 @@
+@EndUserText.label: 'Production Confirmation Cancel Service'
+define service ZUI_PROD_CONFIRMATION {
+  expose ZC_PROD_CONFIRMATION as ProdConfirmation;
+  expose I_ProductStdVH       as ProductVH;
+  expose ZI_VH_PLANT          as PlantVH;
+  expose ZI_VH_COMPANYCODE    as CompanyVH;
+  expose ZI_VH_USER           as UserVH;
+}
