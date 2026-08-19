@@ -1,0 +1,8 @@
+// Close / reopen WIP batches (replaces zbatch_cls). Unmanaged: the only write
+// is the CLOSED flag on ZPP_BATCHN, done in the handler under its own checks.
+unmanaged implementation in class zbp_i_wip_batch_mgmt unique;
+define behavior for ZI_WIP_BATCH_MGMT alias WipBatch
+{
+  static action closeBatches  parameter ZD_WIP_BATCH_CLOSE result [1] ZD_WIP_BATCH_RESULT;
+  static action reopenBatches parameter ZD_WIP_BATCH_CLOSE result [1] ZD_WIP_BATCH_RESULT;
+}

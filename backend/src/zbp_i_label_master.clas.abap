@@ -1,0 +1,9 @@
+CLASS zbp_i_label_master DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_label_master.
+ENDCLASS.
+
+CLASS zbp_i_label_master IMPLEMENTATION.
+ENDCLASS.

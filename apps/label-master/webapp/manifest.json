@@ -1,0 +1,84 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "kejriwal.pp.labelmaster",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": { "version": "1.0.0" },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_label_master_04/srvd/sap/zui_label_master/0001/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "LabelMaster-maintainKejriwal": {
+          "semanticObject": "LabelMaster",
+          "action": "maintainKejriwal",
+          "icon": "sap-icon://tags",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "kejriwal.pp.labelmaster.i18n.i18n" }
+      },
+      "": {
+        "dataSource": "mainService",
+        "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true }
+      }
+    },
+    "routing": {
+      "routes": [
+        { "pattern": ":?query:", "name": "LabelList", "target": "LabelList" },
+        { "pattern": "LabelMaster({key}):?query:", "name": "LabelDetail", "target": "LabelDetail" }
+      ],
+      "targets": {
+        "LabelList": {
+          "type": "Component",
+          "id": "LabelList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/LabelMaster",
+              "variantManagement": "Page",
+              "initialLoad": "Auto",
+              "navigation": { "LabelMaster": { "detail": { "route": "LabelDetail" } } }
+            }
+          }
+        },
+        "LabelDetail": {
+          "type": "Component",
+          "id": "LabelDetail",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/LabelMaster",
+              "editableHeaderContent": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

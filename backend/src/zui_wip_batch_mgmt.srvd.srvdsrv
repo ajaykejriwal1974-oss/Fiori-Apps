@@ -1,0 +1,7 @@
+@EndUserText.label: 'WIP Batch Close Service'
+define service ZUI_WIP_BATCH_MGMT {
+  expose ZC_WIP_BATCH_MGMT as WipBatch;
+  expose I_ProductStdVH    as ProductVH;
+  expose ZI_VH_PLANT       as PlantVH;
+  expose ZI_VH_COMPANYCODE as CompanyVH;
+}

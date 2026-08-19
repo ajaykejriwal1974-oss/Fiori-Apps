@@ -1,0 +1,6 @@
+projection;
+define behavior for ZC_WIP_BATCH_MGMT alias WipBatch
+{
+  use action closeBatches;
+  use action reopenBatches;
+}

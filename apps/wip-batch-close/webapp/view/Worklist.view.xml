@@ -1,0 +1,93 @@
+<mvc:View
+    controllerName="kejriwal.pp.wipbatchclose.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page id="page" title="{i18n>appTitle}">
+        <subHeader>
+            <!-- Filter-first worklist: the table binding starts SUSPENDED so the app
+                 never loads the whole ZPP_BATCHN set on first paint. -->
+            <OverflowToolbar id="filterBar">
+                <Label text="{i18n>colCompanyCode}"/>
+                <Input id="inpCompanyCode" width="8rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCompanyCodeVH"/>
+                <Label text="{i18n>colPlant}"/>
+                <Input id="inpPlant" width="8rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
+                <Label text="{i18n>colBatch}"/>
+                <Input id="inpBatch" width="11rem" submit=".onFilterSearch"/>
+                <Label text="{i18n>colOrder}"/>
+                <Input id="inpProductionOrder" width="10rem" submit=".onFilterSearch"/>
+                <Label text="{i18n>colBatchDate}"/>
+                <DatePicker id="dpBatchDateFrom" width="9rem" valueFormat="yyyy-MM-dd" displayFormat="short" change=".onFilterSearch"/>
+                <Label text="-"/>
+                <DatePicker id="dpBatchDateTo" width="9rem" valueFormat="yyyy-MM-dd" displayFormat="short" change=".onFilterSearch"/>
+                <Label text="{i18n>colGrey}"/>
+                <Input id="inpGreyMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onGreyVH"/>
+                <Label text="{i18n>colDyed}"/>
+                <Input id="inpDyedMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onDyedVH"/>
+                <Label text="{i18n>colClosed}"/>
+                <Select id="selClosed" width="8rem" change=".onFilterSearch">
+                    <core:Item key="" text="All"/>
+                    <core:Item key="OPEN" text="{i18n>statusOpen}"/>
+                    <core:Item key="CLOSED" text="{i18n>statusClosed}"/>
+                </Select>
+                <ToolbarSpacer/>
+                <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
+            </OverflowToolbar>
+        </subHeader>
+        <content>
+            <Table sticky="ColumnHeaders,HeaderToolbar"
+                id="table"
+                items="{ path: '/WipBatch', suspended: true }"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="50">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>actcloseBatches}" press=".onCloseBatches" type="Emphasized" icon="sap-icon://locked"/>
+                        <Button text="{i18n>actreopenBatches}" press=".onReopenBatches" type="Reject" icon="sap-icon://unlocked"/>
+                        <SearchField width="14rem" search=".onQuickSearch" placeholder="Search"/>
+                        <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
+                        <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="{i18n>colBatch}"/></Column>
+                    <Column><Text text="{i18n>colFiscalYear}"/></Column>
+                    <Column><Text text="{i18n>colPlant}"/></Column>
+                    <Column><Text text="{i18n>colOrder}"/></Column>
+                    <Column><Text text="{i18n>colBatchDate}"/></Column>
+                    <Column><Text text="{i18n>colGrey}"/></Column>
+                    <Column><Text text="{i18n>colDyed}"/></Column>
+                    <Column hAlign="End"><Text text="{i18n>colQuantity}"/></Column>
+                    <Column><Text text="{i18n>colUnit}"/></Column>
+                    <Column hAlign="End"><Text text="{i18n>colCheeses}"/></Column>
+                    <Column><Text text="{i18n>colAssigned}"/></Column>
+                    <Column><Text text="{i18n>colClosed}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{Batch}"/>
+                            <Text text="{FiscalYear}"/>
+                            <Text text="{Plant}"/>
+                            <Text text="{ProductionOrder}"/>
+                            <Text text="{BatchDate}"/>
+                            <Text text="{GreyMaterial}"/>
+                            <Text text="{DyedMaterial}"/>
+                            <Text text="{Quantity}"/>
+                            <Text text="{BatchUnit}"/>
+                            <Text text="{Cheeses}"/>
+                            <Text text="{Assigned}"/>
+                            <ObjectStatus
+                                text="{= ${Closed} === 'X' ? ${i18n>statusClosed} : ${i18n>statusOpen} }"
+                                state="{= ${Closed} === 'X' ? 'Warning' : 'Success' }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

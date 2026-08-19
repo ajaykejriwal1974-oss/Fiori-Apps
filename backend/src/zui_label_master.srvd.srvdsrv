@@ -1,0 +1,8 @@
+@EndUserText.label: 'Label Master Service'
+define service ZUI_LABEL_MASTER {
+  expose ZC_LABEL_MASTER    as LabelMaster;
+  expose I_ProductStdVH     as ProductVH;
+  expose ZI_VH_PLANT        as PlantVH;
+  expose ZI_VH_COMPANYCODE  as CompanyVH;
+  expose ZI_VH_LABEL_BRAND  as BrandVH;
+}

@@ -31,6 +31,13 @@ define view entity ZC_PACKED_STOCK
       WorkCenter,
       @AnalyticsDetails.query.axis: #FREE
       ProductType,
+      // ZBOXSTOCK selection fields - the dispatch desk filters stock by these
+      @AnalyticsDetails.query.axis: #FREE
+      Denier,
+      @AnalyticsDetails.query.axis: #FREE
+      Filament,
+      @AnalyticsDetails.query.axis: #FREE
+      MaterialProductType,
       @AnalyticsDetails.query.axis: #FREE
       @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: false }
       PackingDate,

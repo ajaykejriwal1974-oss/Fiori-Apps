@@ -1,0 +1,22 @@
+specVersion: "3.0"
+metadata:
+  name: kejriwal.pp.labelmaster
+type: application
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZLABEL_MASTER
+          package: "$TMP"
+          description: "KGPL Label Master"
+        exclude:
+          - "/test/"

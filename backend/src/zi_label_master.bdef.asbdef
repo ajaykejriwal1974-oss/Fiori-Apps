@@ -1,0 +1,35 @@
+// Small master maintained by the packing desk. Managed RAP: RAP owns the
+// persistence, there is no BAPI behind it.
+managed implementation in class zbp_i_label_master unique;
+strict ( 2 );
+
+define behavior for ZI_LABEL_MASTER alias LabelMaster
+persistent table zpp_label
+lock master
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( readonly, numbering : managed ) LabelNumber;
+  field ( mandatory ) Plant, Brand, LabelText;
+  field ( readonly ) CreatedOn, CreatedBy, ChangedOn, ChangedBy;
+
+  mapping for zpp_label
+  {
+    Plant       = werks;
+    Brand       = brand;
+    LabelNumber = labelno;
+    Material    = matnr;
+    Grade       = grade;
+    Shade       = shade;
+    PackingType = ptype;
+    LabelText   = labeltext;
+    IsActive    = active;
+    CreatedOn   = erdat;
+    CreatedBy   = ernam;
+    ChangedOn   = aedat;
+    ChangedBy   = aenam;
+  }
+}
