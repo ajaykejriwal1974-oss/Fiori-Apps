@@ -69,7 +69,7 @@ over `ZSOL_HUDISPATCH` / `ZPP_PACK` / delivery.
 | Z | Status |
 |---|---|
 | `ZHU_UNPACK` (`ZSOL_BAPI_HU_UNPACK`) | the BAPI behind **`backend-notes/hu-unpack-rap.md`** (built) |
-| `ZVLMOVE` (`ZSOL_VLMOVE_BAPI`) | goods-movement/delivery move — covered by **`backend-notes/goods-movement-hu-rap.md`** |
+| `ZVLMOVE` (`ZSOL_VLMOVE_BAPI`) | goods-movement/delivery move — **partially** covered by **`backend-notes/goods-movement-hu-rap.md`**; the shipped handler moves HU *contents*, not the HU. See [`ZVLMOVE-vs-POST-GOODS-MOVEMENT-HU.md`](ZVLMOVE-vs-POST-GOODS-MOVEMENT-HU.md) |
 | `ZEINV_UPLOAD` | **DRC** (excluded — e-invoice IRN upload) |
 
 ## Net result
