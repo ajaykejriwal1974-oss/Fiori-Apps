@@ -15,7 +15,9 @@ define root view entity ZI_PROD_CONFIRMATION
   key afru.rueck                                 as ConfirmationNumber,
   key afru.rmzhl                                 as ConfirmationCounter,
       afru.aufnr                                 as OrderNumber,
-      afru.vornr                                 as OperationNumber,
+      // VORNR carries conversion exit NUMCV, which OData V4 refuses to expose.
+      // Casting to the built-in type strips the domain's conversion routine.
+      cast( afru.vornr as abap.char( 4 ) )       as OperationNumber,
       afru.werks                                 as Plant,
       vcc.bukrs                                  as CompanyCode,
       ord.plnbez                                 as Material,

@@ -2,42 +2,78 @@
     controllerName="kejriwal.pp.prodconfcancel.controller.Worklist"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form"
     xmlns:core="sap.ui.core"
-    displayBlock="true">
-    <Page id="page" title="{i18n>appTitle}">
-        <subHeader>
-            <!-- Filter-first worklist: the table binding starts SUSPENDED, so the app
-                 never loads (and $count-s) the whole AFRU-based entity set on first
-                 paint. Rows appear only once the user presses Go. -->
-            <OverflowToolbar id="filterBar">
-                <Label text="{i18n>colCompanyCode}"/>
-                <Input id="inpCompanyCode" width="8rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCompanyCodeVH"/>
-                <Label text="{i18n>colPlant}"/>
-                <Input id="inpPlant" width="8rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
-                <Label text="{i18n>colOrder}"/>
-                <Input id="inpOrderNumber" width="10rem" submit=".onFilterSearch"/>
-                <Label text="{i18n>colOperation}"/>
-                <Input id="inpOperationNumber" width="6rem" submit=".onFilterSearch"/>
-                <Label text="{i18n>colMaterial}"/>
-                <Input id="inpMaterial" width="10rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
-                <Label text="{i18n>colPostingDate}"/>
-                <DatePicker id="dpPostingDateFrom" width="9rem" valueFormat="yyyy-MM-dd" displayFormat="short" change=".onFilterSearch"/>
-                <Label text="-"/>
-                <DatePicker id="dpPostingDateTo" width="9rem" valueFormat="yyyy-MM-dd" displayFormat="short" change=".onFilterSearch"/>
-                <Label text="{i18n>colCreatedBy}"/>
-                <Input id="inpCreatedBy" width="8rem" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCreatedByVH"/>
-                <CheckBox id="cbHideCancelled" text="Hide cancelled" selected="true" select=".onFilterSearch"/>
-                <ToolbarSpacer/>
-                <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
-            </OverflowToolbar>
-        </subHeader>
-        <content>
+    displayBlock="true"
+    height="100%">
+
+    <!-- DynamicPage, not Page+OverflowToolbar. The nine filter fields no longer
+         collapse into a "..." menu that hid the Go button: the header wraps them
+         over as many rows as the window needs, and Go lives in the title bar,
+         which stays pinned while the table scrolls. -->
+    <f:DynamicPage id="page" headerExpanded="true" toggleHeaderOnTitleClick="true" fitContent="true">
+
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>appTitle}"/>
+                </f:heading>
+                <f:actions>
+                    <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
+                    <Button id="btnClear" text="Clear" press=".onClearFilters"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <form:SimpleForm
+                    id="filterForm"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
+                    columnsXL="4" columnsL="3" columnsM="2"
+                    singleContainerFullSize="false">
+
+                    <Label text="{i18n>colCompanyCode}"/>
+                    <Input id="inpCompanyCode" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCompanyCodeVH"/>
+
+                    <Label text="{i18n>colPlant}"/>
+                    <Input id="inpPlant" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
+
+                    <Label text="{i18n>colOrder}"/>
+                    <Input id="inpOrderNumber" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colOperation}"/>
+                    <Input id="inpOperationNumber" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colMaterial}"/>
+                    <Input id="inpMaterial" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
+
+                    <Label text="{i18n>colCreatedBy}"/>
+                    <Input id="inpCreatedBy" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onCreatedByVH"/>
+
+                    <Label text="{i18n>filterPostingFrom}"/>
+                    <DatePicker id="dpPostingDateFrom" valueFormat="yyyy-MM-dd" displayFormat="short"/>
+
+                    <Label text="{i18n>filterPostingTo}"/>
+                    <DatePicker id="dpPostingDateTo" valueFormat="yyyy-MM-dd" displayFormat="short"/>
+
+                    <Label text=""/>
+                    <CheckBox id="cbHideCancelled" text="{i18n>filterHideCancelled}" selected="true"/>
+                </form:SimpleForm>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
             <Table sticky="ColumnHeaders,HeaderToolbar"
                 id="table"
                 items="{ path: '/ProdConfirmation', suspended: true }"
                 mode="MultiSelect"
                 growing="true"
-                growingThreshold="50">
+                growingThreshold="50"
+                growingScrollToLoad="true">
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="{i18n>worklistTitle}"/>
@@ -81,6 +117,7 @@
                     </ColumnListItem>
                 </items>
             </Table>
-        </content>
-    </Page>
+        </f:content>
+
+    </f:DynamicPage>
 </mvc:View>

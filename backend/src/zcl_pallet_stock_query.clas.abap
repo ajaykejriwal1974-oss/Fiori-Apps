@@ -15,16 +15,44 @@ CLASS zcl_pallet_stock_query IMPLEMENTATION.
     DATA lr_werks TYPE RANGE OF werks_d.
     DATA lr_kunnr TYPE RANGE OF kunnr.
     DATA lr_matnr TYPE RANGE OF matnr.
+    DATA lr_bukrs TYPE RANGE OF bukrs.
     TRY.
         LOOP AT io_request->get_filter( )->get_as_ranges( ) INTO DATA(ls_r).
           CASE to_upper( ls_r-name ).
-            WHEN 'PLANT'.    lr_werks = CORRESPONDING #( ls_r-range ).
-            WHEN 'CUSTOMER'. lr_kunnr = CORRESPONDING #( ls_r-range ).
-            WHEN 'MATERIAL'. lr_matnr = CORRESPONDING #( ls_r-range ).
+            WHEN 'PLANT'.       lr_werks = CORRESPONDING #( ls_r-range ).
+            WHEN 'CUSTOMER'.    lr_kunnr = CORRESPONDING #( ls_r-range ).
+            WHEN 'MATERIAL'.    lr_matnr = CORRESPONDING #( ls_r-range ).
+            WHEN 'COMPANYCODE'. lr_bukrs = CORRESPONDING #( ls_r-range ).
           ENDCASE.
         ENDLOOP.
       CATCH cx_rap_query_filter_no_range.
     ENDTRY.
+
+    " Free-text search. A custom entity gets none for free: @Search.searchable
+    " on the CDS only renders the box, this is what makes it do anything.
+    DATA lv_search TYPE string.
+    TRY.
+        lv_search = to_upper( io_request->get_search_expression( ) ).
+      CATCH cx_root.
+        CLEAR lv_search.
+    ENDTRY.
+
+    " CompanyCode is not on MSKU - it is derived from the plant's valuation
+    " area, so the filter is resolved to a plant list before the stock read.
+    SELECT bwkey, bukrs FROM t001k INTO TABLE @DATA(lt_t001k).
+    SORT lt_t001k BY bwkey.
+    IF lr_bukrs IS NOT INITIAL.
+      LOOP AT lt_t001k INTO DATA(ls_vk).
+        IF ls_vk-bukrs IN lr_bukrs.
+          APPEND VALUE #( sign = 'I' option = 'EQ' low = ls_vk-bwkey ) TO lr_werks.
+        ENDIF.
+      ENDLOOP.
+      " No plant belongs to the requested company code - return nothing rather
+      " than every plant, which is what an empty range would mean.
+      IF lr_werks IS INITIAL.
+        APPEND VALUE #( sign = 'I' option = 'EQ' low = '~~~~' ) TO lr_werks.
+      ENDIF.
+    ENDIF.
 
     SELECT FROM msku AS s
       FIELDS s~werks AS plant,
@@ -78,6 +106,8 @@ CLASS zcl_pallet_stock_query IMPLEMENTATION.
       LOOP AT lt_stock ASSIGNING FIELD-SYMBOL(<s>).
         APPEND INITIAL LINE TO lt_result ASSIGNING FIELD-SYMBOL(<r>).
         <r>-plant             = <s>-plant.
+        READ TABLE lt_t001k INTO DATA(ls_vk2) WITH KEY bwkey = <s>-plant BINARY SEARCH.
+        IF sy-subrc = 0. <r>-companycode = ls_vk2-bukrs. ENDIF.
         <r>-customer          = <s>-customer.
         <r>-material          = <s>-material.
         <r>-unrestrictedstock = <s>-unrestrictedstock.
@@ -91,6 +121,16 @@ CLASS zcl_pallet_stock_query IMPLEMENTATION.
         READ TABLE lt_mara INTO DATA(ls_a) WITH KEY matnr = <s>-material BINARY SEARCH.
         IF sy-subrc = 0. <r>-baseunit = ls_a-meins. ENDIF.
       ENDLOOP.
+    ENDIF.
+
+    " Search across the fields marked @Search.defaultSearchElement in the CDS.
+    " Runs after the description lookups so a customer or material name matches,
+    " and before the record count so the count reflects what the user sees.
+    IF lv_search IS NOT INITIAL.
+      DELETE lt_result WHERE customer            NP |*{ lv_search }*|
+                         AND material            NP |*{ lv_search }*|
+                         AND customername        NP |*{ lv_search }*|
+                         AND materialdescription NP |*{ lv_search }*|.
     ENDIF.
 
     SORT lt_result BY customer material plant.

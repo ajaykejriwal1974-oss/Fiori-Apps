@@ -12,6 +12,7 @@ define view entity ZI_HU_HEADER_BASE
   key exidv                                as HandlingUnit,
       vpobj                                as ReferenceObject,
       vpobjkey                             as Reference,
+      werks                                as Plant,
       vhilm                                as PackagingMaterial,
       cast( ntgew as abap.dec( 15, 3 ) )  as NetWeight,
       cast( brgew as abap.dec( 15, 3 ) )  as GrossWeight,

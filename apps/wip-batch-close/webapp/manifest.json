@@ -6,12 +6,16 @@
     "i18n": "i18n/i18n.properties",
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
-    "applicationVersion": { "version": "1.0.0" },
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
     "dataSources": {
       "mainService": {
         "uri": "/sap/opu/odata4/sap/zui_wip_batch_04/srvd/sap/zui_wip_batch_mgmt/0001/",
         "type": "OData",
-        "settings": { "odataVersion": "4.0" }
+        "settings": {
+          "odataVersion": "4.0"
+        }
       }
     },
     "crossNavigation": {
@@ -22,14 +26,21 @@
           "icon": "sap-icon://locked",
           "title": "{{flpTitle}}",
           "subTitle": "{{flpSubtitle}}",
-          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
   },
   "sap.ui": {
     "technology": "UI5",
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.ui5": {
     "rootView": {
@@ -40,13 +51,21 @@
     },
     "dependencies": {
       "minUI5Version": "1.120.0",
-      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.layout": {}, "sap.ui.export": {} }
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.ui.export": {},
+        "sap.f": {}
+      }
     },
     "handleValidation": true,
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "kejriwal.pp.wipbatchclose.i18n.i18n" }
+        "settings": {
+          "bundleName": "kejriwal.pp.wipbatchclose.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -59,6 +78,9 @@
         }
       }
     },
-    "contentDensities": { "compact": true, "cozy": true }
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    }
   }
 }

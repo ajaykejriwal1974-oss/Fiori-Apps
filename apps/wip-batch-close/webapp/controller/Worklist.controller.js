@@ -75,6 +75,17 @@ sap.ui.define([
             oBinding.filter(new Filter({ filters: aOr, and: false }), "Control");
         },
 
+        /** Reset every filter field and drop the result set. */
+        onClearFilters: function () {
+            ["inpCompanyCode","inpPlant","inpBatch","inpProductionOrder",
+             "inpGreyMaterial","inpDyedMaterial","dpBatchDateFrom","dpBatchDateTo"]
+                .forEach(function (sId) { this.byId(sId).setValue(""); }, this);
+            this.byId("selClosed").setSelectedKey("");
+            var oBinding = this.byId("table").getBinding("items");
+            if (oBinding) { oBinding.filter([]); oBinding.filter([], "Control"); }
+            MessageToast.show(this.oBundle.getText("clearedFilters"));
+        },
+
         /* ---------------------------------------------------------- value helps */
 
         onCompanyCodeVH: function (oEvt) { this._openValueHelp(oEvt.getSource(), "/CompanyVH", "CompanyCode", "CompanyCodeName", "Select Company Code"); },

@@ -16,6 +16,16 @@ define root view entity ZC_PACKING_UNIT
       @UI: { lineItem: [ { position: 10, importance: #HIGH } ],
              selectionField: [ { position: 10 } ], identification: [ { position: 10 } ] }
   key HandlingUnit,
+      @EndUserText.label: 'Company Code'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
+      @UI: { lineItem: [ { position: 5, importance: #HIGH } ],
+             selectionField: [ { position: 5 } ], identification: [ { position: 5 } ] }
+      CompanyCode,
+      @EndUserText.label: 'Plant'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_PLANT', element: 'Plant' } } ]
+      @UI: { lineItem: [ { position: 6, importance: #HIGH } ],
+             selectionField: [ { position: 6 } ], identification: [ { position: 6 } ] }
+      Plant,
       @EndUserText.label: 'Reference Doc'
       @Search.defaultSearchElement: true
       @UI: { lineItem: [ { position: 20 } ], selectionField: [ { position: 20 } ],

@@ -12,3 +12,7 @@ demo-runtime/
 
 # OS
 .DS_Store
+
+# ADT MCP — SAP credentials must never enter the tree (tools/adt-mcp/README.md)
+tools/adt-mcp/.env
+tools/adt-mcp/service-keys/

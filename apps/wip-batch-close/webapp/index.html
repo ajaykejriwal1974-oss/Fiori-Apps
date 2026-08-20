@@ -13,9 +13,18 @@
         data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
     </script>
+    <style>
+        html, body, body > div { height: 100%; margin: 0; }
+        #container, #container-uiarea, #container-uiarea > div { height: 100%; }
+    </style>
 </head>
 <body class="sapUiBody">
-    <div data-sap-ui-component data-name="kejriwal.pp.wipbatchclose"
-         data-id="container" data-settings='{"id": "wipbatchclose"}' style="height: 100%"></div>
+    <div
+        data-sap-ui-component
+        data-name="kejriwal.pp.wipbatchclose"
+        data-id="container"
+        data-settings='{"id": "wipbatchclose", "height": "100%"}'
+        style="height: 100%">
+    </div>
 </body>
 </html>

@@ -55,7 +55,8 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.ui.layout": {},
-        "sap.ui.export": {}
+        "sap.ui.export": {},
+        "sap.f": {}
       }
     },
     "handleValidation": true,
