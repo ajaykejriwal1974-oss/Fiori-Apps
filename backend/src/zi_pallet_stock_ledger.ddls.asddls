@@ -10,10 +10,6 @@ define custom entity ZI_PALLET_STOCK_LEDGER
 {
       @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE,
                      label: 'Stock', position: 10 } ]
-      @EndUserText.label: 'Company Code'
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
-      @UI: { lineItem: [ { position: 5, importance: #HIGH } ], selectionField: [ { position: 5 } ], identification: [ { position: 5 } ] }
-      CompanyCode         : bukrs;
       @EndUserText.label: 'Plant'
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_PLANT', element: 'Plant' } } ]
       @UI: { lineItem: [ { position: 10, importance: #HIGH } ], selectionField: [ { position: 10 } ], identification: [ { position: 10 } ] }
@@ -28,6 +24,10 @@ define custom entity ZI_PALLET_STOCK_LEDGER
       @Search.defaultSearchElement: true
       @UI: { lineItem: [ { position: 30, importance: #HIGH } ], selectionField: [ { position: 30 } ], identification: [ { position: 30 } ] }
   key Material            : matnr;
+      @EndUserText.label: 'Company Code'
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZI_VH_COMPANYCODE', element: 'CompanyCode' } } ]
+      @UI: { lineItem: [ { position: 5, importance: #HIGH } ], selectionField: [ { position: 5 } ], identification: [ { position: 5 } ] }
+      CompanyCode         : bukrs;
       @EndUserText.label: 'Base Unit'
       @UI: { identification: [ { position: 40 } ] }
       BaseUnit            : meins;
