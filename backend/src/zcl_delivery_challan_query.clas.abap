@@ -41,6 +41,14 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
       CATCH cx_rap_query_filter_no_range.
     ENDTRY.
 
+    " Free-text search - see ZCL_PALLET_STOCK_QUERY for the pattern.
+    DATA lv_search TYPE string.
+    TRY.
+        lv_search = to_upper( io_request->get_search_expression( ) ).
+      CATCH cx_root.
+        CLEAR lv_search.
+    ENDTRY.
+
     TYPES: BEGIN OF ty_hu,
              venum    TYPE vekp-venum,
              exidv    TYPE vekp-exidv,
@@ -157,6 +165,16 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
       IF lr_charg IS NOT INITIAL.
         DELETE lt_out WHERE batch NOT IN lr_charg.
       ENDIF.
+    ENDIF.
+
+    " Search the fields marked @Search.defaultSearchElement, after the secondary
+    " filters and before the record count so the count matches what is shown.
+    IF lv_search IS NOT INITIAL.
+      DELETE lt_out WHERE cartonno        NP |*{ lv_search }*|
+                      AND challandelivery NP |*{ lv_search }*|
+                      AND material        NP |*{ lv_search }*|
+                      AND batch           NP |*{ lv_search }*|
+                      AND copno           NP |*{ lv_search }*|.
     ENDIF.
 
     SORT lt_out BY challandelivery cartonno.

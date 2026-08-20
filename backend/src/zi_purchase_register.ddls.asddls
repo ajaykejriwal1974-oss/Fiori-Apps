@@ -1,5 +1,9 @@
 @EndUserText.label: 'Purchase Register - GST (ZPUREG)'
 @ObjectModel.query.implementedBy: 'ABAP:ZCL_PURCHASE_REGISTER_QUERY'
+// Free-text search is implemented in the query class - a custom entity gets
+// none for free. Searches MMInvoiceNo / VendorInvoiceNo / Supplier /
+// SupplierName / SupplierGSTIN.
+@Search.searchable: true
 @UI.headerInfo: { typeName: 'Purchase Invoice', typeNamePlural: 'Purchase Register',
                   title: { value: 'MMInvoiceNo' }, description: { value: 'SupplierName' } }
 define custom entity ZI_PURCHASE_REGISTER
@@ -11,6 +15,7 @@ define custom entity ZI_PURCHASE_REGISTER
       @UI: { lineItem: [ { position: 10, importance: #HIGH } ],
              selectionField: [ { position: 10 } ], identification: [ { position: 10 } ] }
   key CompanyCode     : bukrs;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Invoice No.'
       @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ] }
   key MMInvoiceNo     : re_belnr;
@@ -25,17 +30,21 @@ define custom entity ZI_PURCHASE_REGISTER
       @EndUserText.label: 'Document Date'
       @UI: { identification: [ { position: 50 } ] }
       DocumentDate    : bldat;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Vendor Invoice No.'
       @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 60 } ] }
       VendorInvoiceNo : xblnr1;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Supplier'
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Supplier', element: 'Supplier' } } ]
       @UI: { lineItem: [ { position: 60 } ], selectionField: [ { position: 40 } ],
              identification: [ { position: 70 } ] }
       Supplier        : lifnr;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Supplier Name'
       @UI: { lineItem: [ { position: 70, importance: #HIGH } ], identification: [ { position: 80 } ] }
       SupplierName    : name1_gp;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Supplier GSTIN'
       @UI: { lineItem: [ { position: 80 } ], identification: [ { position: 90 } ] }
       SupplierGSTIN   : stcd3;

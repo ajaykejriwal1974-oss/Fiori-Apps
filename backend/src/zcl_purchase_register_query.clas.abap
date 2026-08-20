@@ -47,6 +47,14 @@ CLASS zcl_purchase_register_query IMPLEMENTATION.
       CATCH cx_rap_query_filter_no_range.
     ENDTRY.
 
+    " Free-text search - see ZCL_PALLET_STOCK_QUERY for the pattern.
+    DATA lv_search TYPE string.
+    TRY.
+        lv_search = to_upper( io_request->get_search_expression( ) ).
+      CATCH cx_root.
+        CLEAR lv_search.
+    ENDTRY.
+
     DATA lt_result TYPE STANDARD TABLE OF zi_purchase_register.
     DATA lt_bset   TYPE SORTED TABLE OF bset WITH NON-UNIQUE KEY bukrs belnr gjahr txgrp.
 
@@ -164,6 +172,16 @@ CLASS zcl_purchase_register_query IMPLEMENTATION.
         ENDLOOP.
       ENDIF.
 
+    ENDIF.
+
+    " Search the fields marked @Search.defaultSearchElement, before the record
+    " count so the count matches what is shown.
+    IF lv_search IS NOT INITIAL.
+      DELETE lt_result WHERE mminvoiceno     NP |*{ lv_search }*|
+                         AND vendorinvoiceno NP |*{ lv_search }*|
+                         AND supplier        NP |*{ lv_search }*|
+                         AND suppliername    NP |*{ lv_search }*|
+                         AND suppliergstin   NP |*{ lv_search }*|.
     ENDIF.
 
     SORT lt_result BY companycode postingdate mminvoiceno.

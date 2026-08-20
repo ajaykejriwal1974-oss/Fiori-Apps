@@ -14,17 +14,31 @@ CLASS zcl_return_box_query IMPLEMENTATION.
     DATA lr_matnr TYPE RANGE OF matnr.
     DATA lr_werks TYPE RANGE OF werks_d.
     DATA lr_elig  TYPE RANGE OF abap_boolean.
+    DATA lr_bukrs TYPE RANGE OF bukrs.
     TRY.
         LOOP AT io_request->get_filter( )->get_as_ranges( ) INTO DATA(ls_r).
           CASE to_upper( ls_r-name ).
-            WHEN 'DELIVERY'. lr_vbeln = CORRESPONDING #( ls_r-range ).
-            WHEN 'MATERIAL'. lr_matnr = CORRESPONDING #( ls_r-range ).
-            WHEN 'PLANT'.    lr_werks = CORRESPONDING #( ls_r-range ).
-            WHEN 'ELIGIBLE'. lr_elig  = CORRESPONDING #( ls_r-range ).
+            WHEN 'DELIVERY'.    lr_vbeln = CORRESPONDING #( ls_r-range ).
+            WHEN 'MATERIAL'.    lr_matnr = CORRESPONDING #( ls_r-range ).
+            WHEN 'PLANT'.       lr_werks = CORRESPONDING #( ls_r-range ).
+            WHEN 'ELIGIBLE'.    lr_elig  = CORRESPONDING #( ls_r-range ).
+            WHEN 'COMPANYCODE'. lr_bukrs = CORRESPONDING #( ls_r-range ).
           ENDCASE.
         ENDLOOP.
       CATCH cx_rap_query_filter_no_range.
     ENDTRY.
+
+    " Free-text search - see ZCL_PALLET_STOCK_QUERY for the pattern.
+    DATA lv_search TYPE string.
+    TRY.
+        lv_search = to_upper( io_request->get_search_expression( ) ).
+      CATCH cx_root.
+        CLEAR lv_search.
+    ENDTRY.
+
+    " CompanyCode comes from the plant's valuation area (T001K.BWKEY = plant).
+    SELECT bwkey, bukrs FROM t001k INTO TABLE @DATA(lt_t001k).
+    SORT lt_t001k BY bwkey.
 
     DATA lt_out TYPE STANDARD TABLE OF zi_return_box.
     DATA ls_out TYPE zi_return_box.
@@ -97,6 +111,8 @@ CLASS zcl_return_box_query IMPLEMENTATION.
               IF sy-subrc = 0.
                 ls_out-material   = ls_pk-matnr.
                 ls_out-plant      = ls_pk-werks.
+                READ TABLE lt_t001k INTO DATA(ls_vk) WITH KEY bwkey = ls_pk-werks BINARY SEARCH.
+                IF sy-subrc = 0. ls_out-companycode = ls_vk-bukrs. ENDIF.
                 ls_out-fiscalyear = ls_pk-gjahr.
                 ls_out-netweight  = ls_pk-netwt.
                 ls_out-salesorder = ls_pk-vbeln.
@@ -123,6 +139,15 @@ CLASS zcl_return_box_query IMPLEMENTATION.
       ENDIF.
       IF lr_elig IS NOT INITIAL.
         DELETE lt_out WHERE eligible NOT IN lr_elig.
+      ENDIF.
+      IF lr_bukrs IS NOT INITIAL.
+        DELETE lt_out WHERE companycode NOT IN lr_bukrs.
+      ENDIF.
+      IF lv_search IS NOT INITIAL.
+        DELETE lt_out WHERE boxno        NP |*{ lv_search }*|
+                        AND handlingunit NP |*{ lv_search }*|
+                        AND material     NP |*{ lv_search }*|
+                        AND materialtext NP |*{ lv_search }*|.
       ENDIF.
     ENDIF.
 

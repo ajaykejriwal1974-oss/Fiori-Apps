@@ -1,5 +1,8 @@
 @EndUserText.label: 'Delivery Challan'
 @ObjectModel.query.implementedBy: 'ABAP:ZCL_DELIVERY_CHALLAN_QUERY'
+// Free-text search is implemented in the query class - a custom entity gets
+// none for free. Searches CartonNo / ChallanDelivery / Material / Batch / CopNo.
+@Search.searchable: true
 @UI.headerInfo: { typeName: 'Carton', typeNamePlural: 'Challan Cartons',
                   title: { value: 'CartonNo' }, description: { value: 'ChallanDelivery' } }
 define root custom entity ZI_DELIVERY_CHALLAN
@@ -9,11 +12,13 @@ define root custom entity ZI_DELIVERY_CHALLAN
       @EndUserText.label: 'Handling Unit'
       @UI: { lineItem: [ { position: 80, importance: #LOW } ], identification: [ { position: 80 } ] }
   key HandlingUnitNo  : venum;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Delivery / Challan'
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_OutboundDelivery', element: 'OutboundDelivery' } } ]
       @UI: { lineItem: [ { position: 10, importance: #HIGH } ],
              selectionField: [ { position: 10 } ], identification: [ { position: 10 } ] }
       ChallanDelivery : vpobjkey;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Carton No.'
       @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ] }
       CartonNo        : exidv;
@@ -32,11 +37,13 @@ define root custom entity ZI_DELIVERY_CHALLAN
       @UI: { lineItem: [ { position: 6, importance: #HIGH } ],
              selectionField: [ { position: 12 } ], identification: [ { position: 6 } ] }
       Plant           : werks_d;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Material'
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_ProductStdVH', element: 'Product' } } ]
       @UI: { lineItem: [ { position: 7, importance: #HIGH } ],
              selectionField: [ { position: 13 } ], identification: [ { position: 7 } ] }
       Material        : matnr;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'Batch / Merge'
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_BatchStdVH', element: 'Batch' } } ]
       @UI: { lineItem: [ { position: 8, importance: #HIGH } ],
@@ -48,6 +55,7 @@ define root custom entity ZI_DELIVERY_CHALLAN
       NetWeight       : abap.quan(15,3);
       @EndUserText.label: 'Unit'
       NetWeightUnit   : gewei;
+      @Search.defaultSearchElement: true
       @EndUserText.label: 'COP No.'
       @UI: { lineItem: [ { position: 50, importance: #MEDIUM } ], identification: [ { position: 50 } ] }
       CopNo           : zspool;
