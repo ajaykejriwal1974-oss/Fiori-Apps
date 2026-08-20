@@ -1,0 +1,83 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.kgpl.zreturnbox",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "1.0.0" },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata4/sap/zui_return_box_04/srvd/sap/zui_return_box/0001/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ReturnBox-manage": {
+          "semanticObject": "ReturnBox",
+          "action": "manage",
+          "title": "{{appTitle}}",
+          "subTitle": "{{appSubTitle}}",
+          "icon": "sap-icon://return-request",
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "sap-icon://return-request" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "com.kgpl.zreturnbox.i18n.i18n" }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true }
+      }
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        { "pattern": ":?query:", "name": "ReturnBoxList", "target": "ReturnBoxList" },
+        { "pattern": "ReturnBox({key}):?query:", "name": "ReturnBoxOP", "target": "ReturnBoxOP" }
+      ],
+      "targets": {
+        "ReturnBoxList": {
+          "type": "Component",
+          "id": "ReturnBoxList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/ReturnBox",
+              "variantManagement": "Page",
+              "initialLoad": "Disabled",
+              "navigation": { "ReturnBox": { "detail": { "route": "ReturnBoxOP" } } }
+            }
+          }
+        },
+        "ReturnBoxOP": {
+          "type": "Component",
+          "id": "ReturnBoxOP",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": { "settings": { "contextPath": "/ReturnBox" } }
+        }
+      }
+    },
+    "contentDensities": { "compact": true, "cozy": true }
+  },
+  "sap.fiori": { "registrationIds": [], "archeType": "transactional" }
+}
