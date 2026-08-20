@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>FLP Deployment Guide - Pending KGPL Apps</title>
+<style>
+@page { size: A4; margin: 18mm 15mm 16mm 15mm;
+  @bottom-left { content: "KGPL Fiori · FLP Deployment Guide"; font-size: 7.5pt; color: #8a8f98; font-family: Helvetica, Arial, sans-serif; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 7.5pt; color: #8a8f98; font-family: Helvetica, Arial, sans-serif; }
+}
+@page :first { margin: 0; @bottom-left{content:""} @bottom-right{content:""} }
+* { box-sizing: border-box; }
+body { font-family: Helvetica, Arial, sans-serif; font-size: 9.2pt; line-height: 1.45; color: #1c1f24; margin: 0; }
+h1,h2,h3,h4 { font-weight: 700; color: #0a2540; margin: 0 0 .35em 0; line-height: 1.2; }
+h2 { font-size: 15pt; margin-top: 1.5em; padding-bottom: .25em; border-bottom: 2px solid #0a6ed1; break-after: avoid; }
+h3 { font-size: 11.5pt; margin-top: 1.2em; color: #0a6ed1; break-after: avoid; }
+h4 { font-size: 9.8pt; margin-top: .9em; break-after: avoid; }
+p { margin: 0 0 .55em 0; }
+ul,ol { margin: .2em 0 .7em 0; padding-left: 1.1em; }
+li { margin-bottom: .22em; }
+code, .m { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 8.2pt;
+  background: #eef2f7; padding: .5pt 2.5pt; border-radius: 2px; color: #0a2540; }
+table { width: 100%; border-collapse: collapse; margin: .5em 0 1em 0; font-size: 8.1pt; }
+th { background: #0a2540; color: #fff; text-align: left; padding: 5px 6px; font-weight: 600; font-size: 7.9pt; }
+td { padding: 4.5px 6px; border-bottom: .5pt solid #d6dce4; vertical-align: top; }
+tr:nth-child(even) td { background: #f6f8fb; }
+table.k td:first-child { width: 30%; font-weight: 600; color: #44506080; color: #445060; }
+table.k td:last-child { font-family: "DejaVu Sans Mono", Menlo, monospace; font-size: 7.9pt; }
+.cover { height: 297mm; padding: 42mm 22mm 20mm 22mm; background: #0a2540; color: #fff; }
+.cover h1 { color:#fff; font-size: 30pt; letter-spacing: -.5pt; margin-bottom: .15em; }
+.cover .sub { font-size: 13pt; color: #7fb2e5; font-weight: 400; margin-bottom: 3em; }
+.cover .meta { font-size: 9.5pt; color:#c3d3e4; line-height: 1.9; border-top: 1px solid #2b4a6b; padding-top: 1.2em; }
+.cover .meta b { color:#fff; display:inline-block; width: 42mm; font-weight: 600; }
+.cover .flag { margin-top: 3em; background:#123a5c; border-left: 4px solid #0a6ed1; padding: 10px 14px; font-size: 9pt; color:#dce8f4; }
+.note { background:#f0f7ff; border-left: 3px solid #0a6ed1; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.warn { background:#fff6ed; border-left: 3px solid #e9730c; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.stop { background:#fdf0f0; border-left: 3px solid #bb0000; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.ok   { background:#f1f9f2; border-left: 3px solid #107e3e; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.card { border: .8pt solid #c9d2dd; border-radius: 4px; padding: 10px 12px 4px 12px; margin: .8em 0 1.2em 0; break-inside: avoid; }
+.card h3 { margin-top: 0; }
+.pill { display:inline-block; background:#0a6ed1; color:#fff; font-size:7pt; font-weight:700;
+  padding: 1.5pt 5pt; border-radius: 8px; vertical-align: middle; margin-left: 6px; letter-spacing:.3pt; }
+.pill.g { background:#107e3e; } .pill.o { background:#e9730c; } .pill.r { background:#bb0000; }
+.steps { counter-reset: s; padding-left: 0; list-style: none; }
+.steps > li { counter-increment: s; position: relative; padding-left: 24px; margin-bottom: .5em; break-inside: avoid; }
+.steps > li::before { content: counter(s); position: absolute; left: 0; top: 0;
+  background:#0a6ed1; color:#fff; width: 16px; height: 16px; border-radius: 50%;
+  font-size: 7.5pt; font-weight: 700; text-align: center; line-height: 16px; }
+.toc td { border: none; padding: 2.5px 0; }
+.toc td:last-child { text-align: right; color:#8a8f98; }
+.brk { break-before: page; }
+.small { font-size: 7.8pt; color:#5a6472; }
+</style></head><body>
+
+<div class="cover">
+  <h1>FLP Deployment Guide</h1>
+  <div class="sub">Pending KGPL custom apps &mdash; tiles, target mappings<br>and authorization mapping</div>
+  <div class="meta">
+    <b>System</b> KSD &middot; S/4HANA &middot; client 500<br>
+    <b>Launchpad space</b> KGPL CUSTOM APPS<br>
+    <b>Business catalog</b> ZKGPL_BC_CUSTOM<br>
+    <b>Apps in scope</b> 3 custom + 1 standard<br>
+    <b>Repository</b> ajaykejriwal1974-oss/Fiori-Apps<br>
+    <b>Date</b> 20 August 2026<br>
+    <b>Evidence base</b> live TADIR, AGR_HIERT, TSTC read over ADT
+  </div>
+  <div class="flag">
+    <b>All three apps are already deployed.</b> Nothing in this guide installs
+    software. Every step below is launchpad configuration and role
+    authorization &mdash; the BSPs, OData services and CDS objects are live in
+    KSD today and were verified by direct database read.
+  </div>
+</div>
+
+<h2 style="margin-top:0">1. Where things stand</h2>
+
+<p>A read of <code>TADIR</code> for <code>R3TR WAPA</code> in client 500 confirms 52 Z-namespace
+BSP applications exist in KSD. Twenty-five of them correspond to app folders in
+this repository, and all 25 are deployed &mdash; including the three built this
+week. No deployment work is outstanding.</p>
+
+<p>What is missing is launchpad configuration. Three deployed apps have no tile,
+and their OData V4 service groups are absent from both KGPL roles, so even a
+correctly built tile would fail authorization at runtime.</p>
+
+<table class="toc">
+<tr><td>1. Where things stand</td><td>2</td></tr>
+<tr><td>2. Master mapping table</td><td>3</td></tr>
+<tr><td>3. Prerequisites</td><td>3</td></tr>
+<tr><td>4. Part A &mdash; OData V4 authorization</td><td>4</td></tr>
+<tr><td>5. Part B &mdash; semantic objects</td><td>4</td></tr>
+<tr><td>6. Part C &mdash; target mapping and tile</td><td>5</td></tr>
+<tr><td>7. Per-app parameter cards</td><td>6</td></tr>
+<tr><td>8. CO03 &mdash; Display Production Order</td><td>8</td></tr>
+<tr><td>9. Cache invalidation</td><td>8</td></tr>
+<tr><td>10. Verification</td><td>9</td></tr>
+<tr><td>11. Troubleshooting</td><td>9</td></tr>
+<tr><td>Appendix A &mdash; live landscape reference</td><td>10</td></tr>
+<tr><td>Appendix B &mdash; the $TMP problem</td><td>11</td></tr>
+</table>
+
+<h3>What each app replaces</h3>
+<table>
+<tr><th style="width:26%">App</th><th style="width:16%">Replaces</th><th>Why it was built</th></tr>
+<tr><td><b>Cancel Production Confirmation</b></td><td><code>CO13</code><br><code>ZCO11A</code></td>
+<td>The plant runbook records &ldquo;Correction option &ndash; Not available&rdquo; and &ldquo;Cancelled option &ndash; Not available&rdquo;. Reverses confirmations in bulk via <code>BAPI_PRODORDCONF_CANCEL</code>.</td></tr>
+<tr><td><b>WIP Batch Close</b></td><td><code>ZBATCH_CLS</code></td>
+<td>Runbook marks this &ldquo;Needed&rdquo;. A WIP batch must be reopened before a confirmation can be reversed, so this and the app above are one workflow.</td></tr>
+<tr><td><b>Label Master</b></td><td><code>ZLABEL</code></td>
+<td>Maintain Label Master for the dyeing group. RAP managed scenario over <code>ZPP_LABEL</code>.</td></tr>
+<tr><td><b>Display Production Order</b></td><td>&mdash;</td>
+<td><code>CO03</code> is step 4 of the runbook and has no tile in any space. Standard function; configuration only.</td></tr>
+</table>
+
+<div class="stop">
+<b>Blocking dependency.</b> Steps in Part A must be completed before the tiles
+will work. A tile whose service group is missing from the role renders fine and
+then returns HTTP 403 on first data request &mdash; the app looks broken rather
+than unauthorized, which is a slow bug to chase.
+</div>
+
+<h2 class="brk">2. Master mapping table</h2>
+
+<p>Every value below was read from the live system or from the app manifest in
+the repository. Type them exactly; the semantic object and action are
+case-sensitive and the launchpad will not warn you about a mismatch.</p>
+
+<table>
+<tr><th style="width:19%">Attribute</th><th style="width:27%">Cancel Prod. Confirmation</th><th style="width:27%">WIP Batch Close</th><th style="width:27%">Label Master</th></tr>
+<tr><td><b>Repo folder</b></td><td><code>production-confirmation-cancel</code></td><td><code>wip-batch-close</code></td><td><code>label-master</code></td></tr>
+<tr><td><b>BSP application</b></td><td><code>ZPROD_CONF_CAN</code></td><td><code>ZWIP_BATCH_CLS</code></td><td><code>ZLABEL_MASTER</code></td></tr>
+<tr><td><b>Package</b></td><td><code>$TMP</code></td><td><code>$TMP</code></td><td><code>$TMP</code></td></tr>
+<tr><td><b>Component ID</b></td><td><code>kejriwal.pp.prodconfcancel</code></td><td><code>kejriwal.pp.wipbatchclose</code></td><td><code>kejriwal.pp.labelmaster</code></td></tr>
+<tr><td><b>Semantic object</b></td><td><code>ProdConfirmation</code></td><td><code>WipBatch</code></td><td><code>LabelMaster</code></td></tr>
+<tr><td><b>Action</b></td><td><code>cancelKejriwal</code></td><td><code>closeKejriwal</code></td><td><code>maintainKejriwal</code></td></tr>
+<tr><td><b>Service binding<br>(G4BA)</b></td><td><code>ZUI_PROD_CONFIRM_04</code></td><td><code>ZUI_WIP_BATCH_04</code></td><td><code>ZUI_LABEL_MASTER_04</code></td></tr>
+<tr><td><b>Service definition</b></td><td><code>ZUI_PROD_CONFIRMATION</code></td><td><code>ZUI_WIP_BATCH_MGMT</code></td><td><code>ZUI_LABEL_MASTER</code></td></tr>
+<tr><td><b>Root CDS entity</b></td><td><code>ZI_PROD_CONFIRMATION</code></td><td><code>ZI_WIP_BATCH_MGMT</code></td><td><code>ZI_LABEL_MASTER</code></td></tr>
+<tr><td><b>Base table</b></td><td><code>AFRU</code></td><td><code>ZPP_BATCHN</code></td><td><code>ZPP_LABEL</code></td></tr>
+<tr><td><b>UI technology</b></td><td>Freestyle UI5<br><span class="small">sap.f.DynamicPage</span></td><td>Freestyle UI5<br><span class="small">sap.f.DynamicPage</span></td><td>Fiori Elements<br><span class="small">ListReport / ObjectPage</span></td></tr>
+<tr><td><b>Tile title</b></td><td>Cancel Production Confirmation</td><td>WIP Batch Close</td><td>Label Master</td></tr>
+<tr><td><b>Tile subtitle</b></td><td>KEJRIWAL custom</td><td>KEJRIWAL custom</td><td>KEJRIWAL master data</td></tr>
+<tr><td><b>Icon</b></td><td><code>sap-icon://undo</code></td><td><code>sap-icon://locked</code></td><td><code>sap-icon://tags</code></td></tr>
+</table>
+
+<h4>URLs (lower case &mdash; ICF nodes are case-sensitive)</h4>
+<table class="k">
+<tr><td>Cancel Prod. Confirmation &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zprod_conf_can</td></tr>
+<tr><td>&mdash; OData V4</td><td>/sap/opu/odata4/sap/zui_prod_confirm_04/srvd/sap/zui_prod_confirmation/0001/</td></tr>
+<tr><td>WIP Batch Close &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zwip_batch_cls</td></tr>
+<tr><td>&mdash; OData V4</td><td>/sap/opu/odata4/sap/zui_wip_batch_04/srvd/sap/zui_wip_batch_mgmt/0001/</td></tr>
+<tr><td>Label Master &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zlabel_master</td></tr>
+<tr><td>&mdash; OData V4</td><td>/sap/opu/odata4/sap/zui_label_master_04/srvd/sap/zui_label_master/0001/</td></tr>
+</table>
+
+<h2>3. Prerequisites</h2>
+
+<table>
+<tr><th style="width:52%">Check</th><th style="width:24%">How</th><th style="width:24%">Expected</th></tr>
+<tr><td>BSP applications exist</td><td><code>SE80</code> &rarr; BSP Application</td><td>All three found</td></tr>
+<tr><td>Service bindings published</td><td><code>/IWFND/V4_ADMIN</code></td><td>Status <i>Published</i></td></tr>
+<tr><td>ICF nodes active</td><td><code>SICF</code> &rarr; <code>ui5_ui5/sap</code></td><td>Green, not grey</td></tr>
+<tr><td>Business catalog reachable</td><td><code>/n/UI2/FLPD_CUST</code></td><td><code>ZKGPL_BC_CUSTOM</code> opens</td></tr>
+<tr><td>You can edit roles</td><td><code>PFCG</code></td><td>Change access to <code>ZKGPL_ALL</code></td></tr>
+</table>
+
+<div class="note">
+<b>Authorization needed for the person doing this:</b> <code>S_DEVELOP</code> for the
+launchpad designer, <code>S_USER_AGR</code> / <code>S_USER_AUT</code> for PFCG role
+maintenance, and change access in client 500. This is normally a Basis or
+security task, not a developer one.
+</div>
+
+<h2>4. Part A &mdash; OData V4 authorization</h2>
+
+<p>Do this first. A tile without its service group in the role will render and
+then fail on the first data call.</p>
+
+<p>KSD carries two KGPL roles. Neither contains the three new service groups
+today &mdash; verified by reading <code>AGR_HIERT</code>:</p>
+
+<table>
+<tr><th style="width:26%">Role</th><th style="width:26%">Description</th><th style="width:20%">V4 groups today</th><th>Notes</th></tr>
+<tr><td><code>ZKGPL_ALL</code></td><td>KGPL ALL APPS</td><td>26</td><td>Carries the catalog assignment for the space. <b>Must be updated.</b></td></tr>
+<tr><td><code>ZKGPL_BR_PROCURE</code></td><td>KEJRIWAL FIORI APPS</td><td>~30</td><td>Newer role; carries the five ZKGPL_FIORI apps. Update for parity.</td></tr>
+</table>
+
+<h3>Procedure &mdash; repeat for each of the three service groups</h3>
+<ol class="steps">
+<li>Run <code>PFCG</code>, open role <code>ZKGPL_ALL</code>, click <b>Change</b>.</li>
+<li>Go to the <b>Menu</b> tab.</li>
+<li>Position the cursor on the folder that holds the existing
+    <code>R3TR G4BA</code> entries (the catalog node, object ID 2).</li>
+<li>Choose <b>Insert Node &rarr; Authorization Default</b>.</li>
+<li>In the dialog select object type <b>TADIR Service</b> and enter:
+    <br><code>Program ID: R3TR</code> &nbsp; <code>Object Type: G4BA</code>
+    &nbsp; <code>Object Name: ZUI_PROD_CONFIRM_04</code></li>
+<li>Repeat for <code>ZUI_WIP_BATCH_04</code> and <code>ZUI_LABEL_MASTER_04</code>.</li>
+<li>Save the menu.</li>
+<li>Go to the <b>Authorizations</b> tab, click <b>Change Authorization Data</b>,
+    accept the merge of new default values, then <b>Generate</b> the profile.</li>
+<li>Save the role. Repeat the whole sequence for <code>ZKGPL_BR_PROCURE</code>.</li>
+<li>Have each affected user log off and back on, or run
+    <code>PFUD</code> for a user master comparison.</li>
+</ol>
+
+<div class="warn">
+<b>If the merge dialog offers &ldquo;Read old status and merge with new data&rdquo;,
+take it.</b> Choosing &ldquo;Read new data&rdquo; discards the manual authorization
+adjustments already made in these roles.
+</div>
+
+<h3>Verifying Part A</h3>
+<p>After generation, the three entries should be visible in the role menu. To
+confirm from the database side, the role menu text table should return three new
+rows:</p>
+<p><code>SE16N &rarr; AGR_HIERT</code>, filter <code>AGR_NAME = ZKGPL_ALL</code>,
+<code>TEXT = R3TR G4BA ZUI_*</code> &mdash; expect 29 rows, up from 26.</p>
+
+<h2>5. Part B &mdash; semantic objects</h2>
+
+<p>The three semantic objects &mdash; <code>ProdConfirmation</code>,
+<code>WipBatch</code>, <code>LabelMaster</code> &mdash; are not registered in
+<code>/UI2/SEMOBJ</code>. Neither are the ones used by the five apps already
+running in production (<code>PalletStock</code>, <code>DeliveryChallan</code>,
+<code>ReturnBox</code>, <code>PurchaseRegister</code>, <code>PackingUnit</code>).</p>
+
+<p>Registration is therefore <b>optional</b> &mdash; the launchpad accepts an
+unregistered semantic object with a warning, which is how every existing KGPL
+tile works today. Registering them removes the warning and makes the intent
+discoverable in <code>/UI2/FLIA</code>.</p>
+
+<ol class="steps">
+<li>Run <code>/n/UI2/SEMOBJ</code>.</li>
+<li>Click <b>New Entries</b>.</li>
+<li>Add three rows, leaving the component blank:
+    <code>ProdConfirmation</code>, <code>WipBatch</code>, <code>LabelMaster</code>.</li>
+<li>Save to a customizing request.</li>
+</ol>
+
+<h2>6. Part C &mdash; target mapping and tile</h2>
+
+<p>Both live in the same business catalog. The role menu entry for this catalog
+reads <code>X-SAP-UI2-CATALOGPAGE:ZKGPL_BC_CUSTOM</code>, which means the
+launchpad <b>page is generated from the catalog</b>. There is no separate group
+to maintain &mdash; a tile added to the catalog appears in KGPL CUSTOM APPS
+automatically.</p>
+
+<h3>C1 &mdash; create the target mapping</h3>
+<ol class="steps">
+<li>Run <code>/n/UI2/FLPD_CUST</code>.</li>
+<li>Select catalog <code>ZKGPL_BC_CUSTOM</code> in the left pane.</li>
+<li>Open the <b>Target Mappings</b> tab and click <b>+</b> (Create Target Mapping).</li>
+<li>Fill in from the parameter card in section 7:
+    <b>Semantic Object</b>, <b>Action</b>, <b>Application Type</b> =
+    <i>SAPUI5 Fiori App</i>, <b>Title</b>, <b>URL</b>, <b>ID</b> (the component ID).</li>
+<li>Under <b>Device Types</b> tick Desktop, Tablet and Phone.</li>
+<li>Leave <b>Parameters</b> empty &mdash; none of the three apps take startup parameters.</li>
+<li>Save.</li>
+</ol>
+
+<h3>C2 &mdash; create the tile</h3>
+<ol class="steps">
+<li>Still in <code>ZKGPL_BC_CUSTOM</code>, open the <b>Tiles</b> tab and click <b>+</b>.</li>
+<li>Choose tile type <b>App Launcher &ndash; Static</b>.</li>
+<li>Enter <b>Title</b>, <b>Subtitle</b> and <b>Icon</b> from the parameter card.</li>
+<li>Leave <b>Information</b> and <b>Keywords</b> blank, or add a keyword to help search.</li>
+<li>Under <b>Navigation</b>, set <b>Use semantic object navigation</b> = Yes, then
+    enter the same <b>Semantic Object</b> and <b>Action</b> used in C1.</li>
+<li>Save.</li>
+</ol>
+
+<div class="note">
+The tile and the target mapping are matched only by the semantic object and
+action strings. A typo in either produces a tile that opens a blank page with
+&ldquo;the app could not be opened because the navigation target is not
+available&rdquo;. Copy and paste rather than retype.
+</div>
+
+<h2 class="brk">7. Per-app parameter cards</h2>
+<p class="small">Each card contains everything to be typed into the two dialogs
+in section 6. Fields not listed are left at their default.</p>
+
+<div class="card">
+<h3>Cancel Production Confirmation <span class="pill">FREESTYLE UI5</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>ProdConfirmation</td></tr>
+<tr><td>Action</td><td>cancelKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>Cancel Production Confirmation</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zprod_conf_can</td></tr>
+<tr><td>ID</td><td>kejriwal.pp.prodconfcancel</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet, Phone</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>Cancel Production Confirmation</td></tr>
+<tr><td>Subtitle</td><td>KEJRIWAL custom</td></tr>
+<tr><td>Icon</td><td>sap-icon://undo</td></tr>
+<tr><td>Semantic Object / Action</td><td>ProdConfirmation / cancelKejriwal</td></tr>
+</table>
+<p class="small"><b>Backend:</b> service group <code>ZUI_PROD_CONFIRM_04</code>,
+root entity <code>ZI_PROD_CONFIRMATION</code> over <code>AFRU</code>, unmanaged
+behaviour pool <code>ZBP_I_PROD_CONFIRMATION</code> calling
+<code>BAPI_PRODORDCONF_CANCEL</code>. The list excludes rows where
+<code>STOKZ = 'X'</code> so reversal documents are not offered for re-reversal.</p>
+</div>
+
+<div class="card">
+<h3>WIP Batch Close <span class="pill">FREESTYLE UI5</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>WipBatch</td></tr>
+<tr><td>Action</td><td>closeKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>WIP Batch Close</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zwip_batch_cls</td></tr>
+<tr><td>ID</td><td>kejriwal.pp.wipbatchclose</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet, Phone</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>WIP Batch Close</td></tr>
+<tr><td>Subtitle</td><td>KEJRIWAL custom</td></tr>
+<tr><td>Icon</td><td>sap-icon://locked</td></tr>
+<tr><td>Semantic Object / Action</td><td>WipBatch / closeKejriwal</td></tr>
+</table>
+<div class="warn" style="margin-bottom:.8em">
+<b>Do not confuse this with the existing <i>WIP Batch</i> tile.</b> That one is
+the read-only analytics report over batch status. This app writes the closed
+flag and must have its own tile with a distinct title.
+</div>
+<p class="small"><b>Backend:</b> service group <code>ZUI_WIP_BATCH_04</code>,
+entity <code>ZI_WIP_BATCH_MGMT</code> over <code>ZPP_BATCHN</code> joined to
+<code>T001K</code> for company code. Actions <code>closeBatches</code> and
+<code>reopenBatches</code>; reopen requires a non-blank reason.</p>
+</div>
+
+<div class="card">
+<h3>Label Master <span class="pill g">FIORI ELEMENTS</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>LabelMaster</td></tr>
+<tr><td>Action</td><td>maintainKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>Label Master</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zlabel_master</td></tr>
+<tr><td>ID</td><td>kejriwal.pp.labelmaster</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet, Phone</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>Label Master</td></tr>
+<tr><td>Subtitle</td><td>KEJRIWAL master data</td></tr>
+<tr><td>Icon</td><td>sap-icon://tags</td></tr>
+<tr><td>Semantic Object / Action</td><td>LabelMaster / maintainKejriwal</td></tr>
+</table>
+<p class="small"><b>Backend:</b> service group <code>ZUI_LABEL_MASTER_04</code>,
+RAP managed scenario on <code>ZPP_LABEL</code> with keys
+<code>WERKS</code> / <code>TYPE</code> / <code>IP</code>. This is a
+<b>printer</b> master, not a label-layout master &mdash; the record identifies a
+plant, a label type and the printer IP address. Because it is a Fiori Elements
+list report, it also honours variant management, so users can save their own
+plant filter.</p>
+</div>
+
+<h2>8. CO03 &mdash; Display Production Order</h2>
+
+<p><code>CO03</code> is step 4 of the plant runbook and has no tile anywhere. It
+is standard SAP and needs no development. The transaction exists in KSD
+(<code>SAPLCOKO1</code>, screen 0110).</p>
+
+<p>The reliable route is a SAP GUI transaction tile in the same catalog:</p>
+<ol class="steps">
+<li><b>Check for an existing mapping first.</b> Run <code>/n/UI2/FLIA</code>
+    and resolve <code>ProductionOrder-displayFactSheet</code>. The semantic object
+    <code>ProductionOrder</code> is SAP standard (component <code>PP-SFC</code>) and
+    a shipped target mapping may already exist. If one resolves, you only need a
+    tile pointing at it &mdash; skip to step 4.</li>
+<li>If nothing resolves, create a target mapping in <code>/n/UI2/FLPD_CUST</code>,
+    catalog <code>ZKGPL_BC_CUSTOM</code>, with <b>Semantic Object</b>
+    <code>ProductionOrder</code> and <b>Action</b> <code>displayKejriwal</code>.
+    Use the custom action rather than <code>display</code> so a future SAP mapping
+    on the standard action cannot collide with yours.</li>
+<li>Set <b>Application Type</b> = <i>Transaction</i> and
+    <b>Transaction Code</b> = <code>CO03</code> (verified present in KSD as
+    <code>SAPLCOKO1</code>, screen 0110).</li>
+<li>Set <b>System Alias</b> to the alias used by the other GUI tiles in this
+    catalog &mdash; blank means the local system, which is correct for an
+    embedded deployment.</li>
+<li>Create a static App Launcher tile titled <b>Display Production Order</b>,
+    subtitle <b>Production</b>, icon <code>sap-icon://factory</code>, pointing at
+    whichever semantic object and action resolved in step 1 or was created in step 2.</li>
+</ol>
+
+<div class="note">
+Before creating this, check the SAP Fiori Apps Library for a native app for your
+exact release &mdash; if one is available it gives a better experience than the
+GUI-for-HTML fallback. Do not assume an app ID; look it up against the release
+level of KSD.
+</div>
+
+<h2>9. Cache invalidation</h2>
+
+<p>Launchpad content is heavily cached at four layers. Skipping any one of these
+produces the classic &ldquo;I saved the tile but it isn't there&rdquo;.</p>
+
+<table>
+<tr><th style="width:34%">Transaction / report</th><th style="width:30%">What it clears</th><th>When</th></tr>
+<tr><td><code>/n/UI2/INVAL_CACHES</code></td><td>Global launchpad caches</td><td>After every catalog change</td></tr>
+<tr><td><code>/n/UI2/CACHE_DEL</code></td><td>Client-side FLP cache</td><td>After every catalog change</td></tr>
+<tr><td><code>SE38 &rarr; /UI5/APP_INDEX_CALCULATE</code></td><td>UI5 app index</td><td>After a new BSP or component ID appears</td></tr>
+<tr><td><code>/n/IWFND/CACHE_CLEANUP</code></td><td>Gateway metadata cache</td><td>If <code>$metadata</code> looks stale</td></tr>
+<tr><td><code>/n/IWBEP/CACHE_CLEANUP</code></td><td>Backend metadata cache</td><td>If <code>$metadata</code> looks stale</td></tr>
+</table>
+
+<div class="warn">
+Run <code>/UI5/APP_INDEX_CALCULATE</code> with <b>full calculation</b> selected,
+not the delta run. The three components are new to the index and a delta run has
+been observed to miss BSPs in <code>$TMP</code>.
+</div>
+
+<p>Finally, clear the browser: hard reload, or open the launchpad once with
+<code>?sap-ui-xx-componentPreload=off&amp;sap-language=EN</code> appended to force a
+fresh descriptor read.</p>
+
+<h2 class="brk">10. Verification</h2>
+
+<p>Work down this list. Each step isolates a different failure layer, so the
+first one that fails tells you where the problem is.</p>
+
+<table>
+<tr><th style="width:6%">#</th><th style="width:40%">Test</th><th style="width:27%">Pass</th><th>If it fails</th></tr>
+<tr><td>1</td><td>Open the BSP directly:<br><code>/sap/bc/ui5_ui5/sap/zprod_conf_can/index.html</code></td><td>App loads, table renders</td><td>Deployment or ICF problem, not FLP</td></tr>
+<tr><td>2</td><td>Open <code>$metadata</code> for the V4 service</td><td>XML returns, no 403</td><td>Service not published &mdash; <code>/IWFND/V4_ADMIN</code></td></tr>
+<tr><td>3</td><td><code>/n/UI2/FLIA</code>, intent <code>ProdConfirmation-cancelKejriwal</code></td><td>Resolves to the target mapping</td><td>Target mapping typo or catalog not in role</td></tr>
+<tr><td>4</td><td>Launchpad, navigate to <code>#ProdConfirmation-cancelKejriwal</code></td><td>App opens</td><td>Cache &mdash; redo section 9</td></tr>
+<tr><td>5</td><td>Tile visible in KGPL CUSTOM APPS</td><td>Tile appears</td><td>User master comparison &mdash; <code>PFUD</code></td></tr>
+<tr><td>6</td><td>Press <b>Go</b>; data loads</td><td>Rows returned</td><td>Missing <code>G4BA</code> in role &mdash; Part A</td></tr>
+<tr><td>7</td><td>Company code and plant filters return the right subset</td><td>Filtering works</td><td>Query class filter handling</td></tr>
+<tr><td>8</td><td>Search box filters the list</td><td>List narrows</td><td><code>get_search_expression</code> not wired</td></tr>
+</table>
+
+<div class="ok">
+<b>Functional test for Cancel Production Confirmation.</b> Pick one recent
+confirmation, note its <code>RUECK</code> and <code>RMZHL</code>, cancel it, then
+check <code>AFRU</code> in <code>SE16N</code>. The original row should now carry
+a filled <code>STZHL</code>, and a new row should exist with
+<code>STOKZ = 'X'</code>. Do this in a sandbox order, not a live one.
+</div>
+
+<div class="ok">
+<b>Functional test for WIP Batch Close.</b> Close one batch, confirm the closed
+flag in <code>ZPP_BATCHN</code>, then reopen it with a reason and confirm the
+flag clears. The reopen path is the one the plant needs before a confirmation
+can be reversed, so test it in that order.
+</div>
+
+<h2>11. Troubleshooting</h2>
+
+<table>
+<tr><th style="width:38%">Symptom</th><th style="width:30%">Most likely cause</th><th>Fix</th></tr>
+<tr><td>Tile appears, opens a blank page</td><td>Target mapping missing or action mismatched</td><td><code>/UI2/FLIA</code> on the intent</td></tr>
+<tr><td>&ldquo;Navigation target not available&rdquo;</td><td>Semantic object or action typo between tile and mapping</td><td>Compare both strings character by character</td></tr>
+<tr><td>App opens, table stays empty, no error</td><td>Binding suspended, or filters exclude everything</td><td>Check the browser network tab for the <code>$batch</code> call</td></tr>
+<tr><td>HTTP 403 on the data request</td><td><code>R3TR G4BA</code> entry missing from the role</td><td>Part A, then <code>PFUD</code></td></tr>
+<tr><td>App renders with no visible table at all</td><td>Component container height &mdash; a known issue in this project</td><td>Confirm <code>index.html</code> carries the <code>height: 100%</code> block</td></tr>
+<tr><td>Tile saved but never appears</td><td>Cache</td><td>All five steps in section 9, then hard reload</td></tr>
+<tr><td>Works for you, not for a plant user</td><td>Role not assigned or user master not compared</td><td><code>SU01</code> role check, then <code>PFUD</code></td></tr>
+<tr><td>Value help dropdown is empty</td><td>Value help entity not exposed in the same service group</td><td>Check <code>ValueListReferences</code> in <code>$metadata</code></td></tr>
+</table>
+
+<h2 class="brk">Appendix A &mdash; live landscape reference</h2>
+<p class="small">Read from KSD client 500 on 20 August 2026. Useful when someone
+asks &ldquo;what else is out there?&rdquo;</p>
+
+<h3>Z-namespace BSP applications by package</h3>
+<table>
+<tr><th style="width:22%">Package</th><th style="width:12%">Count</th><th>Meaning</th></tr>
+<tr><td><code>ZKGPL_FIORI</code></td><td>22</td><td>Transportable. 5 have repo source, 17 do not.</td></tr>
+<tr><td><code>$TMP</code></td><td>20</td><td>All have repo source. <b>Cannot transport to KSQ.</b></td></tr>
+<tr><td><code>ZFIORI</code></td><td>7</td><td>Older dashboards, author <code>ABAP_DEV</code>. No KGPL tile.</td></tr>
+<tr><td><code>Z001</code></td><td>2</td><td>Barcode scanning. No KGPL tile.</td></tr>
+<tr><td><code>ZSOL_DASH</code></td><td>1</td><td><code>ZFIORI2</code>. No KGPL tile.</td></tr>
+</table>
+
+<h3>The 17 unversioned BSPs in ZKGPL_FIORI</h3>
+<p>Each backs a live tile and has no UI5 source anywhere. A redeploy from any
+machine overwrites them irrecoverably.</p>
+<table>
+<tr><th style="width:25%">BSP</th><th style="width:25%">Tile</th><th style="width:25%">BSP</th><th style="width:25%">Tile</th></tr>
+<tr><td><code>ZDD_SHADE_APP</code></td><td>Shade Master</td><td><code>ZGTPASS_APP</code></td><td>Gate Pass</td></tr>
+<tr><td><code>ZRECIPE_APP</code></td><td>Recipe Master</td><td><code>ZTRUCK_APP</code></td><td>Truck Master</td></tr>
+<tr><td><code>ZJOB_APP</code></td><td>Job Master</td><td><code>ZDIGISIGN_APP</code></td><td>Digital Signature</td></tr>
+<tr><td><code>ZSCHEDULE_APP</code></td><td>Schedule Master</td><td><code>ZCFORM_APP</code></td><td>C-Form</td></tr>
+<tr><td><code>ZMERGE_APP</code></td><td>Merge Details</td><td><code>ZVFORM_APP</code></td><td>GST Tax</td></tr>
+<tr><td><code>ZCHECKBY_APP</code></td><td>Checked / Packed By</td><td><code>ZSALESDOC_APP</code></td><td>Sales Document Status</td></tr>
+<tr><td><code>ZPACKMAT_APP</code></td><td>Packing Material Master</td><td><code>ZPACKING_LIST</code></td><td>Packing List</td></tr>
+<tr><td><code>ZTRANSP_APP</code></td><td>Transport Code</td><td><code>ZACCGRP_APP</code></td><td>Account Grouping</td></tr>
+<tr><td><code>ZEXPORT_APP</code></td><td>Export Details</td><td colspan="2"></td></tr>
+</table>
+
+<h3>Role and catalog wiring as it exists today</h3>
+<table class="k">
+<tr><td>Business catalog</td><td>ZKGPL_BC_CUSTOM</td></tr>
+<tr><td>Role menu entry</td><td>X-SAP-UI2-CATALOGPAGE:ZKGPL_BC_CUSTOM?AUTH_DEFAULTS=X&amp;DEST_FES=</td></tr>
+<tr><td>Carried by role</td><td>ZKGPL_ALL &mdash; &ldquo;KGPL ALL APPS&rdquo;</td></tr>
+<tr><td>Second role</td><td>ZKGPL_BR_PROCURE &mdash; &ldquo;KEJRIWAL FIORI APPS&rdquo;</td></tr>
+<tr><td>Users assigned</td><td>MD, ITADMIN, ZTEST_KGPL</td></tr>
+</table>
+
+<div class="warn">
+<b>Only three users hold these roles.</b> The launchpad is still a pilot. Before
+the plant goes live, the roles need assigning to the real user groups
+(<code>KID_PP2</code>, <code>KID_OM2</code>, <code>KID_SD2</code> and their
+colleagues), and that will surface authorization gaps that three admin users
+never hit.
+</div>
+
+<h2 class="brk">Appendix B &mdash; the $TMP problem</h2>
+
+<p>This is outside the scope of tile creation but it is the largest risk in the
+landscape, and it is worth deciding on before more tiles are added.</p>
+
+<p><b>Twenty of the twenty-five repo apps sit in <code>$TMP</code>.</b> Objects in
+<code>$TMP</code> are local: they cannot be captured in a transport request and
+therefore cannot reach KSQ or any downstream client. Everything works in KSD and
+nothing moves.</p>
+
+<p><b>Seventeen BSPs in <code>ZKGPL_FIORI</code> have no source in version
+control.</b> They are transportable but unrecoverable &mdash; if one is
+overwritten or deleted there is no copy to restore from.</p>
+
+<p>Together, 37 of the 52 live BSPs are in one of these two states.</p>
+
+<h3>Remediation, in the order I would do it</h3>
+<ol class="steps">
+<li><b>Repoint the 20 <code>$TMP</code> apps to <code>ZKGPL_FIORI</code>.</b>
+    In <code>SE80</code>, open each BSP, choose <i>Change package</i>, assign
+    <code>ZKGPL_FIORI</code> and a workbench request. Alternatively update
+    <code>ui5-deploy.yaml</code> in each app folder and redeploy &mdash; slower,
+    but it keeps the repo and the system in agreement.</li>
+<li><b>Download the 17 orphans into <code>apps/</code>.</b> Either pull the BSP
+    sources through abapGit into the existing repository, or export each BSP from
+    <code>SE80</code>. Once they are in git, a redeploy accident is recoverable.</li>
+<li><b>Then and only then, cut a transport to KSQ.</b> Attempting it before step 1
+    silently drops 20 apps.</li>
+</ol>
+
+<div class="note">
+The three apps in this guide are themselves in <code>$TMP</code>. The tiles you
+create will work in KSD, but neither the tiles nor the apps will transport until
+step 1 is done. If the plan is to go live from KSD directly, that is fine &mdash;
+but it should be a decision rather than an accident.
+</div>
+
+<h3>Remaining development items</h3>
+<table>
+<tr><th style="width:30%">Item</th><th style="width:14%">Type</th><th>Detail</th></tr>
+<tr><td>Gap 5 &mdash; <code>ZVLMOVE</code></td><td>Development</td><td>The Post Goods Movement handler moves HU <i>contents</i> via <code>VEPO</code> and leaves <code>VEKP</code> pointing at the old storage location. Analysed and specified, not built.</td></tr>
+<tr><td>DCL roles</td><td>Security</td><td><code>@AccessControl.authorizationCheck: #CHECK</code> is set everywhere but no DCL exists, so the check passes silently. Every user sees every plant.</td></tr>
+<tr><td>Search verification</td><td>Test</td><td>Metadata proves the search box renders. Confirm it actually filters on each of the four query-class apps.</td></tr>
+</table>
+
+<p style="margin-top:2.5em" class="small">
+Prepared from a live read of KSD client 500 and the <code>Fiori-Apps</code>
+repository. Values in this document reflect the system as of 20 August 2026; if
+a BSP is redeployed with a different component ID, the target mapping must be
+updated to match.
+</p>
+
+</body></html>
