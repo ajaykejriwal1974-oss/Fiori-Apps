@@ -40,6 +40,5 @@ define root view entity ZC_PROD_CONFIRMATION
       @UI: { lineItem: [ { position: 130 } ], selectionField: [ { position: 60 } ] }
       CreatedBy,
       @UI: { lineItem: [ { position: 140 } ] }
-      CreatedOn,
-      ExecutionStartDate
+      CreatedOn
 }

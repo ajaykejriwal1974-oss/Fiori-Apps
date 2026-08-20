@@ -20,7 +20,6 @@ define root view entity ZI_PROD_CONFIRMATION
       vcc.bukrs                                  as CompanyCode,
       ord.plnbez                                 as Material,
       afru.budat                                 as PostingDate,
-      afru.isdd                                  as ExecutionStartDate,
       @Semantics.quantity.unitOfMeasure: 'ConfirmationUnit'
       afru.gmnga                                 as YieldQuantity,
       @Semantics.quantity.unitOfMeasure: 'ConfirmationUnit'
