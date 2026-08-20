@@ -1,7 +1,7 @@
 @EndUserText.label: 'Delivery Challan'
 @ObjectModel.query.implementedBy: 'ABAP:ZCL_DELIVERY_CHALLAN_QUERY'
 // Free-text search is implemented in the query class - a custom entity gets
-// none for free. Searches CartonNo / ChallanDelivery / Material / Batch / CopNo.
+// none for free. Searches CartonNo / ChallanDelivery / Material / Batch.
 @Search.searchable: true
 @UI.headerInfo: { typeName: 'Carton', typeNamePlural: 'Challan Cartons',
                   title: { value: 'CartonNo' }, description: { value: 'ChallanDelivery' } }
@@ -55,7 +55,6 @@ define root custom entity ZI_DELIVERY_CHALLAN
       NetWeight       : abap.quan(15,3);
       @EndUserText.label: 'Unit'
       NetWeightUnit   : gewei;
-      @Search.defaultSearchElement: true
       @EndUserText.label: 'COP No.'
       @UI: { lineItem: [ { position: 50, importance: #MEDIUM } ], identification: [ { position: 50 } ] }
       CopNo           : zspool;

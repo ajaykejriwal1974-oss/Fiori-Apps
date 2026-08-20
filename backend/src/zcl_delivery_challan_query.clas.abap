@@ -170,11 +170,12 @@ CLASS zcl_delivery_challan_query IMPLEMENTATION.
     " Search the fields marked @Search.defaultSearchElement, after the secondary
     " filters and before the record count so the count matches what is shown.
     IF lv_search IS NOT INITIAL.
+      " CopNo (ZSPOOL) is numeric - NP only works on character-like types, so it
+      " is deliberately not searched.
       DELETE lt_out WHERE cartonno        NP |*{ lv_search }*|
                       AND challandelivery NP |*{ lv_search }*|
                       AND material        NP |*{ lv_search }*|
-                      AND batch           NP |*{ lv_search }*|
-                      AND copno           NP |*{ lv_search }*|.
+                      AND batch           NP |*{ lv_search }*|.
     ENDIF.
 
     SORT lt_out BY challandelivery cartonno.

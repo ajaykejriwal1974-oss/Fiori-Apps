@@ -1,4 +1,4 @@
-@EndUserText.label: 'Packing Units (existing HUs) - Projection'
+@EndUserText.label: 'Packing Units (existing HU) - Projection'
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
 @Search.searchable: true
