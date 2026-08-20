@@ -26,7 +26,7 @@ define root view entity ZI_PROD_CONFIRMATION
       afru.xmnga                                 as ScrapQuantity,
       afru.gmein                                 as ConfirmationUnit,
       afru.stzhl                                 as ReversalCounter,
-      case when afru.stzhl <> 0
+      case when afru.stzhl <> '00000000'
            then cast('X' as abap.char(1))
            else cast('' as abap.char(1))
       end                                        as IsCancelled,
