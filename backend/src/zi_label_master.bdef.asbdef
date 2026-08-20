@@ -1,5 +1,6 @@
 // Small master maintained by the packing desk. Managed RAP: RAP owns the
-// persistence, there is no BAPI behind it.
+// persistence, there is no BAPI behind it. All three key fields are entered by
+// the user (plant + label type + printer IP), so there is no managed numbering.
 managed implementation in class zbp_i_label_master unique;
 strict ( 2 );
 
@@ -12,24 +13,15 @@ authorization master ( instance )
   update;
   delete;
 
-  field ( readonly, numbering : managed ) LabelNumber;
-  field ( mandatory ) Plant, Brand, LabelText;
-  field ( readonly ) CreatedOn, CreatedBy, ChangedOn, ChangedBy;
+  field ( mandatory : create, readonly : update ) Plant, LabelType, IPAddress;
+  field ( mandatory ) LabelText;
 
   mapping for zpp_label
   {
-    Plant       = werks;
-    Brand       = brand;
-    LabelNumber = labelno;
-    Material    = matnr;
-    Grade       = grade;
-    Shade       = shade;
-    PackingType = ptype;
-    LabelText   = labeltext;
-    IsActive    = active;
-    CreatedOn   = erdat;
-    CreatedBy   = ernam;
-    ChangedOn   = aedat;
-    ChangedBy   = aenam;
+    Plant     = werks;
+    LabelType = type;
+    IPAddress = ip;
+    LabelText = text;
+    IsDefault = dflt;
   }
 }
