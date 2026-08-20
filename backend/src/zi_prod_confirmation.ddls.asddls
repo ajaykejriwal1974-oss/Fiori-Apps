@@ -21,8 +21,6 @@ define root view entity ZI_PROD_CONFIRMATION
       ord.plnbez                                 as Material,
       afru.budat                                 as PostingDate,
       afru.isdd                                  as ExecutionStartDate,
-      afru.ismnw                                 as ActualWork,
-      afru.ismneh                                as ActualWorkUnit,
       @Semantics.quantity.unitOfMeasure: 'ConfirmationUnit'
       afru.gmnga                                 as YieldQuantity,
       @Semantics.quantity.unitOfMeasure: 'ConfirmationUnit'
@@ -33,7 +31,7 @@ define root view entity ZI_PROD_CONFIRMATION
            then cast('X' as abap.char(1))
            else cast('' as abap.char(1))
       end                                        as IsCancelled,
-      afru.ername                                as CreatedBy,
+      afru.ernam                                 as CreatedBy,
       afru.ersda                                 as CreatedOn
 }
 where afru.stokz = ''

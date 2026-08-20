@@ -7,14 +7,16 @@
 // Replaces the stock reports (ZBOXSTOCK, ZGSTOCK, ZPRP1, ZSSTOCK, ZDSTOCK, ZSTOCK,
 // ZPRP, ZPRPSZ) AND the packing-list family (ZPLIST01..03(+A/T/N/D), ZPACKLIST*).
 // Old report variants are now dimensions; aggregate in the query.
-// ZZMARA is the Kejriwal material extension: it carries the textile attributes
-// the dispatch desk selects on in ZBOXSTOCK - product type, denier, filament.
-// ZPP_PACK already carries ProductType (pltyp); Denier and Filament exist only
-// on the material, so they are joined in here. Left outer join: a box whose
-// material has no ZZMARA row still appears, with blank denier/filament.
+// ZZMARA is an APPEND STRUCTURE on MARA, not a table of its own - KSD rejected
+// a direct join with "Table type of ZZMARA is not supported". Its fields are
+// therefore columns of MARA, which is what is joined here. They carry the
+// textile attributes the dispatch desk selects on in ZBOXSTOCK. ZPP_PACK
+// already has ProductType (pltyp); Denier and Filament exist only on the
+// material. Left outer join: a box whose material has no MARA row still
+// appears, with blank denier/filament.
 define view entity ZI_PACKED_STOCK
   as select from zpp_pack as pck
-    left outer join zzmara as ext on ext.matnr = pck.matnr
+    left outer join mara as ext on ext.matnr = pck.matnr
 {
   key pck.boxno        as Box,
   key pck.gjahr        as FiscalYear,
@@ -29,7 +31,7 @@ define view entity ZI_PACKED_STOCK
       pck.mergno           as MergeNumber,
       pck.arbpl            as WorkCenter,
       pck.pltyp            as ProductType,
-      // ZBOXSTOCK selection fields sourced from the material extension
+      // ZBOXSTOCK selection fields - MARA append-structure (ZZMARA) columns
       ext.zzdenir      as Denier,
       ext.zzfilam      as Filament,
       ext.zzpdtyp      as MaterialProductType,

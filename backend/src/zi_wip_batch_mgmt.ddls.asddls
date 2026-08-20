@@ -23,5 +23,5 @@ define root view entity ZI_WIP_BATCH_MGMT
       @Semantics.quantity.unitOfMeasure: 'BatchUnit'
       bat.qty       as Quantity,
       bat.vrkme     as BatchUnit,
-      bat.cheeses   as Cheeses
+      cast( bat.cheeses as abap.dec( 15, 3 ) ) as Cheeses
 }

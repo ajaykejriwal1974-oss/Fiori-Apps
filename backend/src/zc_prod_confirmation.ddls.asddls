@@ -33,10 +33,6 @@ define root view entity ZC_PROD_CONFIRMATION
       ScrapQuantity,
       @UI: { lineItem: [ { position: 90 } ] }
       ConfirmationUnit,
-      @UI: { lineItem: [ { position: 100 } ] }
-      ActualWork,
-      @UI: { lineItem: [ { position: 110 } ] }
-      ActualWorkUnit,
       @UI: { lineItem: [ { position: 120 } ] }
       IsCancelled,
       ReversalCounter,
