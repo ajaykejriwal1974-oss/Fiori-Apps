@@ -1,13 +1,19 @@
 // Small master maintained by the packing desk. Managed RAP: RAP owns the
 // persistence, there is no BAPI behind it. All three key fields are entered by
 // the user (plant + label type + printer IP), so there is no managed numbering.
+//
+// strict ( 2 ) makes `authorization master` MANDATORY on a root entity with
+// modifying operations - it cannot simply be omitted. It must therefore be
+// backed by a real handler in zbp_i_label_master (Local Types), otherwise the
+// first read dumps with RAISE_SHORTDUMP. Global, not instance: there is no
+// per-row rule to express yet.
 managed implementation in class zbp_i_label_master unique;
 strict ( 2 );
 
 define behavior for ZI_LABEL_MASTER alias LabelMaster
 persistent table zpp_label
 lock master
-authorization master ( instance )
+authorization master ( global )
 {
   create;
   update;
