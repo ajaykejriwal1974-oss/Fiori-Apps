@@ -1,5 +1,5 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'QC Inspection Characteristic - Interface'
+@EndUserText.label: 'QC Characteristic - Interface'
 @Metadata.allowExtensions: true
 // One row per characteristic of an inspection lot operation, with its
 // specification from QAMV and its summarised result from QAMR.
