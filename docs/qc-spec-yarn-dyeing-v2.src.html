@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Yarn Dyeing QC Specification v2</title>
+<style>
+@page{size:A4;margin:16mm 13mm 14mm 13mm;
+ @bottom-left{content:"KGPL \00b7 Yarn Dyeing QC \00b7 Specification v2.0 \00b7 confirmed characteristic set";font-size:7pt;color:#8a8f98;font-family:Helvetica,Arial,sans-serif;}
+ @bottom-right{content:"Page " counter(page) " / " counter(pages);font-size:7pt;color:#8a8f98;font-family:Helvetica,Arial,sans-serif;}}
+@page :first{margin:0;@bottom-left{content:""}@bottom-right{content:""}}
+*{box-sizing:border-box}
+body{font-family:Helvetica,Arial,sans-serif;font-size:8.8pt;line-height:1.42;color:#1c1f24;margin:0}
+h1,h2,h3,h4{font-weight:700;color:#12324f;margin:0 0 .32em;line-height:1.18}
+h2{font-size:14pt;margin-top:1.3em;padding-bottom:.2em;border-bottom:2px solid #147a6e;break-after:avoid}
+h3{font-size:10.6pt;margin-top:1em;color:#147a6e;break-after:avoid}
+h4{font-size:9.2pt;margin-top:.8em;break-after:avoid}
+p{margin:0 0 .48em}
+ul,ol{margin:.2em 0 .6em;padding-left:1.05em}li{margin-bottom:.18em}
+code{font-family:"DejaVu Sans Mono",Menlo,monospace;font-size:7.7pt;background:#eef3f2;padding:.5pt 2.5pt;border-radius:2px;color:#12324f}
+table{width:100%;border-collapse:collapse;margin:.4em 0 .85em;font-size:7.4pt}
+th{background:#12324f;color:#fff;text-align:left;padding:4.2px 5px;font-weight:600;font-size:7.2pt}
+td{padding:3.8px 5px;border-bottom:.4pt solid #d6dce4;vertical-align:top}
+tr:nth-child(even) td{background:#f5f8f8}
+.mic{font-family:"DejaVu Sans Mono",Menlo,monospace;font-weight:700;color:#12324f;font-size:7.3pt}
+.cover{height:297mm;padding:40mm 20mm 18mm;background:#12324f;color:#fff}
+.cover h1{color:#fff;font-size:28pt;letter-spacing:-.5pt;margin-bottom:.12em}
+.cover .sub{font-size:12pt;color:#7fd4c5;font-weight:400;margin-bottom:2.2em;line-height:1.4}
+.cover .meta{font-size:9pt;color:#c3d3e4;line-height:1.85;border-top:1px solid #2b4a6b;padding-top:1.1em}
+.cover .meta b{color:#fff;display:inline-block;width:42mm;font-weight:600}
+.cover .flag{margin-top:2.2em;background:#0e2942;border-left:4px solid #147a6e;padding:10px 13px;font-size:8.6pt;color:#dce8f4}
+.note{background:#eff7f6;border-left:3px solid #147a6e;padding:6px 9px;margin:.55em 0;font-size:8.2pt}
+.warn{background:#fff6ed;border-left:3px solid #e9730c;padding:6px 9px;margin:.55em 0;font-size:8.2pt}
+.stop{background:#fdf0f0;border-left:3px solid #bb0000;padding:6px 9px;margin:.55em 0;font-size:8.2pt}
+.ok{background:#f1f9f2;border-left:3px solid #107e3e;padding:6px 9px;margin:.55em 0;font-size:8.2pt}
+.tier{display:inline-block;font-size:6.5pt;font-weight:700;padding:1pt 4pt;border-radius:3px;color:#fff}
+.t1{background:#bb0000}.t2{background:#e9730c}.t3{background:#0a6ed1}
+.hdr{display:inline-block;font-size:6.5pt;font-weight:700;padding:1pt 4pt;border-radius:3px;color:#fff;background:#6a7583}
+.small{font-size:7.3pt;color:#5a6472}
+.brk{break-before:page}
+.steps{counter-reset:s;padding-left:0;list-style:none}
+.steps>li{counter-increment:s;position:relative;padding-left:23px;margin-bottom:.42em;break-inside:avoid}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:0;background:#147a6e;color:#fff;width:16px;height:16px;border-radius:50%;font-size:7.2pt;font-weight:700;text-align:center;line-height:16px}
+.q{background:#f4f7fb;border:.6pt solid #c9d6e4;border-radius:4px;padding:8px 11px;margin:.55em 0;break-inside:avoid}
+.q b.n{color:#0a6ed1}
+</style></head><body>
+
+<div class="cover">
+  <h1>Yarn Dyeing<br>Quality Control</h1>
+  <div class="sub">Specification v2.0 &mdash; confirmed characteristic set<br>Ready for master data build</div>
+  <div class="meta">
+    <b>Plant</b> 2002 &middot; Dyeing<br>
+    <b>Characteristics</b> 37 across three stage gates<br>
+    <b>Supersedes</b> v1.0 draft of 21 Aug 2026<br>
+    <b>Basis of change</b> QC Manager pruning of the v1 proposal<br>
+    <b>Backend</b> Standard SAP QM, inspection types 01 / 03 / 04<br>
+    <b>Next step</b> Five open decisions, then QS21 entry<br>
+    <b>Date</b> 21 August 2026
+  </div>
+  <div class="flag">
+    <b>This is the build specification.</b> The characteristic set is now yours,
+    not my proposal. Sections 3&ndash;5 are written to be entered into
+    <code>QS21</code> directly. Section 2 holds five decisions that must be
+    settled first, and section 7 records what the pruning gave up, so the
+    trade-offs stay visible rather than forgotten.
+  </div>
+</div>
+
+<h2 style="margin-top:0">1. What changed from v1</h2>
+
+<table>
+<tr><th style="width:14%">Stage</th><th style="width:12%">v1 proposed</th><th style="width:12%">v2 confirmed</th><th>Net change</th></tr>
+<tr><td>Stage 1 &mdash; Raw material</td><td>19</td><td><b>9</b></td><td>Ten cut. Three added that were not in v1: <b>Lot no.</b>, <b>Denier/Filaments</b>, <b>Grade</b></td></tr>
+<tr><td>Stage 2 &mdash; After dyeing</td><td>23</td><td><b>15</b></td><td>Twelve named, of which three split into six (see 2.1). Light fastness, metamerism, pH, tenacity retention cut</td></tr>
+<tr><td>Stage 3 &mdash; After winding</td><td>18</td><td><b>13</b></td><td>Splice and Classimat tests cut. Three added: <b>Final Denier</b>, <b>Final Elongation</b>, <b>Oil %</b></td></tr>
+<tr><td colspan="2"><b>Total</b></td><td><b>37</b></td><td>Down from 60. A 38% reduction in master data and a materially lighter daily load</td></tr>
+</table>
+
+<h3>Three of your changes improve on my proposal</h3>
+
+<p><b>Denier and elongation measured at both ends.</b> You kept elongation at
+stage 1 and added Final Denier and Final Elongation at stage 3. That is a better
+design than mine. It gives you a matched pair across the whole process, so the
+delta &mdash; not just the absolute value &mdash; becomes the signal. If
+elongation drops between greige and cone, the loss happened in your house and
+the data says where.</p>
+
+<p><b>Oil % at stage 3.</b> I had residual spin finish at stage 2, which is a
+scouring-efficiency check. Oil % after winding is a different and more
+commercially relevant measurement: it is the <b>coning oil</b> applied at the
+winder, and it governs how the yarn runs on the customer's knitting machine. Too
+little and it burns at the needle; too much and it stains. This belongs at stage
+3 and I should have had it there.</p>
+
+<p><b>Sublimation fastness retained.</b> The one fastness test that is specific
+to disperse dyes on polyester, and the one most often forgotten. Keeping it while
+cutting hot pressing and water is the right order of priority.</p>
+
+<h2>2. Five decisions before QS21 entry</h2>
+
+<div class="q"><b class="n">Q1.</b> <b>Should the composite fastness tests be split?</b><br>
+You named three: washing, rubbing, perspiration. Each is <b>rated on two
+separate scales with different acceptance limits</b>, and SAP QM records one
+result per characteristic. Rubbing dry passes at grade 4; rubbing wet passes at
+grade 3 &mdash; a single characteristic cannot hold both.
+<br><br><b>My recommendation:</b> split into six. Washing &rarr; colour change +
+staining. Rubbing &rarr; dry + wet. Perspiration &rarr; acid + alkaline. Tables
+in section 4 assume this. Say the word and I will collapse them to three, but
+then only one limit per test can be enforced automatically.
+</div>
+
+<div class="q"><b class="n">Q2.</b> <b>What is "Grade"?</b><br>
+Supplier-declared yarn grade taken from the delivery document (AA / A / B), or a
+grade your own QC assigns after inspection?
+<ul><li><b>If supplier-declared</b> &mdash; it is context, not a test result. It belongs on the app header, read from the batch, and needs no MIC.</li>
+<li><b>If QC-assigned</b> &mdash; it is a genuine qualitative characteristic with a code list, and I need the grade definitions to build the selected set.</li></ul>
+Section 3 currently assumes <b>QC-assigned</b>, which is the more useful of the two.
+</div>
+
+<div class="q"><b class="n">Q3.</b> <b>Lot no. and Denier/Filaments &mdash; recorded, or verified?</b><br>
+These are attributes that already exist in your system rather than things a test
+produces. My proposal:
+<ul><li><b>Lot no.</b> &rarr; the supplier lot goes in <code>QALS-LICHA</code> (vendor batch), a standard field SAP already provides. Shown and editable on the app header. Not an MIC.</li>
+<li><b>Denier / Filaments</b> &rarr; displayed on the header from <code>ZZMARA.ZZDENIR</code> and <code>ZZFILAM</code>, <b>and</b> denier separately <i>verified</i> by measurement as MIC <code>S1_DEN</code> against ISO 2060. Filament count is verified visually only where there is doubt.</li></ul>
+This gives you both the record and the check. Confirm or correct.
+</div>
+
+<div class="q"><b class="n">Q4.</b> <b>Free formaldehyde and banned azo amines &mdash; in-house or external?</b><br>
+Both are normally sent to an accredited laboratory, and azo amine testing to EN
+ISO 14362-1 effectively always is. If external, the app captures the certificate
+result and reference number rather than prompting for a live measurement, and
+the tier changes from per-batch to per-certification-cycle. This changes the
+screen design, so it needs deciding now.
+</div>
+
+<div class="q"><b class="n">Q5.</b> <b>What frequency for stage 1?</b><br>
+Stage 1 is per <b>supplier delivery lot</b>, not per dye batch &mdash; the same
+greige lot feeds many batches. Roughly how many greige deliveries arrive per
+day or per week? The number drives the daily volume in section 6 and the
+sampling plan in section 3.4.
+</div>
+
+<h2 class="brk">3. Stage 1 &mdash; Raw material, before dyeing</h2>
+<p class="small">Per supplier delivery lot. Inspection type <b>01</b>, goods receipt against purchase order. Anchor: <code>ZPP_BATCHN.GREY_CODE</code> + vendor batch.</p>
+
+<h3>3.1 Header context &mdash; displayed, not tested</h3>
+<table>
+<tr><th style="width:22%">Field</th><th style="width:26%">Source</th><th>Behaviour in the app</th></tr>
+<tr><td><b>Lot no.</b></td><td><code>QALS-LICHA</code> (vendor batch)</td><td>Scanned or typed at lot start; carried on every result</td></tr>
+<tr><td><b>Denier / Filaments</b></td><td><code>ZZMARA.ZZDENIR</code> / <code>ZZFILAM</code></td><td>Read-only on header; denier also verified as <code>S1_DEN</code> below</td></tr>
+<tr><td><b>Material / SAP batch</b></td><td><code>ZPP_BATCHN.GREY_CODE</code></td><td>Read-only; the reference for <code>S1_IDT</code></td></tr>
+</table>
+
+<h3>3.2 Characteristics for QS21</h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:14%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:15%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S1_DEN</td><td>Linear density (denier verification)</td><td>ISO 2060<br>ASTM D1907</td><td>Quant</td><td>dtex</td><td>nominal &plusmn;2.0%</td><td><span class="tier t1">1</span></td><td>Skein, 100 m wraps, conditioned 20&deg;C / 65% RH</td></tr>
+<tr><td class="mic">S1_ELG</td><td>Elongation at break</td><td>ISO 2062<br>ASTM D2256</td><td>Quant</td><td>%</td><td>18&ndash;28</td><td><span class="tier t1">1</span></td><td>CRE, 500 mm gauge, 20 breaks, report mean</td></tr>
+<tr><td class="mic">S1_BWS</td><td><b>Boiling water shrinkage</b></td><td>ASTM D2259</td><td>Quant</td><td>%</td><td>5.0&ndash;9.0<br><b>range &le; 1.5</b></td><td><span class="tier t1">1</span></td><td>100&deg;C / 30 min. Record on 5 packages &mdash; <b>the spread matters more than the mean</b></td></tr>
+<tr><td class="mic">S1_BFL</td><td>Broken filaments</td><td>Visual under tension</td><td>Quant</td><td>count/kg</td><td>&le; 2</td><td><span class="tier t1">1</span></td><td>10-minute run over a black board at constant tension</td></tr>
+<tr><td class="mic">S1_PKD</td><td>Package density</td><td>Mass / volume</td><td>Quant</td><td>g/cm&sup3;</td><td>0.36&ndash;0.42</td><td><span class="tier t1">1</span></td><td><b>Governs liquor flow.</b> Hard packages dye light in the core</td></tr>
+<tr><td class="mic">S1_PKW</td><td>Package weight</td><td>&mdash;</td><td>Quant</td><td>kg</td><td>nominal &plusmn;3%</td><td><span class="tier t1">1</span></td><td>Sets the dyebath liquor ratio</td></tr>
+<tr><td class="mic">S1_GRD</td><td>Grade</td><td>Internal &mdash; <i>see Q2</i></td><td>Qual</td><td>code</td><td>AA or A</td><td><span class="tier t1">1</span></td><td>Code list required before this can be built</td></tr>
+<tr><td class="mic">S1_IDT</td><td>Lot identity vs SAP batch</td><td>&mdash;</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Supplier tag vs <code>GREY_CODE</code>. <b>Single-lot loading rule &mdash; see 3.3</b></td></tr>
+</table>
+
+<h3>3.3 The single-lot rule</h3>
+<div class="warn">
+Loading one dye vessel from two supplier lots is among the most reliable ways to
+produce barr&eacute; in polyester, because dye affinity differs between lots in
+ways no dyehouse process control can correct. Your <i>Merge Details</i> app
+suggests merging is a recognised operation here.
+<br><br><b>Recommendation:</b> make <code>S1_IDT</code> fail automatically when a
+batch draws on more than one vendor batch, and require a supervisor override with
+a recorded reason. This is one rule, cheap to implement, and it protects the
+largest single loss mode at stage 2.
+</div>
+
+<h3>3.4 Sampling</h3>
+<table>
+<tr><th style="width:26%">Characteristic</th><th style="width:24%">Sample</th><th>Positioning</th></tr>
+<tr><td><code>S1_DEN</code>, <code>S1_ELG</code></td><td>20 breaks across 5 packages</td><td>Spread across the delivery, not from one carton</td></tr>
+<tr><td><code>S1_BWS</code></td><td>5 packages</td><td>Different cartons &mdash; the point is to expose lot spread</td></tr>
+<tr><td><code>S1_PKD</code>, <code>S1_PKW</code></td><td>ISO 2859-1 GIL II</td><td>See 6.2 for the sample-size table</td></tr>
+<tr><td><code>S1_BFL</code>, <code>S1_GRD</code>, <code>S1_IDT</code></td><td>ISO 2859-1 GIL II, AQL 2.5 / 1.0</td><td>Result recorded as <b>number of defectives found</b>, one entry per lot</td></tr>
+</table>
+
+<h2 class="brk">4. Stage 2 &mdash; After dyeing</h2>
+<p class="small">Per dye batch, after dyeing and drying, before release to winding. Inspection type <b>03</b>, in-process. Anchor: <code>ZPP_BATCHN.DYE_CODE</code> + <code>AUFNR</code>.</p>
+
+<h3>4.1 Shade and appearance &mdash; every batch</h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:14%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S2_DE</td><td><b>Shade vs approved standard</b></td><td>ISO 105-J03<br>AATCC EP6</td><td>Quant</td><td>&Delta;E CMC(2:1)</td><td>&le; 1.0</td><td><span class="tier t1">1</span></td><td>Spectrophotometer D65/10&deg;, specular included, UV calibrated. Wind a card to constant thickness</td></tr>
+<tr><td class="mic">S2_INOUT</td><td><b>Inside&ndash;outside package variation</b></td><td>ISO 105-A02</td><td>Qual</td><td>grade</td><td>&ge; 4-5</td><td><span class="tier t1">1</span></td><td>Innermost vs outermost 50 g of the same cheese. <b>The failure mode package dyeing owns</b></td></tr>
+<tr><td class="mic">S2_P2P</td><td>Package-to-package within batch</td><td>ISO 105-A02</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t1">1</span></td><td>Top, middle, bottom of the carrier &mdash; exposes vertical flow gradient</td></tr>
+<tr><td class="mic">S2_B2B</td><td>Batch-to-batch vs master</td><td>ISO 105-A02</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t1">1</span></td><td>Against the retained master for that shade</td></tr>
+<tr><td class="mic">S2_LEVEL</td><td>Levelness / barr&eacute;</td><td>ISO 105-A02</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t1">1</span></td><td>Knitted sock, D65 light cabinet</td></tr>
+<tr><td class="mic">S2_STAIN</td><td>Stains, tip-dyeing, rust</td><td>Visual</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Defect code required on fail. Tip-dyeing points at carrier or flow problems</td></tr>
+</table>
+
+<h3>4.2 Colour fastness &mdash; per recipe qualification <span class="small">(assumes Q1 answered "split")</span></h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:14%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S2_WFC</td><td>Washing &mdash; colour change</td><td>ISO 105-C06 A1S</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t2">2</span></td><td>Grey scale ISO 105-A02</td></tr>
+<tr><td class="mic">S2_WFS</td><td>Washing &mdash; staining</td><td>ISO 105-C06 A1S</td><td>Qual</td><td>grade</td><td>&ge; 3-4</td><td><span class="tier t2">2</span></td><td>Multifibre adjacent, grey scale ISO 105-A03</td></tr>
+<tr><td class="mic">S2_RUBD</td><td>Rubbing &mdash; dry</td><td>ISO 105-X12</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t2">2</span></td><td>Crockmeter</td></tr>
+<tr><td class="mic">S2_RUBW</td><td>Rubbing &mdash; wet</td><td>ISO 105-X12</td><td>Qual</td><td>grade</td><td>&ge; 3</td><td><span class="tier t2">2</span></td><td><b>Most frequent fastness failure in deep shades</b></td></tr>
+<tr><td class="mic">S2_PSPA</td><td>Perspiration &mdash; acid</td><td>ISO 105-E04</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t2">2</span></td><td>Perspirometer</td></tr>
+<tr><td class="mic">S2_PSPB</td><td>Perspiration &mdash; alkaline</td><td>ISO 105-E04</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t2">2</span></td><td>Perspirometer</td></tr>
+<tr><td class="mic">S2_SUBL</td><td><b>Sublimation / dry heat</b></td><td>ISO 105-P01</td><td>Qual</td><td>grade</td><td>&ge; 4</td><td><span class="tier t2">2</span></td><td>180&deg;C / 30 s. Specific to disperse dyes &mdash; the one not to skip</td></tr>
+</table>
+
+<h3>4.3 Chemical compliance <span class="small">(tier depends on Q4)</span></h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:14%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S2_HCHO</td><td>Free formaldehyde</td><td>ISO 14184-1</td><td>Quant</td><td>ppm</td><td>&le; 75</td><td><span class="tier t3">3</span></td><td>OEKO-TEX Class II. Certificate reference captured if external</td></tr>
+<tr><td class="mic">S2_AZO</td><td>Banned azo amines</td><td>EN ISO 14362-1</td><td>Quant</td><td>ppm</td><td>&lt; 20</td><td><span class="tier t3">3</span></td><td>REACH Annex XVII. Almost always an external accredited lab</td></tr>
+</table>
+
+<div class="note">
+<b>Fastness is a recipe property, not a batch property.</b> Two batches of the
+same recipe, run correctly, will not differ in fastness. Qualifying each recipe
+once &mdash; and re-qualifying on any change of recipe, dye lot or dye supplier
+&mdash; is scientifically sound and holds up in a buyer audit, provided the link
+from batch to qualified recipe is recorded. Guaranteeing that link is the app's
+job, and it is why Q5 in v1 about recipe identification still matters.
+</div>
+
+<h2 class="brk">5. Stage 3 &mdash; After winding</h2>
+<p class="small">Per wound lot, before packing. Inspection type <b>04</b>, GR from production. Anchor: <code>ZPP_PACK</code> / handling unit.</p>
+
+<h3>5.1 Package geometry and build</h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:13%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S3_PKW</td><td>Package weight</td><td>&mdash;</td><td>Quant</td><td>kg</td><td>nominal &plusmn;1.5%</td><td><span class="tier t1">1</span></td><td>Net. Commercial exposure &mdash; short weight is a claim</td></tr>
+<tr><td class="mic">S3_PKL</td><td>Package length</td><td>ISO 2060</td><td>Quant</td><td>m</td><td>nominal &plusmn;2%</td><td><span class="tier t2">2</span></td><td>From the winder metering counter, verified periodically</td></tr>
+<tr><td class="mic">S3_PKD</td><td>Package density</td><td>Mass / volume</td><td>Quant</td><td>g/cm&sup3;</td><td>0.42&ndash;0.50</td><td><span class="tier t1">1</span></td><td>Soft collapses in transit, hard will not unwind</td></tr>
+<tr><td class="mic">S3_TAPER</td><td>Cone taper and traverse</td><td>&mdash;</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Gauge against the agreed cone format</td></tr>
+<tr><td class="mic">S3_RIBB</td><td>Ribboning / patterning</td><td>Visual</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Causes sloughing at the customer's creel</td></tr>
+<tr><td class="mic">S3_NOSE</td><td>Nose bulging</td><td>Visual</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Also check soft and hard edges while handling</td></tr>
+</table>
+
+<h3>5.2 Yarn condition after winding</h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:13%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S3_BFL</td><td>Broken filaments</td><td>Visual under tension</td><td>Quant</td><td>count/kg</td><td>&le; 2</td><td><span class="tier t1">1</span></td><td><b>Compare with <code>S1_BFL</code> &mdash; the delta is what your process added</b></td></tr>
+<tr><td class="mic">S3_TENS</td><td>Winding tension</td><td>Tensiometer</td><td>Quant</td><td>cN</td><td>target &plusmn;10%<br>CV &le; 6%</td><td><span class="tier t2">2</span></td><td>Per winding position. Doubles as a machine-maintenance signal</td></tr>
+<tr><td class="mic">S3_DEN</td><td><b>Final denier</b></td><td>ISO 2060</td><td>Quant</td><td>dtex</td><td>nominal &plusmn;2.0%</td><td><span class="tier t2">2</span></td><td>Paired with <code>S1_DEN</code></td></tr>
+<tr><td class="mic">S3_ELG</td><td><b>Final elongation</b></td><td>ISO 2062</td><td>Quant</td><td>%</td><td>18&ndash;28<br><b>loss vs S1 &le; 8%</b></td><td><span class="tier t2">2</span></td><td>Paired with <code>S1_ELG</code>. The loss figure detects thermal or mechanical damage</td></tr>
+</table>
+
+<h3>5.3 Final release</h3>
+<table>
+<tr><th style="width:9%">MIC</th><th style="width:19%">Characteristic</th><th style="width:13%">Standard</th><th style="width:6%">Type</th><th style="width:7%">Unit</th><th style="width:14%">Proposed limit</th><th style="width:6%">Tier</th><th>Method note</th></tr>
+<tr><td class="mic">S3_CONT</td><td>Contamination / stain</td><td>Visual</td><td>Qual</td><td>P/F</td><td>Pass</td><td><span class="tier t1">1</span></td><td>Oil from the winder, rust, foreign fibre. Defect code on fail</td></tr>
+<tr><td class="mic">S3_MOIS</td><td>Moisture</td><td>ISO 6741-1</td><td>Quant</td><td>%</td><td>&le; 0.5</td><td><span class="tier t1">1</span></td><td>Oven dry 105&deg;C to constant mass, or calibrated moisture balance</td></tr>
+<tr><td class="mic">S3_OIL</td><td><b>Oil % (coning oil)</b></td><td>Solvent extraction</td><td>Quant</td><td>%</td><td>1.0&ndash;2.0<br><i>confirm target</i></td><td><span class="tier t1">1</span></td><td><b>Applied at the winder, not residual spin finish.</b> Governs running on the customer's knitting machine</td></tr>
+</table>
+
+<div class="warn">
+<b><code>S3_OIL</code> needs your target, not mine.</b> Coning oil pick-up is set
+by what the yarn is for &mdash; knitting yarn typically carries more than weaving
+yarn, and different customers specify differently. The 1.0&ndash;2.0% above is a
+placeholder. Please replace it with your own applicator setting and tolerance
+before this goes into master data.
+</div>
+
+<h2 class="brk">6. Volume, and what it means for the apps</h2>
+
+<h3>6.1 Recalculated daily load</h3>
+<table>
+<tr><th style="width:20%">Stage</th><th style="width:16%">Frequency</th><th style="width:16%">Tier 1 chars</th><th style="width:20%">Events / day</th><th>Result entries / day</th></tr>
+<tr><td>Stage 1</td><td>Per delivery lot</td><td>8</td><td><i>pending Q5</i> &mdash; assume 6</td><td>~48</td></tr>
+<tr><td>Stage 2 tier 1</td><td>Every batch</td><td>6</td><td>75</td><td><b>450</b></td></tr>
+<tr><td>Stage 2 tier 2</td><td>Per recipe</td><td>7</td><td>~10 new recipes</td><td>~70</td></tr>
+<tr><td>Stage 3 tier 1</td><td>Every wound lot</td><td>9</td><td>75</td><td><b>675</b></td></tr>
+<tr><td>Stage 3 tier 2</td><td>Periodic</td><td>4</td><td>~15</td><td>~60</td></tr>
+<tr><td colspan="4"><b>Total</b></td><td><b>~1,300 result entries per day</b></td></tr>
+</table>
+
+<div class="ok">
+<b>That is about two hours of data entry across the whole day</b>, at four to
+five seconds per result, split between the laboratory and the winding floor. It
+is higher than the 625 in v1 because stage 3 turned out to be nine tier-1
+characteristics rather than my assumed lighter set. Two hours spread across two
+locations and a full shift is workable, but it is the number the app design has
+to earn &mdash; and it is why section 6.2 matters more than it looks.
+</div>
+
+<h3>6.2 One design rule that makes this possible</h3>
+<div class="stop">
+<b>Attribute characteristics are recorded once per lot, not once per package.</b>
+<br><br>Under ISO 2859-1 you inspect a sample of <i>n</i> packages and record
+<b>the number of defectives found</b>. So <code>S3_RIBB</code> on a 32-package
+sample is <b>one</b> result &mdash; "2 defectives" &mdash; not thirty-two
+pass/fail entries.
+<br><br>Get this wrong and stage 3 alone becomes 2,400 entries a day and the
+system is abandoned within a month. The apps must present a single counter per
+attribute characteristic, pre-loaded with the sample size derived from the cheese
+or cone count. This is the most important single decision in the build.
+</div>
+
+<h3>6.3 Sampling table &mdash; ISO 2859-1, GIL II, normal severity</h3>
+<table>
+<tr><th style="width:24%">Lot size (packages)</th><th style="width:14%">Code letter</th><th style="width:16%">Sample size</th><th style="width:23%">Ac / Re at AQL 2.5</th><th>Ac / Re at AQL 1.0</th></tr>
+<tr><td>26 &ndash; 50</td><td>D</td><td>8</td><td>0 / 1</td><td>0 / 1</td></tr>
+<tr><td>51 &ndash; 90</td><td>E</td><td>13</td><td>1 / 2</td><td>0 / 1</td></tr>
+<tr><td>91 &ndash; 150</td><td>F</td><td>20</td><td>1 / 2</td><td>1 / 2</td></tr>
+<tr><td>151 &ndash; 280</td><td>G</td><td>32</td><td>2 / 3</td><td>1 / 2</td></tr>
+<tr><td>281 &ndash; 500</td><td>H</td><td>50</td><td>3 / 4</td><td>1 / 2</td></tr>
+</table>
+<p class="small">AQL 1.0 for critical (identity, chemical compliance) &middot; AQL 2.5 for major
+(shade, package integrity, broken filaments) &middot; AQL 4.0 for cosmetic. Lot size comes from
+<code>ZPP_BATCHN.CHEESES</code> or the packing record, so the app derives the sample size itself.</p>
+
+<h2 class="brk">7. Risk register &mdash; what the pruning gave up</h2>
+
+<p>Recorded so the trade-offs stay visible. None of these is an argument to
+reverse your decision; they are the things to watch, and the first places to look
+when something goes wrong.</p>
+
+<table>
+<tr><th style="width:22%">Cut from v1</th><th style="width:28%">What it protected against</th><th style="width:8%">Risk</th><th>Residual mitigation in v2</th></tr>
+<tr><td><b>Dye uniformity tube test</b> (stage 1)</td><td>Package-to-package dye affinity variation &mdash; the root cause of barr&eacute; that no dyehouse control can correct</td><td><b>High</b></td><td><b>Partial, and better than nothing.</b> <code>S1_BWS</code> is retained, and BWS spread across packages is a recognised proxy for dye affinity spread. I have therefore added a <b>range &le; 1.5%</b> limit alongside the absolute range. Watch this figure &mdash; if barr&eacute; rises at stage 2, the tube test is the first thing to reinstate</td></tr>
+<tr><td>Tenacity (stages 1 and 2)</td><td>Yarn strength and dyebath damage</td><td>Medium</td><td><code>S3_ELG</code> with the loss-vs-<code>S1_ELG</code> limit catches gross damage. Elongation loss and tenacity loss usually move together</td></tr>
+<tr><td>Light fastness ISO 105-B02</td><td>Fading in service &mdash; a common cause of customer claims on furnishing and automotive yarn</td><td>Medium</td><td>None. If any customer specifies light fastness, it must be reinstated for those recipes and outsourced</td></tr>
+<tr><td>Splice strength and count</td><td>Yarn breaks at the customer's machine</td><td>Medium</td><td>None. <code>S3_TENS</code> gives an indirect signal only. Worth revisiting if running complaints appear</td></tr>
+<tr><td>pH ISO 3071 (stage 2)</td><td>Incomplete wash-off; skin-contact compliance</td><td>Low&ndash;Med</td><td>None. Cheap and fast &mdash; the easiest of these to add back if OEKO-TEX certification is pursued</td></tr>
+<tr><td>Package hardness (stage 1)</td><td>Core-to-surface dyeing variation</td><td>Low</td><td><code>S1_PKD</code> density is retained and measures much the same property</td></tr>
+<tr><td>Label / barcode verification</td><td>Wrong yarn shipped under the right label</td><td>Low</td><td>None in QM. Likely already covered by handling-unit scanning in the packing process</td></tr>
+</table>
+
+<h2>8. Master data build list</h2>
+
+<table>
+<tr><th style="width:28%">Object</th><th style="width:12%">Count</th><th style="width:14%">Transaction</th><th>Content</th></tr>
+<tr><td>Master inspection characteristics</td><td><b>37</b></td><td><code>QS21</code></td><td>8 stage 1, 15 stage 2, 13 stage 3, plus <code>S1_GRD</code> pending Q2</td></tr>
+<tr><td>&mdash; quantitative with limits</td><td>19</td><td></td><td>Limits from sections 3&ndash;5</td></tr>
+<tr><td>&mdash; qualitative grey scale</td><td>7</td><td></td><td>Nine-code selected set</td></tr>
+<tr><td>&mdash; qualitative pass/fail</td><td>10</td><td></td><td>With defect catalogs</td></tr>
+<tr><td>&mdash; qualitative coded</td><td>1</td><td></td><td><code>S1_GRD</code> &mdash; blocked on Q2</td></tr>
+<tr><td>Code groups / catalogs</td><td>5</td><td><code>QS41</code></td><td>Grey scale, pass/fail, grade, plus defect catalogs for stages 2 and 3</td></tr>
+<tr><td>Selected sets</td><td>5</td><td><code>QS51</code></td><td>With per-characteristic valuation thresholds</td></tr>
+<tr><td>Inspection plans</td><td>3</td><td><code>QP01</code></td><td>One per stage, per material group</td></tr>
+<tr><td>Sampling procedures</td><td>3</td><td><code>QDV1</code></td><td>ISO 2859-1 attribute, fixed-sample variable, 100% inspection</td></tr>
+<tr><td>Dynamic modification rules</td><td>1</td><td><code>QDR1</code></td><td>Implements tier-2 skipping once a recipe is qualified</td></tr>
+<tr><td>Usage decision selected set</td><td>1</td><td><code>QS51</code></td><td>Catalog 3 &mdash; A, A1, RD, ST, DG, R</td></tr>
+</table>
+
+<div class="note">
+<b>Down from ~58 MICs to 37.</b> Roughly two days of entry rather than three, but
+the saving that matters is in ongoing operation, not in setup. Every
+characteristic you keep is a characteristic somebody stands at a bench and
+measures, 75 times a day, for years.
+</div>
+
+<h2>9. Next steps</h2>
+
+<ol class="steps">
+<li><b>Answer Q1&ndash;Q5</b> in section 2. Q1 (fastness splitting) and Q2 (grade definition) block master data entry; the others shape the app.</li>
+<li><b>Confirm the <code>S3_OIL</code> target</b> from your winder applicator setting.</li>
+<li><b>Review the limits.</b> Every figure in sections 3&ndash;5 is an industry-typical proposal. Check each against your own process capability &mdash; a limit the plant cannot meet teaches operators to ignore the system, which is worse than having no limit at all.</li>
+<li><b>Master data build</b> once 1&ndash;3 are settled. QM consultant, roughly two days plus the review sessions.</li>
+<li><b>Build Post-Dyeing QC</b> end to end as the pattern app &mdash; 15 characteristics, the fullest of the three, and the one that exercises grey scale, pass/fail, quantitative and external-certificate capture together.</li>
+<li><b>Pilot two weeks</b> on one dyeing line before replicating to stages 1 and 3.</li>
+</ol>
+
+<p style="margin-top:1.6em" class="small">
+Specification v2.0. Supersedes v1.0 of 21 August 2026. The characteristic set is
+as confirmed by the QC Manager; standards, methods, tiers and limits are proposed
+against those characteristics and remain subject to review under step 3 above.
+</p>
+
+</body></html>
