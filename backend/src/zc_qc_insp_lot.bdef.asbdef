@@ -3,13 +3,8 @@ strict ( 2 );
 
 define behavior for ZC_QC_INSP_LOT alias InspectionLot
 {
+  use action recordSingleResult;
   use action recordResults;
   use action setUsageDecision;
-  use association _Characteristic { create; }
-}
-
-define behavior for ZC_QC_INSP_CHAR alias Characteristic
-{
-  use update;
-  use association _InspectionLot;
+  use association _Characteristic;
 }

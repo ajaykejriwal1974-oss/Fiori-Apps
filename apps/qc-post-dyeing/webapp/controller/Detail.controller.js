@@ -28,6 +28,7 @@ sap.ui.define([
                 parameters: { $expand: "_Characteristic", $$updateGroupId: "qc" }
             });
             this._sLot = sLot;
+            this._aDirty = [];
             this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
 
             // Until the dye recipe is separately identified in SAP (open
@@ -54,19 +55,58 @@ sap.ui.define([
             this.getOwnerComponent().getRouter().navTo("worklist");
         },
 
-        onResultChange: function () {
-            this.getOwnerComponent().getModel("ui").setProperty("/dirty", true);
+        onResultChange: function (oEvent) {
+            var oCtx = oEvent && oEvent.getSource && oEvent.getSource().getBindingContext();
+            if (oCtx) { this._touch(oCtx); }
+            else { this.getOwnerComponent().getModel("ui").setProperty("/dirty", true); }
         },
 
-        onCodeChange: function () {
+        onCodeChange: function (oEvent) {
+            var oCtx = oEvent && oEvent.getSource && oEvent.getSource().getBindingContext();
+            if (oCtx) { this._touch(oCtx); }
+            else { this.getOwnerComponent().getModel("ui").setProperty("/dirty", true); }
+        },
+
+        // Characteristics are read-only in RAP now, so results go through the
+        // recordSingleResult action - one call per changed row, all inside a
+        // single $batch. See docs/backend-notes/qm-data-model.md for why the
+        // composition was removed.
+        _touch: function (oCtx) {
+            if (!this._aDirty) { this._aDirty = []; }
+            if (this._aDirty.indexOf(oCtx) === -1) { this._aDirty.push(oCtx); }
             this.getOwnerComponent().getModel("ui").setProperty("/dirty", true);
         },
 
         onSave: function () {
-            var oModel = this.getView().getModel();
-            oModel.submitBatch("qc").then(function () {
+            var aDirty = this._aDirty || [];
+            if (!aDirty.length) { return; }
+
+            var oModel = this.getView().getModel(),
+                oLotCtx = this.getView().getBindingContext(),
+                aCalls = [];
+
+            aDirty.forEach(function (oCtx) {
+                var oAction = oModel.bindContext(
+                    "com.sap.gateway.srvd.zui_qc_inspection.v0001.recordSingleResult(...)", oLotCtx);
+
+                oAction.setParameter("InspectionLot", this._sLot);
+                oAction.setParameter("OperationNumber", oCtx.getProperty("OperationNumber"));
+                oAction.setParameter("CharacteristicNumber", oCtx.getProperty("CharacteristicNumber"));
+                oAction.setParameter("MeanValue", oCtx.getProperty("MeanValue") || 0);
+                oAction.setParameter("ResultCode", oCtx.getProperty("ResultCode") || "");
+                oAction.setParameter("ResultCodeGroup", oCtx.getProperty("ResultCodeGroup") || "");
+                oAction.setParameter("DefectCount", oCtx.getProperty("DefectCount") || 0);
+                oAction.setParameter("ActualSampleSize", oCtx.getProperty("ActualSampleSize") || 0);
+                oAction.setParameter("ResultComment", oCtx.getProperty("InspectorComment") || "");
+
+                aCalls.push(oAction.execute("qc"));
+            }, this);
+
+            Promise.all(aCalls).then(function () {
+                this._aDirty = [];
                 this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
                 MessageToast.show(this._t("msgSaved"));
+                if (oLotCtx) { oLotCtx.refresh(); }
             }.bind(this)).catch(function (oErr) {
                 MessageBox.error(oErr.message || "Save failed");
             });

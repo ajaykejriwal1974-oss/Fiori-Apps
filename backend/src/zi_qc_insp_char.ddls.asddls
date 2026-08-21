@@ -4,6 +4,14 @@
 // One row per characteristic of an inspection lot operation, with its
 // specification from QAMV and its summarised result from QAMR.
 //
+// NO parent association, and the lot reaches this by a plain association
+// rather than a composition. Composition plus association-to-parent is the
+// textbook RAP pattern, but it is a hard activation cycle: the parent will not
+// activate until the child's ACTIVE version already carries the to-parent
+// association, and the child cannot carry it until the parent exists. Four
+// joint-activation attempts in KSD failed. Results are written by an action on
+// the lot instead - see ZI_QC_INSP_LOT.
+//
 // Keys verified: QAMV and QAMR share PRUEFLOS + VORGLFNR + MERKNR, so the
 // join cannot fan out.
 //
@@ -17,8 +25,6 @@ define view entity ZI_QC_INSP_CHAR
     left outer join qamr as res on  res.prueflos = spec.prueflos
                                and  res.vorglfnr = spec.vorglfnr
                                and  res.merknr   = spec.merknr
-  association to parent ZI_QC_INSP_LOT as _InspectionLot
-    on $projection.InspectionLot = _InspectionLot.InspectionLot
 {
   key spec.prueflos                               as InspectionLot,
   key spec.vorglfnr                               as OperationNumber,
@@ -53,6 +59,5 @@ define view entity ZI_QC_INSP_CHAR
       // Quantitative when a unit or decimals are set, qualitative otherwise
       case when spec.katalgart1 <> '' then cast('QUAL' as abap.char(4))
                                       else cast('QUAN' as abap.char(4))
-      end                                         as CharacteristicKind,
-      _InspectionLot
+      end                                         as CharacteristicKind
 }

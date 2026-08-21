@@ -77,5 +77,5 @@ define root view entity ZC_QC_INSP_LOT
       EndDate,
       LotOrigin,
       LotText,
-      _Characteristic : redirected to composition child ZC_QC_INSP_CHAR
+      _Characteristic : redirected to ZC_QC_INSP_CHAR
 }

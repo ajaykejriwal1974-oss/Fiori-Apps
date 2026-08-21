@@ -47,9 +47,5 @@ define view entity ZC_QC_INSP_CHAR
       InspectionDate,
       @EndUserText.label: 'Comment'
       InspectorComment,
-      ResultStatus,
-      // The projection BDEF declares "use association _InspectionLot", so the
-      // projection has to expose it. Redirect to parent, not a plain redirect -
-      // this is the child of a composition.
-      _InspectionLot : redirected to parent ZC_QC_INSP_LOT
+      ResultStatus
 }

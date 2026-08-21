@@ -17,9 +17,12 @@
 define root view entity ZI_QC_INSP_LOT
   as select from qals as lot
     left outer join t001k as vcc on vcc.bwkey = lot.werk
-  // Composition, not association: the technician edits result rows inside the
-  // lot, and RAP only allows an updatable child within a composition.
-  composition [0..*] of ZI_QC_INSP_CHAR as _Characteristic
+  // Plain association, deliberately NOT a composition. See the note in
+  // ZI_QC_INSP_CHAR: the composition/to-parent pair is an activation cycle
+  // this system would not resolve. Characteristics are read through this
+  // association and written through the recordSingleResult action.
+  association [0..*] to ZI_QC_INSP_CHAR as _Characteristic
+    on $projection.InspectionLot = _Characteristic.InspectionLot
 {
   key lot.prueflos                                as InspectionLot,
       lot.werk                                    as Plant,

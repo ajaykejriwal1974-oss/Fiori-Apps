@@ -1,13 +1,15 @@
-// Unmanaged. QM results cannot be written with a plain update - the standard
-// BAPIs own the logic (valuation against the selected set, sample arithmetic,
-// status handling, the usage decision follow-on). So RAP reads through the
-// CDS views and writes through BAPI_INSPCHAR_SETRESULT and friends.
+// Unmanaged, and the ONLY behaviour definition in this service.
 //
-// No draft table. Specification v2 called for ZQC_RESULT_DRAFT because a
-// fastness battery is not entered in one sitting. That turned out to be
-// unnecessary: BAPI_INSPCHAR_SETRESULT persists a result without confirming
-// the operation, and QAMR-SATZSTATUS already distinguishes recorded from
-// confirmed. QM has had the draft concept all along.
+// The original design made ZI_QC_INSP_CHAR an updatable composition child so
+// the technician could PATCH a result row directly. That is the textbook RAP
+// pattern and it could not be activated in KSD: the parent refuses until the
+// child's ACTIVE version carries a to-parent association, and the child cannot
+// carry one until the parent exists. Four joint activations failed.
+//
+// So characteristics are read-only, reached by a plain association, and every
+// result is written by an action on the lot. For a technician who enters nine
+// to fifteen results and then presses Save, one action per changed row inside
+// a single $batch is no worse than a PATCH per row - and it activates.
 unmanaged implementation in class zbp_i_qc_insp_lot unique;
 strict ( 2 );
 
@@ -15,26 +17,15 @@ define behavior for ZI_QC_INSP_LOT alias InspectionLot
 {
   // Read-only header. Lots are created by QM at goods receipt or order
   // release, never by this app.
-  action recordResults    parameter ZD_QC_RECORD_RESULTS  result [1] $self;
-  action setUsageDecision parameter ZD_QC_USAGE_DECISION  result [1] $self;
+
+  // One result for one characteristic. Called once per changed row.
+  action recordSingleResult parameter ZD_QC_SINGLE_RESULT result [1] $self;
+
+  // Confirm the operation - no more results accepted afterwards.
+  action recordResults      parameter ZD_QC_RECORD_RESULTS result [1] $self;
+
+  // Close the lot with a usage decision.
+  action setUsageDecision   parameter ZD_QC_USAGE_DECISION result [1] $self;
 
   association _Characteristic;
-}
-
-define behavior for ZI_QC_INSP_CHAR alias Characteristic
-{
-  update;
-
-  // Everything from QAMV is specification, not result. Only the four result
-  // fields a technician actually types are writable.
-  field ( readonly ) InspectionLot, OperationNumber, CharacteristicNumber,
-                     MasterCharacteristic, CharacteristicName, CharacteristicKind,
-                     CharacteristicUnit, DecimalPlaces,
-                     TargetValue, TargetIsInitial,
-                     LowerLimit, LowerLimitIsInitial,
-                     UpperLimit, UpperLimitIsInitial,
-                     SelectedSet, CatalogType,
-                     Valuation, ResultStatus, Inspector, InspectionDate;
-
-  association _InspectionLot;
 }
