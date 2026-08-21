@@ -136,9 +136,16 @@
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button text="Save" press=".onSave" enabled="{ui>/dirty}"/>
-                <Button text="Record Results" type="Emphasized" press=".onRecord"/>
-                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"/>
+                <!-- __OperationControl comes back with every InspectionLot read
+                     (get_global_authorizations sets it per lot) - gate each
+                     button on its own flag so a closed lot or an existing UD
+                     disables the button instead of surfacing a raw OData error. -->
+                <Button text="Save" press=".onSave"
+                        enabled="{= ${ui>/dirty} &amp;&amp; ${__OperationControl/recordSingleResult} }"/>
+                <Button text="Record Results" type="Emphasized" press=".onRecord"
+                        enabled="{__OperationControl/recordResults}"/>
+                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"
+                        enabled="{__OperationControl/setUsageDecision}"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>
