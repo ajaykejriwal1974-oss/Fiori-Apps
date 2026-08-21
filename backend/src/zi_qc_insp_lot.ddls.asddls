@@ -17,8 +17,9 @@
 define root view entity ZI_QC_INSP_LOT
   as select from qals as lot
     left outer join t001k as vcc on vcc.bwkey = lot.werk
-  association [0..*] to ZI_QC_INSP_CHAR as _Characteristic
-    on $projection.InspectionLot = _Characteristic.InspectionLot
+  // Composition, not association: the technician edits result rows inside the
+  // lot, and RAP only allows an updatable child within a composition.
+  composition [0..*] of ZI_QC_INSP_CHAR as _Characteristic
 {
   key lot.prueflos                                as InspectionLot,
       lot.werk                                    as Plant,

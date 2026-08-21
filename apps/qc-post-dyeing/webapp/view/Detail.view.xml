@@ -1,0 +1,119 @@
+<mvc:View
+    controllerName="kejriwal.qm.qcpostdyeing.controller.Detail"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    height="100%">
+
+    <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
+
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{Batch}" level="H2"/>
+                </f:heading>
+                <f:expandedContent>
+                    <Text text="{MaterialName} - {Material}"/>
+                </f:expandedContent>
+                <f:snappedContent>
+                    <Text text="{MaterialName}"/>
+                </f:snappedContent>
+                <f:navigationActions>
+                    <Button icon="sap-icon://nav-back" press=".onBack" tooltip="Back"/>
+                </f:navigationActions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <HBox wrap="Wrap">
+                    <ObjectAttribute title="{i18n>colLot}"    text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="{i18n>colSupplierLot}" text="{VendorBatch}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="{i18n>colOrder}"  text="{ProductionOrder}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="{i18n>colQty}"
+                        text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="{i18n>colSample}"
+                        text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }"/>
+                </HBox>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <List id="lstChars" mode="None"
+                  items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }"
+                  class="sapUiNoContentPadding">
+                <CustomListItem>
+                    <VBox class="sapUiSmallMargin">
+
+                        <HBox justifyContent="SpaceBetween" alignItems="Center">
+                            <VBox>
+                                <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
+                                <Text text="{ parts: ['MasterCharacteristic','TargetValue','LowerLimit','UpperLimit','CharacteristicUnit','LowerLimitIsInitial','UpperLimitIsInitial'], formatter: '.fmtSpec' }"
+                                      class="sapUiTinyText"/>
+                            </VBox>
+                            <ObjectStatus
+                                text="{ path: 'Valuation', formatter: '.fmtValText' }"
+                                state="{ path: 'Valuation', formatter: '.fmtValState' }"
+                                class="sapMObjectStatusLarge"/>
+                        </HBox>
+
+                        <!-- Quantitative: numeric entry, limits shown above -->
+                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                              visible="{= ${CharacteristicKind} === 'QUAN' }">
+                            <Input value="{MeanValue}" type="Number" width="9rem"
+                                   textAlign="End" change=".onResultChange"/>
+                            <Text text="{CharacteristicUnit}" class="sapUiSmallMarginBegin"/>
+                        </HBox>
+
+                        <!-- Qualitative: nine-position grey scale, one tap.
+                             A dropdown here costs four seconds per result and
+                             across 625 results a day decides whether the app
+                             is used or abandoned. -->
+                        <SegmentedButton class="sapUiSmallMarginTop"
+                                         selectedKey="{ResultCode}"
+                                         selectionChange=".onCodeChange"
+                                         visible="{= ${CharacteristicKind} === 'QUAL' &amp;&amp; ${SelectedSet} !== 'ZQC_PF' }">
+                            <items>
+                                <SegmentedButtonItem key="GS10" text="1"/>
+                                <SegmentedButtonItem key="GS15" text="1-2"/>
+                                <SegmentedButtonItem key="GS20" text="2"/>
+                                <SegmentedButtonItem key="GS25" text="2-3"/>
+                                <SegmentedButtonItem key="GS30" text="3"/>
+                                <SegmentedButtonItem key="GS35" text="3-4"/>
+                                <SegmentedButtonItem key="GS40" text="4"/>
+                                <SegmentedButtonItem key="GS45" text="4-5"/>
+                                <SegmentedButtonItem key="GS50" text="5"/>
+                            </items>
+                        </SegmentedButton>
+
+                        <!-- Pass / fail attribute: defect COUNT over the sample,
+                             not one entry per package. This is design rule 6.2
+                             of the specification and it is what keeps stage 3 at
+                             nine entries per lot. -->
+                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                              visible="{= ${SelectedSet} === 'ZQC_PF' }">
+                            <Label text="{i18n>charDefects}" class="sapUiTinyMarginEnd"/>
+                            <StepInput value="{DefectCount}" min="0" step="1" width="7rem"
+                                       change=".onResultChange"/>
+                            <Label text="{i18n>charSample}" class="sapUiSmallMarginBegin sapUiTinyMarginEnd"/>
+                            <StepInput value="{ActualSampleSize}" min="0" step="1" width="7rem"
+                                       change=".onResultChange"/>
+                        </HBox>
+
+                    </VBox>
+                </CustomListItem>
+            </List>
+        </f:content>
+
+        <f:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button text="{i18n>saveDraft}" press=".onSave"
+                        enabled="{ui>/dirty}"/>
+                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"/>
+                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"/>
+            </OverflowToolbar>
+        </f:footer>
+    </f:DynamicPage>
+</mvc:View>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Raw Material QC</title>
+    <!-- Local UI5. The plant network cannot resolve ui5.sap.com, so the CDN
+         must not be used - the BSP maps resources/ to the on-stack library. -->
+    <script
+        id="sap-ui-bootstrap"
+        src="resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{"kejriwal.qm.qcrawmaterial": "./"}'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true">
+    </script>
+    <!-- ComponentContainer height defaults to auto -> the app renders at 0px
+         and the page looks blank with a clean console. Do not remove. -->
+    <style>
+        html, body, body > div { height: 100%; margin: 0; }
+        #container, #container-uiarea, #container-uiarea > div { height: 100%; }
+    </style>
+</head>
+<body class="sapUiBody">
+    <div
+        data-sap-ui-component
+        data-name="kejriwal.qm.qcrawmaterial"
+        data-id="container"
+        data-settings='{"id": "qcapp", "height": "100%"}'
+        style="height: 100%">
+    </div>
+</body>
+</html>

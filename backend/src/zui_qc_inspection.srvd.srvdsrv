@@ -1,0 +1,7 @@
+@EndUserText.label: 'QC Inspection Service'
+define service ZUI_QC_INSPECTION {
+  expose ZC_QC_INSP_LOT     as InspectionLot;
+  expose ZC_QC_INSP_CHAR    as Characteristic;
+  expose ZI_VH_PLANT        as PlantVH;
+  expose ZI_VH_COMPANYCODE  as CompanyVH;
+}

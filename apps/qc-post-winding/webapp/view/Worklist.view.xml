@@ -1,0 +1,110 @@
+<mvc:View
+    controllerName="kejriwal.qm.qcpostwinding.controller.Worklist"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    height="100%">
+
+    <f:DynamicPage id="page" headerExpanded="true" showFooter="false" fitContent="true">
+
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{ui>/stageTitle}" level="H2"/>
+                </f:heading>
+                <f:expandedContent>
+                    <Label text="{i18n>worklistTitle}"/>
+                </f:expandedContent>
+                <f:actions>
+                    <Button id="btnGo" text="{i18n>go}" type="Emphasized"
+                            press=".onGo" class="sapUiTinyMarginEnd"/>
+                    <Button id="btnClear" text="{i18n>clear}" press=".onClear"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <form:SimpleForm layout="ResponsiveGridLayout"
+                                 columnsXL="4" columnsL="3" columnsM="2"
+                                 labelSpanXL="4" labelSpanL="4" labelSpanM="4"
+                                 editable="true">
+                    <Label text="{i18n>searchPlaceholder}"/>
+                    <SearchField id="fSearch" placeholder="{i18n>searchPlaceholder}"
+                                 search=".onGo" width="100%"/>
+
+                    <Label text="{i18n>filterPlant}"/>
+                    <Input id="fPlant" width="100%" showValueHelp="true"
+                           valueHelpRequest=".onPlantHelp"/>
+
+                    <Label text="{i18n>filterBatch}"/>
+                    <Input id="fBatch" width="100%"/>
+
+                    <Label text="{i18n>filterSupplierLot}"/>
+                    <Input id="fVendorBatch" width="100%"/>
+
+                    <Label text="{i18n>filterMaterial}"/>
+                    <Input id="fMaterial" width="100%"/>
+
+                    <Label text="{i18n>filterDateFrom}"/>
+                    <DatePicker id="fDateFrom" width="100%" valueFormat="yyyy-MM-dd"/>
+
+                    <Label text="{i18n>filterOpenOnly}"/>
+                    <Switch id="fOpenOnly" state="true"/>
+                </form:SimpleForm>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <Table id="tblLots"
+                   growing="true" growingThreshold="40" growingScrollToLoad="true"
+                   sticky="ColumnHeaders"
+                   mode="None"
+                   items="{ path: '/InspectionLot', parameters: { $count: true }, suspended: true }">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}" level="H3"/>
+                        <ToolbarSpacer/>
+                        <Text id="txtCount"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="{i18n>colBatch}"/></Column>
+                    <Column><Text text="{i18n>colDescription}"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="{i18n>colSupplierLot}"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
+                        <Text text="{i18n>colQty}"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="{i18n>colCreated}"/></Column>
+                    <Column hAlign="End"><Text text="{i18n>colStatus}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation" press=".onOpenLot">
+                        <cells>
+                            <VBox>
+                                <Text text="{Batch}" class="sapMTitleStyleH5"/>
+                                <Text text="{InspectionLot}" class="sapUiTinyText"/>
+                            </VBox>
+                            <VBox>
+                                <Text text="{MaterialName}"/>
+                                <Text text="{Material}" class="sapUiTinyText"/>
+                            </VBox>
+                            <Text text="{VendorBatch}"/>
+                            <Text text="{ parts: ['LotQuantity','LotUnit'],
+                                          formatter: '.fmtQty' }"/>
+                            <Text text="{ path: 'CreatedOn',
+                                          type: 'sap.ui.model.odata.type.Date',
+                                          formatOptions: { style: 'medium' } }"/>
+                            <ObjectStatus
+                                text="{ path: 'ResultsConfirmed', formatter: '.fmtStatusText' }"
+                                state="{ path: 'ResultsConfirmed', formatter: '.fmtStatusState' }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

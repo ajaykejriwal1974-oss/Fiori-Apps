@@ -1,0 +1,9 @@
+CLASS zbp_i_qc_insp_lot DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL
+  FOR BEHAVIOR OF zi_qc_insp_lot.
+ENDCLASS.
+
+CLASS zbp_i_qc_insp_lot IMPLEMENTATION.
+ENDCLASS.

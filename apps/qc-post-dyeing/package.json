@@ -1,0 +1,13 @@
+{
+  "name": "qc-post-dyeing",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@ui5/cli": "^3",
+    "@sap/ux-ui5-tooling": "^1"
+  },
+  "scripts": {
+    "start": "ui5 serve",
+    "deploy": "fiori deploy --config ui5-deploy.yaml"
+  }
+}

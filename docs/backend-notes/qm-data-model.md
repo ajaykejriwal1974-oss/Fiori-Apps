@@ -109,3 +109,79 @@ plain update, so the behaviour pool calls the standard BAPIs:
 The `DESTINATION 'NONE'` pattern is the one established in
 `ZBP_I_PROD_CONFIRMATION` — it separates the update task LUW so a failure in
 one characteristic does not roll back the whole batch of results.
+
+---
+
+## Design changes made during the build
+
+Two things in Specification v2 turned out to be wrong once the code was written.
+
+### The draft table is not needed
+
+v2 called for `ZQC_RESULT_DRAFT` because a fastness battery is not entered in
+one sitting — the perspirometer runs for four hours and the technician comes
+back. The reasoning was that QM has no draft concept for results.
+
+That is wrong. **`BAPI_INSPCHAR_SETRESULT` persists a result without confirming
+the operation**, and `QAMR-SATZSTATUS` already distinguishes recorded from
+confirmed. So the app has two genuine save levels with no custom table at all:
+
+| Button | Call | Effect |
+| --- | --- | --- |
+| **Save** | `BAPI_INSPCHAR_SETRESULT` per changed row | Results persisted, operation still open, technician can leave and return |
+| **Record Results** | `BAPI_INSPOPER_RECORDRESULTS` | Operation confirmed, `QALS-STAT34` set |
+| **Usage Decision** | `BAPI_INSPLOT_SETUSAGEDECISION` | Lot closed, `QALS-STAT35` set |
+
+One fewer Z table, and the behaviour is standard rather than bolted on.
+
+### Composition, not association
+
+The first draft of `ZI_QC_INSP_LOT` reached the characteristics by association.
+RAP only permits an updatable child inside a **composition**, and the whole
+point of the detail screen is editing result rows in place. Changed to
+`composition [0..*] of ZI_QC_INSP_CHAR`, with `association to parent` on the
+child.
+
+Worth noting the tension: `ZPP_BATCHN` is still reached by association
+precisely *because* it must not fan out rows. Composition where the child is
+owned and edited; association where the data is merely related.
+
+## One service, three apps
+
+The three QC apps share `ZUI_QC_INSPECTION` and differ only by a filter on
+`InspectionType`, set in each `Component.js`:
+
+| App | BSP | Inspection type | Intent |
+| --- | --- | --- | --- |
+| Raw Material QC | `ZQC_RAW_DYE` | `01` | `QcRawMaterial-inspectKejriwal` |
+| Post-Dyeing QC | `ZQC_POST_DYE` | `03` | `QcPostDyeing-inspectKejriwal` |
+| Post-Winding QC | `ZQC_POST_WIND` | `04` | `QcPostWinding-inspectKejriwal` |
+
+The backend is built, activated and tested once. A defect found in one app is
+fixed in one place — which, after spending 21 August fixing the same class of
+bug three times across three separately-built apps, is the point.
+
+## Lessons from 21 August applied at the start
+
+| Lesson | Applied |
+| --- | --- |
+| Label Master bootstrapped from `ui5.sap.com`, unreachable from the plant | All three `index.html` files use `src="resources/sap-ui-core.js"` |
+| Component container height defaults to auto → blank page, clean console | The `height: 100%` block is in all three, with the comment explaining why |
+| 20 of 25 apps sit in `$TMP` and cannot transport | `ui5-deploy.yaml` names `ZKGPL_FIORI` from the first deployment |
+| A projection behaviour definition left inactive broke the whole service | Both BDEFs written together; activate parent before projection |
+| Guessed field names cost three defects | Every field read from `DD03L` first |
+
+## Open before deployment
+
+1. **Inspection types.** `ZI_QC_INSP_LOT` filters on `'01','03','04'` and their
+   `Z`-prefixed variants. Confirm which are actually configured in KSD — if the
+   plant uses custom types, that `where` clause needs the real values.
+2. **`OperationNumber` is hard-coded to `00000010`** in `Detail.controller.js`
+   `onRecord`. That holds while each inspection plan has a single operation.
+   The moment a plan has two, this must come from the selected characteristic.
+3. **Action binding paths** use
+   `com.sap.gateway.srvd.zui_qc_inspection.v0001.<action>`. Verify against the
+   real `$metadata` after the service binding is published — this string is
+   generated from the service definition name and is easy to get wrong.
+4. **Value help for Plant** is a stub (`onPlantHelp`). Wire it to `PlantVH`
+   once the service is live.
