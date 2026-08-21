@@ -29,6 +29,7 @@ sap.ui.define([
             });
             this._sLot = sLot;
             this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
+            this._loadIncoming(sLot);
         },
 
         onBack: function () {
@@ -115,6 +116,73 @@ sap.ui.define([
             }.bind(this)).catch(function (oErr) {
                 MessageBox.error(oErr.message || "Usage decision failed");
             });
+        },
+
+        // --- Stage 3: comparison against the incoming figures -----------
+        // Winding does not change the dye, it damages yarn. The absolute
+        // denier and elongation say little on their own; the delta against the
+        // stage 1 inspection of the same greige lot is the real signal.
+        _incoming: null,
+
+        _loadIncoming: function (sBatch) {
+            // Stage 1 result for the greige lot behind this batch. Until the
+            // batch-to-greige-lot link is confirmed (open item 8 in the QM
+            // workbook) this stays null and the deltas simply do not render,
+            // rather than showing a wrong number.
+            this._incoming = null;
+        },
+
+        onPairedChange: function () {
+            var fDen = parseFloat(this.byId("denInput").getValue()),
+                fElg = parseFloat(this.byId("elgInput").getValue()),
+                iBfl = parseInt(this.byId("bflInput").getValue(), 10);
+
+            this._renderDelta("denDelta", fDen, this._incoming && this._incoming.denier, "dtex", 2.0);
+            this._renderElongationLoss(fElg);
+            this._renderDelta("bflDelta", iBfl, this._incoming && this._incoming.brokenFilaments, "", null);
+            this.onResultChange();
+        },
+
+        _renderDelta: function (sId, fNow, fBefore, sUnit, fTolPct) {
+            var o = this.byId(sId);
+            if (!o) { return; }
+            if (isNaN(fNow) || fBefore === null || fBefore === undefined) {
+                o.setText("no incoming figure"); o.setState("None"); return;
+            }
+            var fDelta = fNow - fBefore;
+            o.setText((fDelta >= 0 ? "+" : "") + fDelta.toFixed(2) + " " + sUnit);
+            if (fTolPct === null) {
+                o.setState(fDelta > 0 ? "Warning" : "Success");
+            } else {
+                o.setState(Math.abs(fDelta / fBefore * 100) <= fTolPct ? "Success" : "Error");
+            }
+        },
+
+        _renderElongationLoss: function (fNow) {
+            var o = this.byId("elgDelta");
+            if (!o) { return; }
+            var fBefore = this._incoming && this._incoming.elongation;
+            if (isNaN(fNow) || !fBefore) { o.setText("no incoming figure"); o.setState("None"); return; }
+
+            var fLossPct = (fBefore - fNow) / fBefore * 100;
+            o.setText(fLossPct.toFixed(1) + " %");
+            // Loss above 8 % is a reject - it means thermal or mechanical
+            // damage somewhere between the greige lot and the cone.
+            o.setState(fLossPct <= 8 ? "Success" : "Error");
+        },
+
+        // One sample size for the whole lot, pushed to every attribute row.
+        // Typing it once per characteristic would be nine times the work for
+        // a number that is the same every time.
+        onSampleAllChange: function () {
+            var iN = parseInt(this.byId("sampleAll").getValue(), 10);
+            if (isNaN(iN)) { return; }
+            var oList = this.byId("lstDefects");
+            oList.getItems().forEach(function (oItem) {
+                var oCtx = oItem.getBindingContext();
+                if (oCtx) { oCtx.setProperty("ActualSampleSize", iN); }
+            });
+            this.onResultChange();
         },
 
         _t: function (sKey) {

@@ -4,82 +4,60 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.f"
     xmlns:form="sap.ui.layout.form"
-    xmlns:core="sap.ui.core"
     height="100%">
 
-    <f:DynamicPage id="page" headerExpanded="true" showFooter="false" fitContent="true">
-
+    <f:DynamicPage id="page" headerExpanded="true" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="{ui>/stageTitle}" level="H2"/>
-                </f:heading>
+                <f:heading><Title text="Post-Dyeing QC" level="H2"/></f:heading>
                 <f:expandedContent>
-                    <Label text="{i18n>worklistTitle}"/>
+                    <Text text="Dyed batches awaiting release to winding"/>
                 </f:expandedContent>
                 <f:actions>
-                    <Button id="btnGo" text="{i18n>go}" type="Emphasized"
-                            press=".onGo" class="sapUiTinyMarginEnd"/>
-                    <Button id="btnClear" text="{i18n>clear}" press=".onClear"/>
+                    <Button text="{i18n>go}" type="Emphasized" press=".onGo" class="sapUiTinyMarginEnd"/>
+                    <Button text="{i18n>clear}" press=".onClear"/>
                 </f:actions>
             </f:DynamicPageTitle>
         </f:title>
 
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-                <form:SimpleForm layout="ResponsiveGridLayout"
-                                 columnsXL="4" columnsL="3" columnsM="2"
-                                 labelSpanXL="4" labelSpanL="4" labelSpanM="4"
-                                 editable="true">
-                    <Label text="{i18n>searchPlaceholder}"/>
-                    <SearchField id="fSearch" placeholder="{i18n>searchPlaceholder}"
-                                 search=".onGo" width="100%"/>
-
-                    <Label text="{i18n>filterPlant}"/>
-                    <Input id="fPlant" width="100%" showValueHelp="true"
-                           valueHelpRequest=".onPlantHelp"/>
-
-                    <Label text="{i18n>filterBatch}"/>
+                <form:SimpleForm layout="ResponsiveGridLayout" columnsXL="4" columnsL="3" columnsM="2" editable="true">
+                    <Label text="Search"/>
+                    <SearchField id="fSearch" placeholder="Batch, shade, order" search=".onGo" width="100%"/>
+                    <Label text="Batch"/>
                     <Input id="fBatch" width="100%"/>
-
-                    <Label text="{i18n>filterSupplierLot}"/>
-                    <Input id="fVendorBatch" width="100%"/>
-
-                    <Label text="{i18n>filterMaterial}"/>
+                    <Label text="Dyed Material"/>
                     <Input id="fMaterial" width="100%"/>
-
-                    <Label text="{i18n>filterDateFrom}"/>
+                    <Label text="Production Order"/>
+                    <Input id="fOrder" width="100%"/>
+                    <Label text="Plant"/>
+                    <Input id="fPlant" width="100%"/>
+                    <Label text="Dyed From"/>
                     <DatePicker id="fDateFrom" width="100%" valueFormat="yyyy-MM-dd"/>
-
-                    <Label text="{i18n>filterOpenOnly}"/>
+                    <Label text="Open only"/>
                     <Switch id="fOpenOnly" state="true"/>
                 </form:SimpleForm>
             </f:DynamicPageHeader>
         </f:header>
 
         <f:content>
-            <Table id="tblLots"
-                   growing="true" growingThreshold="40" growingScrollToLoad="true"
-                   sticky="ColumnHeaders"
-                   mode="None"
+            <Table id="tblLots" growing="true" growingThreshold="40" growingScrollToLoad="true"
+                   sticky="ColumnHeaders" mode="None"
                    items="{ path: '/InspectionLot', parameters: { $count: true }, suspended: true }">
                 <headerToolbar>
                     <OverflowToolbar>
-                        <Title text="{i18n>worklistTitle}" level="H3"/>
-                        <ToolbarSpacer/>
-                        <Text id="txtCount"/>
+                        <Title text="Batches awaiting shade approval" level="H3"/>
+                        <ToolbarSpacer/><Text id="txtCount"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
-                    <Column><Text text="{i18n>colBatch}"/></Column>
-                    <Column><Text text="{i18n>colDescription}"/></Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true">
-                        <Text text="{i18n>colSupplierLot}"/></Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
-                        <Text text="{i18n>colQty}"/></Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true">
-                        <Text text="{i18n>colCreated}"/></Column>
-                    <Column hAlign="End"><Text text="{i18n>colStatus}"/></Column>
+                    <Column><Text text="Batch"/></Column>
+                    <Column><Text text="Shade / Dyed Material"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Order"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End"><Text text="Quantity"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Dyed"/></Column>
+                    <Column hAlign="End"><Text text="Status"/></Column>
                 </columns>
                 <items>
                     <ColumnListItem type="Navigation" press=".onOpenLot">
@@ -92,15 +70,11 @@
                                 <Text text="{MaterialName}"/>
                                 <Text text="{Material}" class="sapUiTinyText"/>
                             </VBox>
-                            <Text text="{VendorBatch}"/>
-                            <Text text="{ parts: ['LotQuantity','LotUnit'],
-                                          formatter: '.fmtQty' }"/>
-                            <Text text="{ path: 'CreatedOn',
-                                          type: 'sap.ui.model.odata.type.Date',
-                                          formatOptions: { style: 'medium' } }"/>
-                            <ObjectStatus
-                                text="{ path: 'ResultsConfirmed', formatter: '.fmtStatusText' }"
-                                state="{ path: 'ResultsConfirmed', formatter: '.fmtStatusState' }"/>
+                            <Text text="{ProductionOrder}"/>
+                            <Text text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }"/>
+                            <Text text="{ path: 'CreatedOn', type: 'sap.ui.model.odata.type.Date', formatOptions: { style: 'medium' } }"/>
+                            <ObjectStatus text="{ path: 'ResultsConfirmed', formatter: '.fmtStatusText' }"
+                                          state="{ path: 'ResultsConfirmed', formatter: '.fmtStatusState' }"/>
                         </cells>
                     </ColumnListItem>
                 </items>

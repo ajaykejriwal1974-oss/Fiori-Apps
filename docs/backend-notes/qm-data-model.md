@@ -185,3 +185,75 @@ bug three times across three separately-built apps, is the point.
    generated from the service definition name and is easy to get wrong.
 4. **Value help for Plant** is a stub (`onPlantHelp`). Wire it to `PlantVH`
    once the service is live.
+
+---
+
+## The three apps are stage-specific, not clones
+
+The first build generated all three UIs from one template, differing only by an
+`InspectionType` filter. That was wrong. The work at the bench is different at
+each gate, and a screen that ignores the difference makes the technician do the
+thinking the app should have done.
+
+The **service stays shared** — the entities are identical and one backend fixed
+once beats three fixed three times. Only the UI is stage-specific.
+
+### Stage 1 — Raw Material QC
+
+Anchored on the **supplier delivery lot**, not the batch, because one greige lot
+feeds many dye batches.
+
+- **A dedicated boiling-water-shrinkage panel.** Five package readings, with the
+  mean *and the range* computed and judged separately. This is the one screen
+  element that earns its place most: BWS was kept when the dye uniformity tube
+  test was cut, and spread across packages is the accepted proxy for spread of
+  dye affinity. The range against a 1.5 % limit is what predicts barré, so the
+  app computes it rather than leaving five numbers in a table for someone to
+  eyeball.
+- **A single-lot warning strip**, because blending two supplier lots into one
+  dye vessel is the most reliable way to produce barré, and this plant has a
+  Merge Details app.
+- Grade as a three-button selector (AA / A / B).
+
+### Stage 2 — Post-Dyeing QC
+
+Anchored on the **dye batch**.
+
+- **ΔE gets an oversized readout with graded advice**, not just a pass/fail:
+  within 1.0 passes; 1.0–2.0 is correctable by topping and points at a re-dye;
+  above 2.0 suggests stripping rather than topping. That distinction is a real
+  decision the technician makes and the app should inform it.
+- **A shade-variation panel that prompts for position.** In package dyeing the
+  dominant failure mode is a gradient — inner to outer, top to bottom of the
+  carrier — so three samples chosen to span it beat ten chosen at random.
+- **The fastness panel is collapsed and labelled by recipe state.** Fastness is
+  a property of the recipe, not the batch. Until the recipe identifier question
+  is settled the app **defaults to requiring the full battery**: over-testing is
+  recoverable, silently skipping fastness on a new recipe is not.
+- Formaldehyde and azo amines take a **certificate reference** alongside the
+  value, because both normally come back from an external accredited lab.
+
+### Stage 3 — Post-Winding QC
+
+Anchored on the **wound lot**.
+
+- **Leads with the comparison against incoming.** Winding does not change the
+  dye, it damages yarn. Final denier and elongation mean little in isolation;
+  the delta against the stage 1 figures for the same greige lot is the signal,
+  and elongation loss above 8 % is a reject.
+- **One sample size for the whole lot**, entered once and pushed to every
+  attribute row. Nine characteristics × typing the same number is eight wasted
+  entries per lot, 600 a day.
+- **Visual defects are counts over the sample**, one row each — rule 6.2 again,
+  and the difference between 9 and 2,400 entries a day.
+
+### Two deliberate nulls
+
+Both stage 2's recipe check and stage 3's incoming comparison depend on links
+that are not yet confirmed — open item 8 in the QM workbook (is the dye recipe
+separately identified?) and the batch-to-greige-lot link.
+
+Rather than invent a lookup, both **render nothing and say so**: "no incoming
+figure", and a fastness panel that defaults to required. A wrong delta shown
+confidently is worse than an absent one, and today already demonstrated how
+expensive a plausible-but-wrong number is to chase.

@@ -3,24 +3,16 @@
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.f"
-    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
     height="100%">
 
     <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
-
         <f:title>
             <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="{Batch}" level="H2"/>
-                </f:heading>
-                <f:expandedContent>
-                    <Text text="{MaterialName} - {Material}"/>
-                </f:expandedContent>
-                <f:snappedContent>
-                    <Text text="{MaterialName}"/>
-                </f:snappedContent>
+                <f:heading><Title text="{VendorBatch}" level="H2"/></f:heading>
+                <f:expandedContent><Text text="{MaterialName} - {Material}"/></f:expandedContent>
                 <f:navigationActions>
-                    <Button icon="sap-icon://nav-back" press=".onBack" tooltip="Back"/>
+                    <Button icon="sap-icon://nav-back" press=".onBack"/>
                 </f:navigationActions>
             </f:DynamicPageTitle>
         </f:title>
@@ -28,91 +20,118 @@
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <HBox wrap="Wrap">
-                    <ObjectAttribute title="{i18n>colLot}"    text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colSupplierLot}" text="{VendorBatch}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colOrder}"  text="{ProductionOrder}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colQty}"
-                        text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colSample}"
-                        text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }"/>
+                    <ObjectAttribute title="Inspection Lot" text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Delivered" text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Sample" text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Received" text="{ path: 'CreatedOn', type: 'sap.ui.model.odata.type.Date' }"/>
                 </HBox>
             </f:DynamicPageHeader>
         </f:header>
 
         <f:content>
-            <List id="lstChars" mode="None"
-                  items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }"
-                  class="sapUiNoContentPadding">
-                <CustomListItem>
-                    <VBox class="sapUiSmallMargin">
+            <VBox>
 
-                        <HBox justifyContent="SpaceBetween" alignItems="Center">
-                            <VBox>
-                                <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
-                                <Text text="{ parts: ['MasterCharacteristic','TargetValue','LowerLimit','UpperLimit','CharacteristicUnit','LowerLimitIsInitial','UpperLimitIsInitial'], formatter: '.fmtSpec' }"
-                                      class="sapUiTinyText"/>
-                            </VBox>
-                            <ObjectStatus
-                                text="{ path: 'Valuation', formatter: '.fmtValText' }"
-                                state="{ path: 'Valuation', formatter: '.fmtValState' }"
-                                class="sapMObjectStatusLarge"/>
-                        </HBox>
+                <!-- Single-lot rule. Loading one dye vessel from two supplier
+                     lots is the most reliable way to produce barre in
+                     polyester, and this plant has a Merge Details app, so
+                     merging is a recognised operation here. -->
+                <MessageStrip
+                    text="Single-lot loading: confirm this delivery will not be blended with another supplier lot before dyeing."
+                    type="Warning" showIcon="true" class="sapUiSmallMargin"/>
 
-                        <!-- Quantitative: numeric entry, limits shown above -->
-                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
-                              visible="{= ${CharacteristicKind} === 'QUAN' }">
-                            <Input value="{MeanValue}" type="Number" width="9rem"
-                                   textAlign="End" change=".onResultChange"/>
-                            <Text text="{CharacteristicUnit}" class="sapUiSmallMarginBegin"/>
-                        </HBox>
+                <!-- Boiling water shrinkage gets its own panel because it is
+                     doing double duty. The dye uniformity tube test was cut
+                     from the specification, and BWS spread across packages is
+                     the accepted proxy for dye affinity spread. The RANGE is
+                     the number that matters, not the mean. -->
+                <Panel headerText="Boiling water shrinkage - 5 packages" expandable="true" expanded="true"
+                       class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="ASTM D2259, 100 C / 30 min. Take one specimen from each of five packages in different cartons. Spread matters more than the mean - it is the substitute for the dye uniformity test."
+                                  class="sapUiTinyText sapUiSmallMarginBottom"/>
+                            <HBox wrap="Wrap" id="bwsBox">
+                                <VBox class="sapUiSmallMarginEnd">
+                                    <Label text="Pkg 1"/><Input id="bws1" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
+                                </VBox>
+                                <VBox class="sapUiSmallMarginEnd">
+                                    <Label text="Pkg 2"/><Input id="bws2" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
+                                </VBox>
+                                <VBox class="sapUiSmallMarginEnd">
+                                    <Label text="Pkg 3"/><Input id="bws3" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
+                                </VBox>
+                                <VBox class="sapUiSmallMarginEnd">
+                                    <Label text="Pkg 4"/><Input id="bws4" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
+                                </VBox>
+                                <VBox class="sapUiSmallMarginEnd">
+                                    <Label text="Pkg 5"/><Input id="bws5" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
+                                </VBox>
+                            </HBox>
+                            <HBox class="sapUiSmallMarginTop" alignItems="Center">
+                                <ObjectStatus id="bwsMean"  title="Mean"  class="sapUiMediumMarginEnd"/>
+                                <ObjectStatus id="bwsRange" title="Range (limit 1.5)" class="sapMObjectStatusLarge"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
 
-                        <!-- Qualitative: nine-position grey scale, one tap.
-                             A dropdown here costs four seconds per result and
-                             across 625 results a day decides whether the app
-                             is used or abandoned. -->
-                        <SegmentedButton class="sapUiSmallMarginTop"
-                                         selectedKey="{ResultCode}"
-                                         selectionChange=".onCodeChange"
-                                         visible="{= ${CharacteristicKind} === 'QUAL' &amp;&amp; ${SelectedSet} !== 'ZQC_PF' }">
-                            <items>
-                                <SegmentedButtonItem key="GS10" text="1"/>
-                                <SegmentedButtonItem key="GS15" text="1-2"/>
-                                <SegmentedButtonItem key="GS20" text="2"/>
-                                <SegmentedButtonItem key="GS25" text="2-3"/>
-                                <SegmentedButtonItem key="GS30" text="3"/>
-                                <SegmentedButtonItem key="GS35" text="3-4"/>
-                                <SegmentedButtonItem key="GS40" text="4"/>
-                                <SegmentedButtonItem key="GS45" text="4-5"/>
-                                <SegmentedButtonItem key="GS50" text="5"/>
-                            </items>
-                        </SegmentedButton>
+                <!-- Everything else, driven from the characteristics the
+                     inspection plan actually carries. -->
+                <List id="lstChars" mode="None" headerText="Characteristics"
+                      items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }"
+                      class="sapUiSmallMarginBeginEnd">
+                    <CustomListItem>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                <VBox>
+                                    <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
+                                    <Text text="{ parts: ['MasterCharacteristic','TargetValue','LowerLimit','UpperLimit','CharacteristicUnit','LowerLimitIsInitial','UpperLimitIsInitial'], formatter: '.fmtSpec' }"
+                                          class="sapUiTinyText"/>
+                                </VBox>
+                                <ObjectStatus text="{ path: 'Valuation', formatter: '.fmtValText' }"
+                                              state="{ path: 'Valuation', formatter: '.fmtValState' }"
+                                              class="sapMObjectStatusLarge"/>
+                            </HBox>
 
-                        <!-- Pass / fail attribute: defect COUNT over the sample,
-                             not one entry per package. This is design rule 6.2
-                             of the specification and it is what keeps stage 3 at
-                             nine entries per lot. -->
-                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
-                              visible="{= ${SelectedSet} === 'ZQC_PF' }">
-                            <Label text="{i18n>charDefects}" class="sapUiTinyMarginEnd"/>
-                            <StepInput value="{DefectCount}" min="0" step="1" width="7rem"
-                                       change=".onResultChange"/>
-                            <Label text="{i18n>charSample}" class="sapUiSmallMarginBegin sapUiTinyMarginEnd"/>
-                            <StepInput value="{ActualSampleSize}" min="0" step="1" width="7rem"
-                                       change=".onResultChange"/>
-                        </HBox>
+                            <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                                  visible="{= ${CharacteristicKind} === 'QUAN' }">
+                                <Input value="{MeanValue}" type="Number" width="9rem" textAlign="End" change=".onResultChange"/>
+                                <Text text="{CharacteristicUnit}" class="sapUiSmallMarginBegin"/>
+                            </HBox>
 
-                    </VBox>
-                </CustomListItem>
-            </List>
+                            <!-- Grade is the only coded characteristic at this
+                                 stage. Three buttons, not a dropdown. -->
+                            <SegmentedButton class="sapUiSmallMarginTop"
+                                             selectedKey="{ResultCode}" selectionChange=".onCodeChange"
+                                             visible="{= ${SelectedSet} === 'ZQC_GRADE' }">
+                                <items>
+                                    <SegmentedButtonItem key="AA" text="AA"/>
+                                    <SegmentedButtonItem key="A"  text="A"/>
+                                    <SegmentedButtonItem key="B"  text="B"/>
+                                </items>
+                            </SegmentedButton>
+
+                            <!-- Attribute: defect count over the ISO 2859-1
+                                 sample, one entry, not one per package. -->
+                            <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                                  visible="{= ${SelectedSet} === 'ZQC_PF' }">
+                                <Label text="Defectives found" class="sapUiTinyMarginEnd"/>
+                                <StepInput value="{DefectCount}" min="0" step="1" width="7rem" change=".onResultChange"/>
+                                <Label text="of sample" class="sapUiSmallMarginBegin sapUiTinyMarginEnd"/>
+                                <StepInput value="{ActualSampleSize}" min="0" step="1" width="7rem" change=".onResultChange"/>
+                            </HBox>
+                        </VBox>
+                    </CustomListItem>
+                </List>
+            </VBox>
         </f:content>
 
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button text="{i18n>saveDraft}" press=".onSave"
-                        enabled="{ui>/dirty}"/>
-                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"/>
-                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"/>
+                <Button text="Save" press=".onSave" enabled="{ui>/dirty}"/>
+                <Button text="Record Results" type="Emphasized" press=".onRecord"/>
+                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

@@ -117,6 +117,46 @@ sap.ui.define([
             });
         },
 
+        // --- Stage 1: boiling water shrinkage spread -------------------
+        // BWS is doing double duty here. The dye uniformity tube test was cut
+        // from the specification, and spread of BWS across packages is the
+        // accepted proxy for spread of dye affinity. The RANGE is the number
+        // that predicts barre, so it is computed and judged, not just stored.
+        onBwsChange: function () {
+            var aVals = ["bws1","bws2","bws3","bws4","bws5"]
+                .map(function (s) { return parseFloat(this.byId(s).getValue()); }, this)
+                .filter(function (n) { return !isNaN(n); });
+
+            var oMean  = this.byId("bwsMean"),
+                oRange = this.byId("bwsRange");
+
+            if (aVals.length < 2) {
+                oMean.setText(""); oRange.setText(""); oRange.setState("None");
+                return;
+            }
+
+            var fSum  = aVals.reduce(function (a, b) { return a + b; }, 0),
+                fMean = fSum / aVals.length,
+                fRange = Math.max.apply(null, aVals) - Math.min.apply(null, aVals);
+
+            oMean.setText(fMean.toFixed(2) + " %");
+            oRange.setText(fRange.toFixed(2) + " %"
+                + (aVals.length < 5 ? "  (" + aVals.length + " of 5)" : ""));
+
+            // 5.0-9.0 % absolute, range <= 1.5 % across the five
+            var bMeanOk  = fMean >= 5.0 && fMean <= 9.0,
+                bRangeOk = fRange <= 1.5;
+
+            oMean.setState(bMeanOk ? "Success" : "Error");
+            oRange.setState(bRangeOk ? "Success" : "Error");
+
+            if (!bRangeOk) {
+                this.byId("bwsRange").setText(fRange.toFixed(2)
+                    + " %  - spread too wide, expect barre");
+            }
+            this.onResultChange();
+        },
+
         _t: function (sKey) {
             return this.getView().getModel("i18n").getResourceBundle().getText(sKey);
         },

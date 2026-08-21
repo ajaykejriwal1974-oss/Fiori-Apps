@@ -18,7 +18,8 @@ sap.ui.define([
                 inspectionType: "03",
                 stageTitle: "Post-Dyeing QC",
                 busy: false,
-                dirty: false
+                dirty: false,
+                isFirstOfRecipe: false
             }), "ui");
 
             this.setModel(new JSONModel({

@@ -29,6 +29,13 @@ sap.ui.define([
             });
             this._sLot = sLot;
             this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
+
+            // Until the dye recipe is separately identified in SAP (open
+            // item 8 in the QM workbook) the app cannot tell whether this
+            // is the qualifying batch. Default to requiring the battery -
+            // over-testing is recoverable, silently skipping fastness on a
+            // new recipe is not.
+            this._setRecipeMode(true);
         },
 
         onBack: function () {
@@ -115,6 +122,44 @@ sap.ui.define([
             }.bind(this)).catch(function (oErr) {
                 MessageBox.error(oErr.message || "Usage decision failed");
             });
+        },
+
+        // --- Stage 2: shade readout ------------------------------------
+        onDeltaEChange: function () {
+            var f = parseFloat(this.byId("deInput").getValue()),
+                oStatus = this.byId("deStatus"),
+                oHint = this.byId("deHint");
+
+            if (isNaN(f)) { oStatus.setText(""); oStatus.setState("None"); oHint.setText(""); return; }
+
+            oStatus.setText("dE " + f.toFixed(2));
+            if (f <= 1.0) {
+                oStatus.setState("Success");
+                oHint.setText("Within tolerance.");
+            } else if (f <= 2.0) {
+                oStatus.setState("Warning");
+                oHint.setText("Outside 1.00. Correctable by topping - expect a re-dye decision.");
+            } else {
+                oStatus.setState("Error");
+                oHint.setText("Well outside tolerance. Consider stripping rather than topping.");
+            }
+            this.onResultChange();
+        },
+
+        // Fastness is a property of the recipe, not the batch. The panel only
+        // matters for the qualifying batch, and the technician should be told
+        // which case they are in rather than left to remember.
+        _setRecipeMode: function (bFirst) {
+            this.getOwnerComponent().getModel("ui").setProperty("/isFirstOfRecipe", bFirst);
+            var oStrip = this.byId("fastnessStrip");
+            if (!oStrip) { return; }
+            if (bFirst) {
+                oStrip.setType("Warning");
+                oStrip.setText("First batch of this recipe - the full fastness battery is required.");
+            } else {
+                oStrip.setType("Success");
+                oStrip.setText("This recipe is already qualified. Fastness is not repeated per batch.");
+            }
         },
 
         _t: function (sKey) {

@@ -3,116 +3,183 @@
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.f"
-    xmlns:core="sap.ui.core"
     height="100%">
 
     <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
-
         <f:title>
             <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="{Batch}" level="H2"/>
-                </f:heading>
-                <f:expandedContent>
-                    <Text text="{MaterialName} - {Material}"/>
-                </f:expandedContent>
-                <f:snappedContent>
-                    <Text text="{MaterialName}"/>
-                </f:snappedContent>
-                <f:navigationActions>
-                    <Button icon="sap-icon://nav-back" press=".onBack" tooltip="Back"/>
-                </f:navigationActions>
+                <f:heading><Title text="{Batch}" level="H2"/></f:heading>
+                <f:expandedContent><Text text="{MaterialName} - {Material}"/></f:expandedContent>
+                <f:navigationActions><Button icon="sap-icon://nav-back" press=".onBack"/></f:navigationActions>
             </f:DynamicPageTitle>
         </f:title>
 
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <HBox wrap="Wrap">
-                    <ObjectAttribute title="{i18n>colLot}"    text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colSupplierLot}" text="{VendorBatch}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colOrder}"  text="{ProductionOrder}" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colQty}"
-                        text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
-                    <ObjectAttribute title="{i18n>colSample}"
-                        text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }"/>
+                    <ObjectAttribute title="Inspection Lot" text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Order" text="{ProductionOrder}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Quantity" text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="Sample" text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }"/>
                 </HBox>
             </f:DynamicPageHeader>
         </f:header>
 
         <f:content>
-            <List id="lstChars" mode="None"
-                  items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }"
-                  class="sapUiNoContentPadding">
-                <CustomListItem>
-                    <VBox class="sapUiSmallMargin">
+            <VBox>
 
-                        <HBox justifyContent="SpaceBetween" alignItems="Center">
-                            <VBox>
-                                <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
-                                <Text text="{ parts: ['MasterCharacteristic','TargetValue','LowerLimit','UpperLimit','CharacteristicUnit','LowerLimitIsInitial','UpperLimitIsInitial'], formatter: '.fmtSpec' }"
-                                      class="sapUiTinyText"/>
-                            </VBox>
-                            <ObjectStatus
-                                text="{ path: 'Valuation', formatter: '.fmtValText' }"
-                                state="{ path: 'Valuation', formatter: '.fmtValState' }"
-                                class="sapMObjectStatusLarge"/>
-                        </HBox>
+                <!-- Shade gets its own panel with an oversized readout. It is
+                     the number the whole batch is judged on and the one the
+                     technician looks at first. -->
+                <Panel headerText="Shade vs approved standard" expandable="false" class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="ISO 105-J03, delta E CMC(2:1). Spectrophotometer D65/10 deg, specular included, UV calibrated. Wind a card to constant thickness."
+                                  class="sapUiTinyText sapUiSmallMarginBottom"/>
+                            <HBox alignItems="Center">
+                                <Input id="deInput" type="Number" width="8rem" textAlign="End"
+                                       change=".onDeltaEChange" class="sapUiSmallMarginEnd"/>
+                                <ObjectStatus id="deStatus" class="sapMObjectStatusLarge"/>
+                            </HBox>
+                            <Text id="deHint" class="sapUiTinyText sapUiSmallMarginTop"/>
+                        </VBox>
+                    </content>
+                </Panel>
 
-                        <!-- Quantitative: numeric entry, limits shown above -->
-                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
-                              visible="{= ${CharacteristicKind} === 'QUAN' }">
-                            <Input value="{MeanValue}" type="Number" width="9rem"
-                                   textAlign="End" change=".onResultChange"/>
-                            <Text text="{CharacteristicUnit}" class="sapUiSmallMarginBegin"/>
-                        </HBox>
+                <!-- Position matters more than count in package dyeing. The
+                     dominant failure mode is a gradient - inside to outside,
+                     top to bottom of the carrier - so the app prompts for
+                     position rather than just a package number. -->
+                <Panel headerText="Shade variation - record the position, not just the value"
+                       expandable="false" class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <MessageStrip
+                                text="Sample deliberately across the gradient: inner and outer layers of one cheese, and packages from the top, middle and bottom of the carrier."
+                                type="Information" showIcon="true" class="sapUiSmallMarginBottom"/>
+                            <List id="lstVariation" mode="None"
+                                  items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' },
+                                           filters: [ { path: 'SelectedSet', operator: 'StartsWith', value1: 'ZQC_GREY' } ] }">
+                                <CustomListItem>
+                                    <VBox class="sapUiSmallMargin">
+                                        <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                            <VBox>
+                                                <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
+                                                <Text text="{MasterCharacteristic}" class="sapUiTinyText"/>
+                                            </VBox>
+                                            <ObjectStatus text="{ path: 'Valuation', formatter: '.fmtValText' }"
+                                                          state="{ path: 'Valuation', formatter: '.fmtValState' }"/>
+                                        </HBox>
+                                        <SegmentedButton class="sapUiSmallMarginTop"
+                                                         selectedKey="{ResultCode}" selectionChange=".onCodeChange">
+                                            <items>
+                                                <SegmentedButtonItem key="GS10" text="1"/>
+                                                <SegmentedButtonItem key="GS15" text="1-2"/>
+                                                <SegmentedButtonItem key="GS20" text="2"/>
+                                                <SegmentedButtonItem key="GS25" text="2-3"/>
+                                                <SegmentedButtonItem key="GS30" text="3"/>
+                                                <SegmentedButtonItem key="GS35" text="3-4"/>
+                                                <SegmentedButtonItem key="GS40" text="4"/>
+                                                <SegmentedButtonItem key="GS45" text="4-5"/>
+                                                <SegmentedButtonItem key="GS50" text="5"/>
+                                            </items>
+                                        </SegmentedButton>
+                                    </VBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
 
-                        <!-- Qualitative: nine-position grey scale, one tap.
-                             A dropdown here costs four seconds per result and
-                             across 625 results a day decides whether the app
-                             is used or abandoned. -->
-                        <SegmentedButton class="sapUiSmallMarginTop"
-                                         selectedKey="{ResultCode}"
-                                         selectionChange=".onCodeChange"
-                                         visible="{= ${CharacteristicKind} === 'QUAL' &amp;&amp; ${SelectedSet} !== 'ZQC_PF' }">
-                            <items>
-                                <SegmentedButtonItem key="GS10" text="1"/>
-                                <SegmentedButtonItem key="GS15" text="1-2"/>
-                                <SegmentedButtonItem key="GS20" text="2"/>
-                                <SegmentedButtonItem key="GS25" text="2-3"/>
-                                <SegmentedButtonItem key="GS30" text="3"/>
-                                <SegmentedButtonItem key="GS35" text="3-4"/>
-                                <SegmentedButtonItem key="GS40" text="4"/>
-                                <SegmentedButtonItem key="GS45" text="4-5"/>
-                                <SegmentedButtonItem key="GS50" text="5"/>
-                            </items>
-                        </SegmentedButton>
+                <!-- Fastness is a recipe property, not a batch property. The
+                     panel only opens for the qualifying batch of a recipe. -->
+                <Panel expandable="true" expanded="{ui>/isFirstOfRecipe}" class="sapUiSmallMarginBeginEnd"
+                       headerText="Colour fastness - qualifying batch of this recipe">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <MessageStrip id="fastnessStrip" showIcon="true" class="sapUiSmallMarginBottom"/>
+                            <List id="lstFastness" mode="None"
+                                  items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }">
+                                <CustomListItem visible="{= ${MasterCharacteristic}.indexOf('S2_W') === 0
+                                                          || ${MasterCharacteristic}.indexOf('S2_RUB') === 0
+                                                          || ${MasterCharacteristic}.indexOf('S2_PSP') === 0
+                                                          || ${MasterCharacteristic} === 'S2_SUBL' }">
+                                    <VBox class="sapUiSmallMargin">
+                                        <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                            <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
+                                            <ObjectStatus text="{ path: 'Valuation', formatter: '.fmtValText' }"
+                                                          state="{ path: 'Valuation', formatter: '.fmtValState' }"/>
+                                        </HBox>
+                                        <SegmentedButton class="sapUiSmallMarginTop"
+                                                         selectedKey="{ResultCode}" selectionChange=".onCodeChange">
+                                            <items>
+                                                <SegmentedButtonItem key="GS10" text="1"/>
+                                                <SegmentedButtonItem key="GS15" text="1-2"/>
+                                                <SegmentedButtonItem key="GS20" text="2"/>
+                                                <SegmentedButtonItem key="GS25" text="2-3"/>
+                                                <SegmentedButtonItem key="GS30" text="3"/>
+                                                <SegmentedButtonItem key="GS35" text="3-4"/>
+                                                <SegmentedButtonItem key="GS40" text="4"/>
+                                                <SegmentedButtonItem key="GS45" text="4-5"/>
+                                                <SegmentedButtonItem key="GS50" text="5"/>
+                                            </items>
+                                        </SegmentedButton>
+                                    </VBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
 
-                        <!-- Pass / fail attribute: defect COUNT over the sample,
-                             not one entry per package. This is design rule 6.2
-                             of the specification and it is what keeps stage 3 at
-                             nine entries per lot. -->
-                        <HBox class="sapUiSmallMarginTop" alignItems="Center"
-                              visible="{= ${SelectedSet} === 'ZQC_PF' }">
-                            <Label text="{i18n>charDefects}" class="sapUiTinyMarginEnd"/>
-                            <StepInput value="{DefectCount}" min="0" step="1" width="7rem"
-                                       change=".onResultChange"/>
-                            <Label text="{i18n>charSample}" class="sapUiSmallMarginBegin sapUiTinyMarginEnd"/>
-                            <StepInput value="{ActualSampleSize}" min="0" step="1" width="7rem"
-                                       change=".onResultChange"/>
-                        </HBox>
-
-                    </VBox>
-                </CustomListItem>
-            </List>
+                <!-- Visual and chemical. Formaldehyde and azo amines normally
+                     come back from an external accredited laboratory, so the
+                     field wanted is a certificate reference, not a live
+                     measurement. -->
+                <Panel headerText="Visual and chemical" expandable="true" expanded="false"
+                       class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <List id="lstOther" mode="None"
+                              items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }">
+                            <CustomListItem visible="{= ${SelectedSet} === 'ZQC_PF' || ${CharacteristicKind} === 'QUAN' }">
+                                <VBox class="sapUiSmallMargin">
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center">
+                                        <VBox>
+                                            <Text text="{CharacteristicName}" class="sapMTitleStyleH5"/>
+                                            <Text text="{ parts: ['MasterCharacteristic','TargetValue','LowerLimit','UpperLimit','CharacteristicUnit','LowerLimitIsInitial','UpperLimitIsInitial'], formatter: '.fmtSpec' }"
+                                                  class="sapUiTinyText"/>
+                                        </VBox>
+                                        <ObjectStatus text="{ path: 'Valuation', formatter: '.fmtValText' }"
+                                                      state="{ path: 'Valuation', formatter: '.fmtValState' }"/>
+                                    </HBox>
+                                    <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                                          visible="{= ${CharacteristicKind} === 'QUAN' }">
+                                        <Input value="{MeanValue}" type="Number" width="9rem" textAlign="End" change=".onResultChange"/>
+                                        <Text text="{CharacteristicUnit}" class="sapUiSmallMarginBegin"/>
+                                        <Input value="{InspectorComment}" width="16rem" placeholder="Certificate reference"
+                                               class="sapUiSmallMarginBegin" change=".onResultChange"
+                                               visible="{= ${MasterCharacteristic} === 'S2_HCHO' || ${MasterCharacteristic} === 'S2_AZO' }"/>
+                                    </HBox>
+                                    <HBox class="sapUiSmallMarginTop" alignItems="Center"
+                                          visible="{= ${SelectedSet} === 'ZQC_PF' }">
+                                        <Label text="Defectives found" class="sapUiTinyMarginEnd"/>
+                                        <StepInput value="{DefectCount}" min="0" step="1" width="7rem" change=".onResultChange"/>
+                                        <Label text="of sample" class="sapUiSmallMarginBegin sapUiTinyMarginEnd"/>
+                                        <StepInput value="{ActualSampleSize}" min="0" step="1" width="7rem" change=".onResultChange"/>
+                                    </HBox>
+                                </VBox>
+                            </CustomListItem>
+                        </List>
+                    </content>
+                </Panel>
+            </VBox>
         </f:content>
 
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button text="{i18n>saveDraft}" press=".onSave"
-                        enabled="{ui>/dirty}"/>
-                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"/>
-                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"/>
+                <Button text="Save" press=".onSave" enabled="{ui>/dirty}"/>
+                <Button text="Record Results" type="Emphasized" press=".onRecord"/>
+                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>
