@@ -49,4 +49,3 @@ define root view entity ZI_QC_INSP_LOT
       end                                         as IsOpen,
       _Characteristic
 }
-where lot.art in ( 'Z01', 'Z03', 'Z04', '01', '03', '04' )

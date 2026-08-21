@@ -6,5 +6,6 @@ define abstract entity ZD_QC_RECORD_RESULTS
       @EndUserText.label: 'Operation'
   OperationNumber : abap.numc(8);
       @EndUserText.label: 'Inspector Comment'
-  Comment         : abap.char(40);
+  // Not 'Comment' - COMMENT is a reserved word in CDS.
+  ResultComment   : abap.char(40);
 }
