@@ -2,8 +2,10 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/m/MessageToast"
-], function (Controller, Filter, FilterOperator, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/m/SelectDialog",
+    "sap/m/StandardListItem"
+], function (Controller, Filter, FilterOperator, MessageToast, SelectDialog, StandardListItem) {
     "use strict";
 
     return Controller.extend("kejriwal.qm.qcrawmaterial.controller.Worklist", {
@@ -85,8 +87,48 @@ sap.ui.define([
             this.byId("txtCount").setText("");
         },
 
-        onPlantHelp: function () {
-            MessageToast.show("Plant value help");
+        /** F4 value help for the Plant filter (bound to /PlantVH = ZI_VH_PLANT,
+         *  exposed on the service now that PFCG/publish is done). */
+        onPlantVH: function (oEvt) {
+            this._openValueHelp(oEvt.getSource(), "/PlantVH", "Plant", "PlantName", "Select Plant");
+        },
+
+        /** Generic F4: open a SelectDialog over a value-help entity set on the
+         *  app's OData V4 model, filter by the typed value, write the picked
+         *  key back into the triggering Input. Same pattern as batch-status. */
+        _openValueHelp: function (oInput, sPath, sKeyField, sDescField, sTitle) {
+            var oView = this.getView();
+            var oDialog = new SelectDialog({
+                title: sTitle,
+                growing: true,
+                growingThreshold: 50,
+                rememberSelections: false,
+                items: {
+                    path: sPath,
+                    template: new StandardListItem({
+                        title: "{" + sKeyField + "}",
+                        description: sDescField ? "{" + sDescField + "}" : undefined
+                    })
+                },
+                liveChange: function (oE) {
+                    var sVal = oE.getParameter("value") || "";
+                    oE.getSource().getBinding("items").filter(
+                        sVal ? new Filter(sKeyField, FilterOperator.Contains, sVal) : []);
+                },
+                search: function (oE) {
+                    var sVal = oE.getParameter("value") || "";
+                    oE.getSource().getBinding("items").filter(
+                        sVal ? new Filter(sKeyField, FilterOperator.Contains, sVal) : []);
+                },
+                confirm: function (oE) {
+                    var oItem = oE.getParameter("selectedItem");
+                    if (oItem) { oInput.setValue(oItem.getTitle()); }
+                },
+                cancel: function () { }
+            });
+            oView.addDependent(oDialog);
+            oDialog.setModel(oView.getModel());
+            oDialog.open();
         },
 
         onOpenLot: function (oEvent) {

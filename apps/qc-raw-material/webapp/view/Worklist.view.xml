@@ -30,7 +30,7 @@
                     <Label text="Material"/>
                     <Input id="fMaterial" width="100%"/>
                     <Label text="Plant"/>
-                    <Input id="fPlant" width="100%"/>
+                    <Input id="fPlant" width="100%" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
                     <Label text="Received From"/>
                     <DatePicker id="fDateFrom" width="100%" valueFormat="yyyy-MM-dd"/>
                     <Label text="Open only"/>

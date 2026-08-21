@@ -5,6 +5,14 @@ sap.ui.define([
 ], function (Controller, MessageToast, MessageBox) {
     "use strict";
 
+    // BAPI_INSPLOT_SETUSAGEDECISION rejects a blank UD_SELECTED_SET - the code
+    // group alone does not identify a code, because the same group can appear
+    // in more than one selected set. "ZQC_UD" mirrors the code group name,
+    // which is the common one-selected-set-per-group customizing pattern, but
+    // this has not been confirmed against QS51 in KSD. If Usage Decision
+    // posting fails with a "selected set" error, correct this one constant.
+    var UD_SELECTED_SET = "ZQC_UD";
+
     var UD_CODES = [
         { key: "A",  text: "Accept" },
         { key: "A1", text: "Accept with deviation" },
@@ -113,13 +121,30 @@ sap.ui.define([
                 "com.sap.gateway.srvd.zui_qc_inspection.v0001.recordResults(...)", oCtx);
 
             oAction.setParameter("InspectionLot", this._sLot);
-            oAction.setParameter("OperationNumber", "00000010");
+            oAction.setParameter("OperationNumber", this._currentOperationNumber());
             oAction.execute("qc").then(function () {
                 MessageToast.show(this._t("msgRecorded"));
                 oCtx.refresh();
             }.bind(this)).catch(function (oErr) {
                 MessageBox.error(oErr.message || "Recording failed");
             });
+        },
+
+        // Every characteristic loaded for this lot belongs to the one
+        // inspection operation this stage-specific app cares about (that is
+        // what "one service, three stage apps" means), so any bound row's
+        // OperationNumber is the right one to record against. Read it from
+        // "lstChars" specifically because that list has no server-side
+        // $filter - it is populated whenever the lot has any characteristics
+        // at all, unlike the narrower per-panel lists in the other two apps.
+        _currentOperationNumber: function () {
+            var oList = this.byId("lstChars"),
+                oBinding = oList && oList.getBinding("items"),
+                aCtx = oBinding && oBinding.getCurrentContexts();
+            if (aCtx && aCtx.length && aCtx[0]) {
+                return aCtx[0].getProperty("OperationNumber");
+            }
+            return "00000010"; // fallback: no characteristics loaded yet
         },
 
         onUsageDecision: function () {
@@ -141,6 +166,7 @@ sap.ui.define([
                 "com.sap.gateway.srvd.zui_qc_inspection.v0001.setUsageDecision(...)", oCtx);
 
             oAction.setParameter("InspectionLot", this._sLot);
+            oAction.setParameter("SelectedSet", UD_SELECTED_SET);
             oAction.setParameter("CodeGroup", "ZQC_UD");
             oAction.setParameter("Code", sCode);
             oAction.execute("qc").then(function () {

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>QC Apps Deployment Guide - Raw Material / Post-Dyeing / Post-Winding</title>
+<style>
+@page { size: A4; margin: 18mm 15mm 16mm 15mm;
+  @bottom-left { content: "KGPL Fiori · QC Apps Deployment Guide"; font-size: 7.5pt; color: #8a8f98; font-family: Helvetica, Arial, sans-serif; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 7.5pt; color: #8a8f98; font-family: Helvetica, Arial, sans-serif; }
+}
+@page :first { margin: 0; @bottom-left{content:""} @bottom-right{content:""} }
+* { box-sizing: border-box; }
+body { font-family: Helvetica, Arial, sans-serif; font-size: 9.2pt; line-height: 1.45; color: #1c1f24; margin: 0; }
+h1,h2,h3,h4 { font-weight: 700; color: #0a2540; margin: 0 0 .35em 0; line-height: 1.2; }
+h2 { font-size: 15pt; margin-top: 1.5em; padding-bottom: .25em; border-bottom: 2px solid #0a6ed1; break-after: avoid; }
+h3 { font-size: 11.5pt; margin-top: 1.2em; color: #0a6ed1; break-after: avoid; }
+h4 { font-size: 9.8pt; margin-top: .9em; break-after: avoid; }
+p { margin: 0 0 .55em 0; }
+ul,ol { margin: .2em 0 .7em 0; padding-left: 1.1em; }
+li { margin-bottom: .22em; }
+code, .m { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 8.2pt;
+  background: #eef2f7; padding: .5pt 2.5pt; border-radius: 2px; color: #0a2540; }
+table { width: 100%; border-collapse: collapse; margin: .5em 0 1em 0; font-size: 8.1pt; }
+th { background: #0a2540; color: #fff; text-align: left; padding: 5px 6px; font-weight: 600; font-size: 7.9pt; }
+td { padding: 4.5px 6px; border-bottom: .5pt solid #d6dce4; vertical-align: top; }
+tr:nth-child(even) td { background: #f6f8fb; }
+table.k td:first-child { width: 30%; font-weight: 600; color: #445060; }
+table.k td:last-child { font-family: "DejaVu Sans Mono", Menlo, monospace; font-size: 7.9pt; }
+.cover { height: 297mm; padding: 42mm 22mm 20mm 22mm; background: #0a2540; color: #fff; }
+.cover h1 { color:#fff; font-size: 28pt; letter-spacing: -.5pt; margin-bottom: .15em; }
+.cover .sub { font-size: 13pt; color: #7fb2e5; font-weight: 400; margin-bottom: 3em; }
+.cover .meta { font-size: 9.5pt; color:#c3d3e4; line-height: 1.9; border-top: 1px solid #2b4a6b; padding-top: 1.2em; }
+.cover .meta b { color:#fff; display:inline-block; width: 46mm; font-weight: 600; }
+.cover .flag { margin-top: 3em; background:#123a5c; border-left: 4px solid #0a6ed1; padding: 10px 14px; font-size: 9pt; color:#dce8f4; }
+.note { background:#f0f7ff; border-left: 3px solid #0a6ed1; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.warn { background:#fff6ed; border-left: 3px solid #e9730c; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.stop { background:#fdf0f0; border-left: 3px solid #bb0000; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.ok   { background:#f1f9f2; border-left: 3px solid #107e3e; padding: 7px 10px; margin: .7em 0; font-size: 8.6pt; }
+.card { border: .8pt solid #c9d2dd; border-radius: 4px; padding: 10px 12px 4px 12px; margin: .8em 0 1.2em 0; break-inside: avoid; }
+.card h3 { margin-top: 0; }
+.pill { display:inline-block; background:#0a6ed1; color:#fff; font-size:7pt; font-weight:700;
+  padding: 1.5pt 5pt; border-radius: 8px; vertical-align: middle; margin-left: 6px; letter-spacing:.3pt; }
+.pill.g { background:#107e3e; } .pill.o { background:#e9730c; } .pill.r { background:#bb0000; }
+.steps { counter-reset: s; padding-left: 0; list-style: none; }
+.steps > li { counter-increment: s; position: relative; padding-left: 24px; margin-bottom: .5em; break-inside: avoid; }
+.steps > li::before { content: counter(s); position: absolute; left: 0; top: 0;
+  background:#0a6ed1; color:#fff; width: 16px; height: 16px; border-radius: 50%;
+  font-size: 7.5pt; font-weight: 700; text-align: center; line-height: 16px; }
+.toc td { border: none; padding: 2.5px 0; }
+.toc td:last-child { text-align: right; color:#8a8f98; }
+.brk { break-before: page; }
+.small { font-size: 7.8pt; color:#5a6472; }
+</style></head><body>
+
+<div class="cover">
+  <h1>QC Apps Deployment Guide</h1>
+  <div class="sub">Raw Material / Post-Dyeing / Post-Winding QC<br>BSP deploy, PFCG check, launchpad tiles</div>
+  <div class="meta">
+    <b>System</b> KSD &middot; S/4HANA &middot; client 500<br>
+    <b>Launchpad space</b> KGPL CUSTOM APPS<br>
+    <b>Business catalog</b> ZKGPL_BC_CUSTOM<br>
+    <b>Service binding</b> ZUI_QC_INSPECTION_04 (published)<br>
+    <b>Repository</b> ajaykejriwal1974-oss/Fiori-Apps<br>
+    <b>Date</b> 21 August 2026
+  </div>
+  <div class="flag">
+    <b>Backend is done.</b> The RAP objects, service definition and service
+    binding are active and published, verified by direct read of KSD (TADIR
+    SRVB + G4BA entries for <code>ZUI_QC_INSPECTION_04</code>). This guide
+    covers only what is left: the three UI5 apps and their launchpad tiles.
+  </div>
+</div>
+
+<h2 style="margin-top:0">1. Where things stand</h2>
+
+<p>None of the three BSP applications exist in KSD yet &mdash; a live search of
+<code>ZQC_*</code> against the repository information system returned zero
+results. This is genuinely new deployment work, unlike the earlier three apps
+(Cancel Production Confirmation, WIP Batch Close, Label Master) which were
+already live when their FLP guide was written.</p>
+
+<p>Three code-level gaps were found and fixed in this pass, before writing this
+guide, so the apps are ready to deploy rather than deployed-then-patched:</p>
+
+<ul>
+<li><b>Plant value help.</b> <code>onPlantHelp</code> in all three worklist
+controllers was a stub (<code>MessageToast.show("Plant value help")</code>),
+not wired to any control. Replaced with a working <code>SelectDialog</code>
+over <code>/PlantVH</code> (<code>ZI_VH_PLANT</code>), the same pattern already
+used in the <code>batch-status</code> app. The Plant input now carries
+<code>showValueHelp="true" valueHelpRequest=".onPlantVH"</code>.</li>
+<li><b>Hard-coded operation number.</b> <code>onRecord</code> in all three
+detail controllers sent a literal <code>"00000010"</code> regardless of what
+operation the lot's characteristics actually belong to. It now reads
+<code>OperationNumber</code> off the first bound characteristic row in the
+lot's own unfiltered characteristics list, which is correct because each of
+these three apps is scoped to one inspection stage and therefore one
+operation per lot.</li>
+<li><b>Missing UD_SELECTED_SET.</b> <code>BAPI_INSPLOT_SETUSAGEDECISION</code>
+needs <code>UD_SELECTED_SET</code> in addition to code group and code &mdash;
+the code group alone does not identify a code, because the same group can
+appear in more than one selected set. This field was added to
+<code>ZD_QC_USAGE_DECISION</code> earlier, but the UI never actually sent it.
+It now sends the constant <code>UD_SELECTED_SET = "ZQC_UD"</code>. This value
+has <b>not</b> been confirmed against <code>QS51</code> customizing &mdash; if
+Usage Decision posting fails with a selected-set error, this is the one
+constant to correct (see section 9).</li>
+</ul>
+
+<table class="toc">
+<tr><td>1. Where things stand</td><td>1</td></tr>
+<tr><td>2. Master mapping table</td><td>2</td></tr>
+<tr><td>3. Prerequisites</td><td>2</td></tr>
+<tr><td>4. Part A &mdash; deploy the three BSPs</td><td>3</td></tr>
+<tr><td>5. Part B &mdash; confirm authorization</td><td>3</td></tr>
+<tr><td>6. Part C &mdash; target mapping and tile</td><td>4</td></tr>
+<tr><td>7. Per-app parameter cards</td><td>4</td></tr>
+<tr><td>8. Cache invalidation</td><td>6</td></tr>
+<tr><td>9. Verification and known open items</td><td>6</td></tr>
+<tr><td>10. Troubleshooting</td><td>7</td></tr>
+</table>
+
+<h2 class="brk">2. Master mapping table</h2>
+
+<p>Every value below comes from the app manifests and <code>ui5-deploy.yaml</code>
+files already committed in the repository &mdash; nothing here needs to be
+invented at deployment time except the transport request number.</p>
+
+<table>
+<tr><th style="width:19%">Attribute</th><th style="width:27%">Raw Material QC</th><th style="width:27%">Post-Dyeing QC</th><th style="width:27%">Post-Winding QC</th></tr>
+<tr><td><b>Repo folder</b></td><td><code>qc-raw-material</code></td><td><code>qc-post-dyeing</code></td><td><code>qc-post-winding</code></td></tr>
+<tr><td><b>BSP application</b></td><td><code>ZQC_RAW_DYE</code></td><td><code>ZQC_POST_DYE</code></td><td><code>ZQC_POST_WIND</code></td></tr>
+<tr><td><b>Package</b></td><td><code>ZKGPL_FIORI</code></td><td><code>ZKGPL_FIORI</code></td><td><code>ZKGPL_FIORI</code></td></tr>
+<tr><td><b>Component ID</b></td><td><code>kejriwal.qm.qcrawmaterial</code></td><td><code>kejriwal.qm.qcpostdyeing</code></td><td><code>kejriwal.qm.qcpostwinding</code></td></tr>
+<tr><td><b>Semantic object</b></td><td><code>QcRawMaterial</code></td><td><code>QcPostDyeing</code></td><td><code>QcPostWinding</code></td></tr>
+<tr><td><b>Action</b></td><td colspan="3"><code>inspectKejriwal</code> (same action on all three &mdash; the semantic object is what distinguishes them)</td></tr>
+<tr><td><b>Fixed InspectionType</b></td><td>Stage 1 (raw material)</td><td>Stage 2 (post-dyeing)</td><td>Stage 3 (post-winding)</td></tr>
+</table>
+
+<p class="small">Backend is shared: all three point at service binding
+<code>ZUI_QC_INSPECTION_04</code> / service definition
+<code>ZUI_QC_INSPECTION</code> / root entity <code>ZI_QC_INSP_LOT</code>. One
+service, three stage-specific UIs &mdash; each app filters
+<code>InspectionType</code> to its own stage in <code>_buildFilters()</code>.</p>
+
+<h4>URLs (lower case &mdash; ICF nodes are case-sensitive)</h4>
+<table class="k">
+<tr><td>Raw Material QC &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zqc_raw_dye</td></tr>
+<tr><td>Post-Dyeing QC &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zqc_post_dye</td></tr>
+<tr><td>Post-Winding QC &mdash; UI</td><td>/sap/bc/ui5_ui5/sap/zqc_post_wind</td></tr>
+<tr><td>OData V4 (all three)</td><td>/sap/opu/odata4/sap/zui_qc_inspection_04/srvd/sap/zui_qc_inspection/0001/</td></tr>
+</table>
+
+<h2>3. Prerequisites</h2>
+
+<table>
+<tr><th style="width:52%">Check</th><th style="width:24%">How</th><th style="width:24%">Expected</th></tr>
+<tr><td>Service binding published</td><td><code>/IWFND/V4_ADMIN</code></td><td><code>ZUI_QC_INSPECTION_04</code>, status <i>Published</i></td></tr>
+<tr><td>Transport request available</td><td><code>SE09</code> / <code>SE01</code></td><td>An open workbench request in your name, target <code>ZKGPL_FIORI</code> package</td></tr>
+<tr><td>Network reachability</td><td>&mdash;</td><td>Deploy must run from a machine that can reach <code>192.168.0.19:8000</code> &mdash; the cloud session cannot</td></tr>
+<tr><td>ICF nodes active</td><td><code>SICF</code> &rarr; <code>ui5_ui5/sap</code></td><td>Green, not grey</td></tr>
+<tr><td>Business catalog reachable</td><td><code>/n/UI2/FLPD_CUST</code></td><td><code>ZKGPL_BC_CUSTOM</code> opens</td></tr>
+</table>
+
+<div class="stop">
+<b>Transport, not <code>$TMP</code>.</b> Unlike the three earlier apps (which
+sit in <code>$TMP</code> and can never transport to KSQ), these three are
+already configured in <code>ui5-deploy.yaml</code> to target
+<code>ZKGPL_FIORI</code>, a transportable package. That means each deploy
+needs a real transport request number in place of the
+<code>&lt;TRANSPORT&gt;</code> placeholder currently in all three
+<code>ui5-deploy.yaml</code> files &mdash; create one in <code>SE09</code>
+first if you do not already have one open for this work.
+</div>
+
+<h2 class="brk">4. Part A &mdash; deploy the three BSPs</h2>
+
+<p>Two ways to do this; use whichever has worked before in this project.
+Repeat once per app.</p>
+
+<h3>Option 1 &mdash; command line (<code>fiori deploy</code>)</h3>
+<ol class="steps">
+<li>On a machine with network access to <code>192.168.0.19:8000</code> (VPN
+connected), open a terminal in <code>apps/&lt;app-folder&gt;</code>.</li>
+<li>Edit <code>ui5-deploy.yaml</code> and replace <code>&lt;TRANSPORT&gt;</code>
+with the real transport request number.</li>
+<li>Run <code>npm install</code> once per app folder if <code>node_modules</code>
+is not already present.</li>
+<li>Run <code>npm run deploy</code>. This runs
+<code>fiori deploy --config ui5-deploy.yaml</code>, which builds the app and
+uploads it as BSP application <code>ZQC_RAW_DYE</code> / <code>ZQC_POST_DYE</code>
+/ <code>ZQC_POST_WIND</code> in package <code>ZKGPL_FIORI</code>.</li>
+<li>Confirm in <code>SE80</code> &rarr; BSP Application that the app now
+exists and contains the expected files.</li>
+</ol>
+
+<h3>Option 2 &mdash; Eclipse (ADT &ldquo;Deploy to SAPUI5 ABAP Repository&rdquo;)</h3>
+<ol class="steps">
+<li>In Eclipse, right-click the app's <code>webapp</code> folder (needs the
+SAPUI5 Team Provider set up against the ABAP project already used for the RAP
+work this session).</li>
+<li><b>Team &rarr; SAPUI5 &rarr; Deploy to SAPUI5 ABAP Repository.</b></li>
+<li>Enter Name <code>ZQC_RAW_DYE</code> (or the matching name per app),
+Package <code>ZKGPL_FIORI</code>, and the transport request.</li>
+<li>Finish, and watch the Console view for a successful upload.</li>
+</ol>
+
+<div class="note">
+Whichever option is used, keep it the same for all three apps and for any
+future redeploy &mdash; mixing command-line and Eclipse deploys against the
+same BSP has not caused a problem in this project so far, but there is no
+reason to test that.
+</div>
+
+<h2>5. Part B &mdash; confirm authorization</h2>
+
+<p>This part is already done. <code>ZUI_QC_INSPECTION_04</code>'s
+<code>G4BA</code> service group was inserted into role
+<code>ZKGPL_BR_PROCURE</code> (the role used for all Fiori apps in this
+project) via <b>PFCG &rarr; Menu &rarr; Insert Node &rarr; Authorization
+Default &rarr; TADIR Service</b>, the profile was regenerated, and the user
+confirmed completion before this UI work began.</p>
+
+<p>Sanity check only, no action expected: <code>SE16N</code> &rarr;
+<code>AGR_HIERT</code>, filter <code>AGR_NAME = ZKGPL_BR_PROCURE</code>,
+<code>TEXT = R3TR G4BA ZUI_QC_INSPECTION_04</code> &mdash; should return one row.</p>
+
+<h2 class="brk">6. Part C &mdash; target mapping and tile</h2>
+
+<p>Same catalog as every other KGPL app &mdash; <code>ZKGPL_BC_CUSTOM</code>,
+generated as a page automatically, no separate group to maintain.</p>
+
+<h3>C1 &mdash; create the target mapping (repeat three times)</h3>
+<ol class="steps">
+<li>Run <code>/n/UI2/FLPD_CUST</code>.</li>
+<li>Select catalog <code>ZKGPL_BC_CUSTOM</code> in the left pane.</li>
+<li>Open the <b>Target Mappings</b> tab and click <b>+</b>.</li>
+<li>Fill in from the parameter card in section 7: <b>Semantic Object</b>,
+<b>Action</b> = <code>inspectKejriwal</code>, <b>Application Type</b> =
+<i>SAPUI5 Fiori App</i>, <b>Title</b>, <b>URL</b>, <b>ID</b> (component ID).</li>
+<li>Under <b>Device Types</b> tick Desktop and Tablet only &mdash; the three
+manifests declare <code>"phone": false</code>, matching how narrow the
+characteristics lists are to read on a phone screen.</li>
+<li>Leave <b>Parameters</b> empty.</li>
+<li>Save.</li>
+</ol>
+
+<h3>C2 &mdash; create the tile (repeat three times)</h3>
+<ol class="steps">
+<li>Still in <code>ZKGPL_BC_CUSTOM</code>, open the <b>Tiles</b> tab and click <b>+</b>.</li>
+<li>Choose tile type <b>App Launcher &ndash; Static</b>.</li>
+<li>Enter <b>Title</b>, <b>Subtitle</b> and <b>Icon</b> from the parameter card.</li>
+<li>Under <b>Navigation</b>, set <b>Use semantic object navigation</b> = Yes,
+then enter the same <b>Semantic Object</b> and <b>Action</b> used in C1.</li>
+<li>Save.</li>
+</ol>
+
+<div class="note">
+The tile and the target mapping are matched only by the semantic object and
+action strings. Copy and paste rather than retype &mdash; a typo produces a
+tile that opens to &ldquo;the app could not be opened because the navigation
+target is not available&rdquo;.
+</div>
+
+<h2 class="brk">7. Per-app parameter cards</h2>
+
+<div class="card">
+<h3>Raw Material QC <span class="pill">FREESTYLE UI5</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>QcRawMaterial</td></tr>
+<tr><td>Action</td><td>inspectKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>Raw Material QC</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zqc_raw_dye</td></tr>
+<tr><td>ID</td><td>kejriwal.qm.qcrawmaterial</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>Raw Material QC</td></tr>
+<tr><td>Subtitle</td><td>Incoming greige yarn inspection</td></tr>
+<tr><td>Icon</td><td>sap-icon://inspect</td></tr>
+<tr><td>Semantic Object / Action</td><td>QcRawMaterial / inspectKejriwal</td></tr>
+</table>
+<p class="small"><b>Records:</b> boiling water shrinkage (5-package spread,
+substitute for the cut dye-uniformity test) plus the standard characteristic
+list. Grade is a 3-way segmented button (AA/A/B) rather than a dropdown.</p>
+</div>
+
+<div class="card">
+<h3>Post-Dyeing QC <span class="pill">FREESTYLE UI5</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>QcPostDyeing</td></tr>
+<tr><td>Action</td><td>inspectKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>Post-Dyeing QC</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zqc_post_dye</td></tr>
+<tr><td>ID</td><td>kejriwal.qm.qcpostdyeing</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>Post-Dyeing QC</td></tr>
+<tr><td>Subtitle</td><td>Shade and fastness inspection</td></tr>
+<tr><td>Icon</td><td>sap-icon://palette</td></tr>
+<tr><td>Semantic Object / Action</td><td>QcPostDyeing / inspectKejriwal</td></tr>
+</table>
+<p class="small"><b>Records:</b> delta E vs approved standard, shade variation
+by carrier position (not just package count), and a fastness battery panel
+that only opens for the qualifying batch of a recipe (currently always
+defaulted to &ldquo;first of recipe = true&rdquo; until the recipe link is
+confirmed &mdash; open item, see section 9).</p>
+</div>
+
+<div class="card">
+<h3>Post-Winding QC <span class="pill">FREESTYLE UI5</span></h3>
+<h4>Target mapping</h4>
+<table class="k">
+<tr><td>Semantic Object</td><td>QcPostWinding</td></tr>
+<tr><td>Action</td><td>inspectKejriwal</td></tr>
+<tr><td>Application Type</td><td>SAPUI5 Fiori App</td></tr>
+<tr><td>Title</td><td>Post-Winding QC</td></tr>
+<tr><td>URL</td><td>/sap/bc/ui5_ui5/sap/zqc_post_wind</td></tr>
+<tr><td>ID</td><td>kejriwal.qm.qcpostwinding</td></tr>
+<tr><td>Device Types</td><td>Desktop, Tablet</td></tr>
+</table>
+<h4>Tile &mdash; App Launcher, Static</h4>
+<table class="k">
+<tr><td>Title</td><td>Post-Winding QC</td></tr>
+<tr><td>Subtitle</td><td>Wound cone release inspection</td></tr>
+<tr><td>Icon</td><td>sap-icon://cargo-train</td></tr>
+<tr><td>Semantic Object / Action</td><td>QcPostWinding / inspectKejriwal</td></tr>
+</table>
+<p class="small"><b>Records:</b> denier / elongation / broken filaments
+compared against the incoming (stage 1) figures for the same greige lot &mdash;
+the delta is what winding did, not the absolute value. Currently the incoming
+figures never load (<code>_loadIncoming</code> is a stub returning
+<code>null</code>) until the batch-to-greige-lot link is confirmed &mdash;
+open item, see section 9.</p>
+</div>
+
+<h2 class="brk">8. Cache invalidation</h2>
+
+<table>
+<tr><th style="width:34%">Transaction / report</th><th style="width:30%">What it clears</th><th>When</th></tr>
+<tr><td><code>/n/UI2/INVAL_CACHES</code></td><td>Global launchpad caches</td><td>After every catalog change</td></tr>
+<tr><td><code>/n/UI2/CACHE_DEL</code></td><td>Client-side FLP cache</td><td>After every catalog change</td></tr>
+<tr><td><code>SE38 &rarr; /UI5/APP_INDEX_CALCULATE</code></td><td>UI5 app index</td><td>After each new BSP appears &mdash; use full calculation, not delta</td></tr>
+<tr><td><code>/n/IWFND/CACHE_CLEANUP</code></td><td>Gateway metadata cache</td><td>If <code>$metadata</code> looks stale</td></tr>
+</table>
+
+<h2>9. Verification and known open items</h2>
+
+<table>
+<tr><th style="width:6%">#</th><th style="width:40%">Test</th><th style="width:27%">Pass</th><th>If it fails</th></tr>
+<tr><td>1</td><td>Open each BSP directly, e.g. <code>/sap/bc/ui5_ui5/sap/zqc_raw_dye/index.html</code></td><td>App loads, worklist appears after Go</td><td>Deployment or ICF problem</td></tr>
+<tr><td>2</td><td>Plant field &mdash; press the value help icon</td><td>Dialog opens, lists plants, picks one into the field</td><td>Check <code>PlantVH</code> is really exposed in <code>$metadata</code></td></tr>
+<tr><td>3</td><td>Open a lot, change a result, Save</td><td><code>recordSingleResult</code> succeeds, list refreshes</td><td>Check the action namespace still matches <code>$metadata</code></td></tr>
+<tr><td>4</td><td>Press Record Results on a lot with characteristics loaded</td><td>Succeeds against the lot's real operation, not a hard-coded one</td><td>Confirm the unfiltered list id used per app (<code>lstChars</code> / <code>lstOther</code> / <code>lstGeometry</code>) still exists in the view</td></tr>
+<tr><td>5</td><td>Press Usage Decision, pick a code</td><td><code>setUsageDecision</code> succeeds</td><td>If it fails naming the selected set, correct <code>UD_SELECTED_SET</code> in the controller (see below)</td></tr>
+<tr><td>6</td><td>Tile visible in KGPL CUSTOM APPS, opens each app</td><td>Tile appears, app opens</td><td>Cache &mdash; redo section 8</td></tr>
+</table>
+
+<div class="warn">
+<b>Confirm <code>UD_SELECTED_SET</code> against <code>QS51</code>.</b> All
+three apps currently send the constant <code>"ZQC_UD"</code>, matching the
+existing <code>ZQC_UD</code> code group by name. This is a reasonable default,
+not a verified one &mdash; the BAPI will reject it cleanly with an error
+message if it is wrong, it will not silently misfile a usage decision. The
+constant lives at the top of each <code>Detail.controller.js</code>, one line
+to fix in all three files.
+</div>
+
+<div class="note">
+<b>Still open from the QM master-data workbook (item 8, unchanged by this
+pass):</b> the grade code list and the coning-oil target block in
+<code>QS21</code>. Neither blocks deploying or opening the apps &mdash; the
+worklists and characteristic lists render regardless &mdash; but the grade
+segmented button and some target/tolerance readouts will show as
+&ldquo;not maintained&rdquo; until that customizing is done.
+</div>
+
+<div class="note">
+<b>Post-Dyeing recipe qualification and Post-Winding incoming figures</b> both
+depend on a batch-to-recipe / batch-to-greige-lot link that is not yet
+confirmed in the data model (also part of item 8). Post-Dyeing defaults to
+&ldquo;first of recipe&rdquo; = true (over-testing, the safe direction).
+Post-Winding's incoming-figure deltas simply do not render until this is
+resolved &mdash; the absolute values still record correctly.
+</div>
+
+<h2 class="brk">10. Troubleshooting</h2>
+
+<table>
+<tr><th style="width:38%">Symptom</th><th style="width:30%">Most likely cause</th><th>Fix</th></tr>
+<tr><td>Tile appears, opens a blank page</td><td>Target mapping missing or action mismatched</td><td><code>/UI2/FLIA</code> on the intent</td></tr>
+<tr><td>HTTP 403 on the data request</td><td><code>R3TR G4BA</code> entry missing from the role</td><td>Re-check section 5, then <code>PFUD</code></td></tr>
+<tr><td>Value help icon does nothing</td><td><code>PlantVH</code> not in the same service group, or a stale UI5 cache</td><td>Check <code>ValueListReferences</code> in <code>$metadata</code>; hard-reload the browser</td></tr>
+<tr><td>Record Results always uses the wrong operation</td><td>The lot has characteristics across more than one operation, which the current single-operation assumption does not handle</td><td>Confirm this against a real multi-operation lot; if it happens, the fix needs to group by operation rather than take the first row</td></tr>
+<tr><td>Usage Decision fails with a selected-set error</td><td><code>UD_SELECTED_SET = "ZQC_UD"</code> is wrong for this landscape</td><td>Look up the real value in <code>QS51</code> and correct the one constant</td></tr>
+<tr><td>Tile saved but never appears</td><td>Cache</td><td>All steps in section 8, then hard reload</td></tr>
+</table>
+
+<p style="margin-top:2.5em" class="small">
+Prepared from a live read of KSD client 500 and the <code>Fiori-Apps</code>
+repository, 21 August 2026. If a BSP is redeployed with a different component
+ID, the target mapping in section 6 must be updated to match.
+</p>
+
+</body></html>
