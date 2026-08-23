@@ -17,6 +17,6 @@ builder:
           name: ZQC_POST_DYE
           package: ZKGPL_FIORI
           description: Post-Dyeing QC
-          transport: <TRANSPORT>
+          transport: KSDK906696
         exclude:
           - /test/

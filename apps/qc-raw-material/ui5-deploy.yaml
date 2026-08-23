@@ -17,6 +17,6 @@ builder:
           name: ZQC_RAW_DYE
           package: ZKGPL_FIORI
           description: Raw Material QC
-          transport: <TRANSPORT>
+          transport: KSDK906696
         exclude:
           - /test/

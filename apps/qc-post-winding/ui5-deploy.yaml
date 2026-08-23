@@ -17,6 +17,6 @@ builder:
           name: ZQC_POST_WIND
           package: ZKGPL_FIORI
           description: Post-Winding QC
-          transport: <TRANSPORT>
+          transport: KSDK906696
         exclude:
           - /test/
