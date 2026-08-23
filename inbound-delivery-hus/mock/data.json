@@ -1,0 +1,19 @@
+{
+  "InboundHu": [
+    {
+      "HandlingUnit": "HU0000088001",
+      "InboundDelivery": "0180004521",
+      "PackagingMaterial": "PALLET-EUR"
+    },
+    {
+      "HandlingUnit": "HU0000088002",
+      "InboundDelivery": "0180004521",
+      "PackagingMaterial": "CARTON-L"
+    },
+    {
+      "HandlingUnit": "HU0000088010",
+      "InboundDelivery": "0180004533",
+      "PackagingMaterial": "PALLET-EUR"
+    }
+  ]
+}

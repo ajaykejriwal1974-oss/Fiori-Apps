@@ -1,0 +1,19 @@
+{
+  "PostPackGr": [
+    {
+      "HandlingUnit": "HU0000045123",
+      "PackagingMaterial": "CARTON-L",
+      "Reference": "PO-4500067123"
+    },
+    {
+      "HandlingUnit": "HU0000045124",
+      "PackagingMaterial": "CARTON-L",
+      "Reference": "PO-4500067123"
+    },
+    {
+      "HandlingUnit": "HU0000045140",
+      "PackagingMaterial": "ROLL-CORE",
+      "Reference": "PO-4500067140"
+    }
+  ]
+}
