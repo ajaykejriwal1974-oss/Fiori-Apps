@@ -1,0 +1,16 @@
+projection;
+strict ( 2 );
+
+// No "use association _Characteristic;". ZI_QC_INSP_CHAR has no behaviour
+// definition of its own, the base does not declare the association, and a
+// projection cannot borrow what the base never offered.
+define behavior for ZC_QC_INSP_LOT alias InspectionLot
+{
+  use action recordSingleResult;
+  use action recordResults;
+  use action setUsageDecision;
+
+  use action releaseToProduction;
+  use action confirmDyeing;
+  use action confirmWinding;
+}

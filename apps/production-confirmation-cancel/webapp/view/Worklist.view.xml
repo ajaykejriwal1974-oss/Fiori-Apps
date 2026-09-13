@@ -8,7 +8,7 @@
     displayBlock="true"
     height="100%">
 
-    <!-- DynamicPage, not Page+OverflowToolbar. The nine filter fields no longer
+    <!-- DynamicPage, not Page+OverflowToolbar. The ten filter fields no longer
          collapse into a "..." menu that hid the Go button: the header wraps them
          over as many rows as the window needs, and Go lives in the title bar,
          which stays pinned while the table scrolls. -->
@@ -41,6 +41,9 @@
 
                     <Label text="{i18n>colPlant}"/>
                     <Input id="inpPlant" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
+
+                    <Label text="{i18n>colBatch}"/>
+                    <Input id="inpBatchNo" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onBatchVH"/>
 
                     <Label text="{i18n>colOrder}"/>
                     <Input id="inpOrderNumber" submit=".onFilterSearch"/>
@@ -89,6 +92,7 @@
                     <Column><Text text="{i18n>colCounter}"/></Column>
                     <Column><Text text="{i18n>colOrder}"/></Column>
                     <Column><Text text="{i18n>colOperation}"/></Column>
+                    <Column><Text text="{i18n>colBatch}"/></Column>
                     <Column><Text text="{i18n>colPlant}"/></Column>
                     <Column><Text text="{i18n>colMaterial}"/></Column>
                     <Column><Text text="{i18n>colPostingDate}"/></Column>
@@ -105,6 +109,7 @@
                             <Text text="{ConfirmationCounter}"/>
                             <Text text="{OrderNumber}"/>
                             <Text text="{OperationNumber}"/>
+                            <Text text="{BatchNo}"/>
                             <Text text="{Plant}"/>
                             <Text text="{Material}"/>
                             <Text text="{PostingDate}"/>

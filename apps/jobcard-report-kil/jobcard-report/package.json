@@ -1,0 +1,14 @@
+{
+  "name": "kejriwal-jobcard-report",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Job Card Report - Fiori Elements List Report replacing ZJOBREPTN (ZRPT_PP_JOBCARD).",
+  "keywords": ["ui5","fiori-elements","list-report","s4hana-onpremise"],
+  "scripts": {
+    "start": "ui5 serve --open \"index.html\"",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml --yes"
+  },
+  "devDependencies": { "@sap/ux-ui5-tooling": "1", "@ui5/cli": "^3" },
+  "ui5": { "dependencies": ["@sap/ux-ui5-tooling"] }
+}

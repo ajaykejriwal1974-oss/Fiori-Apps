@@ -1,0 +1,49 @@
+@EndUserText.label: 'Production Order Value Help'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Search.searchable: true
+// Sourced from ZPP_BATCHN, not AUFK. AUFK reads better on paper - it is the
+// order master - but every one of its 4,577 production orders has an empty
+// KTEXT (measured 30.08.2026: OrderVH?$filter=OrderDescription ne '' returned
+// 0 rows), so the dialog's description line was blank on every entry and the
+// list was 4,577 bare numbers with nothing to recognise them by.
+//
+// These 836 orders are the ones that actually carry WIP batches, which is what
+// this filter is for. Every entry is guaranteed to return rows when filtered
+// on - the AUFK version listed 3,741 orders that never could - and the batch
+// count and date range give the operator something to navigate by.
+//
+// Keyed on AUFNR + WERKS rather than AUFNR alone. Today the two are 1:1 (836
+// distinct orders, 836 groups), but the grouping permits an order to span
+// plants and a duplicate OData key would break the list.
+define view entity ZI_VH_Prod_Order
+  as select from zpp_batchn
+{
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [ { position: 10 } ]
+      @EndUserText.label: 'Production Order'
+  key aufnr          as ProductionOrder,
+
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [ { position: 20 } ]
+      @EndUserText.label: 'Plant'
+  key werks          as Plant,
+
+      @UI.lineItem: [ { position: 30 } ]
+      @EndUserText.label: 'Batches'
+      count( * )     as BatchCount,
+
+      @UI.lineItem: [ { position: 40 } ]
+      @EndUserText.label: 'First Batch'
+      min( bchdate ) as FirstBatchDate,
+
+      @UI.lineItem: [ { position: 50 } ]
+      @EndUserText.label: 'Last Batch'
+      max( bchdate ) as LastBatchDate
+}
+where
+      gjahr  <> '0000'
+  and delind <> 'X'
+  and aufnr  <> ''
+group by
+  aufnr,
+  werks

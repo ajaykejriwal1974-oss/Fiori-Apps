@@ -6,35 +6,47 @@
     displayBlock="true">
     <Page id="page" title="{i18n>worklistTitle}" showHeader="true">
         <subHeader>
+            <!-- Work Centre was a filter here once. The service has no such
+                 property (ZC_QM_INSPECTIONCHAR is QAMV + QALS, and the
+                 operation's work centre lives in the plan, not on the lot), so
+                 typing one produced an OData 400 and an empty table. Inspection
+                 type replaces it - that is how the stage apps scope their lots. -->
             <OverflowToolbar id="filterBar">
-                <Label text="{i18n>plant}" />
-                <Input id="inpPlant" width="8rem" value="{ui>/filter/plant}" />
-                <Label text="{i18n>workCenter}" />
-                <Input id="inpWorkCenter" width="10rem" value="{ui>/filter/workCenter}" />
-                <Label text="{i18n>inspLot}" />
-                <Input id="inpLot" width="10rem" value="{ui>/filter/inspectionLot}" />
+                <Label text="{i18n>plant}" labelFor="inpPlant"/>
+                <Input id="inpPlant" width="6rem" maxLength="4" value="{ui>/filter/plant}" submit=".onSearch"/>
+                <Label text="{i18n>material}" labelFor="inpMaterial"/>
+                <Input id="inpMaterial" width="12rem" maxLength="40" value="{ui>/filter/material}" submit=".onSearch"/>
+                <Label text="{i18n>inspLot}" labelFor="inpLot"/>
+                <Input id="inpLot" width="10rem" maxLength="12" value="{ui>/filter/inspectionLot}" submit=".onSearch"/>
+                <Label text="{i18n>inspType}" labelFor="inpType"/>
+                <Input id="inpType" width="4rem" maxLength="2" value="{ui>/filter/inspectionType}" submit=".onSearch"/>
                 <ToolbarSpacer />
                 <Button id="btnSearch" text="{i18n>search}" type="Emphasized" press=".onSearch" />
             </OverflowToolbar>
         </subHeader>
         <content>
+            <!-- suspended: nothing is read until Go. The service returns every
+                 characteristic of every lot without a usage decision, so an
+                 unfiltered read on open would be the whole plant's backlog. -->
             <Table
                 id="resultsTable"
                 items="{
                     path: '/InspectionCharacteristic',
-                    parameters: { '$count': true }
+                    parameters: { '$count': true },
+                    suspended: true
                 }"
-                mode="MultiSelect"
+                mode="None"
                 growing="true"
                 growingThreshold="100"
+                noDataText="{= ${ui>/hasResult} ? ${i18n>noRows} : ${i18n>pressGo} }"
                 sticky="ColumnHeaders,HeaderToolbar">
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="{i18n>charsToRecord}" level="H2" />
                         <ToolbarSpacer />
                         <ObjectStatus id="dirtyStatus" text="{ui>/dirtyCount} {i18n>edited}" state="Information" visible="{= ${ui>/dirtyCount} &gt; 0 }" />
-                        <Button icon="sap-icon://sort" tooltip="Sort" press=".onOpenSort"/>
-                        <Button icon="sap-icon://excel-attachment" tooltip="Export to Excel" press=".onExportExcel"/>
+                        <Button icon="sap-icon://sort" tooltip="{i18n>sort}" press=".onOpenSort"/>
+                        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>export}" press=".onExportExcel"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>
@@ -48,14 +60,17 @@
                 <items>
                     <ColumnListItem>
                         <cells>
-                            <Text text="{InspectionLot}" />
+                            <VBox>
+                                <Text text="{InspectionLot}" />
+                                <Text text="{Plant} · {InspectionType}" class="sapUiTinyText"/>
+                            </VBox>
                             <Text text="{Material}" />
                             <Text text="{CharacteristicDescription}" />
                             <Input
                                 value="{ResultValue}"
                                 type="Number"
                                 textAlign="End"
-                                liveChange=".onResultChange" />
+                                change=".onResultChange" />
                             <Text text="{Unit}" />
                             <Select selectedKey="{Valuation}" change=".onResultChange">
                                 <core:Item key="" text="" />

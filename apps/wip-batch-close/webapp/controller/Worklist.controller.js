@@ -6,12 +6,14 @@ sap.ui.define([
     "sap/m/Button",
     "sap/m/Label",
     "sap/m/Input",
+    "sap/m/DatePicker",
     "sap/ui/layout/form/SimpleForm",
     "sap/m/SelectDialog",
+    "sap/ui/model/Sorter",
     "sap/m/StandardListItem",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
-], function (Controller, MessageToast, MessageBox, Dialog, Button, Label, Input, SimpleForm, SelectDialog, StandardListItem, Filter, FilterOperator) {
+], function (Controller, MessageToast, MessageBox, Dialog, Button, Label, Input, DatePicker, SimpleForm, SelectDialog, Sorter, StandardListItem, Filter, FilterOperator) {
     "use strict";
 
     // Fully-qualified action namespace from the activated OData V4 service
@@ -93,17 +95,52 @@ sap.ui.define([
         onGreyVH:        function (oEvt) { this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product",     "ProductExternalID", "Select Grey Material"); },
         onDyedVH:        function (oEvt) { this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product",     "ProductExternalID", "Select Dyed Material"); },
 
-        _openValueHelp: function (oInput, sPath, sKeyField, sDescField, sTitle) {
+        // Batch and order both come from purpose-built views. The description
+        // line is what makes each list usable: 131k batch numbers and 836 order
+        // numbers say nothing on their own.
+        onBatchVH:       function (oEvt) { this._openValueHelp(oEvt.getSource(), "/BatchVH",   "Batch",           "ProductionOrder",  "Select Batch"); },
+        onOrderVH: function (oEvt) {
+            // OrderVH lists only the 836 orders that actually carry WIP
+            // batches, newest activity first, so the list is navigable
+            // without already knowing the order number.
+            this._openValueHelp(oEvt.getSource(), "/OrderVH", "ProductionOrder", {
+                parts: ["Plant", "BatchCount", "FirstBatchDate", "LastBatchDate"],
+                formatter: function (sPlant, iCount, sFrom, sTo) {
+                    // Edm.Date arrives as "2026-03-31" in the V4 model.
+                    var d = function (s) { return s ? s.split("-").reverse().join(".") : ""; };
+                    var sTxt = sPlant + " \u00b7 " + iCount + (iCount === 1 ? " batch" : " batches");
+                    if (!sFrom || !sTo) { return sTxt; }
+                    return sTxt + " \u00b7 " + (sFrom === sTo ? d(sFrom) : d(sFrom) + " \u2013 " + d(sTo));
+                }
+            }, "Select Production Order", { sortField: "LastBatchDate", sortDescending: true });
+        },
+
+        // vDesc is normally an element name. It may also be a full binding-info
+        // object ({parts, formatter}) for a composed subtitle - the order help
+        // needs one because AUFK's KTEXT is empty system-wide, so no single
+        // field says anything useful about an order.
+        // oOpts.sortField applies a server-side $orderby to the list.
+        _openValueHelp: function (oInput, sPath, sKeyField, vDesc, sTitle, oOpts) {
+            oOpts = oOpts || {};
             var oView = this.getView();
             var fnFilter = function (oE) {
                 var v = oE.getParameter("value") || "";
                 oE.getSource().getBinding("items").filter(v ? new Filter(sKeyField, FilterOperator.Contains, v) : []);
             };
+            var vDescBinding;
+            if (typeof vDesc === "string" && vDesc) { vDescBinding = "{" + vDesc + "}"; }
+            else if (vDesc) { vDescBinding = vDesc; }
+
+            var oItems = { path: sPath, template: new StandardListItem({
+                title: "{" + sKeyField + "}",
+                description: vDescBinding }) };
+            if (oOpts.sortField) {
+                oItems.sorter = new Sorter(oOpts.sortField, !!oOpts.sortDescending);
+            }
+
             var oDialog = new SelectDialog({
                 title: sTitle, growing: true, growingThreshold: 50, rememberSelections: false,
-                items: { path: sPath, template: new StandardListItem({
-                    title: "{" + sKeyField + "}",
-                    description: sDescField ? "{" + sDescField + "}" : undefined }) },
+                items: oItems,
                 liveChange: fnFilter,
                 search: fnFilter,
                 confirm: function (oE) { var oItem = oE.getParameter("selectedItem"); if (oItem) { oInput.setValue(oItem.getTitle()); } },
@@ -257,6 +294,139 @@ sap.ui.define([
             oDialog.open();
         },
 
+        /* ------------------------------------------------------------- create */
+
+        /**
+         * Create a WIP batch - the replacement for ZBATCH01N.
+         *
+         * This app is freestyle, not Fiori Elements, so the createBatch action
+         * on ZI_WIP_BATCH_MGMT does not surface as a toolbar button on its own.
+         * The dialog below collects exactly the nine fields the module pool
+         * collects before it draws a number:
+         *
+         *     werks aufnr bchdate lotno grey_code dye_code qty vrkme cheeses
+         *
+         * Nothing is validated here beyond "is it filled in". Every real check -
+         * order released, BOM found, quantity ceiling, lot free, number range
+         * maintained - lives in the behaviour handler, so the browser and the
+         * legacy screen cannot drift apart. The handler returns the refusal as
+         * a message and this dialog shows it.
+         */
+        onCreateBatch: function () {
+            var that = this;
+            var oF = {};
+
+            function field(sKey, sPlaceholder) {
+                oF[sKey] = new Input({ placeholder: sPlaceholder || "" });
+                return oF[sKey];
+            }
+
+            oF.BatchDate = new DatePicker({
+                valueFormat: "yyyy-MM-dd",     // Edm.Date, what the action expects
+                displayFormat: "medium"
+            });
+
+            var oForm = new SimpleForm({
+                editable: true,
+                layout: "ResponsiveGridLayout",
+                content: [
+                    new Label({ text: this.oBundle.getText("cbPlant"), required: true }),
+                    field("Plant"),
+                    new Label({ text: this.oBundle.getText("cbProductionOrder"), required: true }),
+                    field("ProductionOrder"),
+                    new Label({ text: this.oBundle.getText("cbBatchDate"), required: true }),
+                    oF.BatchDate,
+                    new Label({ text: this.oBundle.getText("cbLotNo"), required: true }),
+                    field("LotNo"),
+                    new Label({ text: this.oBundle.getText("cbGreyMaterial"), required: true }),
+                    field("GreyMaterial"),
+                    new Label({ text: this.oBundle.getText("cbDyedMaterial"), required: true }),
+                    field("DyedMaterial"),
+                    new Label({ text: this.oBundle.getText("cbQuantity"), required: true }),
+                    field("Quantity"),
+                    new Label({ text: this.oBundle.getText("cbBatchUnit"), required: true }),
+                    field("BatchUnit", "KG"),
+                    new Label({ text: this.oBundle.getText("cbCheeses"), required: true }),
+                    field("Cheeses")
+                ]
+            });
+
+            var oDialog = new Dialog({
+                title: this.oBundle.getText("createBatchTitle"),
+                contentWidth: "34rem",
+                content: [oForm],
+                beginButton: new Button({
+                    text: this.oBundle.getText("createBatchGo"),
+                    type: "Emphasized",
+                    press: function () {
+                        var oValues = {
+                            Plant:           (oF.Plant.getValue() || "").trim().toUpperCase(),
+                            ProductionOrder: (oF.ProductionOrder.getValue() || "").trim(),
+                            BatchDate:        oF.BatchDate.getValue() || "",
+                            LotNo:           (oF.LotNo.getValue() || "").trim(),
+                            GreyMaterial:    (oF.GreyMaterial.getValue() || "").trim().toUpperCase(),
+                            DyedMaterial:    (oF.DyedMaterial.getValue() || "").trim().toUpperCase(),
+                            Quantity:        (oF.Quantity.getValue() || "").trim(),
+                            BatchUnit:       (oF.BatchUnit.getValue() || "").trim().toUpperCase(),
+                            Cheeses:         (oF.Cheeses.getValue() || "").trim()
+                        };
+                        var aMissing = Object.keys(oValues).filter(function (k) {
+                            return !oValues[k];
+                        });
+                        if (aMissing.length) {
+                            MessageBox.error(that.oBundle.getText("createBatchMissing"));
+                            return;
+                        }
+                        oDialog.close();
+                        that._invokeCreate(oValues);
+                    }
+                }),
+                endButton: new Button({
+                    text: this.oBundle.getText("cancel"),
+                    press: function () { oDialog.close(); }
+                }),
+                afterClose: function () { oDialog.destroy(); }
+            });
+
+            this.getView().addDependent(oDialog);
+            oDialog.open();
+        },
+
+        /**
+         * createBatch takes nine flat parameters rather than the (Reason,
+         * BatchList) pair the close actions use, so it does not go through
+         * _invoke. The batch number comes back in the result message - it is
+         * drawn from number range ZPP_BTH at save time, never before, so an
+         * abandoned dialog does not burn one.
+         */
+        _invokeCreate: function (oValues) {
+            var that = this;
+            var oModel = this.getView().getModel();
+            var oOperation = oModel.bindContext(
+                "/" + ENTITY_SET + "/" + SERVICE_NS + ".createBatch(...)");
+
+            Object.keys(oValues).forEach(function (sKey) {
+                oOperation.setParameter(sKey, oValues[sKey]);
+            });
+
+            oOperation.invoke().then(function () {
+                var oRes = oOperation.getBoundContext().getObject() || {};
+                var sMsg = oRes.Message || that.oBundle.getText("actionDone", ["createBatch"]);
+                // The handler answers refusals through the same Message field it
+                // uses for success, so treat "not created" as an error box rather
+                // than dressing a refusal up as a confirmation.
+                if (/not created|Enter |Invalid |not released|not found|greater than|Number range/i.test(sMsg)) {
+                    MessageBox.error(sMsg);
+                } else {
+                    MessageBox.success(sMsg);
+                    that.byId("table").getBinding("items").refresh();
+                }
+            }, function (oError) {
+                MessageBox.error((oError && oError.message) ||
+                                 that.oBundle.getText("actionFailed", ["createBatch"]));
+            });
+        },
+
         /**
          * Invoke a RAP static action via OData V4. The behaviour definition takes
          * a flat (Reason, BatchList) pair; BatchList carries 'BATCH=YEAR;...'.
@@ -267,6 +437,17 @@ sap.ui.define([
             var sList = aRows.map(function (o) {
                 return o.Batch + "=" + o.FiscalYear;
             }).join(";");
+
+            // BatchList is abap.char(1333). A batch/year pair runs to about 16
+            // characters, so anything past ~80 rows is cut off by the backend
+            // with no error - the operator would see a success message and a
+            // silently partial result. This mattered less while the handler was
+            // an empty stub; now that closeBatches actually writes to
+            // ZPP_BATCHN it has to be caught here.
+            if (sList.length > 1333) {
+                MessageBox.error(this.oBundle.getText("tooManyBatches", [aRows.length]));
+                return;
+            }
 
             var oOperation = oModel.bindContext("/" + ENTITY_SET + "/" + SERVICE_NS + "." + sAction + "(...)");
             oOperation.setParameter("Reason", sReason);

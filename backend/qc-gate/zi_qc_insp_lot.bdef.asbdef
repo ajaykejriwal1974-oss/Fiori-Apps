@@ -1,0 +1,5 @@
+// SUPERSEDED - do not paste this file.
+// It was reconstructed from the stale repo copy and is missing the header
+// clauses, the ( features : instance ) on the three existing actions, and it
+// wrongly declares association _Characteristic. See bdef-additions.md: add
+// three lines to the LIVE definition instead of replacing it.

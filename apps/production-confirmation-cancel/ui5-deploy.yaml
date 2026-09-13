@@ -1,3 +1,10 @@
+# PACKAGE / TRANSPORT - corrected 2026-08-30.
+# This said package: "$TMP". The BSP in KSD is not in $TMP and never was: TADIR
+# puts it in ZKGPL_FIORI, which is transportable, so the upload was refused with
+# "ABAP workbench request for SAPUI5 ABAP Repository not specified" and, in test
+# mode, "Cannot change package assignment from ZKGPL_FIORI to $TMP".
+# Transport updated 31.08.2026: KSDK906759 was released. KSDK906788 holds the
+# matching backend change (BatchNo on ZI_/ZC_PROD_CONFIRMATION + BatchVH).
 # Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here.
 specVersion: "3.0"
 metadata:
@@ -13,7 +20,8 @@ builder:
           client: "500"
         app:
           name: ZPROD_CONF_CAN
-          package: "$TMP"
+          package: ZKGPL_FIORI
+          transport: KSDK906788
           description: "KGPL Cancel Production Confirmation"
         exclude:
           - "/test/"

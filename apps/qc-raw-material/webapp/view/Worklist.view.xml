@@ -6,7 +6,7 @@
     xmlns:form="sap.ui.layout.form"
     height="100%">
 
-    <f:DynamicPage id="page" headerExpanded="true" fitContent="true">
+    <f:DynamicPage id="page" headerExpanded="false" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading><Title text="Raw Material QC" level="H2"/></f:heading>
@@ -25,8 +25,15 @@
                 <form:SimpleForm layout="ResponsiveGridLayout" columnsXL="4" columnsL="3" columnsM="2" editable="true">
                     <Label text="Search"/>
                     <SearchField id="fSearch" placeholder="Supplier lot, material" search=".onGo" width="100%"/>
+                    <!-- Supplier Lot is QALS-LICHN, blank on every inspection
+                         lot in KSD as at 2026-08-29. The dropdown is wired the
+                         same way as the others and says so when it opens empty.
+                         Greige Lot below is the number technicians actually
+                         quote - QALS-CHARG, filtered as Batch. -->
                     <Label text="Supplier Lot"/>
-                    <Input id="fVendorBatch" width="100%"/>
+                    <Input id="fVendorBatch" width="100%" showValueHelp="true" valueHelpRequest=".onSupplierLotVH"/>
+                    <Label text="Greige Lot"/>
+                    <Input id="fBatch" width="100%" showValueHelp="true" valueHelpRequest=".onBatchVH"/>
                     <Label text="Material"/>
                     <Input id="fMaterial" width="100%"/>
                     <Label text="Plant"/>
@@ -39,7 +46,7 @@
             </f:DynamicPageHeader>
         </f:header>
 
-        <f:content>
+        <f:content><ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
             <Table id="tblLots" growing="true" growingThreshold="40" growingScrollToLoad="true"
                    sticky="ColumnHeaders" mode="None"
                    items="{ path: '/InspectionLot', parameters: { $count: true }, suspended: true }">
@@ -51,6 +58,12 @@
                 </headerToolbar>
                 <columns>
                     <Column><Text text="Supplier Lot"/></Column>
+                    <!-- Both numbers. The greige lot is the supplier batch
+                         that arrived and is being inspected; the production lot
+                         is the plant's own batch number (ZPP_BATCHN-BATCHNO),
+                         blank until a plant batch record claims this lot. -->
+                    <Column><Text text="{i18n>colGreigeLot}"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>colProductionLot}"/></Column>
                     <Column><Text text="Material"/></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End"><Text text="Delivered"/></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End"><Text text="Sample"/></Column>
@@ -61,9 +74,14 @@
                     <ColumnListItem type="Navigation" press=".onOpenLot">
                         <cells>
                             <VBox>
-                                <Text text="{VendorBatch}" class="sapMTitleStyleH5"/>
+                                <!-- LICHN is blank on every lot in KSD; show the greige lot
+                                     rather than an empty first column. -->
+                                <Text text="{= ${VendorBatch} || ${Batch} }" class="sapMTitleStyleH5"/>
                                 <Text text="{InspectionLot}" class="sapUiTinyText"/>
                             </VBox>
+                            <Text text="{Batch}"/>
+                            <ObjectStatus text="{= ${ProductionLot} ? ${ProductionLot} : ${i18n>notAssigned} }"
+                                          state="{= ${ProductionLot} ? 'Success' : 'None' }"/>
                             <VBox>
                                 <Text text="{MaterialName}"/>
                                 <Text text="{Material}" class="sapUiTinyText"/>
@@ -77,6 +95,6 @@
                     </ColumnListItem>
                 </items>
             </Table>
-        </f:content>
+        </ScrollContainer></f:content>
     </f:DynamicPage>
 </mvc:View>

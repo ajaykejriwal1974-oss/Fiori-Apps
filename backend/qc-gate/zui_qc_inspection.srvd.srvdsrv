@@ -1,0 +1,19 @@
+@EndUserText.label: 'QC Inspection Service'
+define service ZUI_QC_INSPECTION {
+  expose ZC_QC_INSP_LOT        as InspectionLot;
+  expose ZC_QC_INSP_CHAR       as Characteristic;
+  // Read-only, exposed the same way the value helps are. The apps query it by
+  // plant and production order to list the batches on an order - needed when a
+  // lot knows its order but not which batch it is inspecting, so the operator
+  // can pick one before a confirmation is posted.
+  expose ZI_QC_BATCH_JOB       as OrderBatch;
+  expose ZI_VH_PLANT           as PlantVH;
+  expose ZI_VH_COMPANYCODE     as CompanyVH;
+  // A @Consumption.valueHelpDefinition only resolves if the entity it names is
+  // exposed in the service too. Without these two lines the annotations on
+  // Batch and VendorBatch are in the metadata but the F4 popup has nothing to
+  // call. Verified 2026-08-29: both appear as EntitySets in $metadata and the
+  // srvd_f4 endpoint answers 200.
+  expose ZI_VH_QC_BATCH        as BatchVH;
+  expose ZI_VH_QC_SUPPLIER_LOT as SupplierLotVH;
+}

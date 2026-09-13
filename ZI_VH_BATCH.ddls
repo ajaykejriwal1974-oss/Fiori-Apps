@@ -1,0 +1,55 @@
+@EndUserText.label: 'WIP Batch Value Help'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Search.searchable: true
+// Plain view entity, deliberately. A value-help target has to be one: a BO
+// root (ZI_WIP_BATCH_MGMT), an analytical cube (ZI_WIP_BATCH, annotated
+// #CUBE) and a transactional projection (ZC_Schedule) each fail differently -
+// UNCAUGHT_EXCEPTION on $metadata, "S/CUBE is not yet supported", and
+// UNCAUGHT_EXCEPTION on the F4 service. Removing the entity from the service
+// definition is not enough on its own; the annotation makes SADL resolve the
+// target while building the model.
+//
+// GJAHR '0000' holds 192 migration rows with no order and zero quantity.
+// Excluding them makes BATCHNO unique across the table (measured 30.08.2026),
+// so BATCHNO + GJAHR is a safe key with no duplicate rows in the dialog.
+define view entity ZI_VH_Batch
+  as select from zpp_batchn
+{
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [ { position: 10 } ]
+      @EndUserText.label: 'Batch'
+  key batchno   as Batch,
+
+      @UI.lineItem: [ { position: 20 } ]
+      @EndUserText.label: 'Fiscal Year'
+  key gjahr     as FiscalYear,
+
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [ { position: 30 } ]
+      @EndUserText.label: 'Plant'
+      werks     as Plant,
+
+      @Search.defaultSearchElement: true
+      @UI.lineItem: [ { position: 40 } ]
+      @EndUserText.label: 'Production Order'
+      aufnr     as ProductionOrder,
+
+      @UI.lineItem: [ { position: 50 } ]
+      @EndUserText.label: 'Batch Date'
+      bchdate   as BatchDate,
+
+      @UI.lineItem: [ { position: 60 } ]
+      @EndUserText.label: 'Grey Material'
+      grey_code as GreyMaterial,
+
+      @UI.lineItem: [ { position: 70 } ]
+      @EndUserText.label: 'Dyed Material'
+      dye_code  as DyedMaterial,
+
+      @UI.lineItem: [ { position: 80 } ]
+      @EndUserText.label: 'Closed'
+      closed    as Closed
+}
+where
+      gjahr  <> '0000'
+  and delind <> 'X'

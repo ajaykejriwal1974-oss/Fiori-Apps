@@ -1,0 +1,24 @@
+# Source recovered 31.08.2026 from the deployed BSP on KSD
+# (/sap/bc/ui5_ui5/sap/zpacking_list) - this app was live in KSD and KSQ with no
+# source in any local repo. The recovered files are the -dbg build output, which
+# is the unminified original.
+# Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here.
+specVersion: "3.0"
+metadata:
+  name: kejriwal.sd.packinglist
+type: application
+builder:
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZPACKING_LIST
+          package: ZKGPL_FIORI
+          transport: KSDK906788
+          description: "KGPL Packing List"
+        exclude:
+          - "/test/"

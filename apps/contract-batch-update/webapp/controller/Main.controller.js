@@ -18,7 +18,7 @@ sap.ui.define([
 
         /** Open a Sort dialog built generically from the table columns. */
         onOpenSort: function () {
-            var oTable = this.byId("table") || this.byId("tbl");
+            var oTable = this.byId("itemsTable");
             if (!oTable) { return; }
             var that = this;
             sap.ui.require(["sap/m/ViewSettingsDialog", "sap/m/ViewSettingsItem", "sap/ui/model/Sorter"], function (VSD, VSI, Sorter) {
@@ -53,7 +53,7 @@ sap.ui.define([
         /** Export current table rows to Excel (.xlsx). Generic - reads the table's
          *  columns + cell binding paths and exports the loaded/filtered rows. */
         onExportExcel: function () {
-            var oTable = this.byId("table") || this.byId("tbl");
+            var oTable = this.byId("itemsTable");
             if (!oTable) { return; }
             var oInfo = oTable.getBindingInfo("items"), oBinding = oTable.getBinding("items");
             if (!oInfo || !oBinding) { return; }
@@ -165,8 +165,16 @@ sap.ui.define([
         /**
          * Persist the new batch assignments in one round trip.
          *
-         * Replace the TODO with the backend update: a RAP mass-update action over
-         * (contract, item, batch), or per-row PATCH submitted as one batch.
+         * The action takes two scalars - SalesContract and ItemBatchList, a
+         * packed 'ITEM=BATCH;ITEM=BATCH;' string that the handler parses into
+         * BAPI_CUSTOMERCONTRACT_CHANGE item rows. The earlier version sent an
+         * `_Item` collection the service does not declare, so the call failed
+         * before it reached the handler; ItemBatchList arrived empty and nothing
+         * was ever updated.
+         *
+         * ItemBatchList is char(1333). At six digits for the item, ten for the
+         * batch and two separators that is about 74 items, after which the
+         * backend would truncate in silence - so refuse rather than half-post.
          */
         onUpdateBatches: function () {
             var aChanged = this._changedItems();
@@ -175,21 +183,26 @@ sap.ui.define([
                 return;
             }
             var sContract = (this.getView().getModel("ui").getProperty("/contract") || "").trim();
+
+            var sList = aChanged.map(function (o) {
+                return o.ContractItem + "=" + o.NewBatch;
+            }).join(";");
+
+            if (sList.length > 1333) {
+                MessageBox.error(this._text("tooManyItems", [aChanged.length]));
+                return;
+            }
+
             var oModel = this.getView().getModel();   // OData V4 default model
             var oAction = oModel.bindContext(ENTITY_SET + "/" + SERVICE_NS + ".updateBatches(...)");
             oAction.setParameter("SalesContract", sContract);
-            oAction.setParameter("_Item", aChanged.map(function (o) {
-                return {
-                    ContractItem: o.ContractItem,
-                    NewBatch: o.NewBatch
-                };
-            }));
+            oAction.setParameter("ItemBatchList", sList);
 
             var that = this;
             oAction.invoke().then(function () {
                 var oResult = oAction.getBoundContext().getObject();
                 MessageBox.success(that._text("updateDone", [
-                    (oResult && oResult.ItemsUpdated) || 0,
+                    (oResult && oResult.ItemsUpdated) || aChanged.length,
                     (oResult && oResult.Message) || ""
                 ]));
                 that.onLoadContract();   // refresh from the backend

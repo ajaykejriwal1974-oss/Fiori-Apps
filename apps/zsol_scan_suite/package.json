@@ -1,0 +1,11 @@
+{
+  "name": "kgpl-scan-suite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KGPL Scan Suite - static PWA served as BSP ZSOL_SCAN_SUITE. No UI5 build; build just stages the shipped files into dist/ for fiori deploy.",
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html manifest.json html5-qrcode.min.js dist/",
+    "deploy:test": "npm run build && npx -p @sap/ux-ui5-tooling@1 fiori deploy --config ui5-deploy.yaml --yes --testMode",
+    "deploy": "npm run build && npx -p @sap/ux-ui5-tooling@1 fiori deploy --config ui5-deploy.yaml --yes"
+  }
+}

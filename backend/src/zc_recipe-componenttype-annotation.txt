@@ -1,0 +1,15 @@
+In ZC_RECIPE, add the value help above ComponentType. The field currently reads:
+
+      @UI: { lineItem: [ { position: 100 } ] }
+      ComponentType,
+
+Replace with:
+
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_VH_COMP_TYPE', element: 'ComponentType' } }]
+      @UI: { lineItem: [ { position: 100 } ] }
+      ComponentType,
+
+Activate ZI_VH_COMP_TYPE first, then ZC_RECIPE. No service definition change is
+needed - the F4 service is generated from the annotation. Verified on the
+Schedule service: ZI_VH_PLANT is not exposed in ZUI_SCHEDULE and its srvd_f4
+endpoint still answers 200.

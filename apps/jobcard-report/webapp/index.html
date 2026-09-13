@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Card Report</title>
+
+    <!-- Full height, done against the viewport rather than the parent chain.
+         Measured in Chrome on 30.08.2026:
+
+             HTML                                  676
+             BODY#content.sapUiBody                676
+               DIV#id-<generated>                    0   <- ComponentSupport
+                 DIV#container  height:100%          0   <- 100% of 0
+
+         ComponentSupport wraps the placeholder div in a generated element that
+         carries no height, so every percentage-based approach collapses there:
+         "height:100%" on #container, and data-height on the div, both resolve
+         against a zero-height parent. Absolute positioning with all four
+         offsets skips the wrapper - html, body and the wrapper are all
+         position:static, so #container is laid out against the initial
+         containing block, which is the viewport.
+
+         In the launchpad the shell owns the height and "fullWidth": true in
+         the manifest keeps the page edge to edge. -->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        /* UI5 renders its UIArea inside the container. It only stamps
+           height:100% on that UIArea when the ComponentContainer's own height
+           PROPERTY is set - which is what data-height on the div below does.
+           Absolute positioning alone gives #container a real height but leaves
+           the UIArea at 0, and everything under it inherits the zero:
+
+               #container        676   position:absolute
+                 #container-uiarea 0   <- collapses here without data-height
+                   appRootView     0
+                     sapMNav       0
+                       DynamicPage 0
+
+           Measured in Chrome, 30.08.2026. Both mechanisms are needed: the
+           absolute positioning to escape the generated wrapper ComponentSupport
+           puts between body and #container, and data-height so UI5 propagates
+           a height down its own DOM. This rule is the belt to that braces. */
+        #container-uiarea { height: 100%; }
+    </style>
+
+    <script id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{ "kejriwal.pp.jobcardreport": "./" }'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"></script>
+</head>
+<body class="sapUiBody" id="content">
+    <div data-sap-ui-component
+         data-name="kejriwal.pp.jobcardreport"
+         data-id="container"
+         data-height="100%"
+         data-settings='{"id":"app"}'></div>
+</body>
+</html>

@@ -1,3 +1,15 @@
+# Deploy config for KSD (on-premise). Credentials are NOT stored here - the
+# deployer prompts, or takes them from the environment.
+#
+# BSP name is ZQC_RAW_DYE although the app is "Raw Material QC": the BSP was
+# created under that name on 2026-08-21 and renaming it means a new BSP
+# application plus new SICF nodes and tile targets. The Scan Suite tile
+# (index.html, data-feature QCRAW) points at /sap/bc/ui5_ui5/sap/zqc_raw_dye/.
+#
+# Transport: KSDK906908 (2026-09-05) carries the QC audit corrections for all
+# four QC apps and the Scan Suite. Update this line whenever a new request is
+# opened; a released request makes the deploy fail with "request is not
+# modifiable".
 specVersion: "3.1"
 metadata:
   name: qc-raw-material
@@ -17,6 +29,6 @@ builder:
           name: ZQC_RAW_DYE
           package: ZKGPL_FIORI
           description: Raw Material QC
-          transport: KSDK906696
+          transport: KSDK906908
         exclude:
           - /test/

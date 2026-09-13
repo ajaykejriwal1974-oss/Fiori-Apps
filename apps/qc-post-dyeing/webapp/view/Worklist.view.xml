@@ -6,7 +6,7 @@
     xmlns:form="sap.ui.layout.form"
     height="100%">
 
-    <f:DynamicPage id="page" headerExpanded="true" fitContent="true">
+    <f:DynamicPage id="page" headerExpanded="false" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading><Title text="Post-Dyeing QC" level="H2"/></f:heading>
@@ -26,7 +26,7 @@
                     <Label text="Search"/>
                     <SearchField id="fSearch" placeholder="Batch, shade, order" search=".onGo" width="100%"/>
                     <Label text="Batch"/>
-                    <Input id="fBatch" width="100%"/>
+                    <Input id="fBatch" width="100%" showValueHelp="true" valueHelpRequest=".onBatchVH"/>
                     <Label text="Dyed Material"/>
                     <Input id="fMaterial" width="100%"/>
                     <Label text="Production Order"/>
@@ -41,7 +41,7 @@
             </f:DynamicPageHeader>
         </f:header>
 
-        <f:content>
+        <f:content><ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
             <Table id="tblLots" growing="true" growingThreshold="40" growingScrollToLoad="true"
                    sticky="ColumnHeaders" mode="None"
                    items="{ path: '/InspectionLot', parameters: { $count: true }, suspended: true }">
@@ -53,6 +53,15 @@
                 </headerToolbar>
                 <columns>
                     <Column><Text text="Batch"/></Column>
+                    <!-- The batch-level identity of this lot. PlantBatch is the
+                         physical batch that was dyed and wound; where the lot
+                         could not resolve it (BatchSource blank) the cell says
+                         so, because that is the lot where the operator will
+                         have to pick a batch before production can be
+                         confirmed. Better to know that from the list than to
+                         find out in the dialog. -->
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>colPlantBatch}"/></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>colGreigeLot}"/></Column>
                     <Column><Text text="Shade / Dyed Material"/></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Order"/></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End"><Text text="Quantity"/></Column>
@@ -67,6 +76,12 @@
                                 <Text text="{InspectionLot}" class="sapUiTinyText"/>
                             </VBox>
                             <VBox>
+                                <ObjectStatus text="{= ${PlantBatch} ? ${PlantBatch} : ${i18n>notResolved} }"
+                                              state="{= ${PlantBatch} ? 'Success' : 'None' }"/>
+                                <Text text="{JobCard}" class="sapUiTinyText"/>
+                            </VBox>
+                            <Text text="{GreigeLotRef}"/>
+                            <VBox>
                                 <Text text="{MaterialName}"/>
                                 <Text text="{Material}" class="sapUiTinyText"/>
                             </VBox>
@@ -79,6 +94,6 @@
                     </ColumnListItem>
                 </items>
             </Table>
-        </f:content>
+        </ScrollContainer></f:content>
     </f:DynamicPage>
 </mvc:View>

@@ -1,12 +1,3 @@
-// Small master maintained by the packing desk. Managed RAP: RAP owns the
-// persistence, there is no BAPI behind it. All three key fields are entered by
-// the user (plant + label type + printer IP), so there is no managed numbering.
-//
-// strict ( 2 ) makes `authorization master` MANDATORY on a root entity with
-// modifying operations - it cannot simply be omitted. It must therefore be
-// backed by a real handler in zbp_i_label_master (Local Types), otherwise the
-// first read dumps with RAISE_SHORTDUMP. Global, not instance: there is no
-// per-row rule to express yet.
 managed implementation in class zbp_i_label_master unique;
 strict ( 2 );
 
@@ -21,6 +12,17 @@ authorization master ( global )
 
   field ( mandatory : create, readonly : update ) Plant, LabelType, IPAddress;
   field ( mandatory ) LabelText;
+
+  // One default printer per plant and label type. Nothing enforced this, and
+  // plant 2002 has drifted: measured 2026-08-30, of 14 printers per type,
+  // KIL has 9 marked default and BLNK has 3. Whatever asks for "the default
+  // printer" gets whichever row the database happens to return first.
+  //
+  // Last one wins: saving a row with IsDefault = 'X' clears the flag on the
+  // other rows of the same plant and type. Refusing the save instead would
+  // leave the operator to hunt down and clear the old default by hand, and
+  // with nine of them that is worse.
+  determination enforceSingleDefault on save { create; update; }
 
   mapping for zpp_label
   {

@@ -41,10 +41,10 @@
                     <Input id="inpPlant" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
 
                     <Label text="{i18n>colBatch}"/>
-                    <Input id="inpBatch" submit=".onFilterSearch"/>
+                    <Input id="inpBatch" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onBatchVH"/>
 
                     <Label text="{i18n>colOrder}"/>
-                    <Input id="inpProductionOrder" submit=".onFilterSearch"/>
+                    <Input id="inpProductionOrder" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onOrderVH"/>
 
                     <Label text="{i18n>colGrey}"/>
                     <Input id="inpGreyMaterial" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onGreyVH"/>
@@ -80,6 +80,7 @@
                     <OverflowToolbar>
                         <Title text="{i18n>worklistTitle}"/>
                         <ToolbarSpacer/>
+                        <Button text="{i18n>actcreateBatch}" press=".onCreateBatch" icon="sap-icon://add"/>
                         <Button text="{i18n>actcloseBatches}" press=".onCloseBatches" type="Emphasized" icon="sap-icon://locked"/>
                         <Button text="{i18n>actreopenBatches}" press=".onReopenBatches" type="Reject" icon="sap-icon://unlocked"/>
                         <SearchField width="14rem" search=".onQuickSearch" placeholder="Search"/>

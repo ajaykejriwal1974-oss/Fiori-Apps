@@ -22,7 +22,7 @@ sap.ui.define([
     var ENTITY_SET = "ProdConfirmation";
     var ACTION     = "cancelConfirmations";
 
-    var SEARCH_FIELDS = ["OrderNumber", "Material", "ConfirmationNumber"];
+    var SEARCH_FIELDS = ["OrderNumber", "Material", "ConfirmationNumber", "BatchNo"];
 
     return Controller.extend("kejriwal.pp.prodconfcancel.controller.Worklist", {
 
@@ -42,6 +42,7 @@ sap.ui.define([
 
             add("inpCompanyCode",     "CompanyCode",     "EQ");
             add("inpPlant",           "Plant",           "EQ");
+            add("inpBatchNo",         "BatchNo",         "EQ");
             add("inpOrderNumber",     "OrderNumber",     "Contains");
             add("inpOperationNumber", "OperationNumber", "EQ");
             add("inpMaterial",        "Material",        "Contains");
@@ -79,7 +80,7 @@ sap.ui.define([
 
         /** Reset every filter field and collapse the result set back to nothing. */
         onClearFilters: function () {
-            ["inpCompanyCode","inpPlant","inpOrderNumber","inpOperationNumber",
+            ["inpCompanyCode","inpPlant","inpBatchNo","inpOrderNumber","inpOperationNumber",
              "inpMaterial","inpCreatedBy","dpPostingDateFrom","dpPostingDateTo"]
                 .forEach(function (sId) { this.byId(sId).setValue(""); }, this);
             this.byId("cbHideCancelled").setSelected(true);
@@ -94,6 +95,10 @@ sap.ui.define([
         onPlantVH:       function (oEvt) { this._openValueHelp(oEvt.getSource(), "/PlantVH",   "Plant",       "PlantName",       "Select Plant"); },
         onMaterialVH:    function (oEvt) { this._openValueHelp(oEvt.getSource(), "/ProductVH", "Product",     "ProductExternalID", "Select Material"); },
         onCreatedByVH:   function (oEvt) { this._openValueHelp(oEvt.getSource(), "/UserVH",    "UserID",      null,              "Select User"); },
+        // BatchVH is ZI_VH_Batch over ZPP_BATCHN - the same WIP batch list the
+        // Job Card Report and WIP Batch apps use, so an operator picks the batch
+        // they already know rather than hunting a confirmation number.
+        onBatchVH:       function (oEvt) { this._openValueHelp(oEvt.getSource(), "/BatchVH",   "Batch",       "ProductionOrder", "Select Batch"); },
 
         /** Generic F4: SelectDialog over a value-help entity set on the app's
          *  OData V4 model, filter by typed value, write the picked key back. */

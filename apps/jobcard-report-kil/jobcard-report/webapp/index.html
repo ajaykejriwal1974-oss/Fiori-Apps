@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Card Report</title>
+
+    <!-- Full height. A Fiori Elements List Report sizes its table to the
+         container, so without this the standalone page collapses to the
+         height of the header and the table gets its own inner scrollbar.
+         In the launchpad the shell provides the height and "fullWidth": true
+         in the manifest keeps it edge to edge. -->
+    <style>
+        html, body, #content {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body { overflow: hidden; }
+    </style>
+
+    <script id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resourceroots='{ "kejriwal.pp.jobcardreport": "./" }'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"></script>
+</head>
+<body class="sapUiBody" id="content">
+    <div data-sap-ui-component
+         data-name="kejriwal.pp.jobcardreport"
+         data-id="container"
+         data-settings='{"id":"app","height":"100%"}'></div>
+</body>
+</html>

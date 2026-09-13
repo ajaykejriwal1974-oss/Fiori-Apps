@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KGPL Location Scan</title>
+<style>
+  :root {
+    --green: #1a7f37;
+    --amber: #9a6700;
+    --red: #cf222e;
+    --blue: #0969da;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --border: #d0d7de;
+    --text: #1f2328;
+    --muted: #57606a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Roboto, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px;
+    padding-bottom: 40px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px 0;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  input[type=text] {
+    width: 100%;
+    font-size: 22px;
+    padding: 14px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+  }
+  input[type=text]:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+  .row { display: flex; gap: 10px; margin-top: 12px; }
+  button {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-secondary { background: #eaeef2; color: var(--text); }
+  .btn-primary:disabled { background: #8bb4e8; }
+
+  .location-box {
+    display: none;
+    background: #ddf4e0;
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .location-box.active { display: block; }
+  .location-box .code { font-size: 18px; font-weight: 700; color: var(--green); }
+  .location-box .desc { font-size: 13px; color: #234; margin-top: 2px; }
+  .location-box .change { font-size: 12px; color: var(--blue); margin-top: 8px; display: inline-block; cursor: pointer; }
+
+  #scanSection { display: none; }
+  #scanSection.active { display: block; }
+
+  .log {
+    margin-top: 16px;
+  }
+  .log-entry {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .log-entry.ok { border-left-color: var(--green); }
+  .log-entry.err { border-left-color: var(--red); }
+  .log-entry .box { font-weight: 700; }
+  .log-entry .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+  .status {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+  .status.err { color: var(--red); font-weight: 600; }
+</style>
+</head>
+<body>
+
+  <h1>Warehouse Location Scan</h1>
+  <div class="sub">Scan a location label, then scan each box/pallet at that location.</div>
+
+  <!-- STEP 1: Location -->
+  <div class="card" id="locationCard">
+    <label for="locInput">Scan / Enter Location Barcode</label>
+    <input type="text" id="locInput" placeholder="e.g. 1001-PAST-PAST" autocomplete="off" autocapitalize="characters">
+    <div class="row">
+      <button class="btn-primary" id="btnSetLocation">Confirm Location</button>
+    </div>
+    <div class="status" id="locStatus"></div>
+  </div>
+
+  <div class="location-box" id="locationBox">
+    <div class="code" id="locCodeDisplay"></div>
+    <div class="desc" id="locDescDisplay"></div>
+    <span class="change" id="btnChangeLocation">Change location</span>
+  </div>
+
+  <!-- STEP 2: Box scan -->
+  <div class="card" id="scanSection">
+    <label for="boxInput">Scan / Enter Box or Pallet Barcode</label>
+    <input type="text" id="boxInput" placeholder="Scan box / carton / pallet" autocomplete="off" autocapitalize="characters">
+    <div class="row">
+      <button class="btn-primary" id="btnScanBox">Record Scan</button>
+    </div>
+    <div class="status" id="boxStatus"></div>
+  </div>
+
+  <div class="log" id="log"></div>
+
+<script>
+(function () {
+  // ---- Configuration ----
+  var SERVICE = '/sap/opu/odata/sap/ZSOL_LOC_ISCAN_SRV';
+
+  var csrfToken = null;
+
+  var locInput = document.getElementById('locInput');
+  var boxInput = document.getElementById('boxInput');
+  var locationCard = document.getElementById('locationCard');
+  var locationBox = document.getElementById('locationBox');
+  var scanSection = document.getElementById('scanSection');
+  var locCodeDisplay = document.getElementById('locCodeDisplay');
+  var locDescDisplay = document.getElementById('locDescDisplay');
+  var locStatus = document.getElementById('locStatus');
+  var boxStatus = document.getElementById('boxStatus');
+  var logEl = document.getElementById('log');
+
+  var currentLoc = null; // { werks, lgort, locCode }
+
+  function setStatus(el, msg, isErr) {
+    el.textContent = msg || '';
+    el.className = 'status' + (isErr ? ' err' : '');
+  }
+
+  function fetchCsrfToken(cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', SERVICE + '/$metadata', true);
+    xhr.setRequestHeader('X-CSRF-Token', 'Fetch');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        csrfToken = xhr.getResponseHeader('X-CSRF-Token');
+        if (cb) cb();
+      }
+    };
+    xhr.send();
+  }
+
+  function odataRequest(method, path, body, cb) {
+    function doSend(retried) {
+      var xhr = new XMLHttpRequest();
+      xhr.open(method, SERVICE + path, true);
+      xhr.setRequestHeader('Accept', 'application/json');
+      if (body) xhr.setRequestHeader('Content-Type', 'application/json');
+      if (method !== 'GET' && csrfToken) xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 403 && !retried) {
+          // token expired - refetch once and retry
+          fetchCsrfToken(function () { doSend(true); });
+          return;
+        }
+        var json = null;
+        try { json = JSON.parse(xhr.responseText); } catch (e) {}
+        cb(xhr.status, json, xhr.responseText);
+      };
+      xhr.send(body ? JSON.stringify(body) : null);
+    }
+    doSend(false);
+  }
+
+  function parseLocationBarcode(raw) {
+    // Expected format: WERKS-LGORT-LOCCODE  e.g. 1001-PAST-PAST
+    var parts = raw.trim().toUpperCase().split('-');
+    if (parts.length < 3) return null;
+    var werks = parts[0];
+    var lgort = parts[1];
+    var locCode = parts.slice(2).join('-'); // in case loc code itself has a dash suffix
+    return { werks: werks, lgort: lgort, locCode: locCode };
+  }
+
+  function confirmLocation() {
+    var raw = locInput.value;
+    if (!raw) { setStatus(locStatus, 'Scan or type a location barcode first.', true); return; }
+    var parsed = parseLocationBarcode(raw);
+    if (!parsed) {
+      setStatus(locStatus, 'Unrecognized barcode format. Expected WERKS-LGORT-LOCCODE.', true);
+      return;
+    }
+    setStatus(locStatus, 'Checking location...', false);
+    var path = "/LocationSet(Werks='" + parsed.werks + "',Lgort='" + parsed.lgort + "',LocCode='" + parsed.locCode + "')?$format=json";
+    odataRequest('GET', path, null, function (status, json) {
+      if (status === 200 && json && json.d) {
+        var d = json.d;
+        if (d.Active !== 'X') {
+          setStatus(locStatus, 'That location exists but is INACTIVE. Choose another.', true);
+          return;
+        }
+        currentLoc = parsed;
+        locCodeDisplay.textContent = parsed.werks + ' / ' + parsed.lgort + ' / ' + parsed.locCode;
+        locDescDisplay.textContent = d.LocDesc || '';
+        locationBox.classList.add('active');
+        locationCard.style.display = 'none';
+        scanSection.classList.add('active');
+        setStatus(locStatus, '', false);
+        boxInput.value = '';
+        boxInput.focus();
+      } else {
+        setStatus(locStatus, 'Location not found. Check the barcode and try again.', true);
+      }
+    });
+  }
+
+  function changeLocation() {
+    currentLoc = null;
+    locationBox.classList.remove('active');
+    scanSection.classList.remove('active');
+    locationCard.style.display = 'block';
+    locInput.value = '';
+    setStatus(locStatus, '', false);
+    locInput.focus();
+  }
+
+  function addLogEntry(ok, boxNo, message) {
+    var div = document.createElement('div');
+    div.className = 'log-entry ' + (ok ? 'ok' : 'err');
+    var now = new Date();
+    var timeStr = now.toLocaleTimeString();
+    div.innerHTML = '<div class="box">' + boxNo + '</div><div class="meta">' + message + ' &middot; ' + timeStr + '</div>';
+    logEl.insertBefore(div, logEl.firstChild);
+  }
+
+  function recordScan() {
+    var boxNo = boxInput.value.trim();
+    if (!boxNo) { setStatus(boxStatus, 'Scan or type a box/pallet number first.', true); return; }
+    if (!currentLoc) { setStatus(boxStatus, 'Confirm a location first.', true); return; }
+
+    setStatus(boxStatus, 'Saving...', false);
+    var payload = {
+      Boxno: boxNo,
+      Werks: currentLoc.werks,
+      Lgort: currentLoc.lgort,
+      LocCode: currentLoc.locCode
+    };
+    odataRequest('POST', '/BoxLocationScanSet', payload, function (status, json, raw) {
+      if (status === 201 && json && json.d) {
+        setStatus(boxStatus, '', false);
+        addLogEntry(true, boxNo, 'Moved to ' + currentLoc.locCode + ' (' + currentLoc.werks + '/' + currentLoc.lgort + ')');
+        boxInput.value = '';
+        boxInput.focus();
+      } else {
+        var msg = 'Save failed.';
+        try {
+          var errJson = JSON.parse(raw);
+          if (errJson && errJson.error && errJson.error.message && errJson.error.message.value) {
+            msg = errJson.error.message.value;
+          }
+        } catch (e) {}
+        setStatus(boxStatus, msg, true);
+        addLogEntry(false, boxNo, msg);
+      }
+    });
+  }
+
+  // Enter-key handling (barcode scanners send Enter after the code)
+  locInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); confirmLocation(); }
+  });
+  boxInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); recordScan(); }
+  });
+
+  document.getElementById('btnSetLocation').addEventListener('click', confirmLocation);
+  document.getElementById('btnScanBox').addEventListener('click', recordScan);
+  document.getElementById('btnChangeLocation').addEventListener('click', changeLocation);
+
+  fetchCsrfToken(function () {
+    locInput.focus();
+  });
+})();
+</script>
+</body>
+</html>

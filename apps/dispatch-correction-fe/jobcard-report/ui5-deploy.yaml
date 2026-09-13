@@ -1,0 +1,20 @@
+specVersion: "3.0"
+metadata:
+  name: kejriwal.pp.jobcardreport
+type: application
+builder:
+  resources:
+    excludes: [ "/test/**", "/localService/**" ]
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZJOBCARD_RPT
+          package: ZKGPL_FIORI
+          transport: KSDK906759
+          description: "Job Card Report"
+        exclude: [ "/test/" ]

@@ -17,3 +17,6 @@ demo-runtime/
 tools/adt-mcp/.env
 tools/adt-mcp/service-keys/
 *.bundle
+
+# Deploy tooling reads this; must never hold an SAP password
+.env

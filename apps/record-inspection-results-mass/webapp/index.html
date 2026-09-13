@@ -4,6 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Record Inspection Results (Mass)</title>
+    <!-- Without this the app renders blank when opened standalone: the
+         component div below asks for height:100%, but html and body have no
+         height of their own, so 100% resolves to nothing and the whole page
+         collapses to ~88px - the filter bar disappears and the table is
+         crushed to zero. It only shows up outside the Fiori launchpad,
+         because the launchpad shell supplies the sizing container itself.
+         The other three QC apps already carry this block; this one was
+         generated without it. Added 2026-08-29. -->
+    <style>
+        html, body, body > div { height: 100%; margin: 0; }
+        #container, #container-uiarea, #container-uiarea > div { height: 100%; }
+    </style>
     <script
         id="sap-ui-bootstrap"
         src="resources/sap-ui-core.js"

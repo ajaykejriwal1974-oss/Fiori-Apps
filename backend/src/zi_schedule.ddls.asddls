@@ -22,6 +22,11 @@ define root view entity ZI_Schedule
       matnr                  as Material,
       @Semantics.text: true
       maktx                  as MaterialDesc,
+      // The cast drops the unit link the table carries (ZPP_SCHEDULEN declares
+      // @Semantics.quantity.unitOfMeasure on SCH_QTY), so the app was showing a
+      // bare number with the unit sitting in a separate column nothing tied it
+      // to. Restored here against SalesUnit.
+      @Semantics.quantity.unitOfMeasure: 'SalesUnit'
       cast(sch_qty as abap.dec(23,3)) as ScheduleQty,
       vrkme                  as SalesUnit,
       shdcd                  as ShadeCode,

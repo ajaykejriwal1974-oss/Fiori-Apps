@@ -5,7 +5,7 @@
     xmlns:f="sap.f"
     height="100%">
 
-    <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
+    <f:DynamicPage id="detailPage" headerExpanded="false" showFooter="true" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading><Title text="{Batch}" level="H2"/></f:heading>
@@ -25,12 +25,50 @@
             </f:DynamicPageHeader>
         </f:header>
 
-        <f:content>
+        <f:content><ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
             <VBox>
 
                 <!-- Shade gets its own panel with an oversized readout. It is
                      the number the whole batch is judged on and the one the
                      technician looks at first. -->
+                <!-- The greige lot behind this batch. Operator-selected: the
+                     genealogy link is not exposed on the service yet. -->
+                <Panel headerText="Raw material lot" expandable="true" expanded="{= !!${rm>/lot} }"
+                       class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox alignItems="Center" wrap="Wrap">
+                                <Button text="Select lot" icon="sap-icon://value-help"
+                                        press=".onSelectRmLot" class="sapUiTinyMarginEnd"/>
+                                <ObjectAttribute title="Batch" text="{rm>/batch}"
+                                                 class="sapUiMediumMarginEnd" visible="{= !!${rm>/lot} }"/>
+                                <ObjectAttribute title="Lot" text="{rm>/lot}" visible="{= !!${rm>/lot} }"/>
+                                <Text text="No raw material lot selected - incoming figures unavailable"
+                                      class="sapUiTinyText" visible="{= !${rm>/lot} }"/>
+                            </HBox>
+                            <List items="{rm>/chars}" mode="None" busy="{rm>/busy}"
+                                  class="sapUiSmallMarginTop" visible="{= !!${rm>/lot} }"
+                                  noDataText="This lot has no recorded results">
+                                <CustomListItem>
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center"
+                                          class="sapUiSmallMargin">
+                                        <VBox>
+                                            <Text text="{rm>name}" class="sapMTitleStyleH6"/>
+                                            <Text text="{rm>master}" class="sapUiTinyText"/>
+                                        </VBox>
+                                        <HBox alignItems="Center">
+                                            <Text text="{ parts: ['rm>value','rm>unit','rm>code'], formatter: '.fmtRmValue' }"
+                                                  class="sapUiMediumMarginEnd"/>
+                                            <ObjectStatus text="{ path: 'rm>valuation', formatter: '.fmtValText' }"
+                                                          state="{ path: 'rm>valuation', formatter: '.fmtValState' }"/>
+                                        </HBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
                 <Panel headerText="Shade vs approved standard" expandable="false" class="sapUiSmallMarginBeginEnd">
                     <content>
                         <VBox class="sapUiSmallMargin">
@@ -42,6 +80,10 @@
                                 <ObjectStatus id="deStatus" class="sapMObjectStatusLarge"/>
                             </HBox>
                             <Text id="deHint" class="sapUiTinyText sapUiSmallMarginTop"/>
+                            <!-- Says where the reading goes on Save: into the lot's delta E
+                                 characteristic, or nowhere, when the inspection plan has no
+                                 such characteristic. -->
+                            <ObjectStatus id="deTarget" class="sapUiTinyMarginTop"/>
                         </VBox>
                     </content>
                 </Panel>
@@ -140,7 +182,10 @@
                     <content>
                         <List id="lstOther" mode="None"
                               items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }">
-                            <CustomListItem visible="{= ${SelectedSet} === 'ZQC_PF' || ${CharacteristicKind} === 'QUAN' }">
+                            <!-- Attribute counts and plain measurements. The delta E
+                                 characteristic is entered through the shade panel above and
+                                 is hidden here so there is one entry point per result. -->
+                            <CustomListItem visible="{ parts: ['SelectedSet','CharacteristicKind','MasterCharacteristic'], formatter: '.isOtherRow' }">
                                 <VBox class="sapUiSmallMargin">
                                     <HBox justifyContent="SpaceBetween" alignItems="Center">
                                         <VBox>
@@ -172,21 +217,33 @@
                     </content>
                 </Panel>
             </VBox>
-        </f:content>
+        </ScrollContainer></f:content>
 
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
                 <!-- __OperationControl comes back with every InspectionLot read
-                     (get_global_authorizations sets it per lot) - gate each
-                     button on its own flag so a closed lot or an existing UD
-                     disables the button instead of surfacing a raw OData error. -->
-                <Button text="Save" press=".onSave"
-                        enabled="{= ${ui>/dirty} &amp;&amp; ${__OperationControl/recordSingleResult} }"/>
-                <Button text="Record Results" type="Emphasized" press=".onRecord"
-                        enabled="{__OperationControl/recordResults}"/>
-                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"
-                        enabled="{__OperationControl/setUsageDecision}"/>
+                     (get_instance_features sets it per lot) - gate each button
+                     on its own flag so a closed lot or an existing UD disables
+                     the button instead of surfacing a raw OData error.
+
+                     Everything except Save is also disabled while there are
+                     unsaved edits: each of these refreshes the lot afterwards,
+                     and the V4 model refuses to refresh over pending changes. -->
+                <Button text="{i18n>saveDraft}" press=".onSave"
+                        enabled="{= ${ui>/dirty} &amp;&amp; !!${__OperationControl/recordSingleResult} }"/>
+                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/recordResults} }"/>
+                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/setUsageDecision} }"/>
+                <!-- The follow-on step, and a SECOND round trip on purpose.
+                     The usage decision posts in its own update task, so the
+                     backend keeps this disabled until that decision is on the
+                     database and accepting; UsageDecisionMade is checked here
+                     as well so the button reads right even before the backend
+                     feature control for this action is in place. -->
+                <Button text="{i18n>confirmDyeing}" type="Accept" press=".onconfirmDyeing"
+                        enabled="{= !${ui>/dirty} &amp;&amp; ${UsageDecisionMade} === 'X' &amp;&amp; !!${__OperationControl/confirmDyeing} }"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

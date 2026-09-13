@@ -4,5 +4,12 @@ define behavior for ZC_Job alias Job
 {
   use create;
   use update;
-  use delete;
+
+  // No delete exposed. ZI_Job no longer offers one - ZJOB01N soft-deletes by
+  // setting DELIND = 'X', and a hard delete would remove the record the flag
+  // exists to preserve. This projection kept the old delete after the interface
+  // behaviour dropped it, which left ZC_JOB inconsistent and took the whole
+  // ZUI_JOB service down with "Behavior definition for 'ZC_JOB' has syntax
+  // errors" until markDeleted was exposed here too.
+  use action markDeleted;
 }

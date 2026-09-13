@@ -5,7 +5,7 @@
     xmlns:f="sap.f"
     height="100%">
 
-    <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
+    <f:DynamicPage id="detailPage" headerExpanded="false" showFooter="true" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading><Title text="{Batch}" level="H2"/></f:heading>
@@ -24,13 +24,51 @@
             </f:DynamicPageHeader>
         </f:header>
 
-        <f:content>
+        <f:content><ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
             <VBox>
 
                 <!-- Winding does not change the dye. It damages yarn and
                      packages. So this screen leads with the comparison against
                      the incoming figures - the delta is what winding did, and
                      the absolute value on its own says very little. -->
+                <!-- The greige lot behind this batch. Operator-selected: the
+                     genealogy link is not exposed on the service yet. -->
+                <Panel headerText="Raw material lot" expandable="true" expanded="{= !!${rm>/lot} }"
+                       class="sapUiSmallMarginBeginEnd">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox alignItems="Center" wrap="Wrap">
+                                <Button text="Select lot" icon="sap-icon://value-help"
+                                        press=".onSelectRmLot" class="sapUiTinyMarginEnd"/>
+                                <ObjectAttribute title="Batch" text="{rm>/batch}"
+                                                 class="sapUiMediumMarginEnd" visible="{= !!${rm>/lot} }"/>
+                                <ObjectAttribute title="Lot" text="{rm>/lot}" visible="{= !!${rm>/lot} }"/>
+                                <Text text="No raw material lot selected - incoming figures unavailable"
+                                      class="sapUiTinyText" visible="{= !${rm>/lot} }"/>
+                            </HBox>
+                            <List items="{rm>/chars}" mode="None" busy="{rm>/busy}"
+                                  class="sapUiSmallMarginTop" visible="{= !!${rm>/lot} }"
+                                  noDataText="This lot has no recorded results">
+                                <CustomListItem>
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center"
+                                          class="sapUiSmallMargin">
+                                        <VBox>
+                                            <Text text="{rm>name}" class="sapMTitleStyleH6"/>
+                                            <Text text="{rm>master}" class="sapUiTinyText"/>
+                                        </VBox>
+                                        <HBox alignItems="Center">
+                                            <Text text="{ parts: ['rm>value','rm>unit','rm>code'], formatter: '.fmtRmValue' }"
+                                                  class="sapUiMediumMarginEnd"/>
+                                            <ObjectStatus text="{ path: 'rm>valuation', formatter: '.fmtValText' }"
+                                                          state="{ path: 'rm>valuation', formatter: '.fmtValState' }"/>
+                                        </HBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
                 <Panel headerText="Yarn condition - compared with incoming" expandable="false"
                        class="sapUiSmallMarginBeginEnd">
                     <content>
@@ -56,10 +94,13 @@
                                 </VBox>
                                 <VBox>
                                     <Label text="Winding tension"/>
-                                    <Input id="tensInput" type="Number" width="8rem" textAlign="End" change=".onResultChange"/>
+                                    <Input id="tensInput" type="Number" width="8rem" textAlign="End" change=".onPairedChange"/>
                                     <Text text="cN" class="sapUiTinyText"/>
                                 </VBox>
                             </HBox>
+                            <!-- Says which of the four readings have a characteristic in
+                                 this lot's plan to be saved into on Save, and which do not. -->
+                            <ObjectStatus id="panelTarget" class="sapUiSmallMarginTop"/>
                         </VBox>
                     </content>
                 </Panel>
@@ -70,11 +111,10 @@
                     <content>
                         <List id="lstGeometry" mode="None"
                               items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }">
-                            <CustomListItem visible="{= ${CharacteristicKind} === 'QUAN'
-                                                      &amp;&amp; ${MasterCharacteristic} !== 'S3_DEN'
-                                                      &amp;&amp; ${MasterCharacteristic} !== 'S3_ELG'
-                                                      &amp;&amp; ${MasterCharacteristic} !== 'S3_BFL'
-                                                      &amp;&amp; ${MasterCharacteristic} !== 'S3_TENS' }">
+                            <!-- Measurements not covered by the yarn-condition panel above
+                                 (denier, elongation, broken filaments, tension) - the
+                                 controller keeps the one list of those names. -->
+                            <CustomListItem visible="{ parts: ['CharacteristicKind','MasterCharacteristic'], formatter: '.isGeometryRow' }">
                                 <VBox class="sapUiSmallMargin">
                                     <HBox justifyContent="SpaceBetween" alignItems="Center">
                                         <VBox>
@@ -131,21 +171,33 @@
                     </content>
                 </Panel>
             </VBox>
-        </f:content>
+        </ScrollContainer></f:content>
 
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
                 <!-- __OperationControl comes back with every InspectionLot read
-                     (get_global_authorizations sets it per lot) - gate each
-                     button on its own flag so a closed lot or an existing UD
-                     disables the button instead of surfacing a raw OData error. -->
-                <Button text="Save" press=".onSave"
-                        enabled="{= ${ui>/dirty} &amp;&amp; ${__OperationControl/recordSingleResult} }"/>
-                <Button text="Record Results" type="Emphasized" press=".onRecord"
-                        enabled="{__OperationControl/recordResults}"/>
-                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"
-                        enabled="{__OperationControl/setUsageDecision}"/>
+                     (get_instance_features sets it per lot) - gate each button
+                     on its own flag so a closed lot or an existing UD disables
+                     the button instead of surfacing a raw OData error.
+
+                     Everything except Save is also disabled while there are
+                     unsaved edits: each of these refreshes the lot afterwards,
+                     and the V4 model refuses to refresh over pending changes. -->
+                <Button text="{i18n>saveDraft}" press=".onSave"
+                        enabled="{= ${ui>/dirty} &amp;&amp; !!${__OperationControl/recordSingleResult} }"/>
+                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/recordResults} }"/>
+                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/setUsageDecision} }"/>
+                <!-- The follow-on step, and a SECOND round trip on purpose.
+                     The usage decision posts in its own update task, so the
+                     backend keeps this disabled until that decision is on the
+                     database and accepting; UsageDecisionMade is checked here
+                     as well so the button reads right even before the backend
+                     feature control for this action is in place. -->
+                <Button text="{i18n>confirmWinding}" type="Accept" press=".onconfirmWinding"
+                        enabled="{= !${ui>/dirty} &amp;&amp; ${UsageDecisionMade} === 'X' &amp;&amp; !!${__OperationControl/confirmWinding} }"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

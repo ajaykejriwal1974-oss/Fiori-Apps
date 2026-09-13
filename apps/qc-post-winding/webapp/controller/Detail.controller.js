@@ -1,51 +1,293 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
-    "sap/m/MessageBox"
-], function (Controller, MessageToast, MessageBox) {
+    "sap/m/MessageBox",
+    "sap/m/Dialog",
+    "sap/m/List",
+    "sap/m/StandardListItem",
+    "sap/m/Button",
+    "sap/m/SelectDialog",
+    "sap/m/Label",
+    "sap/m/Input",
+    "sap/m/Text",
+    "sap/m/CheckBox",
+    "sap/m/DatePicker",
+    "sap/ui/layout/form/SimpleForm",
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter"
+], function (Controller, MessageToast, MessageBox, Dialog, List, StandardListItem, Button, SelectDialog,
+             Label, Input, Text, CheckBox, DatePicker, SimpleForm, JSONModel, Filter, FilterOperator, Sorter) {
     "use strict";
 
-    // BAPI_INSPLOT_SETUSAGEDECISION rejects a blank UD_SELECTED_SET - the code
-    // group alone does not identify a code, because the same group can appear
-    // in more than one selected set. "ZQC_UD" mirrors the code group name,
-    // which is the common one-selected-set-per-group customizing pattern, but
-    // this has not been confirmed against QS51 in KSD. If Usage Decision
-    // posting fails with a "selected set" error, correct this one constant.
-    var UD_SELECTED_SET = "ZQC_UD";
+    // Selected set and code group for the usage decision. ZQC-UD exists as a
+    // code group (plant independent) and as a selected set in plants 1000 and
+    // 2002 (V_QPAM_UD, customizing request KSDK906757). If a plant is added
+    // without the set, BAPI_INSPLOT_SETUSAGEDECISION rejects the decision and
+    // the error surfaces in the dialog - nothing is posted.
+    var UD_SELECTED_SET = "ZQC-UD",
+        UD_CODE_GROUP   = "ZQC-UD";
 
+    // Mirrors selected set ZQC-UD as read from QPAC on 2026-08-28. A, A1 and
+    // SP are valuated A (accept); the other six R (reject). RD and ST hand the
+    // batch back to the dye house - see msgRedye.
     var UD_CODES = [
-        { key: "A",  text: "Accept" },
-        { key: "A1", text: "Accept with deviation" },
-        { key: "RD", text: "Re-dye / correct" },
-        { key: "ST", text: "Strip and re-dye" },
-        { key: "DG", text: "Downgrade" },
-        { key: "R",  text: "Reject" }
+        { key: "A",   text: "Accept" },
+        { key: "A1",  text: "Accept with deviation" },
+        { key: "SP",  text: "Small Package" },
+        { key: "CLQ", text: "Claim Less" },
+        { key: "DG",  text: "Downgrade" },
+        { key: "JL",  text: "Job Lot" },
+        { key: "RD",  text: "Re-Dyeing/Correction" },
+        { key: "ST",  text: "Stripping" },
+        { key: "PQ",  text: "Poor Quality" }
     ];
+
+    // Master inspection characteristics the "yarn condition" panel writes
+    // into, one per input. The plant 2002 post-winding plan (PLANT-2002-QM-
+    // SETUP.md, step 4) carries DENIER; elongation, broken filaments and
+    // winding tension are not on it, so those three inputs will say "not in
+    // plan" until the plan grows - the comparison is still shown, nothing is
+    // pretended to be saved. The S3_* names are the pre-2026-08 convention
+    // and are tolerated for plants that kept it.
+    var PANEL_MICS = {
+        denInput:  ["DENIER", "S3_DEN"],
+        elgInput:  ["ELONG", "S3_ELG"],
+        bflInput:  ["BROKENF", "BRK_FIL", "S3_BFL"],
+        tensInput: ["TENSION", "WIND_TENS", "S3_TENS"]
+    };
+    var PANEL_ALL_MICS = Object.keys(PANEL_MICS).reduce(function (a, k) { return a.concat(PANEL_MICS[k]); }, []);
+
+    // Properties the controller reads with getProperty() but that no control
+    // in the view binds. The model runs with autoExpandSelect, which derives
+    // $select from the BOUND properties only - anything read here and bound
+    // nowhere came back undefined, so the confirmation dialog posted a blank
+    // Plant and the batch picker built a filter on "undefined" and threw.
+    var LOT_SELECT = [
+        "InspectionLot", "Plant", "CompanyCode", "InspectionType", "Material", "MaterialName",
+        "Batch", "VendorBatch", "GreigeLot", "GreigeLotRef", "ProductionLot", "ProductionOrder", "OrderSource",
+        "BatchSource", "PlantBatch", "PlantBatchYear", "JobCard",
+        "DyeingWorkCentre", "WindingWorkCentre", "BatchQuantity", "BatchUnit", "BatchCheeses",
+        "LotQuantity", "LotUnit", "SampleSize", "SampleUnit", "CreatedOn",
+        "ResultsConfirmed", "UsageDecisionMade", "IsOpen"
+    ].join(",");
 
     return Controller.extend("kejriwal.qm.qcpostwinding.controller.Detail", {
 
         onInit: function () {
             this.getOwnerComponent().getRouter()
                 .getRoute("detail").attachPatternMatched(this._onMatched, this);
+            this.getView().setModel(new JSONModel({ lot: "", batch: "", chars: [], busy: false }), "rm");
+        },
+
+        // --- Raw material reference -------------------------------------
+        // Which greige lot this batch came from is picked by the operator.
+        // SAP knows the link through batch genealogy, but reading it needs a
+        // CDS view over the order components that does not exist yet. Manual
+        // selection is honest about that and puts the incoming figures in
+        // front of the inspector now rather than after the next transport.
+
+        RM_TYPES: ["01", "08"],
+
+        // Tolerant on naming: the plant 2002 MICs are DENIER / ELONG /
+        // FILAMENT (QS21, 2026-08-28); the other names cover plants that
+        // named them differently.
+        INCOMING_MAP: {
+            denier:          ["DENIER", "Z010", "S1_DEN"],
+            elongation:      ["ELONG", "Z020", "S1_ELG"],
+            brokenFilaments: ["BROKENF", "BRK_FIL", "S1_BFL"]
+        },
+
+        // One dialog, built once and reused. sap.m.SelectDialog has no
+        // afterClose event (checked against the 1.136 class metadata), so a
+        // per-press dialog could never be released - it leaked one dialog
+        // plus one list binding per press.
+        onSelectRmLot: function () {
+            var that = this,
+                oView = this.getView();
+
+            if (!this._oRmDialog) {
+                var aTypes = this.RM_TYPES.map(function (sT) {
+                    return new Filter("InspectionType", FilterOperator.EQ, sT);
+                });
+                this._aRmTypeFilter = [ new Filter({ filters: aTypes, and: false }) ];
+
+                this._oRmDialog = new SelectDialog({
+                    title: this._t("rmLotTitle"),
+                    noDataText: this._t("rmLotNoData"),
+                    growing: true,
+                    growingThreshold: 50,
+                    rememberSelections: false,
+                    items: {
+                        path: "/InspectionLot",
+                        sorter: new Sorter("CreatedOn", true),
+                        filters: this._aRmTypeFilter,
+                        parameters: { $select: "InspectionLot,Batch,Material,MaterialName,Plant,CreatedOn" },
+                        template: new StandardListItem({
+                            title: "{Batch}",
+                            description: "{MaterialName}",
+                            info: "{InspectionLot}"
+                        })
+                    },
+                    search:     function (oEvt) { that._filterRmDialog(oEvt); },
+                    liveChange: function (oEvt) { that._filterRmDialog(oEvt); },
+                    confirm: function (oEvt) {
+                        var oItem = oEvt.getParameter("selectedItem");
+                        if (oItem) { that._applyRmLot(oItem.getInfo(), oItem.getTitle()); }
+                    },
+                    cancel: function () { }
+                });
+                oView.addDependent(this._oRmDialog);
+                this._oRmDialog.setModel(oView.getModel());
+            }
+            var oBinding = this._oRmDialog.getBinding("items");
+            if (oBinding) { oBinding.filter(this._aRmTypeFilter); }
+            this._oRmDialog.open();
+        },
+
+        _filterRmDialog: function (oEvt) {
+            var sVal = (oEvt.getParameter("value") || "").trim(),
+                aF = this._aRmTypeFilter.slice();
+            if (sVal) {
+                aF.push(new Filter({
+                    filters: [
+                        new Filter("Batch", FilterOperator.Contains, sVal.toUpperCase()),
+                        new Filter("Material", FilterOperator.Contains, sVal.toUpperCase()),
+                        new Filter("MaterialName", FilterOperator.Contains, sVal)
+                    ],
+                    and: false
+                }));
+            }
+            oEvt.getSource().getBinding("items").filter(aF);
+        },
+
+        // Read once into a JSON model rather than binding the panel to OData.
+        // The reference data is display-only, and a second OData list binding
+        // here would be one more thing capable of queueing a PATCH.
+        _applyRmLot: function (sLot, sBatch) {
+            var that = this,
+                oRm = this.getView().getModel("rm");
+
+            oRm.setProperty("/lot", sLot);
+            oRm.setProperty("/batch", sBatch || "");
+            oRm.setProperty("/chars", []);
+            oRm.setProperty("/busy", true);
+
+            this.getView().getModel()
+                .bindList("/InspectionLot('" + sLot + "')/_Characteristic", null, null, null,
+                          { $select: "CharacteristicName,MasterCharacteristic,MeanValue,ResultCode,CharacteristicUnit,Valuation" })
+                .requestContexts(0, 200)
+                .then(function (aCtx) {
+                    var aChars = aCtx.map(function (oCtx) {
+                        return {
+                            name:      oCtx.getProperty("CharacteristicName"),
+                            master:    oCtx.getProperty("MasterCharacteristic"),
+                            value:     oCtx.getProperty("MeanValue"),
+                            code:      oCtx.getProperty("ResultCode"),
+                            unit:      oCtx.getProperty("CharacteristicUnit"),
+                            valuation: oCtx.getProperty("Valuation")
+                        };
+                    });
+                    oRm.setProperty("/chars", aChars);
+                    oRm.setProperty("/busy", false);
+                    that._incoming = that._mapIncoming(aChars);
+                    if (that.onPairedChange) { that.onPairedChange(); }
+                })
+                .catch(function (oErr) {
+                    oRm.setProperty("/busy", false);
+                    MessageBox.error(that._errorText(oErr, "Could not read that raw material lot"));
+                });
+        },
+
+        // Find the stage 1 inspection of the greige lot behind this batch, so
+        // the incoming figures arrive without anyone hunting for them.
+        //
+        // Inert by design as of 2026-08-28: GreigeLot is blank on in-process
+        // lots because nothing in this system records which greige fed which
+        // batch (ZPP_BATCHN-LOTNO stopped being a lot number in 2013). The
+        // guard below returns immediately; the moment a genealogy link exists,
+        // this is the hook that consumes it. Quiet about failure on purpose -
+        // the manual picker is still there.
+        _loadIncoming: function () {
+            var oCtx = this.getView().getBindingContext();
+            if (!oCtx) { return; }
+
+            var sGreige = oCtx.getProperty("GreigeLot"),
+                sPlant  = oCtx.getProperty("Plant"),
+                that    = this;
+
+            if (!sGreige || !sPlant || sGreige === oCtx.getProperty("Batch")) { return; }
+
+            var aTypes = this.RM_TYPES.map(function (sType) {
+                return new Filter("InspectionType", FilterOperator.EQ, sType);
+            });
+
+            this.getView().getModel().bindList("/InspectionLot", null,
+                [ new Sorter("CreatedOn", true) ],
+                [ new Filter({ filters: aTypes, and: false }),
+                  new Filter("Plant", FilterOperator.EQ, sPlant),
+                  new Filter("Batch", FilterOperator.EQ, sGreige) ],
+                { $select: "InspectionLot,Batch,CreatedOn" }
+            ).requestContexts(0, 1).then(function (aCtx) {
+                if (aCtx.length) {
+                    that._applyRmLot(aCtx[0].getProperty("InspectionLot"),
+                                     aCtx[0].getProperty("Batch"));
+                }
+            }).catch(function () { /* manual picker remains */ });
+        },
+
+        _mapIncoming: function (aChars) {
+            var oOut = {}, oMap = this.INCOMING_MAP;
+            Object.keys(oMap).forEach(function (sKey) {
+                var aNames = oMap[sKey];
+                var oHit = aChars.filter(function (o) { return aNames.indexOf((o.master || "").toUpperCase()) > -1; })[0];
+                if (oHit && oHit.value !== undefined && oHit.value !== null && oHit.value !== "") {
+                    var f = parseFloat(oHit.value);
+                    if (!isNaN(f)) { oOut[sKey] = f; }
+                }
+            });
+            return Object.keys(oOut).length ? oOut : null;
+        },
+
+        fmtRmValue: function (vValue, sUnit, sCode) {
+            if (vValue === undefined || vValue === null || vValue === "") { return sCode || ""; }
+            var f = parseFloat(vValue);
+            if (isNaN(f)) { return sCode || ""; }
+            return f.toFixed(2).replace(/\.?0+$/, "") + " " + (sUnit || "");
         },
 
         _onMatched: function (oEvent) {
             var sLot = oEvent.getParameter("arguments").lot;
+            // Leaving a lot with unsaved edits: drop them, or the next lot's
+            // refresh() is refused for pending changes that belong to the old one.
+            this._discardEdits();
             this.getView().bindElement({
                 path: "/InspectionLot('" + sLot + "')",
-                parameters: { $expand: "_Characteristic", $$updateGroupId: "qc" }
+                parameters: { $select: LOT_SELECT, $expand: "_Characteristic", $$updateGroupId: "qc" }
             });
             this._sLot = sLot;
-            this._aDirty = [];
-            this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
-            this._loadIncoming(sLot);
+            this._resetPanel();
+
+            // A different lot means a different greige lot - never carry the
+            // previous reference forward, it would silently mislead.
+            var oRm = this.getView().getModel("rm");
+            if (oRm) { oRm.setData({ lot: "", batch: "", chars: [], busy: false }); }
+            this._incoming = null;
+            // The element binding has no data yet at this point, so GreigeLot
+            // cannot be read here - wait for the read to come back.
+            var oElem = this.getView().getElementBinding();
+            if (oElem) { oElem.attachEventOnce("dataReceived", this._loadIncoming, this); }
         },
 
         onBack: function () {
-            if (this.getOwnerComponent().getModel("ui").getProperty("/dirty")) {
-                MessageBox.confirm("Unsaved results will be lost. Leave anyway?", {
+            if (this._isDirty()) {
+                MessageBox.confirm(this._t("msgLeaveUnsaved"), {
                     onClose: function (sAction) {
-                        if (sAction === MessageBox.Action.OK) { this._nav(); }
+                        if (sAction === MessageBox.Action.OK) {
+                            this._discardEdits();
+                            this._nav();
+                        }
                     }.bind(this)
                 });
                 return;
@@ -57,35 +299,89 @@ sap.ui.define([
             this.getOwnerComponent().getRouter().navTo("worklist");
         },
 
+        // ------------------------------------------------------------------
+        // Dirty tracking. Every edit is a characteristic context; Save turns
+        // each one into a recordSingleResult call. Nothing is "dirty" unless
+        // it can actually be saved - the yarn-condition panel therefore marks
+        // the lot dirty only for inputs that found a characteristic to write into.
+        // ------------------------------------------------------------------
+        _ui: function () { return this.getOwnerComponent().getModel("ui"); },
+        _isDirty: function () { return !!this._ui().getProperty("/dirty"); },
+
         onResultChange: function (oEvent) {
             var oCtx = oEvent && oEvent.getSource && oEvent.getSource().getBindingContext();
             if (oCtx) { this._touch(oCtx); }
-            else { this.getOwnerComponent().getModel("ui").setProperty("/dirty", true); }
         },
 
         onCodeChange: function (oEvent) {
-            var oCtx = oEvent && oEvent.getSource && oEvent.getSource().getBindingContext();
-            if (oCtx) { this._touch(oCtx); }
-            else { this.getOwnerComponent().getModel("ui").setProperty("/dirty", true); }
+            this.onResultChange(oEvent);
         },
 
-        // Characteristics are read-only in RAP now, so results go through the
-        // recordSingleResult action - one call per changed row, all inside a
-        // single $batch. See docs/backend-notes/qm-data-model.md for why the
-        // composition was removed.
         _touch: function (oCtx) {
             if (!this._aDirty) { this._aDirty = []; }
             if (this._aDirty.indexOf(oCtx) === -1) { this._aDirty.push(oCtx); }
-            this.getOwnerComponent().getModel("ui").setProperty("/dirty", true);
+            this._ui().setProperty("/dirty", true);
         },
 
+        // Throw away every pending PATCH in the "qc" group and forget the
+        // touched rows. The characteristic entity is read-only in RAP, so the
+        // PATCHes could never be accepted anyway; they exist only to hold the
+        // typed values until Save copies them into action parameters.
+        _discardEdits: function () {
+            var oModel = this.getView().getModel();
+            if (oModel && oModel.hasPendingChanges("qc")) { oModel.resetChanges("qc"); }
+            this._aDirty = [];
+            this._ui().setProperty("/dirty", false);
+        },
+
+        _requireSaved: function () {
+            if (this._isDirty()) {
+                MessageBox.information(this._t("msgSaveFirst"));
+                return false;
+            }
+            return true;
+        },
+
+        _refreshLot: function () {
+            var oCtx = this.getView().getBindingContext();
+            this._discardEdits();
+            if (oCtx) { oCtx.refresh(); }
+        },
+
+        // All characteristic contexts of the lot. lstGeometry carries no server
+        // filter, so it is populated whenever the lot has a plan at all -
+        // unlike lstDefects, which is filtered to the ZQC_PF set.
+        _charContexts: function () {
+            var oList = this.byId("lstGeometry"),
+                oBinding = oList && oList.getBinding("items");
+            if (!oBinding) { return []; }
+            return (oBinding.getAllCurrentContexts ? oBinding.getAllCurrentContexts()
+                                                   : oBinding.getCurrentContexts()).filter(Boolean);
+        },
+
+        _findChar: function (aMics) {
+            return this._charContexts().filter(function (oCtx) {
+                var s = (oCtx.getProperty("MasterCharacteristic") || "").toUpperCase();
+                return aMics.indexOf(s) > -1;
+            })[0] || null;
+        },
+
+        // ------------------------------------------------------------------
+        // Save: one recordSingleResult per touched row, all in one $batch.
+        // Characteristics are read-only in RAP, so results go through the
+        // action. See docs/backend-notes/qm-data-model.md for why the
+        // composition was removed.
+        // ------------------------------------------------------------------
         onSave: function () {
             var aDirty = this._aDirty || [];
-            if (!aDirty.length) { return; }
+            if (!aDirty.length) {
+                MessageToast.show(this._t("msgNothingToSave"));
+                return;
+            }
 
             var oModel = this.getView().getModel(),
                 oLotCtx = this.getView().getBindingContext(),
-                aCalls = [];
+                aBindings = [];
 
             aDirty.forEach(function (oCtx) {
                 var oAction = oModel.bindContext(
@@ -94,133 +390,194 @@ sap.ui.define([
                 oAction.setParameter("InspectionLot", this._sLot);
                 oAction.setParameter("OperationNumber", oCtx.getProperty("OperationNumber"));
                 oAction.setParameter("CharacteristicNumber", oCtx.getProperty("CharacteristicNumber"));
-                oAction.setParameter("MeanValue", oCtx.getProperty("MeanValue") || 0);
+                oAction.setParameter("MeanValue", parseFloat(oCtx.getProperty("MeanValue")) || 0);
                 oAction.setParameter("ResultCode", oCtx.getProperty("ResultCode") || "");
                 oAction.setParameter("ResultCodeGroup", oCtx.getProperty("ResultCodeGroup") || "");
-                oAction.setParameter("DefectCount", oCtx.getProperty("DefectCount") || 0);
-                oAction.setParameter("ActualSampleSize", oCtx.getProperty("ActualSampleSize") || 0);
+                oAction.setParameter("DefectCount", parseInt(oCtx.getProperty("DefectCount"), 10) || 0);
+                oAction.setParameter("ActualSampleSize", parseInt(oCtx.getProperty("ActualSampleSize"), 10) || 0);
                 oAction.setParameter("ResultComment", oCtx.getProperty("InspectorComment") || "");
 
-                aCalls.push(oAction.execute("qc"));
+                aBindings.push(oAction);
             }, this);
 
-            Promise.all(aCalls).then(function () {
-                this._aDirty = [];
-                this.getOwnerComponent().getModel("ui").setProperty("/dirty", false);
+            // "qc" holds the typed values as pending PATCHes; it is an API
+            // group and is never submitted. "qcAct" carries the actions. The
+            // PATCHes are kept until the actions have SUCCEEDED, so a failed
+            // save leaves the technician's numbers on the screen to correct
+            // and retry instead of snapping them back to the server values.
+            var aCalls = aBindings.map(function (oBinding) { return oBinding.execute("qcAct"); });
+            var pSent  = oModel.submitBatch("qcAct");
+
+            Promise.all(aCalls.concat([ pSent ])).then(function () {
                 MessageToast.show(this._t("msgSaved"));
-                if (oLotCtx) { oLotCtx.refresh(); }
+                this._refreshLot();
             }.bind(this)).catch(function (oErr) {
-                MessageBox.error(oErr.message || "Save failed");
-            });
+                MessageBox.error(this._errorText(oErr, "Save failed"));
+            }.bind(this));
         },
 
         onRecord: function () {
             var oCtx = this.getView().getBindingContext();
-            if (!oCtx) { return; }
+            if (!oCtx || !this._requireSaved()) { return; }
+
+            var sOp = this._currentOperationNumber();
+            if (!sOp) {
+                MessageBox.information(this._t("msgNoChars"));
+                return;
+            }
 
             var oAction = this.getView().getModel().bindContext(
                 "com.sap.gateway.srvd.zui_qc_inspection.v0001.recordResults(...)", oCtx);
 
             oAction.setParameter("InspectionLot", this._sLot);
-            oAction.setParameter("OperationNumber", this._currentOperationNumber());
-            oAction.execute("qc").then(function () {
+            oAction.setParameter("OperationNumber", sOp);
+            // Every action parameter is Nullable="false" in the service metadata,
+            // so all of them must be supplied even when there is nothing to say.
+            oAction.setParameter("ResultComment", "");
+
+            oAction.execute("$auto").then(function () {
                 MessageToast.show(this._t("msgRecorded"));
-                oCtx.refresh();
+                this._refreshLot();
             }.bind(this)).catch(function (oErr) {
-                MessageBox.error(oErr.message || "Recording failed");
-            });
+                MessageBox.error(this._errorText(oErr, "Recording failed"));
+            }.bind(this));
         },
 
         // Every characteristic loaded for this lot belongs to the one
-        // inspection operation this stage-specific app cares about (that is
-        // what "one service, three stage apps" means), so any bound row's
-        // OperationNumber is the right one to record against. Read it from
-        // "lstGeometry" specifically because that list has no server-side
-        // $filter - it is populated whenever the lot has any characteristics
-        // at all, unlike "lstDefects" which is filtered to ZQC_PF.
+        // inspection operation this stage-specific app cares about, so any
+        // bound row's OperationNumber is the right one to record against.
+        // Returns "" when nothing is loaded - the caller says so instead of
+        // guessing an operation the lot may not have.
         _currentOperationNumber: function () {
-            var oList = this.byId("lstGeometry"),
-                oBinding = oList && oList.getBinding("items"),
-                aCtx = oBinding && oBinding.getCurrentContexts();
-            if (aCtx && aCtx.length && aCtx[0]) {
-                return aCtx[0].getProperty("OperationNumber");
-            }
-            return "00000010"; // fallback: no characteristics loaded yet
+            var aCtx = this._charContexts();
+            return aCtx.length ? (aCtx[0].getProperty("OperationNumber") || "") : "";
         },
 
         onUsageDecision: function () {
+            if (!this._requireSaved()) { return; }
             var that = this;
-            MessageBox.show("Select the usage decision for this inspection lot.", {
+            var oList = new List({ mode: "SingleSelectMaster", includeItemInSelection: true });
+            var oDialog = new Dialog({
                 title: this._t("usageDecision"),
-                actions: UD_CODES.map(function (o) { return o.text; }).concat([MessageBox.Action.CANCEL]),
-                onClose: function (sChosen) {
-                    var oPick = UD_CODES.filter(function (o) { return o.text === sChosen; })[0];
-                    if (!oPick) { return; }
-                    that._postUd(oPick.key);
+                contentWidth: "24rem",
+                content: [ oList ],
+                endButton: new Button({
+                    text: this._t("cancel"),
+                    press: function () { oDialog.close(); }
+                }),
+                afterClose: function () { oDialog.destroy(); }
+            });
+            UD_CODES.forEach(function (oCode) {
+                oList.addItem(new StandardListItem({
+                    title: oCode.text,
+                    info: oCode.key,
+                    type: "Active",
+                    press: function () {
+                        oDialog.close();
+                        that._confirmUd(oCode);
+                    }
+                }));
+            });
+            this.getView().addDependent(oDialog);
+            oDialog.open();
+        },
+
+        // A usage decision closes the lot; the app cannot undo it. One
+        // accidental tap on a list row must not be enough to post it.
+        _confirmUd: function (oPick) {
+            var that = this;
+            MessageBox.confirm(this._t("msgUdConfirm", [oPick.text, oPick.key, this._sLot]), {
+                title: this._t("usageDecision"),
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                emphasizedAction: MessageBox.Action.OK,
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) { that._postUd(oPick); }
                 }
             });
         },
 
-        _postUd: function (sCode) {
+        _postUd: function (oPick) {
             var oCtx = this.getView().getBindingContext();
             var oAction = this.getView().getModel().bindContext(
                 "com.sap.gateway.srvd.zui_qc_inspection.v0001.setUsageDecision(...)", oCtx);
 
             oAction.setParameter("InspectionLot", this._sLot);
             oAction.setParameter("SelectedSet", UD_SELECTED_SET);
-            oAction.setParameter("CodeGroup", "ZQC_UD");
-            oAction.setParameter("Code", sCode);
-            oAction.execute("qc").then(function () {
+            oAction.setParameter("CodeGroup", UD_CODE_GROUP);
+            oAction.setParameter("Code", oPick.key);
+            oAction.setParameter("Reason", oPick.text);
+
+            oAction.execute("$auto").then(function () {
                 MessageToast.show(this._t("msgUdSet"));
                 // A re-dye or strip decision hands over to the existing loop.
                 // The app tells the technician what to do next; it does not
                 // reopen the batch for them, because that has stock effects.
-                if (sCode === "RD" || sCode === "ST") {
+                if (oPick.key === "RD" || oPick.key === "ST") {
                     MessageBox.information(this._t("msgRedye"));
                 }
-                oCtx.refresh();
+                this._refreshLot();
             }.bind(this)).catch(function (oErr) {
-                MessageBox.error(oErr.message || "Usage decision failed");
-            });
+                MessageBox.error(this._errorText(oErr, "Usage decision failed"));
+            }.bind(this));
         },
 
         // --- Stage 3: comparison against the incoming figures -----------
         // Winding does not change the dye, it damages yarn. The absolute
         // denier and elongation say little on their own; the delta against the
         // stage 1 inspection of the same greige lot is the real signal.
+        //
+        // Judged here, and stored: each reading goes into the matching
+        // characteristic of the lot so Save carries it to QM like any other
+        // result. An input whose characteristic is not in the plan is judged
+        // on screen and marked as not saved - never silently dropped.
         _incoming: null,
-
-        _loadIncoming: function (sBatch) {
-            // Stage 1 result for the greige lot behind this batch. Until the
-            // batch-to-greige-lot link is confirmed (open item 8 in the QM
-            // workbook) this stays null and the deltas simply do not render,
-            // rather than showing a wrong number.
-            this._incoming = null;
-        },
 
         onPairedChange: function () {
             var fDen = parseFloat(this.byId("denInput").getValue()),
                 fElg = parseFloat(this.byId("elgInput").getValue()),
-                iBfl = parseInt(this.byId("bflInput").getValue(), 10);
+                iBfl = parseInt(this.byId("bflInput").getValue(), 10),
+                fTen = parseFloat(this.byId("tensInput").getValue());
 
-            this._renderDelta("denDelta", fDen, this._incoming && this._incoming.denier, "dtex", 2.0);
+            this._renderDelta("denDelta", fDen, this._incoming && this._incoming.denier, "den", 2.0);
             this._renderElongationLoss(fElg);
             this._renderDelta("bflDelta", iBfl, this._incoming && this._incoming.brokenFilaments, "", null);
-            this.onResultChange();
+
+            var aSaved = [], aNotInPlan = [];
+            [ { id: "denInput", v: fDen, label: "Denier" },
+              { id: "elgInput", v: fElg, label: "Elongation" },
+              { id: "bflInput", v: iBfl, label: "Broken filaments" },
+              { id: "tensInput", v: fTen, label: "Tension" } ].forEach(function (o) {
+                if (isNaN(o.v)) { return; }
+                var oCtx = this._findChar(PANEL_MICS[o.id]);
+                if (!oCtx) { aNotInPlan.push(o.label); return; }
+                // setProperty returns a promise for a PATCH that is never sent;
+                // resetChanges rejects it, so swallow that.
+                oCtx.setProperty("MeanValue", Math.round(o.v * 1000) / 1000).catch(function () {});
+                this._touch(oCtx);
+                aSaved.push(o.label + " \u2192 " + (oCtx.getProperty("CharacteristicName") || oCtx.getProperty("MasterCharacteristic")));
+            }, this);
+
+            var oTarget = this.byId("panelTarget");
+            if (!oTarget) { return; }
+            var aText = [];
+            if (aSaved.length)     { aText.push(this._t("msgPanelSavedList", [aSaved.join(", ")])); }
+            if (aNotInPlan.length) { aText.push(this._t("msgPanelNotInPlanList", [aNotInPlan.join(", ")])); }
+            oTarget.setText(aText.join("   "));
+            oTarget.setState(aNotInPlan.length ? "Warning" : (aSaved.length ? "Information" : "None"));
         },
 
         _renderDelta: function (sId, fNow, fBefore, sUnit, fTolPct) {
             var o = this.byId(sId);
             if (!o) { return; }
             if (isNaN(fNow) || fBefore === null || fBefore === undefined) {
-                o.setText("no incoming figure"); o.setState("None"); return;
+                o.setText(isNaN(fNow) ? "" : "no incoming figure"); o.setState("None"); return;
             }
             var fDelta = fNow - fBefore;
             o.setText((fDelta >= 0 ? "+" : "") + fDelta.toFixed(2) + " " + sUnit);
             if (fTolPct === null) {
                 o.setState(fDelta > 0 ? "Warning" : "Success");
             } else {
-                o.setState(Math.abs(fDelta / fBefore * 100) <= fTolPct ? "Success" : "Error");
+                o.setState(fBefore && Math.abs(fDelta / fBefore * 100) <= fTolPct ? "Success" : "Error");
             }
         },
 
@@ -228,7 +585,7 @@ sap.ui.define([
             var o = this.byId("elgDelta");
             if (!o) { return; }
             var fBefore = this._incoming && this._incoming.elongation;
-            if (isNaN(fNow) || !fBefore) { o.setText("no incoming figure"); o.setState("None"); return; }
+            if (isNaN(fNow) || !fBefore) { o.setText(isNaN(fNow) ? "" : "no incoming figure"); o.setState("None"); return; }
 
             var fLossPct = (fBefore - fNow) / fBefore * 100;
             o.setText(fLossPct.toFixed(1) + " %");
@@ -239,25 +596,295 @@ sap.ui.define([
 
         // One sample size for the whole lot, pushed to every attribute row.
         // Typing it once per characteristic would be nine times the work for
-        // a number that is the same every time.
+        // a number that is the same every time. Each row is marked dirty so
+        // Save carries the sample size even where no defect count changed.
         onSampleAllChange: function () {
             var iN = parseInt(this.byId("sampleAll").getValue(), 10);
             if (isNaN(iN)) { return; }
             var oList = this.byId("lstDefects");
             oList.getItems().forEach(function (oItem) {
                 var oCtx = oItem.getBindingContext();
-                if (oCtx) { oCtx.setProperty("ActualSampleSize", iN); }
-            });
-            this.onResultChange();
+                if (oCtx) {
+                    oCtx.setProperty("ActualSampleSize", iN).catch(function () {});
+                    this._touch(oCtx);
+                }
+            }, this);
         },
 
-        _t: function (sKey) {
-            return this.getView().getModel("i18n").getResourceBundle().getText(sKey);
+        _resetPanel: function () {
+            ["denInput", "elgInput", "tensInput"].forEach(function (s) {
+                var o = this.byId(s); if (o) { o.setValue(""); }
+            }, this);
+            var oBfl = this.byId("bflInput"); if (oBfl) { oBfl.setValue(0); }
+            var oAll = this.byId("sampleAll"); if (oAll) { oAll.setValue(0); }
+            ["denDelta", "elgDelta", "bflDelta", "panelTarget"].forEach(function (s) {
+                var o = this.byId(s); if (o) { o.setText(""); o.setState("None"); }
+            }, this);
+        },
+
+        // Package geometry shows the plain measurements that are NOT entered
+        // through the yarn-condition panel above - one entry point per result.
+        isGeometryRow: function (sKind, sMic) {
+            if (sKind !== "QUAN") { return false; }
+            return PANEL_ALL_MICS.indexOf((sMic || "").toUpperCase()) === -1;
+        },
+
+        // --- follow-on: post the winding confirmation -----------------------
+        //
+        // Operation 0020 on work centre WindingWorkCentre, read from AFRU in
+        // plant 2002 - the routing already carries both operations and both
+        // are confirmed today. This posts through BAPI_PRODORDCONF_CREATE_TT,
+        // the same BAPI ZCO11A calls, so the confirmation is indistinguishable
+        // from one made on the shop floor except that it also leaves a row in
+        // ZQC_CONF_BATCH naming the inspection lot that released it.
+        //
+        // A second round trip on purpose: the usage decision posts in its own
+        // update task, and the backend disables this action until that
+        // decision is on the database and accepting.
+        onconfirmWinding: function () {
+            this._openConfirmation("0020", "WindingWorkCentre", "confirmWinding");
+        },
+
+        _openConfirmation: function (sDefaultOp, sWcProp, sTitleKey) {
+            var oCtx = this.getView().getBindingContext();
+            if (!oCtx || !this._requireSaved()) { return; }
+            if (oCtx.getProperty("UsageDecisionMade") !== "X") {
+                MessageBox.information(this._t("msgUdFirstConfirm"));
+                return;
+            }
+            var that = this;
+
+            // An order here routinely carries five or six batches, and a
+            // confirmation posts quantity against exactly one of them. Where
+            // the lot resolved its own batch (BatchSource 'C') this is
+            // pre-filled; where it did not, it stays empty and the operator
+            // picks. It is never guessed.
+            var bResolved = oCtx.getProperty("BatchSource") === "C";
+            var sBatch  = bResolved ? (oCtx.getProperty("PlantBatch") || "") : "";
+            var oYearHolder = { year: bResolved ? (oCtx.getProperty("PlantBatchYear") || "") : "" };
+            var oJobTxt = new Text({ text: sBatch ? (oCtx.getProperty("JobCard") || "") : "" });
+
+            var oBatchIn = new Input({
+                value: sBatch,
+                placeholder: this._t("phPickBatch"),
+                showValueHelp: true,
+                valueHelpRequest: function () { that._openBatchPicker(oBatchIn, oJobTxt, oYearHolder); }
+            });
+
+            var oOp     = new Input({ value: sDefaultOp, maxLength: 4 });
+            var oWc     = new Input({ value: oCtx.getProperty(sWcProp) || "", maxLength: 8 });
+            var oYield  = new Input({ value: this._num(oCtx.getProperty("BatchQuantity")), type: "Number", textAlign: "End" });
+            var oScrap  = new Input({ value: "0", type: "Number", textAlign: "End" });
+            var oCheese = new Input({ value: this._num(oCtx.getProperty("BatchCheeses")), type: "Number", textAlign: "End" });
+            var oFinal  = new CheckBox({ selected: false });
+            var oDate   = new DatePicker({ dateValue: new Date(), valueFormat: "yyyy-MM-dd" });
+            var oTxt    = new Input({ maxLength: 40 });
+
+            var oForm = new SimpleForm({
+                editable: true,
+                layout: "ResponsiveGridLayout",
+                content: [
+                    new Label({ text: this._t("lblOrder") }),
+                    new Text({ text: oCtx.getProperty("ProductionOrder") || "" }),
+                    new Label({ text: this._t("lblPlantBatch"), required: true }),
+                    oBatchIn,
+                    new Label({ text: this._t("lblJobCard") }),
+                    oJobTxt,
+                    new Label({ text: this._t("lblOperation"), required: true }),
+                    oOp,
+                    new Label({ text: this._t("lblWorkCentre"), required: true }),
+                    oWc,
+                    new Label({ text: this._t("lblYield") }),
+                    oYield,
+                    new Label({ text: this._t("lblScrap") }),
+                    oScrap,
+                    new Label({ text: this._t("lblUnit") }),
+                    new Text({ text: oCtx.getProperty("BatchUnit") || "" }),
+                    new Label({ text: this._t("lblCheeses") }),
+                    oCheese,
+                    new Label({ text: this._t("lblFinalConf") }),
+                    oFinal,
+                    new Label({ text: this._t("lblPostingDate"), required: true }),
+                    oDate,
+                    new Label({ text: this._t("lblConfText") }),
+                    oTxt
+                ]
+            });
+
+            var fnInvalid = function (oCtl, sMsg) {
+                oCtl.setValueState("Error");
+                oCtl.setValueStateText(sMsg);
+                oCtl.focus();
+            };
+
+            var oDialog = new Dialog({
+                title: this._t(sTitleKey),
+                contentWidth: "32rem",
+                content: [ oForm ],
+                beginButton: new Button({
+                    text: this._t("confirm"),
+                    type: "Accept",
+                    press: function () {
+                        [oBatchIn, oOp, oWc, oYield, oScrap, oDate].forEach(function (c) { c.setValueState("None"); });
+                        if (!oBatchIn.getValue().trim()) { fnInvalid(oBatchIn, that._t("msgPickBatch")); return; }
+                        if (!oOp.getValue().trim())      { fnInvalid(oOp, that._t("msgRequired")); return; }
+                        if (!oWc.getValue().trim())      { fnInvalid(oWc, that._t("msgWorkCentre")); return; }
+                        var fYield = parseFloat(oYield.getValue()) || 0,
+                            fScrap = parseFloat(oScrap.getValue()) || 0;
+                        if (fYield < 0 || fScrap < 0) { fnInvalid(fYield < 0 ? oYield : oScrap, that._t("msgQtyNotNegative")); return; }
+                        if (!fYield && !fScrap) { fnInvalid(oYield, that._t("msgNeedQty")); return; }
+                        if (!oDate.getValue()) { fnInvalid(oDate, that._t("msgRequired")); return; }
+                        if (!oCtx.getProperty("ProductionOrder")) {
+                            MessageBox.error(that._t("msgNoOrder"));
+                            return;
+                        }
+                        oDialog.close();
+                        that._postConfirmation({
+                            batch:   oBatchIn.getValue().trim(),
+                            year:    oYearHolder.year,
+                            job:     oJobTxt.getText(),
+                            op:      oOp.getValue().trim(),
+                            wc:      oWc.getValue().trim().toUpperCase(),
+                            yield:   fYield,
+                            scrap:   fScrap,
+                            cheeses: parseFloat(oCheese.getValue()) || 0,
+                            final:   oFinal.getSelected() ? "X" : "",
+                            date:    oDate.getValue(),
+                            text:    oTxt.getValue()
+                        }, sDefaultOp);
+                    }
+                }),
+                endButton: new Button({ text: this._t("cancel"), press: function () { oDialog.close(); } }),
+                afterClose: function () { oDialog.destroy(); }
+            });
+
+            this.getView().addDependent(oDialog);
+            oDialog.open();
+        },
+
+        // OrderBatch is ZI_QC_BATCH_JOB on the same service. Scoped to this
+        // lot's order so the operator is choosing between the batches of the
+        // order in front of them, not every batch in the plant. Closed batches
+        // are excluded - they have already been reconciled for gain and loss.
+        // Without an order the list would be the whole plant; the dialog says
+        // so instead of offering 130,000 rows.
+        _openBatchPicker: function (oTargetInput, oJobTxt, oYearHolder) {
+            var oCtx = this.getView().getBindingContext(),
+                that = this,
+                sOrder = oCtx.getProperty("ProductionOrder") || "";
+
+            var oList = new List({ mode: "SingleSelectMaster", includeItemInSelection: true, growing: true, growingThreshold: 30 });
+            var oDialog = new Dialog({
+                title: this._t("pickBatch"),
+                contentWidth: "30rem",
+                contentHeight: "26rem",
+                content: [ oList ],
+                endButton: new Button({ text: this._t("cancel"), press: function () { oDialog.close(); } }),
+                afterClose: function () { oDialog.destroy(); }
+            });
+            this.getView().addDependent(oDialog);
+
+            if (!sOrder) {
+                oList.setNoDataText(this._t("msgNoOrder"));
+                oDialog.open();
+                return;
+            }
+
+            var aFilters = [
+                new Filter("Plant", FilterOperator.EQ, oCtx.getProperty("Plant") || ""),
+                new Filter("ProductionOrder", FilterOperator.EQ, sOrder),
+                new Filter("BatchClosed", FilterOperator.NE, "X")
+            ];
+
+            oList.setBusy(true);
+            this.getView().getModel().bindList("/OrderBatch", null, [ new Sorter("BatchDate", true) ], aFilters, {
+                $select: "BatchNumber,FiscalYear,GreigeLotRef,ProductionOrder,JobCard,BatchQuantity,BatchUnit,Cheeses,BatchDate"
+            }).requestContexts(0, 200).then(function (aCtx) {
+                oList.setBusy(false);
+                if (!aCtx.length) { oList.setNoDataText(that._t("msgNoOpenBatches")); }
+                aCtx.forEach(function (oRow) {
+                    oList.addItem(new StandardListItem({
+                        title: oRow.getProperty("BatchNumber"),
+                        description: that._t("colGreigeLot") + " " + (oRow.getProperty("GreigeLotRef") || "")
+                                   + "  ·  " + that._t("colJobCard") + " " + (oRow.getProperty("JobCard") || ""),
+                        info: that.fmtQty(oRow.getProperty("BatchQuantity"), oRow.getProperty("BatchUnit")),
+                        type: "Active",
+                        press: function () {
+                            oTargetInput.setValue(oRow.getProperty("BatchNumber"));
+                            oTargetInput.setValueState("None");
+                            oJobTxt.setText(oRow.getProperty("JobCard") || "");
+                            oYearHolder.year = oRow.getProperty("FiscalYear") || "";
+                            oDialog.close();
+                        }
+                    }));
+                });
+            }).catch(function (oErr) {
+                oList.setBusy(false);
+                MessageBox.error(that._errorText(oErr, "Could not read the order's batches"));
+            });
+
+            oDialog.open();
+        },
+
+        _postConfirmation: function (oIn, sDefaultOp) {
+            var oCtx = this.getView().getBindingContext();
+            var oAction = this.getView().getModel().bindContext(
+                "com.sap.gateway.srvd.zui_qc_inspection.v0001.confirmWinding(...)", oCtx);
+
+            // Every action parameter is Nullable="false" in the service
+            // metadata, so all fifteen must be supplied even when blank.
+            oAction.setParameter("InspectionLot", this._sLot);
+            oAction.setParameter("ProductionOrder", oCtx.getProperty("ProductionOrder") || "");
+            oAction.setParameter("PlantBatch", oIn.batch);
+            oAction.setParameter("PlantBatchYear", oIn.year || this._today().substring(0, 4));
+            oAction.setParameter("JobCard", oIn.job || "");
+            oAction.setParameter("Operation", oIn.op || sDefaultOp);
+            oAction.setParameter("WorkCentre", oIn.wc || "");
+            oAction.setParameter("Plant", oCtx.getProperty("Plant") || "");
+            oAction.setParameter("YieldQuantity", oIn.yield);
+            oAction.setParameter("ScrapQuantity", oIn.scrap);
+            oAction.setParameter("Unit", oCtx.getProperty("BatchUnit") || oCtx.getProperty("LotUnit") || "");
+            oAction.setParameter("Cheeses", oIn.cheeses);
+            oAction.setParameter("FinalConfirmation", oIn.final || "");
+            oAction.setParameter("PostingDate", oIn.date || this._today());
+            oAction.setParameter("ConfirmationText", oIn.text || "");
+
+            oAction.execute("$auto").then(function () {
+                MessageToast.show(this._t("msgConfirmed"));
+                this._refreshLot();
+            }.bind(this)).catch(function (oErr) {
+                MessageBox.error(this._errorText(oErr, "Confirmation failed"));
+            }.bind(this));
+        },
+
+        // ------------------------------------------------------------------
+        // helpers and formatters
+        // ------------------------------------------------------------------
+        _t: function (sKey, aArgs) {
+            return this.getView().getModel("i18n").getResourceBundle().getText(sKey, aArgs);
+        },
+
+        _today: function () {
+            return new Date().toISOString().substring(0, 10);
+        },
+
+        _num: function (v) {
+            if (v === undefined || v === null || v === "") { return ""; }
+            var f = parseFloat(v);
+            return isNaN(f) ? "" : String(f);
+        },
+
+        _errorText: function (oErr, sFallback) {
+            if (!oErr) { return sFallback; }
+            if (oErr.error && oErr.error.message) { return oErr.error.message; }
+            return oErr.message || sFallback;
         },
 
         fmtQty: function (v, u) {
-            if (v === undefined || v === null) { return ""; }
-            return parseFloat(v).toFixed(3).replace(/\.?0+$/, "") + " " + (u || "");
+            if (v === undefined || v === null || v === "") { return ""; }
+            var f = parseFloat(v);
+            if (isNaN(f)) { return ""; }
+            return f.toFixed(3).replace(/\.?0+$/, "") + " " + (u || "");
         },
 
         // SOLLWERT, TOLERANZUN and TOLERANZOB are FLTP and cannot distinguish
@@ -278,7 +905,7 @@ sap.ui.define([
             } else {
                 aParts.push(this._t("notMaintained"));
             }
-            return aParts.join("  \u00b7  ");
+            return aParts.join("  ·  ");
         },
 
         fmtValText: function (sVal) {

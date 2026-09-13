@@ -1,3 +1,9 @@
+# PACKAGE / TRANSPORT - corrected 2026-08-30.
+# This said package: "$TMP". The BSP in KSD is not in $TMP and never was: TADIR
+# puts it in ZKGPL_FIORI, which is transportable, so the upload was refused with
+# "ABAP workbench request for SAPUI5 ABAP Repository not specified" and, in test
+# mode, "Cannot change package assignment from ZKGPL_FIORI to $TMP".
+# KSDK906759 is the request holding the matching backend change.
 # Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here —
 # fiori deploy prompts for them, or set env UI5_TASK_ABAP_USER / _PASSWORD.
 specVersion: "3.0"
@@ -18,7 +24,8 @@ builder:
           client: "500"
         app:
           name: ZBATCH_STATUS
-          package: "$TMP"
+          package: ZKGPL_FIORI
+          transport: KSDK906759
           description: "KGPL Batch Status (Fiori)"
         exclude:
           - "/test/"

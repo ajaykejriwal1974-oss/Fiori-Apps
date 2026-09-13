@@ -1,0 +1,166 @@
+<mvc:View
+    controllerName="kejriwal.sd.packinglist.controller.Worklist"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    height="100%">
+
+    <!-- The table used to bind /PackingList unfiltered, with no suspension, over
+         a box table holding 1,081,436 rows at plant 2002 alone. Opening the app
+         pulled the whole entity set. It now follows the same pattern as Cancel
+         Production Confirmation: filter bar, suspended binding, Go in the title
+         bar so it stays reachable while the table scrolls. -->
+    <f:DynamicPage id="page" headerExpanded="true" toggleHeaderOnTitleClick="true" fitContent="true">
+
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="{i18n>appTitle}"/>
+                </f:heading>
+                <f:actions>
+                    <Button id="btnGo" text="Go" type="Emphasized" press=".onFilterSearch"/>
+                    <Button id="btnClear" text="Clear" press=".onClearFilters"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <form:SimpleForm
+                    id="filterForm"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
+                    columnsXL="4" columnsL="3" columnsM="2"
+                    singleContainerFullSize="false">
+
+                    <Label text="{i18n>colPlant}"/>
+                    <Input id="inpPlant" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onPlantVH"/>
+
+                    <Label text="{i18n>colMergeNumber}"/>
+                    <Input id="inpMergeNumber" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onBatchVH"/>
+
+                    <Label text="{i18n>colSalesOrder}"/>
+                    <Input id="inpSalesOrder" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colProductionOrder}"/>
+                    <Input id="inpProductionOrder" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colMaterial}"/>
+                    <Input id="inpMaterial" submit=".onFilterSearch" showValueHelp="true" valueHelpRequest=".onMaterialVH"/>
+
+                    <Label text="{i18n>colShadeCode}"/>
+                    <Input id="inpShadeCode" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colShipToParty}"/>
+                    <Input id="inpShipToParty" submit=".onFilterSearch"/>
+
+                    <Label text="{i18n>colPackListItem}"/>
+                    <Input id="inpPackListItem" submit=".onFilterSearch"/>
+
+                    <!-- ZPP_PACK-LOCEXP. Only L and M occur in the data (967,193 /
+                         114,243 at plant 2002); the codes are shown rather than
+                         guessed-at labels. -->
+                    <Label text="{i18n>colLocalExport}"/>
+                    <Select id="selLocalExport">
+                        <core:Item key="" text="{i18n>filterLocExpAll}"/>
+                        <core:Item key="L" text="L"/>
+                        <core:Item key="M" text="M"/>
+                    </Select>
+
+                    <Label text="{i18n>colStatus}"/>
+                    <Select id="selStatus">
+                        <core:Item key="" text="{i18n>filterStatusAll}"/>
+                        <core:Item key="O" text="{i18n>filterStatusOpen}"/>
+                        <core:Item key="P" text="{i18n>filterStatusPacked}"/>
+                    </Select>
+
+                    <Label text="{i18n>filterPackingFrom}"/>
+                    <DatePicker id="dpPackingDateFrom" valueFormat="yyyy-MM-dd" displayFormat="short"/>
+
+                    <Label text="{i18n>filterPackingTo}"/>
+                    <DatePicker id="dpPackingDateTo" valueFormat="yyyy-MM-dd" displayFormat="short"/>
+                </form:SimpleForm>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <Table sticky="ColumnHeaders,HeaderToolbar"
+                id="table"
+                items="{ path: '/PackingList', suspended: true }"
+                mode="MultiSelect"
+                growing="true"
+                growingThreshold="50"
+                growingScrollToLoad="true">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="{i18n>worklistTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>actcreatePackingList}" press=".onCreate" type="Emphasized"/>
+                        <Button text="{i18n>actchangePackingList}" press=".onChange" type="Emphasized"/>
+                        <Button text="{i18n>actdeletePackingList}" press=".onDelete" type="Reject"/>
+                        <SearchField width="14rem" search=".onQuickSearch" placeholder="Search"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="{i18n>colBoxNumber}"/></Column>
+                    <Column><Text text="{i18n>colMergeNumber}"/></Column>
+                    <Column><Text text="{i18n>colProductionOrder}"/></Column>
+                    <Column><Text text="{i18n>colShadeCode}"/></Column>
+                    <Column><Text text="{i18n>colShadeName}"/></Column>
+                    <Column><Text text="{i18n>colSalesOrder}"/></Column>
+                    <Column><Text text="{i18n>colSalesOrderItem}"/></Column>
+                    <Column><Text text="{i18n>colShipToParty}"/></Column>
+                    <Column><Text text="{i18n>colShipToName}"/></Column>
+                    <Column><Text text="{i18n>colPackListItem}"/></Column>
+                    <Column><Text text="{i18n>colPlant}"/></Column>
+                    <Column><Text text="{i18n>colStorageLocation}"/></Column>
+                    <Column><Text text="{i18n>colMaterial}"/></Column>
+                    <Column><Text text="{i18n>colGrade}"/></Column>
+                    <Column><Text text="{i18n>colEndUse}"/></Column>
+                    <Column><Text text="{i18n>colPackingSize}"/></Column>
+                    <Column><Text text="{i18n>colLocalExport}"/></Column>
+                    <Column hAlign="End"><Text text="{i18n>colNetWeight}"/></Column>
+                    <Column hAlign="End"><Text text="{i18n>colGrossWeight}"/></Column>
+                    <Column><Text text="{i18n>colPackingDate}"/></Column>
+                    <Column><Text text="{i18n>colPackListDate}"/></Column>
+                    <Column><Text text="{i18n>colCreatedBy}"/></Column>
+                    <Column><Text text="{i18n>colStatus}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{BoxNumber}"/>
+                            <Text text="{MergeNumber}"/>
+                            <Text text="{ProductionOrder}"/>
+                            <Text text="{ShadeCode}"/>
+                            <Text text="{ShadeName}"/>
+                            <Text text="{SalesOrder}"/>
+                            <Text text="{SalesOrderItem}"/>
+                            <Text text="{ShipToParty}"/>
+                            <Text text="{ShipToName}"/>
+                            <Text text="{PackListItem}"/>
+                            <Text text="{Plant}"/>
+                            <Text text="{StorageLocation}"/>
+                            <Text text="{Material}"/>
+                            <Text text="{Grade}"/>
+                            <Text text="{EndUse}"/>
+                            <Text text="{PackingSize}"/>
+                            <Text text="{LocalExport}"/>
+                            <Text text="{NetWeight}"/>
+                            <Text text="{GrossWeight}"/>
+                            <Text text="{PackingDate}"/>
+                            <Text text="{PackListDate}"/>
+                            <Text text="{CreatedBy}"/>
+                            <ObjectStatus text="{Status}" state="{= ${Status} === 'P' ? 'Success' : 'Warning' }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+
+    </f:DynamicPage>
+</mvc:View>

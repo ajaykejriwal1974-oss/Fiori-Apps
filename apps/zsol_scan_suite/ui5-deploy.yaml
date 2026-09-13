@@ -1,0 +1,333 @@
+# TRANSPORT: KSDK906927 (opened 06.09.2026, modifiable) - "FIORI APPS IN
+# SCAN SUITE": the WIP Batch and Job Card screens added to the Scan Suite
+# (front-end here; backend ZCL_ZSOL_SCAN_READ_MPC/_DPC and
+# ZCL_ZSOL_PROD_JOBCARD on the same request, tasks under MD/FIORI_USER).
+#
+# Deploy config for the Scan Suite.
+#
+# This app is NOT a UI5 project. There is no webapp/ folder and nothing to
+# compile - index.html, manifest.json (a PWA manifest, not a UI5 one) and
+# html5-qrcode.min.js ship exactly as they are. `npm run build` only stages
+# those three files into dist/, because `fiori deploy` uploads a folder called
+# dist and ignores --archive-folder in the 1.x CLI.
+#
+# PACKAGE: ZSOL_ISCAN, not ZKGPL_FIORI. TADIR puts this BSP alongside the
+# Solsynch backend classes, and that package is transportable - ADT refuses to
+# save a backend object into it without a request, so the upload needs one too.
+#
+# TRANSPORT: KSDK906923 (opened 06.09.2026, modifiable) - the sales-order
+# batch log request. Backend already on it (task KSDK906925): table
+# ZSOL_SOBATCH_LOG, ZCL_ZSOL_SO_BOXCHECK v4 (log row per assign/remove,
+# refuses a batch list on an item that carries VBAP-CHARG), the DPC's
+# CREATE/DELETE_ENTITY passing the session user, and the per-item
+# ZVBAP_BATCH read in include ZRPT_SALES_SCAN_FR. This front-end goes on
+# it too: the "Why no boxes?" card no longer offers tap-to-assign on an
+# item whose batch_src is C (VBAP-CHARG) and says to change the batch in
+# VA02 instead; tested in test/test_whybox_ui.js. The BSP object lands
+# in a task of the deploying user, created on first upload, as it did
+# on KSDK906920 (task KSDK906922).
+#
+# EARLIER - KSDK906920 (released 06.09.2026) - the Knitting
+# Roll QC request. It carries this front-end (the Knitting Roll QC tile,
+# feature KNITQC) together with its backend: tables ZKNIT_ROLL_QC and
+# ZKNIT_QC_DEFECT, classes ZCL_ZKNIT_ROLL_QC / ZCL_ZSOL_KNIT_QC_MPC /
+# ZCL_ZSOL_KNIT_QC_DPC, the ZPACK01 hold hook in include
+# ZSOL_ORD_DETAILS_WORK_CENT, the seed report ZSOL_KNIT_QC_SEED and the
+# service registration of ZSOL_KNIT_QC_SRV. KSDK906917 before it
+# (released 06.09 07:00) carried the Create Challan rework, the scanner
+# wedge / HU Movement fixes and the reservation dropdown; a deploy that
+# still named it failed with the usual bare 400 (/UI5/UI5_REP_LOAD 003 in
+# the Gateway error log) - a released request cannot take the BSP object.
+#
+# EARLIER - KSDK906908 (released): the QC audit request. It carried the
+# hardware-scanner wedge below together with the corrections to the four
+# QC apps ZQC_RAW_DYE, ZQC_POST_DYE, ZQC_POST_WIND and ZREC_INSP_MASS.
+# KSDK906906 before it is released and in KSP.
+#
+# FRONT-END IN KSDK906908, HARDWARE SCANNER (05.09.2026):
+# the handheld's scan engine, set to keyboard output, types the barcode
+# and an Enter. That only reached the app when a scan field had focus,
+# which after a submit or a tap elsewhere it did not - so the trigger did
+# nothing and operators used the camera button. index.html now redirects
+# the first keystroke of a burst that lands outside any field into the
+# active screen's scan field (box field when one is open, else the
+# order / location field); the rest of the burst and the Enter follow
+# through the browser and the existing handlers submit. Tested in
+# test_wedge.js. DEVICE SIDE (not code): the scanner must be set to
+# KEYBOARD / keystroke output (not Intent or broadcast), with an Enter
+# (CR / LF) suffix; Zebra = DataWedge profile, Honeywell = Honeywell
+# Settings > Scanning > Internal Scanner > Data Processing (Wedge method
+# Standard, suffix \n), Urovo / Chainway / Newland / Sunmi = the Scan
+# settings app > output mode Keyboard, suffix Enter.
+#
+# KSDK906906 carried no front-end. Its backend changes (task KSDK906907),
+# all for Create Challan:
+#   ZCL_ZSOL_CHALLAN_PACK__DPC_EXT - the order and box dropdowns no
+#   longer require ZPP_PACK-HUPOST to be blank (plants outside 1000 set
+#   HUPOST at HU creation, so a company-code 6000 operator saw "No sales
+#   orders pending" while the packing list held 44 live cartons), and a
+#   box drops off both lists once ZSOL_CHALLAN_LOG holds a row for the
+#   same box/order/item dated on or after its packing list date.
+#   ZCL_ZSOL_CHALLAN_PACK - PACK_BOXES decides "Already packed on Challan"
+#   by that same log rule instead of HUPOST = X, under a generic lock on
+#   the box (ENQUEUE_E_TABLE). HUPOST = X is still written afterwards.
+#   ZI_DELIVERY_CHALLAN + ZCL_DELIVERY_CHALLAN_QUERY (package ZKGPL_FIORI,
+#   the ZDLVCHALLAN Fiori app) - per carton on a delivery, the packing
+#   list it came off and whether the Scan Suite's Create Challan was done
+#   for it (green / red / yellow), same log rule as above. Nothing hidden.
+# index.html is unchanged and does not depend on any of these; the request
+# can be released with or without a front-end upload.
+#
+# KSDK906903 (released 05.09 08:44, both halves on it) carried the
+# Location Scan / Add Location audit fixes: the backend
+# (ZCL_ZSOL_LOC_ISCAN_DPC_EXT - a scan is refused unless the number is a
+# ZPP_PACK box or a VEKP handling unit; LocationSet honours $top; a
+# re-scan onto the same rack refreshes the current row but writes no
+# history row) and, in task KSDK906905, this front-end: a 20-digit HU
+# barcode on Location Scan is sent as its last 10 digits;
+# location-lookup failures show the service's own message instead of
+# "not found"; a successful scan drops the box's cached rack so the
+# other screens re-read it.
+#
+# KSDK906897 (released 05.09, in KSP): the item's balance badge and the
+# order card's line show what is still to pick after the boxes selected
+# so far, reaching 0 (green) when the selection covers the item.
+#
+# FRONT-END IN KSDK906894 (released 05.09, imported to KSP): a box is
+# refused when it would take the order item past its pending quantity
+# (+ ZSDTOL tolerance, as the upload checks); rack-list ticks are painted
+# from the scanned list so x, a second tap and submit all clear them;
+# per-item selected/pending bar. KSDK906827 before it was never used.
+#
+# THIS LINE GOES STALE EVERY TIME THE REQUEST IT NAMES IS RELEASED, and
+# it has now happened five times in one day - KSDK906795, KSDK906802,
+# KSDK906807, KSDK906810, KSDK906818 - and KSDK906821 and KSDK906824 have
+# since been released too. Each time the next deploy failed with a Gateway
+# 400 whose text says nothing about transports:
+#
+#   "SAPUI5 application ZSOL_SCAN_SUITE was not uploaded or registered
+#    successfully"
+#
+# If you see that error, CHECK THIS LINE FIRST before reading SLG1 or the
+# Gateway error log. In SE01, or:
+#
+#   SELECT trstatus FROM e070 WHERE trkorr = '<the request named here>'
+#   D = modifiable, the deploy will work.  R = released, it will not.
+#
+# Fixing it is: create a request, give it a real title, put the number
+# here. Releasing a request is what makes this line wrong, so update it
+# in the same sitting you release.
+#
+# WHICH REQUEST TO USE. A front-end-only change can go in its own
+# request, which is what KSDK906810 was - the doctype and the camera
+# guard have no backend counterpart. But when index.html depends on an
+# ABAP change, both halves must ride the SAME request, because whichever
+# reaches KSQ first breaks the other. KSDK906807 was that case.
+#
+# KSDK906818 carries both halves again, though not because they depend
+# on each other: the ZSOL_CHALLAN_LOG LOGNO repoint (abap.numc(6) ->
+# the ZSOL_LOGNO data element) and the front-end batch below are
+# independent, and were put in one request rather than taking a request
+# per fix. If they are ever split, the front-end half is the one that
+# can travel alone.
+#
+# FRONT-END IN KSDK906824: SAP error bodies are now parsed as XML as well
+# as JSON, and the Packing List timeout is 45s.
+#
+# THE WHOLE OF 02.09.2026 WENT ON THIS, so it is worth writing down. The
+# Packing List failed with "Could not load this Sales Order" for every
+# order on KSQ. That message is the generic fallback, reached only when
+# the response body will not parse - and every error handler in
+# index.html did JSON.parse and gave up on the catch. SAP was answering
+# application/xml, so the real message never reached the screen. It said
+# SQL_CAUGHT_RABAX, which means an ABAP dump was caught and points
+# straight at ST22.
+#
+# Before that was found, the browser was aborting the call at 30s, which
+# turned a server error into a client timeout and hid it completely.
+# Raising the timeout to 180s made the failure visible - a genuine 500
+# after three minutes - and that number then went back down to 45s. It
+# was a measuring instrument, not a setting. Do not raise it again to
+# paper over a slow call.
+#
+# THE UNDERLYING FAULT IS NOT IN THIS APP. ZRPT_SALES_SCAN reads the
+# whole VEPO history for the order's batches (no HU, delivery or order
+# in the WHERE), builds 5,134,860 rows of ~152 bytes and dumps with
+# TSV_TNEW_PAGE_ALLOC_FAILED. It fails the same way on KSQ with or
+# without this app, and it is SOLSYNCH's report - package ZSD_DEV.
+#
+# ALSO IN KSDK906824 (backend): ZCL_ZSOL_CHALLAN_PACK__DPC_EXT - the
+# pending-Challan aggregate matched ZSOL_HUDISPATCH on box number alone,
+# which asks "ever dispatched" rather than "dispatched since this
+# Challan", so a carton loaded once was invisible to Security Loading
+# ever after. Now compared on box + timestamp.
+#
+# KSDK906821 (released) carried the per-call timeout. KSDK906818
+# (released) carried: empty-inventory state no longer styled as an error;
+# the three dropdowns reloading on screen entry rather than once at
+# login; tap-to-pick on the Packing List candidate badges; and the
+# ZSOL_CHALLAN_LOG LOGNO repoint to the ZSOL_LOGNO data element.
+#
+# CREDENTIALS: fiori deploy prompts. Do not put an SAP password in .env -
+# this repo is public.
+specVersion: "3.0"
+metadata:
+  name: kgpl.scan.suite
+type: application
+builder:
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://192.168.0.19:8000
+          client: "500"
+        app:
+          name: ZSOL_SCAN_SUITE
+          package: ZSOL_ISCAN
+          # KSDK906931 is released (the QC fold-in, live in KSP 06.09).
+          # KSDK906940 carries the scan fixes of 07.09.2026, front-end only:
+          # the Reservation barcode on HU Movement (camera + wedge on
+          # packResv, matched against the open list), the native
+          # BarcodeDetector for the camera (small Solsynch 1D labels never
+          # decoded under the JS decoder), and camera auto-search on the
+          # four QC screens and the Job Card schedule field.
+          #
+          # KSDK906943 (07.09.2026) - Packing List counts ROLLS for a roll
+          # order. Mango knitted fabric (plants 8001/8003) is sold in
+          # VBAP-VRKME = ROL with a 1:1 conversion to KG, so the download's
+          # Bal_qty is a roll count while every box carries its real net
+          # weight (15-60 KG on one order); summing kilos against 26 ROL
+          # refused the second roll and pre-greyed any roll over 26 KG.
+          # boxQtyFor() now counts one per box for a piece unit
+          # (ROL/PC/PCE/ST/EA) and weighs as before for KG. Tested in
+          # roll_count_test.js. BOTH HALVES ON THIS REQUEST: the upload's
+          # own range check in ZRPT_SALES_UPLOAD_FR (sum_netwt vs kwmeng)
+          # must count rolls the same way, or the submit rejects what the
+          # screen accepted. Do not deploy this front-end without it.
+          #
+          # ALSO ON KSDK906943 (07.09.2026, task KSDK906944) - SECURITY
+          # CONFIRMS BEFORE THE CHALLAN. The process owner inverted the
+          # last two steps: Packing List -> Security Loading Scan ->
+          # Create Challan. Backend, active on KSD:
+          #   ZCL_ZSOL_CHALLAN_PACK__MPC_EXT  Mode + LoadedCount on
+          #     PackingList, Loaded/LoadDate/LoadTime on PackingListBox,
+          #     GET_LAST_MODIFIED 20260907.
+          #   ZCL_ZSOL_CHALLAN_PACK__DPC_EXT  Mode eq 'LOAD' = lists with
+          #     cartons still to confirm (Security), Mode eq 'CHALLAN' =
+          #     lists with a confirmed carton (Create Challan); a carton is
+          #     confirmed when ZSOL_HUDISPATCH has its row, not 'E-', for
+          #     the list, dated on/after ZPP_PACK-PLDATE.
+          #   ZCL_ZSOL_OBD_CREATE  packs only confirmed cartons, reports
+          #     the rest 'W' (left on the list), refuses a list with none.
+          # This front-end: Security Loading reads packing lists (not
+          # deliveries) and submits IscanSet as before; Create Challan
+          # reads confirmed lists and shows what goes / what stays; tiles
+          # reordered. Tested in test/security_first_test.js. The old
+          # front-end would still work against this backend (no Mode =
+          # every pending list), but this front-end needs this backend:
+          # $filter on Mode is a 400 against the old model. Same request.
+          #
+          # ALSO 07.09.2026 (later): the Packing List's "Why no boxes?"
+          # card can now change an item that carries a SINGLE batch - a
+          # tap on a lot (confirmed by a second tap) puts it on the order
+          # item in place of the old one, x clears it. In plant 2002 that
+          # was every item of every order, so with v4 nothing on the card
+          # was ever tappable. Front-end here; backend = ZCL_ZSOL_SO_BOXCHECK
+          # v5 (backend/zcl_zsol_so_boxcheck.abap, BAPI_SALESORDER_CHANGE),
+          # which MUST be active before this front-end is deployed - the
+          # old class still refuses the POST on a single-batch item, so
+          # the tap would end in "change it on the order item (VA02)".
+          # Tested in test/test_whybox_ui.js (section C).
+          #
+          # KSDK906943 WAS RELEASED 07.09.2026 (evening) with the roll count,
+          # the Security-before-Challan inversion and the first front-end
+          # upload. KSDK906946 (task KSDK906947) took over the same evening:
+          #   ZCL_ZSOL_SO_BOXCHECK v5   tap replaces a single item batch
+          #   ZCL_PICKUPLOAD_DPC_EXT    SOCHG flag to memory before SUBMIT
+          #   ZRPT_SALES_UPLOAD_FR      POST_BOX: rolls counted, SOCHG 10%
+          #                             headroom (saved INACTIVE by the
+          #                             bridge - activate in Eclipse, Ctrl+F3)
+          # and this front-end: tap-to-replace on the card, "Select a Whole
+          # Lot" card + 10% tolerance for SOCHG users (sochg_lot_test.js).
+          # BOTH HALVES TOGETHER: the front-end lets a SOCHG user select up
+          # to 110% of the order; against the old include the submit is
+          # refused with "outside range by qty".
+          #
+          # ALSO ON KSDK906946 (07.09 late): Job Card schedule pick. On
+          # production the pick drew a blue border on one of a hundred rows
+          # and the operator could not find the next step, and the newest
+          # rows were all over-batched ("-35.2 KG left"). Now a tap / typed
+          # number / scan folds the list behind the chosen schedule and
+          # scrolls to the machines; fully batched schedules are hidden
+          # from the open list (screen AND ZCL_ZSOL_PROD_JOBCARD
+          # list_schedules; "Show completed schedules too" brings them
+          # back); a typed number not in the list is looked up by number.
+          # Tested in test/jobcard_sched_test.js.
+          #
+          # ALSO ON KSDK906946 (07.09 night), FRONT-END ONLY: QC Post Dyeing
+          # and QC Post Winding open with the plant's job cards waiting for
+          # their stage (ZSOL_JOBCARD, last 45 days: no dyeing date = waits
+          # for dyeing QC; dyed and no winding date = waits for winding QC;
+          # closed never). A tap resolves the card's open lot as a scan
+          # would; after a confirmation the list is re-read and the card
+          # has moved on. Plant pre-filled with 2002 when granted. Tested in
+          # test/qc_pending_test.js. No backend change - ZSOL_JOBCARD as on
+          # KSDK906927. The operator manual for these five screens is
+          # docs/Dyeing-Production-QC-Operator-Manual.pdf (rebuild: cd docs
+          # && node manual_shots.js && python3 build_manual_pdf.py).
+          # KSDK906954 released; KSDK906959 carried the material-group Stock
+          # Enquiry (backend + front-end) and the 30-day session TTL backend.
+          # KSDK906961 carried the first tile-audit front-end.
+          # KSDK906964 (08.09.2026, modifiable) carries this front-end: the two
+          # open-item fixes (Security Loading carton-read guard, HU Movement
+          # post wording) AND the Packing List one-button "Add Sales Order"
+          # flow harmonised with Security Loading (auto-start, green queue
+          # chips, "Finish queue"), on top of the earlier tile-audit fixes -
+          # dpScan/stkTerm burst-scan fields and the loadSalesOrder / QC
+          # findLot / knit-defect stale-response guards.
+          # KSDK906977 (09.09.2026, RELEASED) carried: WIP New Batch order
+          # dropdown; the sales-order scan buttons removed from Packing List /
+          # Security Loading / Create Challan; the Packing List create fixes
+          # (post-submit refresh targets the loaded order, just-picked boxes
+          # leave the candidate pool, 60s submit timeout, queue-chip counter);
+          # and "Load Order" + "Add to Queue" replacing the old one-button add.
+          # KSDK906980 (10.09.2026, RELEASED) carried the multi-select
+          # pending-order checklist (filter + "Add selected to queue").
+          # KSDK906983 (10.09.2026, modifiable) carries this front-end:
+          # WHY_SERVICE (box-check ZSOL_SO_BOXCHECK + assign/remove
+          # ZSOL_SO_BATCH) pinned BACK to the old ZSOL_SCAN_READ_SRV - the
+          # _01 model's boxcheck entity returns only key fields, which
+          # blanked the "Why no boxes?" card and killed the SOCHG assign
+          # flow that knitting roll orders (8001/8003) depend on. Old
+          # service must NOT be retired until the _01 entity is rebuilt.
+          # KSDK906986 (10.09.2026, RELEASED, in KSP): combined "Pick
+          # together", localStorage session + idle lock + drafts, Security
+          # Loading multi-list + confirm-on-scan, WHY_SERVICE back to _01
+          # with the repaired boxcheck model, SUSO Z_WIPBATCH.
+          # KSDK906991 (10.09.2026, modifiable): five picker/screen asks -
+          # per-line-item stock & packing lists on Packing List (dyeing),
+          # WIP order picker hides < 25 KG open, Job Card schedule picker
+          # hides < 25 KG left, Security Loading tick-to-select packing
+          # lists, Stock Enquiry three category pickers + zero-stock hidden.
+          # KSDK906996 (11.09.2026): RFC Error correction - plain-ABAP write
+          # paths. RELEASED, so it can no longer accept the BSP upload.
+          # KSDK907002 (11.09.2026, modifiable): HU Movement Correction -
+          # front-end deploy of the new job-card print format, TSC P200
+          # location barcode, Legal job card, and HU Inward/Outward tiles.
+          # (This is the REQUEST; KSDK907003 is only its task - the deploy
+          # needs the request number.)
+          # 13.09.2026: KSDK907002 is now RELEASED (deploy 400 "not uploaded or
+          # registered"). Switched to KSDK907005 (modifiable), which also
+          # carries the QC post-winding backend (engine/DPC/MPC).
+          # 13.09.2026 (later): KSDK907005 released. Was KSDK907017 (itype fix +
+          # recipe-print backend) - now RELEASED and already imported to KSP.
+          # 13.09.2026: KSDK907019 was RELEASED before the app was deployed into
+          # it (it carried only the engine LIST_CHARS fix), so the front end was
+          # never uploaded. Fresh workbench transport KSDK907021 (modifiable)
+          # now carries the app deploy: blank QC fields, quantity prefill, Excel
+          # export on the pending lists, Print Recipe, enlarged Dyeing/Winding
+          # boxes, and the removed inline Dyeing Recipe block. Deploy into this,
+          # verify on KSD, then release + import to KSP.
+          transport: KSDK907021
+          description: "KGPL Scan Suite"

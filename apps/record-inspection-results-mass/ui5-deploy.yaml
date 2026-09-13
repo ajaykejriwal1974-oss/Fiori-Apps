@@ -1,4 +1,13 @@
-# Deploy config for on-premise S/4HANA (KSD). Credentials are NOT stored here.
+# Deploy config for KSD (on-premise). Credentials are NOT stored here - the
+# deployer prompts, or takes them from the environment.
+#
+# ZREC_INSP_MASS lives in package ZKGPL_FIORI in KSD (TADIR, created
+# 2026-07-13) and has travelled in KSDK906704/906705/906760. It was never a
+# $TMP object; the earlier "$TMP" here was wrong and would have made a deploy
+# fail against the existing package assignment.
+#
+# Transport: KSDK906908 (2026-09-05) carries the QC audit corrections for all
+# four QC apps and the Scan Suite.
 specVersion: "3.0"
 metadata:
   name: kejriwal.qm.inspectionresultmass
@@ -13,7 +22,8 @@ builder:
           client: "500"
         app:
           name: ZREC_INSP_MASS
-          package: "$TMP"
+          package: ZKGPL_FIORI
           description: "KGPL QM Mass Results"
+          transport: KSDK906908
         exclude:
           - "/test/"

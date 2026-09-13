@@ -6,10 +6,13 @@
     xmlns:form="sap.ui.layout.form"
     height="100%">
 
-    <f:DynamicPage id="detailPage" headerExpanded="true" showFooter="true" fitContent="true">
+    <f:DynamicPage id="detailPage" headerExpanded="false" showFooter="true" fitContent="true">
         <f:title>
             <f:DynamicPageTitle>
-                <f:heading><Title text="{VendorBatch}" level="H2"/></f:heading>
+                <!-- QALS-LICHN is blank on every lot in KSD (measured 2026-08-29), so
+                     the title falls back to the greige lot - the number technicians
+                     quote - rather than rendering empty. -->
+                <f:heading><Title text="{= ${VendorBatch} || ${Batch} || ${InspectionLot} }" level="H2"/></f:heading>
                 <f:expandedContent><Text text="{MaterialName} - {Material}"/></f:expandedContent>
                 <f:navigationActions>
                     <Button icon="sap-icon://nav-back" press=".onBack"/>
@@ -21,6 +24,20 @@
             <f:DynamicPageHeader pinnable="true">
                 <HBox wrap="Wrap">
                     <ObjectAttribute title="Inspection Lot" text="{InspectionLot}" class="sapUiMediumMarginEnd"/>
+                    <!-- Two different numbers, and both matter. Batch is the
+                         greige lot as RECEIVED - on a type 01 lot this IS the
+                         supplier's batch, sitting in DRM1. ProductionLot is
+                         ZPP_BATCHN-BATCHNO, the plant's own batch number, one
+                         per job card. It is blank until a plant batch record
+                         claims this lot; that blank is the answer, not a gap.
+
+                         It is NOT ZPP_BATCHN-LOTNO, which this once used. That
+                         field stopped being a lot number in mid-2013 and has
+                         held the yarn quality (BRT, TEX, BCT) ever since. -->
+                    <ObjectAttribute title="{i18n>lblGreigeLot}" text="{Batch}" class="sapUiMediumMarginEnd"/>
+                    <ObjectAttribute title="{i18n>lblProductionLot}"
+                                     text="{= ${ProductionLot} ? ${ProductionLot} : ${i18n>notAssigned} }"
+                                     class="sapUiMediumMarginEnd"/>
                     <ObjectAttribute title="Delivered" text="{ parts: ['LotQuantity','LotUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
                     <ObjectAttribute title="Sample" text="{ parts: ['SampleSize','SampleUnit'], formatter: '.fmtQty' }" class="sapUiMediumMarginEnd"/>
                     <ObjectAttribute title="Received" text="{ path: 'CreatedOn', type: 'sap.ui.model.odata.type.Date' }"/>
@@ -28,7 +45,7 @@
             </f:DynamicPageHeader>
         </f:header>
 
-        <f:content>
+        <f:content><ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
             <VBox>
 
                 <!-- Single-lot rule. Loading one dye vessel from two supplier
@@ -44,7 +61,7 @@
                      from the specification, and BWS spread across packages is
                      the accepted proxy for dye affinity spread. The RANGE is
                      the number that matters, not the mean. -->
-                <Panel headerText="Boiling water shrinkage - 5 packages" expandable="true" expanded="true"
+                <Panel headerText="Boiling water shrinkage - 5 packages" expandable="true" expanded="false"
                        class="sapUiSmallMarginBeginEnd">
                     <content>
                         <VBox class="sapUiSmallMargin">
@@ -67,10 +84,14 @@
                                     <Label text="Pkg 5"/><Input id="bws5" type="Number" width="6rem" textAlign="End" change=".onBwsChange"/>
                                 </VBox>
                             </HBox>
-                            <HBox class="sapUiSmallMarginTop" alignItems="Center">
+                            <HBox class="sapUiSmallMarginTop" alignItems="Center" wrap="Wrap">
                                 <ObjectStatus id="bwsMean"  title="Mean"  class="sapUiMediumMarginEnd"/>
                                 <ObjectStatus id="bwsRange" title="Range (limit 1.5)" class="sapMObjectStatusLarge"/>
                             </HBox>
+                            <!-- Says where the five readings go on Save: into the lot's BWS
+                                 characteristic (mean + readings in the comment), or nowhere,
+                                 when the inspection plan has no such characteristic. -->
+                            <ObjectStatus id="bwsTarget" class="sapUiTinyMarginTop"/>
                         </VBox>
                     </content>
                 </Panel>
@@ -80,7 +101,9 @@
                 <List id="lstChars" mode="None" headerText="Characteristics"
                       items="{ path: '_Characteristic', parameters: { $$updateGroupId: 'qc' } }"
                       class="sapUiSmallMarginBeginEnd">
-                    <CustomListItem>
+                    <!-- The BWS characteristic is entered through the panel above; hiding
+                         it here keeps one entry point per result. -->
+                    <CustomListItem visible="{ path: 'MasterCharacteristic', formatter: '.isListRow' }">
                         <VBox class="sapUiSmallMargin">
                             <HBox justifyContent="SpaceBetween" alignItems="Center">
                                 <VBox>
@@ -124,21 +147,35 @@
                     </CustomListItem>
                 </List>
             </VBox>
-        </f:content>
+        </ScrollContainer></f:content>
 
         <f:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
                 <!-- __OperationControl comes back with every InspectionLot read
-                     (get_global_authorizations sets it per lot) - gate each
-                     button on its own flag so a closed lot or an existing UD
-                     disables the button instead of surfacing a raw OData error. -->
-                <Button text="Save" press=".onSave"
-                        enabled="{= ${ui>/dirty} &amp;&amp; ${__OperationControl/recordSingleResult} }"/>
-                <Button text="Record Results" type="Emphasized" press=".onRecord"
-                        enabled="{__OperationControl/recordResults}"/>
-                <Button text="Usage Decision" type="Attention" press=".onUsageDecision"
-                        enabled="{__OperationControl/setUsageDecision}"/>
+                     (get_instance_features sets it per lot) - gate each button
+                     on its own flag so a closed lot or an existing UD disables
+                     the button instead of surfacing a raw OData error.
+
+                     Everything except Save is also disabled while there are
+                     unsaved edits: each of these refreshes the lot afterwards,
+                     and the V4 model refuses to refresh over pending changes. -->
+                <Button text="{i18n>saveDraft}" press=".onSave"
+                        enabled="{= ${ui>/dirty} &amp;&amp; !!${__OperationControl/recordSingleResult} }"/>
+                <Button text="{i18n>recordResults}" type="Emphasized" press=".onRecord"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/recordResults} }"/>
+                <Button text="{i18n>usageDecision}" type="Attention" press=".onUsageDecision"
+                        enabled="{= !${ui>/dirty} &amp;&amp; !!${__OperationControl/setUsageDecision} }"/>
+                <!-- The follow-on step, and a SECOND round trip on purpose.
+                     The usage decision posts its stock movement in its own
+                     update task; a transfer issued in the same LUW would read
+                     stock that has not moved yet and fail on a deficit. The
+                     backend disables this until the decision is on the
+                     database and accepting; UsageDecisionMade is checked here
+                     as well so the button reads right even before the backend
+                     feature control for this action is in place. -->
+                <Button text="{i18n>releaseToProduction}" type="Accept" press=".onReleaseToProduction"
+                        enabled="{= !${ui>/dirty} &amp;&amp; ${UsageDecisionMade} === 'X' &amp;&amp; !!${__OperationControl/releaseToProduction} }"/>
             </OverflowToolbar>
         </f:footer>
     </f:DynamicPage>

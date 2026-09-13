@@ -114,8 +114,21 @@ sap.ui.define([
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
         },
 
+        /** Close Batch is deliberately switched off.
+         *
+         *  It queued mode 'R' into Z_KGPL_BATCH_MAINTAIN, which set
+         *  BAPIBATCHATT-AVAILABLE = abap_true and called BAPI_BATCH_CHANGE.
+         *  AVAILABLE is data element VERAB, "Availability date" - a DATS field,
+         *  not a status flag. The call wrote the character 'X' into a date and
+         *  closed nothing. Checked 2026-08-29: no MCHA row carries a non-initial
+         *  VERAB, so it never actually ran - the _Item parameter mismatch below
+         *  had been failing the call before it reached the backend.
+         *
+         *  The button stays visible so the gap is not silently forgotten, but it
+         *  refuses rather than posting. Re-enable it once someone decides what
+         *  closing an MCHA batch should mean here. */
         onCloseBatch: function () {
-            this._runAction("closeBatch", []);
+            MessageBox.warning(this.oBundle.getText("closeNotImplemented"));
         },
 
         onDeleteBatch: function () {
@@ -243,24 +256,52 @@ sap.ui.define([
         },
 
         /**
-         * Invoke the RAP static action via OData V4: bind the operation, set the
-         * header params + the selected rows as the _Item composition, execute.
-         * NOTE: composition actions (pack / dispatch / GR) take _Item; a flat
-         * per-row action should instead be invoked once per selected row with its
-         * key fields - adjust to the activated service metadata.
+         * Invoke the RAP action once per selected row.
+         *
+         * The action signature in the activated service is flat - Material,
+         * Plant and Batch as three scalars, one batch per call - so the old
+         * `setParameter("_Item", aRows)` sent a parameter the service does not
+         * declare and every call failed before reaching the handler. The note
+         * that used to sit here said exactly that; this is it done.
+         *
+         * Sequential, not parallel: firing them together queues them into one
+         * $batch where the first failure abandons the rest, and the user cannot
+         * tell which batches were processed. One at a time costs a round trip
+         * each and reports per row.
          */
         _invoke: function (sAction, oParams, aRows) {
             var that = this;
             var oModel = this.getView().getModel();
-            var oOperation = oModel.bindContext("/" + ENTITY_SET + "/" + SERVICE_NS + "." + sAction + "(...)");
-            Object.keys(oParams).forEach(function (k) { oOperation.setParameter(k, oParams[k]); });
-            oOperation.setParameter("_Item", aRows);
-            oOperation.invoke().then(function () {
-                var oRes = oOperation.getBoundContext().getObject() || {};
-                MessageToast.show(oRes.Message || that.oBundle.getText("actionDone", [sAction]));
+            var iOk = 0;
+            var aFailed = [];
+
+            var pRun = aRows.reduce(function (pPrev, oRow) {
+                return pPrev.then(function () {
+                    var oOperation = oModel.bindContext(
+                        "/" + ENTITY_SET + "/" + SERVICE_NS + "." + sAction + "(...)");
+                    Object.keys(oParams).forEach(function (k) {
+                        oOperation.setParameter(k, oParams[k]);
+                    });
+                    Object.keys(oRow).forEach(function (k) {
+                        oOperation.setParameter(k, oRow[k]);
+                    });
+                    return oOperation.invoke().then(function () {
+                        iOk = iOk + 1;
+                    }, function (oError) {
+                        aFailed.push(oRow.Batch + " - " + ((oError && oError.message) || "failed"));
+                    });
+                });
+            }, Promise.resolve());
+
+            pRun.then(function () {
                 that.byId("table").getBinding("items").refresh();
-            }, function (oError) {
-                MessageBox.error((oError && oError.message) || that.oBundle.getText("actionFailed", [sAction]));
+                if (!aFailed.length) {
+                    MessageToast.show(that.oBundle.getText("actionDoneN", [sAction, iOk]));
+                } else {
+                    MessageBox.error(
+                        that.oBundle.getText("actionPartial", [sAction, iOk, aFailed.length]),
+                        { details: aFailed.join("\n") });
+                }
             });
         }
     });

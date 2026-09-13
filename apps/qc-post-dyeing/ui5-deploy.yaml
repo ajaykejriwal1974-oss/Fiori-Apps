@@ -1,3 +1,10 @@
+# Deploy config for KSD (on-premise). Credentials are NOT stored here - the
+# deployer prompts, or takes them from the environment.
+#
+# Transport: KSDK906908 (2026-09-05) carries the QC audit corrections for all
+# four QC apps and the Scan Suite. Update this line whenever a new request is
+# opened; a released request makes the deploy fail with "request is not
+# modifiable".
 specVersion: "3.1"
 metadata:
   name: qc-post-dyeing
@@ -17,6 +24,6 @@ builder:
           name: ZQC_POST_DYE
           package: ZKGPL_FIORI
           description: Post-Dyeing QC
-          transport: KSDK906696
+          transport: KSDK906908
         exclude:
           - /test/

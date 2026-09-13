@@ -1,0 +1,21 @@
+{
+  "_version": "1.32.0",
+
+  "sap.app": {
+    "id": "kgpl.scan.suite",
+    "type": "application",
+    "title": "KGPL Scan Suite",
+    "description": "Warehouse scanning suite - packing list, dispatch, location scan, physical inventory",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+
+  "name": "KGPL Scan Suite",
+  "short_name": "KGPL Scan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8fa",
+  "theme_color": "#0969da",
+  "icons": []
+}

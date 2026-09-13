@@ -1,4 +1,9 @@
-managed implementation in class zbp_i_job unique;
+// Managed WITH ADDITIONAL SAVE. The extra save is where ZPP_BATCHN-ASSIGNED is
+// maintained: ZJOB01N sets it when a job card claims a batch and clears it when
+// the card moves to another batch (MZ_PP_JOB_CARDNF01), and the Fiori app wrote
+// only ZPP_JOBN, so a batch claimed here still looked free to ZBATCH01N, to
+// ZJOBREPTN and to anything else reading the flag.
+managed with additional save implementation in class zbp_i_job unique;
 
 define behavior for ZI_Job alias Job
 persistent table zpp_jobn
@@ -6,12 +11,31 @@ lock master
 {
   create;
   update;
-  delete;
+
+  // No `delete`. ZJOB01N soft-deletes - UPDATE zpp_jobn SET delind = 'X' - and a
+  // hard delete here would remove the record the flag exists to preserve. The
+  // markDeleted action below does what the transaction does. 24 of the 131,340
+  // job cards in KSD are soft-deleted this way (measured 2026-08-30).
+  action markDeleted result [1] $self;
 
   field ( mandatory : create ) JobNumber;
-  field ( readonly ) CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
+  // Only markDeleted may set it, so a filtered list can never lose a row
+  // mid-edit.
+  field ( readonly ) DeletionFlag, CreatedBy, CreatedOnDate, CreatedAtTime, LastChangedBy, LastChangedDate, LastChangedTime;
 
-  determination setAdminData on save { create; update; }
+  determination setAdminData    on save { create; update; }
+  // create is a no-op here - there is no previous row to read - but RAP will
+  // not take `update` on its own in this determination, so both are declared.
+  determination stashOldBatch   on save { create; update; }
+
+  // The ZJOB01N create rules (MZ_PP_JOB_CARDNF01), which the Fiori path did not
+  // enforce: job number = batch number; the batch exists, is live (not deleted,
+  // not closed) and free (not already carded); the schedule exists, is live and
+  // is for the batch's dyed material in the same plant; the work centres exist
+  // in the plant. On CREATE only - JobNumber is the key and must equal
+  // BatchNumber, so the batch a card sits on never changes, and the "batch is
+  // free" tests would otherwise reject a card editing its own row.
+  validation validateJobCard    on save { create; }
 
   mapping for zpp_jobn
   {

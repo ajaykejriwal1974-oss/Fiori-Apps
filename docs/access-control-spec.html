@@ -1,0 +1,787 @@
+<title>Scan Suite Access Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:      #F4F6F7;
+    --surface:     #FFFFFF;
+    --surface-2:   #EAEEF1;
+    --ink:         #161A1E;
+    --ink-soft:    #565F69;
+    --ink-faint:   #87919B;
+    --rule:        #D7DDE2;
+    --rule-strong: #B9C2CA;
+    --accent:      #A05800;
+    --accent-soft: #FBF0DE;
+    --ok:          #2C6A4A;
+    --ok-soft:     #E4F0EA;
+    --danger:      #97292B;
+    --danger-soft: #FAE9E9;
+    --code-bg:     #EDF1F3;
+    --shadow:      0 1px 2px rgba(20,28,36,.05), 0 8px 24px -12px rgba(20,28,36,.16);
+
+    --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --f-body:    "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+    --f-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0F1317;
+      --surface:     #161B20;
+      --surface-2:   #1D242A;
+      --ink:         #E4E9ED;
+      --ink-soft:    #9BA5AF;
+      --ink-faint:   #6B757E;
+      --rule:        #29313A;
+      --rule-strong: #3A444E;
+      --accent:      #E29B45;
+      --accent-soft: #2A2114;
+      --ok:          #6CBE95;
+      --ok-soft:     #16241D;
+      --danger:      #E08A8A;
+      --danger-soft: #2A1919;
+      --code-bg:     #111619;
+      --shadow:      0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0F1317;
+    --surface:     #161B20;
+    --surface-2:   #1D242A;
+    --ink:         #E4E9ED;
+    --ink-soft:    #9BA5AF;
+    --ink-faint:   #6B757E;
+    --rule:        #29313A;
+    --rule-strong: #3A444E;
+    --accent:      #E29B45;
+    --accent-soft: #2A2114;
+    --ok:          #6CBE95;
+    --ok-soft:     #16241D;
+    --danger:      #E08A8A;
+    --danger-soft: #2A1919;
+    --code-bg:     #111619;
+    --shadow:      0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 56px 0 32px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1.06;
+    letter-spacing: -.022em;
+    text-wrap: balance;
+    margin: 0 0 16px;
+  }
+  .standfirst {
+    font-size: 1.075rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 28px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+  }
+  .meta span {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 3px 9px;
+    background: var(--surface);
+  }
+
+  /* ---------- structure ---------- */
+  section { margin-bottom: 56px; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -.015em;
+    line-height: 1.2;
+    text-wrap: balance;
+    margin: 0 0 6px;
+    padding-top: 8px;
+  }
+  .sectionnote {
+    color: var(--ink-faint);
+    font-size: .9rem;
+    margin: 0 0 26px;
+  }
+  h3 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1.06rem;
+    letter-spacing: -.008em;
+    margin: 34px 0 10px;
+  }
+  p { max-width: 66ch; margin: 0 0 16px; }
+  ul, ol { max-width: 66ch; padding-left: 22px; margin: 0 0 16px; }
+  li { margin-bottom: 7px; }
+  strong { font-weight: 600; }
+  a { color: var(--accent); }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .88em;
+    background: var(--code-bg);
+    border-radius: 3px;
+    padding: 1.5px 5px;
+    color: var(--ink);
+  }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--ink-faint);
+    border-radius: 4px;
+    background: var(--surface);
+    padding: 18px 20px;
+    margin: 0 0 22px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout.critical { border-left-color: var(--danger); background: var(--danger-soft); }
+  .callout.action   { border-left-color: var(--accent); background: var(--accent-soft); }
+  .callout .clabel {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .callout.critical .clabel { color: var(--danger); }
+  .callout.action   .clabel { color: var(--accent); }
+
+  /* ---------- layer diagram ---------- */
+  .layers { display: flex; flex-direction: column; gap: 10px; margin: 0 0 24px; }
+  .layer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .layer .lnum {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule-strong);
+    border-radius: 3px;
+    padding: 3px 7px;
+    white-space: nowrap;
+  }
+  .layer.new .lnum { color: var(--accent); border-color: var(--accent); }
+  .layer h4 {
+    font-family: var(--f-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .layer p { font-size: .92rem; color: var(--ink-soft); margin: 0; max-width: none; }
+
+  /* ---------- DDIC blocks ---------- */
+  .ddic {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0 0 14px;
+    box-shadow: var(--shadow);
+  }
+  .ddic-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .ddic-head .tname {
+    font-family: var(--f-mono);
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+  }
+  .ddic-head .tdesc {
+    font-size: .86rem;
+    color: var(--ink-soft);
+  }
+  .ddic-body { overflow-x: auto; }
+  .ddic pre {
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    line-height: 1.72;
+    margin: 0;
+    padding: 16px 18px;
+    white-space: pre;
+    color: var(--ink);
+  }
+  .ddic pre .kw   { color: var(--accent); font-weight: 500; }
+  .ddic pre .cmt  { color: var(--ink-faint); }
+
+  .fieldnotes {
+    font-size: .88rem;
+    color: var(--ink-soft);
+    max-width: 66ch;
+    margin: 0 0 34px;
+    padding-left: 2px;
+  }
+  .fieldnotes ul { margin: 0; max-width: none; }
+  .fieldnotes li { margin-bottom: 5px; }
+  .fieldnotes code { font-size: .85em; }
+
+  .steplabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+
+  /* ---------- data tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 0 0 20px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 520px;
+    font-size: .9rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+  }
+  thead th {
+    text-align: left;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--rule-strong);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.mono { font-family: var(--f-mono); font-size: .84rem; white-space: nowrap; }
+
+  .pill {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .pill.exists { background: var(--ok-soft);     color: var(--ok);     border: 1px solid var(--ok); }
+  .pill.create { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+
+  /* ---------- phases ---------- */
+  .phase {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .phase:last-child { border-bottom: 1px solid var(--rule); }
+  .phase .pnum {
+    font-family: var(--f-mono);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--rule-strong);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .phase h4 {
+    font-family: var(--f-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .phase p { font-size: .93rem; color: var(--ink-soft); margin: 0 0 8px; max-width: 62ch; }
+  .phase p:last-child { margin-bottom: 0; }
+  .phase .who {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 22px;
+    font-size: .85rem;
+    color: var(--ink-faint);
+    max-width: 66ch;
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  @media (max-width: 620px) {
+    .wrap { padding: 0 18px 64px; }
+    .masthead { padding-top: 40px; }
+    .phase { grid-template-columns: 1fr; gap: 6px; }
+    .layer { grid-template-columns: 1fr; gap: 10px; }
+    .layer .lnum { justify-self: start; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">KGPL Scan Suite &middot; Build Specification</p>
+    <h1>Scan Suite Access Control</h1>
+    <p class="standfirst">
+      App-level login, an admin who manages users, and per-person access by company code, plant,
+      and screen — layered on top of the Scan Suite without disturbing what already works.
+    </p>
+    <div class="meta">
+      <span>System KSD &middot; client 500</span>
+      <span>Package ZSOL_ISCAN</span>
+      <span>4 tables &middot; 1 Gateway service &middot; 2 entities</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Read this part first</h2>
+    <p class="sectionnote">One design consequence that shapes everything below.</p>
+
+    <div class="callout critical">
+      <span class="clabel">Security boundary</span>
+      <p>
+        Your warehouse staff don't have SAP user IDs, so the app reaches SAP under a
+        <strong>shared SAP account</strong>. The new login identifies <em>which person</em> is
+        using the app — it does not replace SAP's own authentication.
+      </p>
+      <p>
+        That means a frontend-only check is not real security: anyone who knows the shared SAP
+        credential could call the OData services directly and skip the login screen entirely. So
+        <strong>every service method has to verify the session token server-side</strong>, not just
+        the app screens. That's built into the design below, and it's the reason Phase&nbsp;2 exists.
+      </p>
+    </div>
+
+    <p>
+      This is the right trade for a warehouse floor — you get per-person accountability and
+      per-person access without buying an SAP licence for every operator. It just has to be
+      enforced in ABAP, not JavaScript.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it fits together</h2>
+    <p class="sectionnote">Two independent layers. Only the second one is new.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <span class="lnum">Existing</span>
+        <div>
+          <h4>SAP HTTP authentication</h4>
+          <p>
+            The browser authenticates to <code>/sap/opu/odata/…</code> as it does today, under one
+            shared SAP account. Unchanged — nothing in this spec touches it.
+          </p>
+        </div>
+      </div>
+      <div class="layer new">
+        <span class="lnum">New</span>
+        <div>
+          <h4>App login &amp; authorization</h4>
+          <p>
+            A person signs in with their own app username and password. The backend returns a
+            session token plus that person's company codes, plants, and permitted screens. Every
+            later call carries the token; ABAP checks it and filters data accordingly.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Passwords are never stored or transmitted in the clear. Each user gets a random salt, and the
+      table holds only <code>SHA-256(salt + password)</code> as hex. There is no way to read a
+      password back out of the table — a forgotten password is reset by an admin, not recovered.
+    </p>
+  </section>
+
+  <section>
+    <h2>Tables to create</h2>
+    <p class="sectionnote">
+      Four transparent tables in package <code>ZSOL_ISCAN</code>. Create them in SE11 with
+      delivery class <code>A</code>, exactly as listed — I'll write all the ABAP against these names.
+    </p>
+
+    <div class="callout action">
+      <span class="clabel">Your action &middot; about 10 minutes</span>
+      <p>
+        In Eclipse: <strong>New &rarr; Other &rarr; ABAP Dictionary &rarr; Database Table</strong>,
+        name it, then replace the generated body with the source below and activate. The blocks are
+        written to paste verbatim — no fields to type by hand.
+      </p>
+      <p>
+        Put all four in one transport and send me the number. After that I can write and activate
+        everything else without needing anything further from you.
+      </p>
+    </div>
+
+    <p class="steplabel">Table 1 of 4</p>
+    <div class="ddic">
+      <div class="ddic-head">
+        <span class="tname">ZSOL_APP_USER</span>
+        <span class="tdesc">Scan Suite app user master</span>
+      </div>
+      <div class="ddic-body"><pre><span class="cmt">@EndUserText.label : 'Scan Suite app user master'</span>
+<span class="cmt">@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE</span>
+<span class="cmt">@AbapCatalog.tableCategory : #TRANSPARENT</span>
+<span class="cmt">@AbapCatalog.deliveryClass : #A</span>
+<span class="cmt">@AbapCatalog.dataMaintenance : #RESTRICTED</span>
+<span class="kw">define table</span> zsol_app_user {
+
+  <span class="kw">key</span> client       : abap.clnt <span class="kw">not null</span>;
+  <span class="kw">key</span> username     : abap.char(20) <span class="kw">not null</span>;
+      full_name    : abap.char(40);
+      pwd_hash     : abap.char(64);
+      pwd_salt     : abap.char(32);
+      is_admin     : abap.char(1);
+      active       : abap.char(1);
+      fail_count   : abap.int1;
+      locked       : abap.char(1);
+      last_login_d : abap.dats;
+      last_login_t : abap.tims;
+      ernam        : syuname;
+      erdat        : erdat;
+
+}</pre></div>
+    </div>
+    <div class="fieldnotes">
+      <ul>
+        <li><code>username</code> — the app login name. Deliberately not tied to SAP's 12-character user ID, since these people have no SAP account.</li>
+        <li><code>pwd_hash</code> — 64 hex characters: SHA-256 of salt + password. Never the password itself.</li>
+        <li><code>pwd_salt</code> — 32 hex characters, generated fresh per user, so two people with the same password still get different hashes.</li>
+        <li><code>is_admin</code> — <code>X</code> grants access to the admin screen (creating users and assigning access).</li>
+        <li><code>fail_count</code> / <code>locked</code> — consecutive wrong passwords; the account locks at 5 and only an admin can clear it.</li>
+      </ul>
+    </div>
+
+    <p class="steplabel">Table 2 of 4</p>
+    <div class="ddic">
+      <div class="ddic-head">
+        <span class="tname">ZSOL_APP_UORG</span>
+        <span class="tdesc">User access by company code and plant</span>
+      </div>
+      <div class="ddic-body"><pre><span class="cmt">@EndUserText.label : 'Scan Suite user access by company/plant'</span>
+<span class="cmt">@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE</span>
+<span class="cmt">@AbapCatalog.tableCategory : #TRANSPARENT</span>
+<span class="cmt">@AbapCatalog.deliveryClass : #A</span>
+<span class="cmt">@AbapCatalog.dataMaintenance : #RESTRICTED</span>
+<span class="kw">define table</span> zsol_app_uorg {
+
+  <span class="kw">key</span> client   : abap.clnt <span class="kw">not null</span>;
+  <span class="kw">key</span> username : abap.char(20) <span class="kw">not null</span>;
+  <span class="kw">key</span> bukrs    : bukrs <span class="kw">not null</span>;
+  <span class="kw">key</span> werks    : werks_d <span class="kw">not null</span>;
+
+}</pre></div>
+    </div>
+    <div class="fieldnotes">
+      <ul>
+        <li>One row per company code + plant a person may work in. Someone covering three plants gets three rows.</li>
+        <li><code>werks = '*'</code> means every plant in that company code — so a company-wide user needs one row, not one per plant.</li>
+        <li>No rows at all means no data access. That's deliberate: a newly created user sees nothing until an admin grants something.</li>
+      </ul>
+    </div>
+
+    <p class="steplabel">Table 3 of 4</p>
+    <div class="ddic">
+      <div class="ddic-head">
+        <span class="tname">ZSOL_APP_UFCT</span>
+        <span class="tdesc">User access by app screen</span>
+      </div>
+      <div class="ddic-body"><pre><span class="cmt">@EndUserText.label : 'Scan Suite user access by screen'</span>
+<span class="cmt">@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE</span>
+<span class="cmt">@AbapCatalog.tableCategory : #TRANSPARENT</span>
+<span class="cmt">@AbapCatalog.deliveryClass : #A</span>
+<span class="cmt">@AbapCatalog.dataMaintenance : #RESTRICTED</span>
+<span class="kw">define table</span> zsol_app_ufct {
+
+  <span class="kw">key</span> client   : abap.clnt <span class="kw">not null</span>;
+  <span class="kw">key</span> username : abap.char(20) <span class="kw">not null</span>;
+  <span class="kw">key</span> feature  : abap.char(10) <span class="kw">not null</span>;
+
+}</pre></div>
+    </div>
+    <div class="fieldnotes">
+      <ul>
+        <li>One row per screen the person may open. The codes are fixed — see the table below.</li>
+        <li>Screens a person has no row for don't appear on their home screen at all, rather than appearing and then refusing.</li>
+      </ul>
+    </div>
+
+    <p class="steplabel">Table 4 of 4</p>
+    <div class="ddic">
+      <div class="ddic-head">
+        <span class="tname">ZSOL_APP_SESS</span>
+        <span class="tdesc">Active login sessions</span>
+      </div>
+      <div class="ddic-body"><pre><span class="cmt">@EndUserText.label : 'Scan Suite active login sessions'</span>
+<span class="cmt">@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE</span>
+<span class="cmt">@AbapCatalog.tableCategory : #TRANSPARENT</span>
+<span class="cmt">@AbapCatalog.deliveryClass : #A</span>
+<span class="cmt">@AbapCatalog.dataMaintenance : #RESTRICTED</span>
+<span class="kw">define table</span> zsol_app_sess {
+
+  <span class="kw">key</span> client    : abap.clnt <span class="kw">not null</span>;
+  <span class="kw">key</span> token     : abap.char(32) <span class="kw">not null</span>;
+      username  : abap.char(20);
+      created_d : abap.dats;
+      created_t : abap.tims;
+      expires_d : abap.dats;
+      expires_t : abap.tims;
+
+}</pre></div>
+    </div>
+    <div class="fieldnotes">
+      <ul>
+        <li>A successful login writes one row; the token is a random 32-character value, not derived from the username.</li>
+        <li>Sessions expire after 12 hours — long enough for a full shift, short enough that a mislaid handheld stops working by the next one.</li>
+        <li>Expired rows are cleaned up on the next login by the same user, so the table stays small without a background job.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Screen codes</h2>
+    <p class="sectionnote">
+      The fixed values for <code>ZSOL_APP_UFCT-FEATURE</code>. The admin screen shows these as
+      plain checkboxes with the names on the right.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Code</th><th>Screen</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">LOC</td><td>Location Scan</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">ADDLOC</td><td>Add Location</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">PACK</td><td>HU Movement</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">INV</td><td>Physical Inventory</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">RECON</td><td>Reconciliation</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">PICK</td><td>Packing List</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">CHALLAN</td><td>Create Challan</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">DISPATCH</td><td>Security Loading Scan</td><td><span class="pill exists">Live</span></td></tr>
+          <tr><td class="mono">ADMIN</td><td>User Administration</td><td><span class="pill create">To build</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <code>ADMIN</code> is checked separately from <code>is_admin</code> on the user record so you
+      can, if you ever want to, give someone the admin screen without full rights — but for now
+      treat them as moving together.
+    </p>
+  </section>
+
+  <section>
+    <h2>Gateway service</h2>
+    <p class="sectionnote">One new SEGW project, same pattern as ZSOL_LOC_ISCAN.</p>
+
+    <p>
+      Create SEGW project <code>ZSOL_APP_AUTH</code>, generate runtime artifacts, and register the
+      service as <code>ZSOL_APP_AUTH_SRV</code> in <code>/IWFND/MAINT_SERVICE</code>. Two entities
+      — every property is <code>Edm.String</code>, so there are no type dropdowns to get wrong.
+    </p>
+
+    <p>
+      A person's company codes, plants and screens travel as single delimited string properties
+      rather than nested collections. That's the same shape the Challan service already uses, and
+      it exists for a concrete reason: classic Gateway raises
+      <code>CREATE_DEEP_ENTITY not implemented</code> for generated associations, so a flat scalar
+      property sidesteps the problem entirely.
+    </p>
+
+    <h3>Entity <span class="mono">Login</span> &rarr; entity set <span class="mono">LoginSet</span></h3>
+    <p>
+      Set the entity set <strong>creatable only</strong> — untick updatable, deletable, pageable and
+      addressable. A login is a POST, never a readable collection.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Property</th><th>Len</th><th>Key</th><th>Direction</th><th>Carries</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">Username</td><td class="mono">20</td><td>✓</td><td>in</td><td>The app login name typed on the login screen</td></tr>
+          <tr><td class="mono">Password</td><td class="mono">40</td><td></td><td>in</td><td>Plain text on the wire, hashed on arrival, never stored</td></tr>
+          <tr><td class="mono">Token</td><td class="mono">32</td><td></td><td>out</td><td>Session token the app sends with every later call</td></tr>
+          <tr><td class="mono">FullName</td><td class="mono">40</td><td></td><td>out</td><td>Shown in the app header</td></tr>
+          <tr><td class="mono">IsAdmin</td><td class="mono">1</td><td></td><td>out</td><td><code>X</code> reveals the admin tile</td></tr>
+          <tr><td class="mono">Orgs</td><td class="mono">2000</td><td></td><td>out</td><td><code>BUKRS|WERKS;BUKRS|WERKS;</code></td></tr>
+          <tr><td class="mono">Features</td><td class="mono">500</td><td></td><td>out</td><td><code>PICK;CHALLAN;DISPATCH;</code></td></tr>
+          <tr><td class="mono">Message</td><td class="mono">200</td><td></td><td>out</td><td>Why a login failed, in words the operator can act on</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Entity <span class="mono">AppUser</span> &rarr; entity set <span class="mono">AppUserSet</span></h3>
+    <p>
+      Set this one <strong>creatable, updatable, deletable and addressable</strong>. It carries the
+      grants inline, which is why there's no third entity: one screen, one round trip, and no
+      association to configure.
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Property</th><th>Len</th><th>Key</th><th>Direction</th><th>Carries</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">Username</td><td class="mono">20</td><td>✓</td><td>both</td><td>Identifies the user being created or edited</td></tr>
+          <tr><td class="mono">Token</td><td class="mono">32</td><td></td><td>in</td><td>The <em>admin's</em> session token — this is what makes the call authorized</td></tr>
+          <tr><td class="mono">FullName</td><td class="mono">40</td><td></td><td>both</td><td>Person's name</td></tr>
+          <tr><td class="mono">Password</td><td class="mono">40</td><td></td><td>in</td><td>Only on create or reset; blank on update leaves it unchanged</td></tr>
+          <tr><td class="mono">IsAdmin</td><td class="mono">1</td><td></td><td>both</td><td><code>X</code> or blank</td></tr>
+          <tr><td class="mono">Active</td><td class="mono">1</td><td></td><td>both</td><td>Blank blocks login without deleting history</td></tr>
+          <tr><td class="mono">Locked</td><td class="mono">1</td><td></td><td>both</td><td>Set by 5 failed logins; blank it here to unlock</td></tr>
+          <tr><td class="mono">Orgs</td><td class="mono">2000</td><td></td><td>both</td><td><code>BUKRS|WERKS;</code> — sent back in full, replacing what was there</td></tr>
+          <tr><td class="mono">Features</td><td class="mono">500</td><td></td><td>both</td><td><code>PICK;CHALLAN;</code> — likewise a full replacement</td></tr>
+          <tr><td class="mono">Message</td><td class="mono">200</td><td></td><td>out</td><td>Result of the operation</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="clabel">One thing not to skip</span>
+      <p>
+        <code>Password</code> must never be returned. Leave it out of every response in the data
+        provider — the app has no reason to read one back, and a write-only field is the easiest
+        kind to keep from leaking into a log.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>The first admin</h2>
+    <p class="sectionnote">Solving the chicken-and-egg problem without typing a hash by hand.</p>
+    <p>
+      You can't create the first admin through the admin screen, and you can't type a password into
+      SE16 because it has to be salted and hashed first. So I'll write a small report,
+      <code>ZSOL_APP_USER_BOOTSTRAP</code>, that you run once in SE38: it takes a username, a full
+      name and a password on the selection screen, generates the salt, hashes the password, and
+      writes the user with <code>is_admin = 'X'</code> plus full access to every company code, plant
+      and screen.
+    </p>
+    <p>
+      After that first login, every other user is created from inside the app. Run the report once,
+      then leave it alone — it's a bootstrap tool, not a maintenance one.
+    </p>
+  </section>
+
+  <section>
+    <h2>What happens next</h2>
+    <p class="sectionnote">Sequenced so the app keeps working throughout — nothing goes dark mid-build.</p>
+
+    <div class="phase">
+      <div class="pnum">01</div>
+      <div>
+        <h4>Tables and service shell</h4>
+        <p>You create the four tables and the SEGW project. I write and activate the data provider class and the bootstrap report.</p>
+        <p class="who">You in SE11 + SEGW &middot; then me in ADT</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="pnum">02</div>
+      <div>
+        <h4>Login screen and admin screen</h4>
+        <p>The app opens on a login screen. After sign-in, the home screen shows only the tiles that person is allowed. The admin screen lets you create users, set passwords, and tick company codes, plants and screens.</p>
+        <p class="who">Me &middot; frontend + ABAP</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="pnum">03</div>
+      <div>
+        <h4>Server-side token enforcement</h4>
+        <p>Each existing service method starts checking the session token before returning anything — this is what makes the access control real rather than cosmetic. Done service by service so a mistake in one never takes down the others.</p>
+        <p class="who">Me &middot; ABAP, one service at a time</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="pnum">04</div>
+      <div>
+        <h4>Company and plant filtering</h4>
+        <p>All eight screens narrow their data to the signed-in person's company codes and plants — a Surat operator stops seeing Ronak's sales orders and boxes.</p>
+        <p class="who">Me &middot; ABAP + frontend</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built for the KGPL Scan Suite on system KSD, client 500. Table and service names follow the
+    existing <code>ZSOL_</code> convention in package <code>ZSOL_ISCAN</code>, so everything here
+    transports alongside the warehouse location objects already in place.
+  </footer>
+
+</div>
