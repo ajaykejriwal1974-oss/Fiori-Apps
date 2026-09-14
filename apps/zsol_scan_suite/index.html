@@ -279,6 +279,31 @@
   .qcrow .qcrst { font-size:12px; margin-top:6px; min-height:1em; }
   .qcrow .qcrst.err { color:#c62828; }
   .qcrow .qcrst.ok  { color:#2e7d32; }
+  /* live spec check on the value field: red = outside limits, green = inside */
+  .qcrow input.qcval.oos { border-color:#c62828; background:#fdecec; color:#a11616; font-weight:600; }
+  .qcrow input.qcval.inspec { border-color:#2e7d32; background:#eefaf0; }
+  .qceval { display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .qcevlbl { font-size:12px; color:#666; text-transform:uppercase; letter-spacing:.04em; }
+  .qcdec { min-height:40px; padding:8px 16px; border-radius:8px; border:1.5px solid #cfd6dd; background:#fff; color:#333; font-weight:600; font-size:14px; }
+  .qcdec.qcacc.sel { background:#2e7d32; border-color:#2e7d32; color:#fff; }
+  .qcdec.qcrej.sel { background:#c62828; border-color:#c62828; color:#fff; }
+  .qcdec.qcaut.sel { background:#555; border-color:#555; color:#fff; }
+  /* the characteristic badge turns green when every result is saved */
+  .badge.allsaved { background:#2e7d32; color:#fff; }
+  /* tap-to-update bar shown when a newer version is deployed on the server */
+  #kgplUpdateBar { position:fixed; left:0; right:0; bottom:0; z-index:9999; background:#1a73e8; color:#fff;
+    text-align:center; padding:13px 16px; font-size:15px; font-weight:600; cursor:pointer;
+    box-shadow:0 -2px 8px rgba(0,0,0,.25); }
+  /* queued result saves waiting for the connection to return */
+  #kgplRetryChip { position:fixed; left:12px; bottom:60px; z-index:9998; background:#b26a00; color:#fff;
+    padding:10px 14px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,.3); }
+  /* resume-last-lot chip on the QC screens */
+  .chip.resume { background:#e8f0fe; border-color:#1a73e8; color:#174ea6; font-weight:600; }
+  /* fatter touch targets for gloved hands on the shop floor */
+  .chip { min-height:40px; }
+  .qcrow .qcinputs input, .qcrow .qcinputs button { min-height:44px; }
+  .qcrow .qcsave { min-width:64px; }
   .qcud .chip.sel { background:var(--accent,#2563eb); color:#fff; border-color:var(--accent,#2563eb); }
 
   .tworow { display:flex; gap:10px; }
@@ -7814,6 +7839,84 @@
       }
     });
 
+    // ---- app version + update banner -------------------------------------
+    // The BSP has no service worker, so a handheld keeps running stale code
+    // after a deploy until someone reloads it. The app refetches its own page
+    // (cache-bypassed) and compares this stamp; on a mismatch a tap-to-update
+    // bar appears. BUMP THIS STAMP ON EVERY DEPLOY.
+    var KGPL_APP_VERSION = 'v2026.09.14.4';
+    function showUpdateBar(ver, freshHtml) {
+      if (document.getElementById('kgplUpdateBar')) return;
+      var bar = document.createElement('div');
+      bar.id = 'kgplUpdateBar';
+      bar.textContent = 'New version ' + ver + ' available - tap to update';
+      bar.addEventListener('click', function () {
+        // The ICM server cache keeps serving the OLD page to normal
+        // navigations after a deploy (a plain reload would loop the banner).
+        // The version check already fetched the fresh HTML, so swap the
+        // document with it directly; reload only as a last resort.
+        try {
+          if (freshHtml && freshHtml.length > 10000) {
+            document.open(); document.write(freshHtml); document.close();
+            return;
+          }
+        } catch (e) { }
+        location.reload();
+      });
+      document.body.appendChild(bar);
+    }
+    function checkAppVersion() {
+      try {
+        var x = new XMLHttpRequest();
+        // Keep the page's own query string (sap-client!) - refetching without
+        // it can bounce to a login page and the version check would go blind.
+        var q = location.search ? location.search + '&' : '?';
+        x.open('GET', location.pathname + q + 'vchk=' + Date.now(), true);
+        x.setRequestHeader('Cache-Control', 'no-store');
+        x.onload = function () {
+          if (x.status < 200 || x.status >= 300) return;
+          var m = (x.responseText || '').match(/KGPL_APP_VERSION = '([^']+)'/);
+          if (m && m[1] && m[1] !== KGPL_APP_VERSION) showUpdateBar(m[1], x.responseText);
+        };
+        x.send();
+      } catch (e) { }
+    }
+    setTimeout(checkAppVersion, 8000);
+    setInterval(checkAppVersion, 15 * 60 * 1000);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') checkAppVersion();
+    });
+
+    // ---- live spec check: tint the value field while the operator types ---
+    function wireSpecCheck(row) {
+      if (!row._quant) return;
+      var c = row._char;
+      var lo = (t(c.lower_is_initial) !== 'X' && t(c.lower_limit) !== '') ? parseFloat(t(c.lower_limit)) : null;
+      var hi = (t(c.upper_is_initial) !== 'X' && t(c.upper_limit) !== '') ? parseFloat(t(c.upper_limit)) : null;
+      if (lo !== null && isNaN(lo)) lo = null;
+      if (hi !== null && isNaN(hi)) hi = null;
+      if (lo === null && hi === null) return;
+      var inp = row.querySelector('.qcval');
+      var apply = function () {
+        inp.classList.remove('oos'); inp.classList.remove('inspec');
+        var v = t(inp.value); if (v === '') return;
+        var n = parseFloat(v); if (isNaN(n)) return;
+        var out = (lo !== null && n < lo) || (hi !== null && n > hi);
+        inp.classList.add(out ? 'oos' : 'inspec');
+      };
+      inp.addEventListener('input', apply);
+      apply();
+    }
+
+    // ---- "saved X/Y" progress on the characteristic badge -----------------
+    function paintCharProgress(host) {
+      if (!host || !host._badge) return;
+      var total = host.querySelectorAll('.qcrow').length;
+      var saved = host.querySelectorAll('.qcrow.done').length;
+      host._badge.textContent = total ? saved + '/' + total : '';
+      if (host._badge.classList) host._badge.classList.toggle('allsaved', total > 0 && saved === total);
+    }
+
     function renderChars(host, chars) {
       host.innerHTML = '';
       if (!chars.length) { host.innerHTML = '<div class="none">No open characteristics on this lot.</div>'; return; }
@@ -7840,11 +7943,42 @@
           '<div><label>Defects</label><input type="text" class="qcdef small" inputmode="numeric" autocomplete="off" placeholder="0" value="' + (done ? esc(t(c.defect_count)) : '') + '"></div>' +
           '<div><label>&nbsp;</label><button class="secondary qcsave" type="button">Save</button></div>' +
           '</div>' +
+          '<div class="qceval"><span class="qcevlbl">Decision</span>' +
+            '<button type="button" class="qcdec qcacc" data-v="A">Accept</button>' +
+            '<button type="button" class="qcdec qcrej" data-v="R">Reject</button>' +
+            '<button type="button" class="qcdec qcaut" data-v="">Auto</button>' +
+          '</div>' +
           '<div class="qcrst"></div>';
         row._char = c; row._quant = quant;
+        // Manual valuation the operator has already set (or that came back on a
+        // recorded result); blank means QM valuates against the tolerances.
+        row._valuation = (t(c.valuation) === 'A' || t(c.valuation) === 'R') ? t(c.valuation) : '';
         if (done) row.classList.add('done');
         host.appendChild(row);
+        wireSpecCheck(row);
+        wireEval(row);
       });
+    }
+
+    // ---- manual Accept / Reject per characteristic ------------------------
+    // Accept ('A') or Reject ('R') overrides the automatic spec check; Auto
+    // ('') lets QM valuate the value against the tolerances. Sent as
+    // `valuation` on the result POST -> BAPI_INSPCHAR_SETRESULT EVALUATION ->
+    // QAMR-MBEWERTG, so a manual decision shows in QA32's Valuation column.
+    function wireEval(row) {
+      var btns = row.querySelectorAll('.qcdec');
+      function paint() {
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].classList.toggle('sel', t(btns[i].getAttribute('data-v')) === t(row._valuation || ''));
+        }
+      }
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function () {
+          row._valuation = t(this.getAttribute('data-v'));
+          paint();
+        });
+      }
+      paint();
     }
 
     function rowPayload(row) {
@@ -7855,6 +7989,7 @@
         characteristic_number: t(c.characteristic_number),
         defect_count: t(row.querySelector('.qcdef').value),
         actual_sample_size: t(c.actual_sample_size),
+        valuation: t(row._valuation || ''),
         comment: ''
       };
       if (row._quant) {
@@ -7869,20 +8004,99 @@
     function hasEntry(row) {
       var v = t(row.querySelector('.qcval').value);
       var d = t(row.querySelector('.qcdef').value);
-      return v !== '' || (d !== '' && d !== '0');
+      return v !== '' || (d !== '' && d !== '0') || t(row._valuation || '') !== '';
+    }
+    // ---- offline-tolerant result saves ------------------------------------
+    // A save that dies on the NETWORK (no HTTP response, or the gateway /
+    // nginx unreachable: status 0 / 502 / 503 / 504) is queued with a
+    // snapshot of its values and retried automatically when the connection
+    // returns - the operator does not retype it. Real SAP refusals are NOT
+    // retried. The queue is in-memory only: after a full page reload the
+    // unsaved rows simply show as unrecorded again.
+    var retryQ = [], retryTimer = null, retryChip = null, retryBusy = false;
+    function retryable(status) { return status === 0 || status === 502 || status === 503 || status === 504; }
+    function paintRetryChip() {
+      if (!retryQ.length) {
+        if (retryChip && retryChip.parentNode) retryChip.parentNode.removeChild(retryChip);
+        retryChip = null;
+        return;
+      }
+      if (!retryChip) {
+        retryChip = document.createElement('div');
+        retryChip.id = 'kgplRetryChip';
+        retryChip.addEventListener('click', flushRetryQ);
+        document.body.appendChild(retryChip);
+      }
+      retryChip.textContent = retryQ.length + ' save' + (retryQ.length > 1 ? 's' : '') + ' waiting for connection - tap to retry';
+    }
+    function queueRetry(row, payload, logEl) {
+      for (var i = retryQ.length - 1; i >= 0; i--) { if (retryQ[i].row === row) retryQ.splice(i, 1); }
+      retryQ.push({ row: row, payload: payload, logEl: logEl });
+      var rst = row.querySelector('.qcrst');
+      if (rst) { rst.textContent = 'No connection - queued, will retry automatically'; rst.className = 'qcrst err'; }
+      paintRetryChip();
+      if (!retryTimer) retryTimer = setInterval(flushRetryQ, 20000);
+    }
+    function flushRetryQ() {
+      if (retryBusy) return;
+      if (!retryQ.length) { if (retryTimer) { clearInterval(retryTimer); retryTimer = null; } return; }
+      retryBusy = true;
+      var item = retryQ[0];
+      post('/QcResultSet', item.payload, function (status, json, raw) {
+        retryBusy = false;
+        if (retryable(status)) { paintRetryChip(); return; }   // still offline - next tick
+        retryQ.shift();
+        var live = document.body.contains(item.row);
+        var rst = live ? item.row.querySelector('.qcrst') : null;
+        if (status >= 200 && status < 300) {
+          if (live) {
+            item.row.classList.remove('bad'); item.row.classList.add('done');
+            if (rst) { rst.textContent = 'Saved'; rst.className = 'qcrst ok'; }
+            paintCharProgress(item.row.parentElement);
+          }
+        } else {
+          var msg = failText(status, raw, 'Result was refused.');
+          if (live) {
+            item.row.classList.remove('done'); item.row.classList.add('bad');
+            if (rst) { rst.textContent = msg; rst.className = 'qcrst err'; }
+            paintCharProgress(item.row.parentElement);
+          }
+          if (item.logEl) logLine(item.logEl, false, 'char ' + stripZeros(item.payload.characteristic_number), msg);
+        }
+        paintRetryChip();
+        if (retryQ.length) { flushRetryQ(); }
+        else if (retryTimer) { clearInterval(retryTimer); retryTimer = null; }
+      });
+    }
+    window.addEventListener('online', flushRetryQ);
+
+    function dequeueRow(row) {
+      // Drop any queued retry for this row - a fresher save supersedes it.
+      // Without this, a queued OLD payload could post after a newer direct
+      // save succeeded, silently overwriting the newer result.
+      for (var i = retryQ.length - 1; i >= 0; i--) { if (retryQ[i].row === row) retryQ.splice(i, 1); }
+      paintRetryChip();
     }
     function saveRow(row, logEl, cb) {
       var rst = row.querySelector('.qcrst');
+      var p = rowPayload(row);
       rst.textContent = 'Saving...'; rst.className = 'qcrst';
-      post('/QcResultSet', rowPayload(row), function (status, json, raw) {
+      post('/QcResultSet', p, function (status, json, raw) {
         if (status >= 200 && status < 300) {
+          dequeueRow(row);
           row.classList.remove('bad'); row.classList.add('done');
           rst.textContent = 'Saved'; rst.className = 'qcrst ok';
+          paintCharProgress(row.parentElement);
           if (cb) cb(true);
+        } else if (retryable(status)) {
+          queueRetry(row, p, logEl);
+          if (cb) cb('queued');
         } else {
+          dequeueRow(row);
           var msg = failText(status, raw, 'Result was refused.');
           row.classList.remove('done'); row.classList.add('bad');
           rst.textContent = msg; rst.className = 'qcrst err';
+          paintCharProgress(row.parentElement);
           logLine(logEl, false, 'char ' + stripZeros(row._char.characteristic_number), msg);
           if (cb) cb(false);
         }
@@ -7897,13 +8111,18 @@
       var rows = [].slice.call(host.querySelectorAll('.qcrow')).filter(hasEntry);
       if (!rows.length) { setStatus(statusEl, 'Nothing to save - enter a value or a defect count first.', 'err'); return; }
       setStatus(statusEl, 'Saving ' + rows.length + '...', '');
-      var ok = 0, bad = 0, i = 0;
+      var ok = 0, bad = 0, qd = 0, i = 0;
       (function next() {
         if (i >= rows.length) {
-          setStatus(statusEl, ok + ' saved' + (bad ? ', ' + bad + ' refused' : '') + '.', bad ? 'err' : 'ok');
+          setStatus(statusEl,
+            ok + ' saved' + (qd ? ', ' + qd + ' queued (no connection)' : '') + (bad ? ', ' + bad + ' refused' : '') + '.',
+            bad ? 'err' : 'ok');
           return;
         }
-        saveRow(rows[i++], logEl, function (good) { good ? ok++ : bad++; next(); });
+        saveRow(rows[i++], logEl, function (res) {
+          if (res === true) ok++; else if (res === 'queued') qd++; else bad++;
+          next();
+        });
       })();
     }
 
@@ -8019,6 +8238,11 @@
       }
       function showLot(l) {
         lot = l;
+        // Remember the open lot for this stage so an interrupted operator can
+        // resume in one tap after a reload (kept for the browser session).
+        try { window.sessionStorage.setItem('kgpl.qc.lastlot.' + kind, JSON.stringify(l)); } catch (e) { }
+        var rc0 = document.getElementById(P + 'ResumeChip');
+        if (rc0 && rc0.parentNode) rc0.parentNode.removeChild(rc0);
         el.LotCode.textContent = 'Lot ' + stripZeros(l.inspection_lot) + ' · plant ' + t(l.plant);
         el.LotDesc.textContent = (t(l.results_confirmed) === 'X' ? 'Results recorded' : 'Results open') + (t(l.usage_decision_made) === 'X' ? ' · UD made' : '');
         el.LotFacts.innerHTML = lotFacts(l);
@@ -8101,16 +8325,28 @@
         get("/QcCharSet?$filter=inspection_lot eq '" + odataStr(lot.inspection_lot) + "' and itype eq '" + kind + "'&$format=json", function (status, json, raw) {
           if (status >= 200 && status < 300) {
             var rows = v2Rows(json);
-            el.CharBadge.textContent = rows.length ? String(rows.length) : '';
             renderChars(el.Chars, rows);
+            el.Chars._badge = el.CharBadge;
+            paintCharProgress(el.Chars);
             wireRowSaves(el.Chars, el.Log);
           } else {
             el.Chars.innerHTML = '<div class="status err">' + esc(failText(status, raw, 'Could not load characteristics.')) + '</div>';
           }
         });
       }
+      var recordArmed = 0;
       function recordOp() {
         if (!lot) return;
+        // Guard: recording with unsaved results is usually a mistake. Warn
+        // once; a second tap within 8 seconds records anyway (no dialogs).
+        var totalRows = el.Chars.querySelectorAll('.qcrow').length;
+        var savedRows = el.Chars.querySelectorAll('.qcrow.done').length;
+        if (totalRows > 0 && savedRows < totalRows && Date.now() - recordArmed > 8000) {
+          recordArmed = Date.now();
+          setStatus(el.RecordStatus, 'Only ' + savedRows + ' of ' + totalRows + ' results are saved. Tap Record again to proceed anyway.', 'err');
+          return;
+        }
+        recordArmed = 0;
         var ops = {};
         el.Chars.querySelectorAll('.qcrow').forEach(function (r) { ops[t(r._char.operation_number)] = true; });
         var list = Object.keys(ops); if (!list.length) list = [''];
@@ -8217,6 +8453,27 @@
       el.Scan.addEventListener('scan-fill', function () { findLot(el.Scan.value); });
       el.BtnOpen.addEventListener('click', loadOpen);
       el.LotClear.addEventListener('click', function () { resetLot(); el.Scan.focus(); });
+
+      // Resume chip: if a lot was open on this stage before the page was
+      // reloaded (update banner, crash, handheld reboot), offer it back in
+      // one tap. The chip disappears as soon as any lot is opened.
+      try {
+        var lastRaw = window.sessionStorage.getItem('kgpl.qc.lastlot.' + kind);
+        if (lastRaw) {
+          var last = JSON.parse(lastRaw);
+          if (last && last.inspection_lot) {
+            var rc = document.createElement('button');
+            rc.type = 'button';
+            rc.id = P + 'ResumeChip';
+            rc.className = 'chip resume';
+            rc.textContent = 'Resume lot ' + stripZeros(last.inspection_lot) + (t(last.batch) ? ' · ' + t(last.batch) : '');
+            rc.addEventListener('click', function () { showLot(last); });
+            if (el.ScanStatus && el.ScanStatus.parentNode) {
+              el.ScanStatus.parentNode.insertBefore(rc, el.ScanStatus.nextSibling);
+            }
+          }
+        }
+      } catch (e) { }
       el.CharRefresh.addEventListener('click', function () { if (lot) loadChars(); });
       el.BtnRecord.addEventListener('click', recordOp);
       el.BtnUd.addEventListener('click', postUd);
@@ -8304,8 +8561,11 @@
             el.LotCode.textContent = 'Lot ' + stripZeros(lotNo);
             el.LotDesc.textContent = rows.length + ' characteristics';
             el.LotBox.style.display = 'block'; el.LotBox.className = 'infobox';
-            el.CharCard.style.display = 'block'; el.CharBadge.textContent = String(rows.length);
-            renderChars(el.Chars, rows); wireRowSaves(el.Chars, el.Log);
+            el.CharCard.style.display = 'block';
+            renderChars(el.Chars, rows);
+            el.Chars._badge = el.CharBadge;
+            paintCharProgress(el.Chars);
+            wireRowSaves(el.Chars, el.Log);
             setStatus(el.ScanStatus, '', ''); el.Scan.value = '';
           } else {
             setStatus(el.ScanStatus, failText(status, raw, 'Could not load the lot.'), 'err');

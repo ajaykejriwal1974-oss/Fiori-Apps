@@ -329,5 +329,12 @@ builder:
           # export on the pending lists, Print Recipe, enlarged Dyeing/Winding
           # boxes, and the removed inline Dyeing Recipe block. Deploy into this,
           # verify on KSD, then release + import to KSP.
-          transport: KSDK907021
+          # 13.09.2026 (later): KSDK907021 RELEASED. Switched to KSDK907024,
+          # which also carries the CDS Stage adoption (ZC_QC_INSP_CHAR_SCAN +
+          # LIST_CHARS + ZQC_MIC_STAGE + the unit tests), so app and backend
+          # import to KSP together. This deploy adds: live out-of-spec value
+          # highlighting in the QC grid, the saved-x-of-y progress badge with
+          # a Record guard, and the tap-to-update version banner
+          # (KGPL_APP_VERSION - bump the stamp in index.html on every deploy).
+          transport: KSDK907040
           description: "KGPL Scan Suite"
